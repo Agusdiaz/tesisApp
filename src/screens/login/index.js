@@ -1,7 +1,10 @@
 import React, { Component } from 'react';
-import { StyleSheet, TextInput, View, TouchableOpacity, Text, Image } from 'react-native';
+import { StyleSheet, View, TouchableOpacity, Text, Image } from 'react-native';
 import { connect } from 'react-redux';
 import { login } from '../../redux/actions';
+import TextField from '@material-ui/core/TextField';
+import Grid from '@material-ui/core/Grid';
+import AccountCircle from '@material-ui/icons/AccountCircle';
 
 class LoginScreen extends Component {
 
@@ -12,6 +15,8 @@ class LoginScreen extends Component {
             password: '',
             loader: false
         }
+
+        this._login.bind(this)
     }
 
     _getDisabled() {
@@ -25,15 +30,17 @@ class LoginScreen extends Component {
         return disabled;
     }
 
-    _login() {
-        this.setState({ lodaer: true })
+    _login(e) {
+        this.setState({ loader: true })
+        console.log(this.state.email)
         this.props.login(this.state).then(($result) => {
             //todo salio bien enviamos a otra vista donde veremos el perfild del usuario
         }).catch((err) => {
             Alert.alert('Error', err.message);
         })
     }
-    
+
+
     render() {
         return (
 
@@ -41,23 +48,40 @@ class LoginScreen extends Component {
 
                 <Image source={require('../../icons/book.gif')} style={{ width: 100, height: 100, marginBottom: 70 }} />
 
-                <View style={styles.inputView} >
-                   <TextInput
-                        style={styles.inputText}
-                        placeholder="Email..."
-                        placeholderTextColor="#FFFFFF"
-                        onChangeText={text => this.setState({ email: text })} />
-                 </View>
+                <div>
+                    <Grid container spacing={1} alignItems="flex-end">
+                        <Grid item>
+                            <AccountCircle style={{ color: 'white' }} />
+                        </Grid>
+                        <Grid item>
+                            <TextField
+                                style={{ color: 'white' }}
+                                id="input-with-icon-grid"
+                                label="Email"
+                                margin="normal"
+                                name="email"
+                                onChangeText={text => this.setState({ email: text })} />
+                        </Grid>
+                    </Grid>
+                </div>
 
-                <View style={styles.inputView} >
-                    <TextInput
-                        style={styles.inputText}
-                        secureTextEntry
-                        placeholder="Contraseña..."
-                        placeholderTextColor="#FFFFFF"
-                        onChangeText={text => this.setState({ password: text })} />
-                    </View>
 
+                <div>
+                    <Grid container spacing={1} alignItems="flex-end">
+                        <Grid item>
+                            <AccountCircle style={{ color: 'white' }} />
+                        </Grid>
+                        <Grid item>
+                            <TextField
+                                margin="normal"
+                                id="input-with-icon-grid"
+                                label="Contraseña"
+                                name="password"
+                                onChangeText={text => this.setState({ password: text })} />
+                        </Grid>
+                    </Grid>
+                </div>
+                <br />
                 <TouchableOpacity>
                     <Text style={styles.forgot}>¿Has olvidado tu contraseña?</Text>
                 </TouchableOpacity>
@@ -69,6 +93,7 @@ class LoginScreen extends Component {
                 <TouchableOpacity>
                     <Text style={styles.loginText}>Registrarse</Text>
                 </TouchableOpacity>
+
 
             </View >
 
@@ -123,6 +148,9 @@ const styles = StyleSheet.create({
         resizeMode: 'stretch',
         alignItems: 'center'
     },
+    inputColor: {
+        color: 'white'
+    }
 });
 
 function MapStateToProps(state) {
