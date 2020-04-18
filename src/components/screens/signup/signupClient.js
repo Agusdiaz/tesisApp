@@ -37,10 +37,10 @@ class SignUpClientScreen extends Component {
 
 	render() {
 		return (
-			<KeyboardAvoidingView style={appStyles.container} behavior={Platform.OS == "ios" ? "padding" : "height"}>
+			<KeyboardAvoidingView style={appStyles.container} behavior={Platform.OS === "ios" ? "padding" : "height"} keyboardVerticalOffset={Platform.OS === "ios" ? -150 : 0} >
 				<ArrowButton />
 
-				<Text style={styles.signupText}> Bienvenido{"\n"}Crea tu nueva cuenta</Text>
+				<Text style={styles.signupText}> Crea tu nueva cuenta</Text>
 
 				<TextInput
 					style={styles.inputView}

@@ -1,4 +1,5 @@
 import { StyleSheet } from 'react-native';
+import { Platform } from 'react-native';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from "react-native-responsive-screen";
 
 const colors = {
@@ -6,6 +7,11 @@ const colors = {
     APP_BACKGR : '#FFFFFF',
     APP_INACTIVE: '#827C7C',
     TEXT_INPUT : '#000000',
+};
+
+const sizes = {
+    wp : wp ,
+    hp : hp
 };
 
 const appStyles = StyleSheet.create({
@@ -19,8 +25,9 @@ const appStyles = StyleSheet.create({
         flex: 1,
 		backgroundColor: colors.APP_BACKGR,
 		alignItems: 'center',
-		justifyContent: 'center',
+        justifyContent: 'center',
+        marginTop: (Platform.OS === 'ios') ? 25 : 0, 
     },
 })
 
-export { colors, appStyles };
+export { colors, appStyles, sizes };

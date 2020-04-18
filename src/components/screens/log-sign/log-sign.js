@@ -10,49 +10,54 @@ class LogSignScreen extends Component {
     render() {
         return (
             <View style={appStyles.container} >
-                
+
                 {/*}<Image source={require('../../../icons/book.gif')} style={{ width: 100, height: 100, marginBottom: 70 }} />{*/}
-                
-                <Text style={styles.textScreen}> ¿Ya eres usuario?</Text>
-                <Button
-                    style={styles.buttonView}
-                    icon="send"
-                    mode="contained"
-                    color={colors.APP_MAIN}
-                    //disabled="true"
-                    onPress={() => {}}>
-                    INICIA SESIÓN
+                <View style={styles.containerButton}>
+                    <Text style={styles.textScreen}> ¿Ya eres usuario?</Text>
+                    <Button
+                        style={styles.buttonView}
+                        icon="send"
+                        mode="contained"
+                        color={colors.APP_MAIN}
+                        //disabled="true"
+                        onPress={() => { }}>
+                        INICIA SESIÓN
  				</Button>
 
-                 <Text style={styles.textScreen}> ¿Todavía no tenes cuenta?</Text>
-                 <Button
-                    style={styles.buttonView}
-                    icon="account-plus"
-                    mode="contained"
-                    color={colors.APP_MAIN}
-                    //disabled="true"
-                    onPress={() => {}}>
-                    REGISTRATE
+                    <Text style={styles.textScreen}> ¿Todavía no tenes cuenta?</Text>
+                    <Button
+                        style={styles.buttonView}
+                        icon="account-plus"
+                        mode="contained"
+                        color={colors.APP_MAIN}
+                        //disabled="true"
+                        onPress={() => { }}>
+                        REGISTRATE
  				</Button>
-
+                </View>
             </View>
-
         );
     }
 }
 
 const styles = StyleSheet.create({
+    containerButton: {
+        marginTop: 120,
+        width: '100%',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
     buttonView: {
-        width: "30%",
+        width: "60%",
         height: 50,
-        marginTop: 20,
-        marginBottom: 20,
+        marginTop: 15,
+        marginBottom: 80,
         justifyContent: "center",
         padding: 5,
     },
     textScreen: {
         color: colors.APP_MAIN,
-        fontSize: 14
+        fontSize: 15,
     },
 });
 

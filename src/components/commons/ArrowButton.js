@@ -20,10 +20,14 @@ class ArrowButton extends Component {
 
 const styles = StyleSheet.create({
     arrowButton: {
-		marginTop: 10,
+		//marginTop: 10,
 		justifyContent: 'space-evenly',
-		alignSelf: 'flex-start',
-		bottom: 50
+		alignSelf: 'stretch',
+		//bottom: 50,
+		position: 'absolute',
+		top: 30,
+		right: 0, 
+		left: 0
 	},
 })
 

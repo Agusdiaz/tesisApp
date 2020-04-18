@@ -44,13 +44,13 @@ class LoginScreen extends Component {
 
     render() {
         return (
-            <KeyboardAvoidingView style={appStyles.container} behavior={Platform.OS == "ios" ? "padding" : "height"}>
+            <KeyboardAvoidingView style={appStyles.container} behavior={Platform.OS === "ios" ? "padding" : "height"} keyboardVerticalOffset={Platform.OS === "ios" ? -150 : -100}>
                 <ArrowButton />
 
                 {/*}<Image source={require('../../../icons/book.gif')} style={{ width: 100, height: 100, marginBottom: 70 }} />{*/}
                 <IconButton
                     icon='account-circle-outline'
-                    size={100}
+                    size={120}
                     style={styles.iconUser}
                     color={colors.APP_MAIN}
 
@@ -106,10 +106,10 @@ const styles = StyleSheet.create({
         padding: 5,
     },
     iconUser: {
-        marginTop: 5,
+        top: -35,
         justifyContent: 'space-evenly',
         alignSelf: 'center',
-        bottom: 50
+        marginBottom: 10
     },
 });
 
