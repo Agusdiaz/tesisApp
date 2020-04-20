@@ -3,13 +3,13 @@ import { BottomNavigation, Text, } from 'react-native-paper';
 import { appStyles, colors } from '../../../../src/index.styles';
 import HomeClient from '../home/homeClient'
 import ProfileClient from '../profile/profileClient'
-import LastOrdersClient from '../orderView/lastordersClient'
+import SearchOrder from '../orderView/searchOrders'
 
 const HomeRoute = () => <HomeClient/>;
 
-const NotificationRoute = () => <Text>Notificaciones</Text>;
+const ShopRoute = () => <SearchOrder/>;
 
-const OrderRoute = () => <LastOrdersClient/>;
+const NotificationRoute = () => <Text>Notificaciones</Text>;
 
 const ProfileRoute = () => <ProfileClient/>;
 
@@ -18,18 +18,18 @@ export default class NavigationBarScreen extends React.Component {
     index: 0,
     routes: [
       { key: 'home', title: 'Home', icon: 'food', color: colors.APP_BACKGR },
+      { key: 'shops', title: 'Locales', icon: 'store', color: colors.APP_BACKGR },
       { key: 'notifications', title: 'Notificaciones', icon: 'bell-ring-outline', badge: 2, color: colors.APP_BACKGR },
-      { key: 'orders', title: 'Pedidos', icon: 'room-service-outline', color: colors.APP_BACKGR },
-      { key: 'profile', title: 'Perfil', icon: 'face-outline', color: colors.APP_BACKGR },
+      { key: 'profile', title: 'Perfil', icon: 'face', color: colors.APP_BACKGR },
     ],
   };
 
   _handleIndexChange = index => this.setState({ index });
 
   _renderScene = BottomNavigation.SceneMap({
-    home: HomeRoute,
-    notifications: NotificationRoute, 
-    orders: OrderRoute,
+    home: HomeRoute, 
+    shops: ShopRoute,
+    notifications: NotificationRoute,
     profile: ProfileRoute,
   });
 

@@ -6,12 +6,14 @@ import LogIn from './src/components/screens/login/login' //Import the component 
 import SignUp from './src/components/screens/signup/signupClient'
 import NavBar from './src/components/screens/navBar/navBarClient'
 import LogSign from './src/components/screens/log-sign/log-sign'
+import MakeOrder from './src/components/screens/orderProcess/stepIndicator'
+import ShopCard from './src/components/commons/shopCard'
 
 export default class App extends Component {
     render() {
         return (
             <Provider store={store}>
-                <SignUp />
+                <NavBar />
             </Provider>
         );
     }

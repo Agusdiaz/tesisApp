@@ -7,6 +7,7 @@ const colors = {
     APP_BACKGR : '#FFFFFF',
     APP_INACTIVE: '#827C7C',
     TEXT_INPUT : '#000000',
+    STAR : '#F5CD08',
 };
 
 const sizes = {
@@ -26,7 +27,7 @@ const appStyles = StyleSheet.create({
 		backgroundColor: colors.APP_BACKGR,
 		alignItems: 'center',
         justifyContent: 'center',
-        marginTop: (Platform.OS === 'ios') ? 25 : 0, 
+        marginTop: (Platform.OS === 'ios') ? 10 : 0, 
     },
 })
 

@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { StyleSheet, Text, View, } from 'react-native';
 import { appStyles, colors } from '../../../index.styles';
 import { Avatar, Button } from 'react-native-paper';
+//import LastOrdersClient from '../orderView/lastordersClient'
 
 export default class ProfileClientScreen extends Component {
     render() {
@@ -9,7 +10,7 @@ export default class ProfileClientScreen extends Component {
             <View >
                 <View style={styles.header}>
                     <View style={styles.headerContent}>
-                        <Avatar.Text style={styles.avatar} size={100} label="JD" labelStyle={{color: colors.APP_MAIN}} />
+                        <Avatar.Text style={styles.avatar} size={100} label="JD" labelStyle={{ color: colors.APP_MAIN }} />
                         <Text style={styles.name}>John Doe </Text>
                         <Text style={styles.userInfo}>jhonnydoe@mail.com </Text>
                     </View>
@@ -19,7 +20,23 @@ export default class ProfileClientScreen extends Component {
                     <View style={styles.item}>
                         <View style={styles.iconContent}>
                             <Button
-                                style={{ marginTop: 15 }}
+                                style={{ margin: 20, width: '50%' }}
+                                icon="room-service-outline"
+                                mode="contained"
+                                color={colors.APP_MAIN}
+                                onPress={() => {}}>
+                                Últimos pedidos
+ 				            </Button>
+                             <Button
+                                style={{ margin: 20, width: '50%' }}
+                                icon="star-outline"
+                                mode="contained"
+                                color={colors.APP_MAIN}
+                                onPress={() => { }}>
+                                Favoritos
+ 				            </Button>
+                            <Button
+                                style={{ margin: 20, width: '50%' }}
                                 icon="settings-outline"
                                 mode="contained"
                                 color={colors.APP_MAIN}
