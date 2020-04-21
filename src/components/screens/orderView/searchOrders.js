@@ -30,5 +30,6 @@ const styles = StyleSheet.create({
     searchInput: {
 		position: 'absolute',
         top: 40,
+        fontSize: sizes.TEXT_INPUT,
 	},
 })

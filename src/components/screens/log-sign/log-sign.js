@@ -4,6 +4,7 @@ import { logsign } from '../../../redux/actions';
 import { StyleSheet, Text, Image, View } from 'react-native';
 import { Button, IconButton } from 'react-native-paper';
 import { appStyles, colors } from '../../../index.styles';
+import { Actions } from 'react-native-router-flux';
 
 class LogSignScreen extends Component {
 
@@ -20,7 +21,7 @@ class LogSignScreen extends Component {
                         mode="contained"
                         color={colors.APP_MAIN}
                         //disabled="true"
-                        onPress={() => { }}>
+                        onPress={() => Actions.login()}>
                         INICIA SESIÓN
  				</Button>
 
@@ -31,7 +32,7 @@ class LogSignScreen extends Component {
                         mode="contained"
                         color={colors.APP_MAIN}
                         //disabled="true"
-                        onPress={() => { }}>
+                        onPress={() => Actions.signup()}>
                         REGISTRATE
  				</Button>
                 </View>

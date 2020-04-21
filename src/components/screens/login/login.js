@@ -5,6 +5,7 @@ import { StyleSheet, Text, KeyboardAvoidingView, Platform, TouchableOpacity, Ima
 import { TextInput, Button, IconButton } from 'react-native-paper';
 import { appStyles, colors } from '../../../index.styles';
 import ArrowButton from '../../commons/ArrowButton'
+import { Actions } from 'react-native-router-flux';
 
 
 class LoginScreen extends Component {
@@ -45,7 +46,7 @@ class LoginScreen extends Component {
     render() {
         return (
             <KeyboardAvoidingView style={appStyles.container} behavior={Platform.OS === "ios" ? "padding" : "height"} keyboardVerticalOffset={Platform.OS === "ios" ? -150 : -100}>
-                <ArrowButton />
+                <ArrowButton rute={'logsign'}/>
 
                 {/*}<Image source={require('../../../icons/book.gif')} style={{ width: 100, height: 100, marginBottom: 70 }} />{*/}
                 <IconButton
@@ -104,6 +105,7 @@ const styles = StyleSheet.create({
         marginBottom: 20,
         justifyContent: "center",
         padding: 5,
+        fontSize: sizes.TEXT_INPUT,
     },
     iconUser: {
         top: -35,

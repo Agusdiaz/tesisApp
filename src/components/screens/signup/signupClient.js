@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { StyleSheet, View, Text, KeyboardAvoidingView, Platform } from 'react-native';
 import { TextInput, Button } from 'react-native-paper';
-import { appStyles, colors } from '../../../index.styles';
+import { appStyles, colors, sizes } from '../../../index.styles';
 import ArrowButton from '../../commons/ArrowButton'
 
 class SignUpClientScreen extends Component {
@@ -38,7 +38,7 @@ class SignUpClientScreen extends Component {
 	render() {
 		return (
 			<KeyboardAvoidingView style={appStyles.container} behavior={Platform.OS === "ios" ? "padding" : "height"} keyboardVerticalOffset={Platform.OS === "ios" ? -150 : 0} >
-				<ArrowButton />
+				<ArrowButton rute={'logsign'}/>
 
 				<Text style={styles.signupText}> Crea tu nueva cuenta</Text>
 
@@ -113,6 +113,7 @@ const styles = StyleSheet.create({
 		marginBottom: 20,
 		justifyContent: "center",
 		padding: 8,
+		fontSize: sizes.TEXT_INPUT,
 	},
 })
 
