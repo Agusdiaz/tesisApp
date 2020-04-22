@@ -12,7 +12,7 @@ size={30}
 onPress={() => { }}
 />
 
-const Tarjeta = () => (
+const ShopCard = () => (
     <Card style={{ alignContent: 'center' }}>
         <Card.Title title="Nombre Local" subtitle="Direccion Local" left={LeftContent} right={RightContent} />
         <Card.Cover source={{ uri: 'https://picsum.photos/700' }} />
@@ -38,4 +38,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default Tarjeta;
+export default ShopCard;

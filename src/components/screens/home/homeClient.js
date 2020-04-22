@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { StyleSheet, View, Text, TouchableOpacity, ImageBackground, VirtualizedList } from 'react-native';
 import { appStyles, colors, sizes } from '../../../index.styles';
-import { Avatar, Button, Card, Title, Paragraph } from 'react-native-paper';
 import ShopCard from '../../commons/shopCard'
 
 const DATA = [];
@@ -25,6 +24,16 @@ class HomeClientScreen extends Component {
         }
     }
 
+    renderSeparator = () => {
+        return (
+          <View
+            style={{
+              height: 20,
+            }}
+          />
+        );
+      }
+
     render() {
         return (
             <View style={appStyles.container}>
@@ -37,6 +46,7 @@ class HomeClientScreen extends Component {
 
                 <VirtualizedList
                     style={styles.list}
+                    ItemSeparatorComponent={this.renderSeparator}
                     data={DATA}
                     initialNumToRender={0}
                     renderItem={({ item }) => <ShopCard />}
@@ -59,12 +69,10 @@ const styles = StyleSheet.create({
         resizeMode: 'contain',
         position:'relative',
         flex: 1,
-        justifyContent: "center"
         top:-100,
         left: -100, 
-        alignSelf: "center"
         flexGrow:1, */
-        height: 220,
+        height: 170,
         width: 400,
         alignItems: 'center',
         justifyContent: 'center',
@@ -73,13 +81,13 @@ const styles = StyleSheet.create({
         resizeMode: 'stretch',
     },
     touchable: {
-        marginTop: sizes.hp('10%'),
+        marginTop: sizes.hp('6%'),
     },
     text: {
         fontSize: 28,
         fontWeight: 'bold',
         color: "#000",
-        marginTop: sizes.hp('10%')
+        marginTop: sizes.hp('12%')
     },
     list: {
         marginTop: 40,

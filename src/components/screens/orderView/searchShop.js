@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import { StyleSheet, View } from 'react-native';
-import { appStyles, colors, sizes } from '../../../index.styles';
+import { appStyles, colors, sizes } from '../../../index.styles'
 import { Searchbar } from 'react-native-paper';
 
-export default class SearchOrdersScreen extends Component {
+export default class SearchShopScreen extends Component {
     state = {
         searchQuery: '',
     };

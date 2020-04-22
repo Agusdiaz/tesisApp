@@ -3,7 +3,7 @@ import { BottomNavigation, Text, } from 'react-native-paper';
 import { appStyles, colors } from '../../../../src/index.styles';
 import HomeClient from '../home/homeClient'
 import ProfileClient from '../profile/profileClient'
-import SearchOrder from '../orderView/searchOrders'
+import SearchOrder from '../orderView/searchShop'
 
 const HomeRoute = () => <HomeClient/>;
 
