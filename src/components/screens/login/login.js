@@ -83,7 +83,7 @@ class LoginScreen extends Component {
                 </TouchableOpacity>
 
                 <Button
-                    style={{ marginTop: 15 }}
+                    style={{ marginTop: sizes.hp('5%') }}
                     icon="send"
                     mode="contained"
                     color={colors.APP_MAIN}

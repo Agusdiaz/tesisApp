@@ -6,6 +6,9 @@ import NavBarClient from './screens/navBar/navBarClient'
 import NavBarShop from './screens/navBar/navBarShop'
 import LogSign from './screens/log-sign/log-sign'
 import MakeOrder from './screens/orderProcess/stepIndicator'
+import HomeClient from './screens/home/homeClient'
+import ShopInformation from './commons/shopInformation'
+import LastOrders from './screens/orderView/lastordersClient'
 
 export default class Routes extends Component {
     render() {
@@ -15,9 +18,11 @@ export default class Routes extends Component {
                     <Scene key="logsign" component={LogSign} title="LogSign" />
                     <Scene key="login" component={LogIn} title="LogIn" />
                     <Scene key="signup" component={SignUp} title="SignUp" />
-                    <Scene key="navbarclient" component={NavBarClient} title="NavBarClient" />
+                    <Scene key="navbarclient" component={NavBarClient} title="NavBarClient" initial/>
                     <Scene key="makeorder" component={MakeOrder} title="MakeOrder" />
-                    <Scene key="navbarshop" component={NavBarShop} title="NavBarShop" initial/>
+                    <Scene key="navbarshop" component={NavBarShop} title="NavBarShop" />
+                    <Scene key="shopinformation" component={ShopInformation} title="ShopInformation" />
+                    <Scene key="lastorders" component={LastOrders} title="LastOrders" />
                 </Scene>
             </Router>
         )

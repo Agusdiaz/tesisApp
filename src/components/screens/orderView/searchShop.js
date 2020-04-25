@@ -17,6 +17,7 @@ export default class SearchShopScreen extends Component {
                 <Searchbar
                     style = {styles.searchInput}
                     placeholder="Buscar local"
+                    theme={{colors: {primary: colors.APP_MAIN}}}
                     iconColor={colors.APP_MAIN}
                     onChangeText={this._onChangeSearch}
                     value={searchQuery}

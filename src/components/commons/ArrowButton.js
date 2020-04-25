@@ -9,6 +9,8 @@ class ArrowButton extends Component {
 	goBack() {
 		if (this.props.rute == 'logsign')
 			return Actions.logsign()
+		if (this.props.rute == 'navbarclient')
+			return Actions.navbarclient()
 		return null
 	}
 
@@ -28,7 +30,7 @@ class ArrowButton extends Component {
 const styles = StyleSheet.create({
 	arrowButton: {
 		//marginTop: 10,
-		justifyContent: 'space-evenly',
+		justifyContent: 'center',
 		alignSelf: 'stretch',
 		//bottom: 50,
 		position: 'absolute',

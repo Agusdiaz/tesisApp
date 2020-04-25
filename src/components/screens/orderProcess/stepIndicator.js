@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { View, Text, StyleSheet, ListView } from 'react-native';
 import StepIndicator from 'react-native-step-indicator';
 import { appStyles, colors } from '../../../index.styles';
+import { color } from 'react-native-reanimated';
 
 const labels = ["Elegir local", "Realizar pedido", "Resumen del pedido", "Pagar"];
 const customStyles = {
@@ -15,7 +16,7 @@ const customStyles = {
     stepStrokeUnFinishedColor: colors.APP_INACTIVE,
     separatorFinishedColor: colors.APP_MAIN,
     separatorUnFinishedColor: colors.APP_INACTIVE,
-    stepIndicatorFinishedColor: '#56CB0E',
+    stepIndicatorFinishedColor: colors.APP_GREEN,
     stepIndicatorUnFinishedColor: '#FFFFFF',
     stepIndicatorCurrentColor: '#FFFFFF',
     //stepIndicatorLabelFontSize: 15,

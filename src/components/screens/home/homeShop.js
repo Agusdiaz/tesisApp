@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { StyleSheet, View, Text, VirtualizedList, RefreshControl, ActivityIndicator } from 'react-native';
 import { appStyles, colors, sizes } from '../../../index.styles';
 import OrderCard from '../../commons/orderCard'
+import { Surface } from 'react-native-paper';
 
 const getItem = (data, index) => {
     return {
@@ -71,6 +72,10 @@ class HomeShopScreen extends Component {
         return (
             <View style={appStyles.container}>
 
+                <Surface style={styles.surface}>
+                    <Text style={{ fontSize: 20, color: colors.APP_BACKGR, fontWeight: 'bold' }}>PEDIDOS PENDIENTES</Text>
+                </Surface>
+
                 <VirtualizedList
                     style={styles.list}
                     ItemSeparatorComponent={this.renderSeparator}
@@ -82,6 +87,7 @@ class HomeShopScreen extends Component {
                     getItemCount={getItemCount}
                     getItem={getItem} />
 
+
             </View>
         );
     }
@@ -89,10 +95,23 @@ class HomeShopScreen extends Component {
 
 const styles = StyleSheet.create({
     list: {
-        marginTop: 40,
+        // marginTop: sizes.hp('0%'),
         marginBottom: 10,
         width: '100%',
-    }
+    },
+    topText: {
+        justifyContent: 'flex-start',
+        position: 'absolute',
+        fontSize: 30,
+        top: sizes.hp('6%'),
+    },
+    surface: {
+        marginTop: sizes.hp('5%'),
+        width: sizes.wp('100%'),
+        padding: 20,
+        alignItems: 'center',
+        backgroundColor: colors.APP_MAIN,
+    },
 })
 
 export default HomeShopScreen;

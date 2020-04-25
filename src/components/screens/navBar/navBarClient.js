@@ -17,7 +17,7 @@ export default class NavigationBarScreen extends React.Component {
   state = {
     index: 0,
     routes: [
-      { key: 'home', title: 'Home', icon: 'food', color: colors.APP_BACKGR },
+      { key: 'home', title: 'Principal', icon: 'food', color: colors.APP_BACKGR },
       { key: 'shops', title: 'Locales', icon: 'store', color: colors.APP_BACKGR },
       { key: 'notifications', title: 'Notificaciones', icon: 'bell-ring-outline', badge: 2, color: colors.APP_BACKGR },
       { key: 'profile', title: 'Perfil', icon: 'face', color: colors.APP_BACKGR },

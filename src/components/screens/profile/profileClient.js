@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
 import { StyleSheet, Text, View, } from 'react-native';
-import { appStyles, colors } from '../../../index.styles';
+import { appStyles, colors, sizes } from '../../../index.styles';
 import { Avatar, Button } from 'react-native-paper';
-//import LastOrdersClient from '../orderView/lastordersClient'
+import { Actions } from 'react-native-router-flux';
 
 export default class ProfileClientScreen extends Component {
     render() {
         return (
-            <View >
+            <View style={appStyles.container}>
                 <View style={styles.header}>
                     <View style={styles.headerContent}>
                         <Avatar.Text style={styles.avatar} size={100} label="JD" labelStyle={{ color: colors.APP_MAIN }} />
@@ -24,7 +24,7 @@ export default class ProfileClientScreen extends Component {
                                 icon="room-service-outline"
                                 mode="contained"
                                 color={colors.APP_MAIN}
-                                onPress={() => {}}>
+                                onPress={() => Actions.lastorders()}>
                                 Últimos pedidos
  				            </Button>
                              <Button
@@ -37,11 +37,11 @@ export default class ProfileClientScreen extends Component {
  				            </Button>
                             <Button
                                 style={{ margin: 20, width: '50%' }}
-                                icon="settings-outline"
+                                icon="pencil-outline"
                                 mode="contained"
                                 color={colors.APP_MAIN}
                                 onPress={() => { }}>
-                                Ajustes
+                                Editar Perfil
  				            </Button>
                         </View>
                     </View>
@@ -55,7 +55,8 @@ export default class ProfileClientScreen extends Component {
 const styles = StyleSheet.create({
     header: {
         backgroundColor: colors.APP_MAIN,
-        marginTop: 70,
+        marginTop: sizes.hp('10%'),
+        alignSelf: 'stretch'
     },
     headerContent: {
         padding: 50,

@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { StyleSheet, View, Text, TouchableOpacity, ImageBackground, VirtualizedList } from 'react-native';
+import { Surface } from 'react-native-paper';
 import { appStyles, colors, sizes } from '../../../index.styles';
 import ShopCard from '../../commons/shopCard'
 
@@ -26,23 +27,26 @@ class HomeClientScreen extends Component {
 
     renderSeparator = () => {
         return (
-          <View
-            style={{
-              height: 20,
-            }}
-          />
+            <View
+                style={{
+                    height: 20,
+                }}
+            />
         );
-      }
+    }
 
     render() {
         return (
             <View style={appStyles.container}>
                 <TouchableOpacity style={styles.touchable}>
-                    <ImageBackground source={require('../../../icons/tabla.jpg')} style={styles.imageContainer} resizeMode={'stretch'}>
-                        <Text style={styles.text}>Hacer pedido</Text>
+                    <ImageBackground source={require('../../../icons/tabla.jpg')} style={styles.imageContainer} imageStyle={styles.imageInside} resizeMode={'stretch'}>
+                        <Text style={styles.text}>HACER PEDIDO</Text>
                     </ImageBackground>
                 </TouchableOpacity>
 
+                <Surface style={styles.surface}>
+                    <Text style={{ fontSize: 20, color: colors.APP_BACKGR, fontWeight: 'bold' }}>LOCALES ADHERIDOS</Text>
+                </Surface>
 
                 <VirtualizedList
                     style={styles.list}
@@ -59,10 +63,6 @@ class HomeClientScreen extends Component {
 }
 
 const styles = StyleSheet.create({
-    view: {
-        position: 'absolute',
-        backgroundColor: 'transparent'
-    },
     imageContainer: {
         /*
         marginTop: 10,
@@ -77,8 +77,10 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
     },
-    image: {
-        resizeMode: 'stretch',
+    imageInside: {
+        borderRadius: 40,
+        borderWidth: 1,
+        borderColor: '#FFF'
     },
     touchable: {
         marginTop: sizes.hp('6%'),
@@ -86,12 +88,19 @@ const styles = StyleSheet.create({
     text: {
         fontSize: 28,
         fontWeight: 'bold',
-        color: "#000",
-        marginTop: sizes.hp('12%')
+        color: '#FFF',
+        marginTop: sizes.hp('13%')
+    },
+    surface: {
+        marginTop: sizes.hp('1.5%'),
+        width: sizes.wp('100%'),
+        padding: 20,
+        alignItems: 'center',
+        backgroundColor: colors.APP_MAIN,
     },
     list: {
-        marginTop: 40,
-        marginBottom: 10,
+        marginTop: sizes.hp('0.5%'),
+        marginBottom: sizes.hp('0.5%'),
         width: '100%'
     }
 })
