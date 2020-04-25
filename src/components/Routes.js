@@ -9,6 +9,7 @@ import MakeOrder from './screens/orderProcess/stepIndicator'
 import HomeClient from './screens/home/homeClient'
 import ShopInformation from './commons/shopInformation'
 import LastOrders from './screens/orderView/lastordersClient'
+import SearchShop from './screens/shopView/searchShop'
 
 export default class Routes extends Component {
     render() {
@@ -23,6 +24,7 @@ export default class Routes extends Component {
                     <Scene key="navbarshop" component={NavBarShop} title="NavBarShop" />
                     <Scene key="shopinformation" component={ShopInformation} title="ShopInformation" />
                     <Scene key="lastorders" component={LastOrders} title="LastOrders" />
+                    <Scene key="searchshop" component={SearchShop} title="SearchShop" />
                 </Scene>
             </Router>
         )

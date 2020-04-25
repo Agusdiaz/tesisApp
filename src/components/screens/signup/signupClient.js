@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { StyleSheet, View, Text, KeyboardAvoidingView, Platform } from 'react-native';
 import { TextInput, Button, Portal, Dialog } from 'react-native-paper';
 import { appStyles, colors, sizes } from '../../../index.styles';
-import ArrowButton from '../../commons/ArrowButton'
+import ArrowButton from '../../commons/arrowButton'
 
 //this.signup(this.state.firstName, this.state.lastName, this.state.email, this.state.password)
 
@@ -105,8 +105,8 @@ class SignUpClientScreen extends Component {
 					onDismiss={this._hideDialog}>
 					<Dialog.Title style={{ alignSelf: 'center' }}>¿Desea crear cuenta?</Dialog.Title>
 					<Dialog.Actions>
-						<Button style={{ marginRight: sizes.wp('3%') }} color={colors.APP_MAIN} onPress={this._hideDialog}>Cancelar</Button>
-						<Button color={colors.APP_MAIN} onPress={() => console.log("Ok")}>Ok</Button>
+						<Button style={{ marginRight: sizes.wp('3%') }} color={colors.APP_RED} onPress={this._hideDialog}>Cancelar</Button>
+						<Button color={colors.APP_GREEN} onPress={() => console.log("Ok")}>Ok</Button>
 					</Dialog.Actions>
 				</Dialog>
 

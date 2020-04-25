@@ -4,7 +4,7 @@ import { login } from '../../../redux/actions';
 import { StyleSheet, Text, KeyboardAvoidingView, Platform, TouchableOpacity, Image, View } from 'react-native';
 import { TextInput, Button, IconButton } from 'react-native-paper';
 import { appStyles, colors, sizes } from '../../../index.styles';
-import ArrowButton from '../../commons/ArrowButton'
+import ArrowButton from '../../commons/arrowButton'
 import { Actions } from 'react-native-router-flux';
 
 

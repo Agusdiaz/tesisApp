@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { StyleSheet } from 'react-native';
 import { IconButton } from 'react-native-paper';
-import { appStyles, colors } from '../../../src/index.styles'
+import { appStyles, colors } from '../../index.styles'
 import { Actions } from 'react-native-router-flux';
 
 class ArrowButton extends Component {

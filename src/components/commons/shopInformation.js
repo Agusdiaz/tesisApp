@@ -3,7 +3,7 @@ import { StyleSheet, Text, View, FlatList } from 'react-native';
 import { Button, Card, IconButton, Surface, FAB, Divider } from 'react-native-paper';
 import { appStyles, colors, sizes } from '../../index.styles';
 import Tabs from 'react-native-tabs';
-import ArrowButton from './ArrowButton';
+import ArrowButton from './arrowButton';
 
 const Adress = props => <Text style={styles.rightText}>Lima 123</Text>
 
