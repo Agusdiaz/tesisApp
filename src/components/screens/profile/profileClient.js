@@ -32,7 +32,7 @@ export default class ProfileClientScreen extends Component {
                                 icon="star-outline"
                                 mode="contained"
                                 color={colors.APP_MAIN}
-                                onPress={() => { }}>
+                                onPress={() => Actions.favouritesshops()}>
                                 Favoritos
  				            </Button>
                             <Button

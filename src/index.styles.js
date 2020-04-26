@@ -8,6 +8,8 @@ const colors = {
     APP_INACTIVE : '#827C7C',
     APP_GREEN : '#56CB0E',
     APP_RED: '#F50808',
+    APP_PENDING: '#E3BD12',
+    APP_DELIVERED : '#1253E3',
     TEXT_INPUT : '#000000',
     STAR : '#F5CD08',
 };

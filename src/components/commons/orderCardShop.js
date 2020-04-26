@@ -9,7 +9,7 @@ const total = props => <Text style={styles.rightText}> $10 </Text>
 const time = props => <Text style={styles.rightText}> 20 min </Text>
 
 
-class OrderCard extends Component {
+class OrderCardShop extends Component {
     constructor() {
         super();
         this.state = {
@@ -98,4 +98,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default OrderCard;
+export default OrderCardShop;

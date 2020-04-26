@@ -21,7 +21,7 @@ const getItemCount = (data) => {
     return 10;
 }
 
-export default class SearchShopScreen extends Component {
+export default class SearchShopByAddressScreen extends Component {
     state = {
         searchQuery: '',
     };
@@ -46,7 +46,7 @@ export default class SearchShopScreen extends Component {
 
                 <Searchbar
                     style = {styles.searchInput}
-                    placeholder="Buscar local por"
+                    placeholder="Buscar local por dirección"
                     theme={{colors: {primary: colors.APP_MAIN}}}
                     iconColor={colors.APP_MAIN}
                     onChangeText={this._onChangeSearch}

@@ -93,7 +93,7 @@ class ShopInformationScreen extends Component {
                 <Card style={styles.shopCard}>
                     <Card.Title titleStyle={{ right: 10 }} title="Nombre Local" left={OpenClose} leftStyle={{ width: 90, right: 8 }} right={Star} />
                     <Divider />
-                    <Card.Cover source={{ uri: 'https://picsum.photos/700' }} />
+                    <Card.Cover source={{ uri: 'https://picsum.photos/500' }} />
                     <Divider />
                     <Card.Title titleStyle={styles.leftText} title="Dirección:" right={Adress} rightStyle={styles.rightText} />
                     <Divider />
@@ -113,6 +113,7 @@ class ShopInformationScreen extends Component {
                 <Button style={styles.buttonOrder}
                     icon="basket"
                     mode="contained"
+                    disabled={!this.state.isOpen}
                     color={colors.APP_MAIN}
                     onPress={() => { }}>
                     Hacer Pedido

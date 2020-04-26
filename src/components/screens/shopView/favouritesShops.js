@@ -4,6 +4,7 @@ import { Surface } from 'react-native-paper';
 import { appStyles, colors, sizes } from '../../../index.styles';
 import ShopCard from '../../commons/shopCard'
 import { Actions } from 'react-native-router-flux';
+import ArrowButton from '../../commons/arrowButton'
 
 const DATA = [];
 
@@ -18,13 +19,7 @@ const getItemCount = (data) => {
     return 10;
 }
 
-class HomeClientScreen extends Component {
-
-    constructor(props) {
-        super(props);
-        this.state = {
-        }
-    }
+class FavouritesShopsScreen extends Component {
 
     renderSeparator = () => {
         return (
@@ -39,14 +34,11 @@ class HomeClientScreen extends Component {
     render() {
         return (
             <View style={appStyles.container}>
-                <TouchableOpacity style={styles.touchable}>
-                    <ImageBackground source={require('../../../icons/tabla.jpg')} style={styles.imageContainer} imageStyle={styles.imageInside} resizeMode={'stretch'}>
-                        <Text style={styles.text}>HAZ TU PEDIDO</Text>
-                    </ImageBackground>
-                </TouchableOpacity>
+
+                <ArrowButton rute='navbarclient' />
 
                 <Surface style={styles.surface}>
-                    <Text style={{ fontSize: 20, color: colors.APP_BACKGR, fontWeight: 'bold', textAlign: 'center' }}>ESTOS SON NUESTROS LOCALES ADHERIDOS</Text>
+                    <Text style={{ fontSize: 20, color: colors.APP_BACKGR, fontWeight: 'bold', textAlign: 'center' }}>ESTOS SON TUS LOCALES FAVORITOS</Text>
                 </Surface>
 
                 <VirtualizedList
@@ -64,36 +56,8 @@ class HomeClientScreen extends Component {
 }
 
 const styles = StyleSheet.create({
-    imageContainer: {
-        /*
-        marginTop: 10,
-        resizeMode: 'contain',
-        position:'relative',
-        flex: 1,
-        top:-100,
-        left: -100, 
-        flexGrow:1, */
-        height: 170,
-        width: 400,
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    imageInside: {
-        borderRadius: 40,
-        borderWidth: 1,
-        borderColor: '#FFF'
-    },
-    touchable: {
-        marginTop: sizes.hp('6%'),
-    },
-    text: {
-        fontSize: 28,
-        fontWeight: 'bold',
-        color: '#FFF',
-        marginTop: sizes.hp('13%'),
-    },
     surface: {
-        marginTop: sizes.hp('1%'),
+        marginTop: sizes.hp('13%'),
         width: sizes.wp('100%'),
         padding: 15,
         alignItems: 'center',
@@ -106,4 +70,4 @@ const styles = StyleSheet.create({
     }
 })
 
-export default HomeClientScreen;
+export default FavouritesShopsScreen;

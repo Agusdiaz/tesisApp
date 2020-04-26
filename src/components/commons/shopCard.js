@@ -31,7 +31,7 @@ class ShopCard extends Component {
         return (
             <Card style={styles.cardContent}>
                 <Card.Title titleStyle={styles.titleAndSubtitle} title="Nombre Local" subtitleStyle={styles.titleAndSubtitle} subtitle="Direccion Local" left={LeftContent} leftStyle={{ width: 90, right: 8 }} right={RightContent} />
-                <Card.Cover source={{ uri: 'https://picsum.photos/700' }} />
+                <Card.Cover source={{ uri: 'https://picsum.photos/500' }} />
                 <Card.Actions>
                     <Button
                         style={{ left: sizes.wp('28%'), width: '40%', }} //ESTANDARIZAR

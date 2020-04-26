@@ -3,13 +3,14 @@ import { BottomNavigation, Text, } from 'react-native-paper';
 import { appStyles, colors } from '../../../../src/index.styles';
 import HomeClient from '../home/homeClient'
 import ProfileClient from '../profile/profileClient'
-import AllShops from '../shopView/allShops'
+import SearchShops from '../shopView/searchShops'
+import PendingOrdersClient from '../orderView/pendingOrdersClient'
 
 const HomeRoute = () => <HomeClient />;
 
-const ShopRoute = () => <AllShops />;
+const ShopRoute = () => <SearchShops />;
 
-const NotificationRoute = () => <Text>Notificaciones</Text>;
+const NotificationRoute = () => <PendingOrdersClient/>;
 
 const ProfileRoute = () => <ProfileClient />;
 
@@ -18,7 +19,7 @@ export default class NavigationBarScreen extends Component {
       index: 0,
       routes: [
         { key: 'home', title: 'Principal', icon: 'food', color: colors.APP_BACKGR },
-        { key: 'shops', title: 'Locales', icon: 'store', color: colors.APP_BACKGR },
+        { key: 'shops', title: 'Buscar', icon: 'magnify', color: colors.APP_BACKGR },
         { key: 'notifications', title: 'Notificaciones', icon: 'bell-ring-outline', badge: 2, color: colors.APP_BACKGR },
         { key: 'profile', title: 'Perfil', icon: 'face', color: colors.APP_BACKGR },
       ],

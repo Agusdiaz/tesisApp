@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, Text, VirtualizedList, RefreshControl, ActivityIndicator } from 'react-native';
-import { appStyles, colors, sizes } from '../../../index.styles';
-import OrderCardShop from '../../commons/orderCardShop'
+import { StyleSheet, Text, Image, View, VirtualizedList, RefreshControl, ActivityIndicator } from 'react-native';
 import { Surface } from 'react-native-paper';
+import { appStyles, colors, sizes } from '../../../index.styles';
+import OrderCardClient from '../../commons/orderCardClient';
 
 const getItem = (data, index) => {
     return {
@@ -15,7 +15,7 @@ const getItemCount = (data) => {
     return 10;
 }
 
-class HomeShopScreen extends Component {
+class PendingOrdersClientScreen extends Component {
 
     constructor(props) {
         super(props);
@@ -73,7 +73,7 @@ class HomeShopScreen extends Component {
             <View style={appStyles.container}>
 
                 <Surface style={styles.surface}>
-                    <Text style={{ fontSize: 20, color: colors.APP_BACKGR, fontWeight: 'bold' }}>PEDIDOS PENDIENTES</Text>
+                    <Text style={{ fontSize: 20, color: colors.APP_BACKGR, fontWeight: 'bold', textAlign:'center' }}>ESTOS SON TUS PEDIDOS PENDIENTES</Text>
                 </Surface>
 
                 <VirtualizedList
@@ -82,11 +82,10 @@ class HomeShopScreen extends Component {
                     refreshControl={<RefreshControl refreshing={this.state.refreshing} onRefresh={this.onRefresh.bind(this)} />}
                     data={this.state.dataSource}
                     initialNumToRender={0}
-                    renderItem={({ item }) => <OrderCardShop />}
+                    renderItem={({ item }) => <OrderCardClient />}
                     keyExtractor={item => item.key}
                     getItemCount={getItemCount}
                     getItem={getItem} />
-
 
             </View>
         );
@@ -94,18 +93,18 @@ class HomeShopScreen extends Component {
 }
 
 const styles = StyleSheet.create({
-    list: {
-        // marginTop: sizes.hp('0%'),
-        marginBottom: 10,
-        width: '100%',
-    },
     surface: {
-        marginTop: sizes.hp('5%'),
+        top: sizes.hp('6%'),
         width: sizes.wp('100%'),
         padding: 20,
         alignItems: 'center',
         backgroundColor: colors.APP_MAIN,
     },
+    list: {
+        marginTop: sizes.hp('6.5%'),
+        marginBottom: sizes.hp('0.5%'),
+        width: '100%',
+    },
 })
 
-export default HomeShopScreen;
+export default PendingOrdersClientScreen;

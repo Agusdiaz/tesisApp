@@ -6,10 +6,11 @@ import NavBarClient from './screens/navBar/navBarClient'
 import NavBarShop from './screens/navBar/navBarShop'
 import LogSign from './screens/log-sign/log-sign'
 import MakeOrder from './screens/orderProcess/stepIndicator'
-import HomeClient from './screens/home/homeClient'
 import ShopInformation from './commons/shopInformation'
-import LastOrders from './screens/orderView/lastordersClient'
-import SearchShop from './screens/shopView/searchShop'
+import LastOrders from './screens/orderView/lastOrdersClient'
+import SearchShopByName from './screens/shopView/searchShopByName'
+import SearchShopByAddress from './screens/shopView/searchShopByAddress'
+import FavouritesShops from './screens/shopView/favouritesShops'
 
 export default class Routes extends Component {
     render() {
@@ -24,7 +25,9 @@ export default class Routes extends Component {
                     <Scene key="navbarshop" component={NavBarShop} title="NavBarShop" />
                     <Scene key="shopinformation" component={ShopInformation} title="ShopInformation" />
                     <Scene key="lastorders" component={LastOrders} title="LastOrders" />
-                    <Scene key="searchshop" component={SearchShop} title="SearchShop" />
+                    <Scene key="searchshopname" component={SearchShopByName} title="SearchShopByName" />
+                    <Scene key="searchshopaddress" component={SearchShopByAddress} title="SearchShopByAddress" />
+                    <Scene key="favouritesshops" component={FavouritesShops} title="FavouritesShops" />
                 </Scene>
             </Router>
         )
