@@ -16,7 +16,7 @@ const ProfileRoute = () => <ProfileClient />;
 
 export default class NavigationBarScreen extends Component {
   state = {
-      index: 0,
+      index: (this.props.page != null) ? this.props.page : 0 ,
       routes: [
         { key: 'home', title: 'Principal', icon: 'food', color: colors.APP_BACKGR },
         { key: 'shops', title: 'Buscar', icon: 'magnify', color: colors.APP_BACKGR },

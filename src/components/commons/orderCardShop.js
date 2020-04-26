@@ -3,16 +3,14 @@ import { StyleSheet, Text, ImageBackground } from 'react-native';
 import { colors, sizes } from '../../index.styles';
 import { Button, Card, Title, Dialog, IconButton, Divider } from 'react-native-paper';
 
-const orderNumber = props => <Text style={styles.rightText}> 10 </Text>
-const user = props => <Text style={styles.rightText}> juan@mail.com </Text>
-const total = props => <Text style={styles.rightText}> $10 </Text>
-const time = props => <Text style={styles.rightText}> 20 min </Text>
-
-
 class OrderCardShop extends Component {
     constructor() {
         super();
         this.state = {
+            orderNumber: 7856,
+            mail: 'juan@mail.com',
+            total: '$1500',
+            time: '20 min',
             visibleDialog: false,
         };
     }
@@ -22,6 +20,12 @@ class OrderCardShop extends Component {
     _hideDialog = () => this.setState({ visibleDialog: false });
 
     render() {
+        
+        const orderNumber = props => <Text style={styles.rightText}> {this.state.orderNumber} </Text>
+        const user = props => <Text style={styles.rightText}> {this.state.mail} </Text>
+        const total = props => <Text style={styles.rightText}> {this.state.total} </Text>
+        const time = props => <Text style={styles.rightText}> {this.state.time} </Text>
+
         return (
 
             <Card style={styles.cardContent}>

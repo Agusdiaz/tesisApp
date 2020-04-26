@@ -8,7 +8,9 @@ class ShopCard extends Component {
     constructor() {
         super();
         this.state = { //PONER METODO PARA SABER EL ESTADO
-            favState: false, 
+            name: 'Nombre del Local',
+            address: 'Dirección del Local',
+            isFav: false, 
             isOpen: true,
          }; 
     }
@@ -20,17 +22,17 @@ class ShopCard extends Component {
         Cerrado </Button>
 
         const RightContent = props => <IconButton {...props}
-            icon={(this.state.favState) ? "star" : "star-outline"}
+            icon={(this.state.isFav) ? "star" : "star-outline"}
             color={colors.STAR}
             size={30}
             onPress={() => {
                 this.setState(
-                    { favState: !this.state.favState })
+                    { isFav: !this.state.isFav })
             }} />
 
         return (
             <Card style={styles.cardContent}>
-                <Card.Title titleStyle={styles.titleAndSubtitle} title="Nombre Local" subtitleStyle={styles.titleAndSubtitle} subtitle="Direccion Local" left={LeftContent} leftStyle={{ width: 90, right: 8 }} right={RightContent} />
+                <Card.Title titleStyle={styles.titleAndSubtitle} title={this.state.name} subtitleStyle={styles.titleAndSubtitle} subtitle={this.state.address} left={LeftContent} leftStyle={{ width: 90, right: 8 }} right={RightContent} />
                 <Card.Cover source={{ uri: 'https://picsum.photos/500' }} />
                 <Card.Actions>
                     <Button
@@ -54,6 +56,9 @@ const styles = StyleSheet.create({
     },
     titleAndSubtitle: {
         right: 10,
+       // maxWidth: sizes.wp('50%'),
+       // maxHeight: sizes.hp('6%'),
+        //flexWrap: 'nowrap'
     }
 });
 

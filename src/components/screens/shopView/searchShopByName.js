@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, VirtualizedList } from 'react-native';
+import { StyleSheet, View, VirtualizedList, Text, ActivityIndicator, Alert } from 'react-native';
 import { appStyles, colors, sizes } from '../../../index.styles'
 import { Searchbar } from 'react-native-paper';
 import ArrowButton from '../../commons/arrowButton'
@@ -8,7 +8,7 @@ import ShopCard from '../../commons/shopCard'
 const DATA = [];
 
 const getItem = (data, index) => {
-    if (data == null){
+    if (data == null) {
         return null
     }
     return {
@@ -22,9 +22,15 @@ const getItemCount = (data) => {
 }
 
 export default class SearchShopByNameScreen extends Component {
-    state = {
-        searchQuery: '',
-    };
+
+    constructor(props) {
+        super(props);
+        this.state = {
+            isLoading: false,
+            searchQuery: '',
+        };
+        this.arrayholder = [];
+    }
 
     _onChangeSearch = query => this.setState({ searchQuery: query });
 
@@ -39,21 +45,41 @@ export default class SearchShopByNameScreen extends Component {
     }
 
     render() {
+        if (this.state.isLoading) { //ESTA BUSCANDO
+            return (
+                <View style={appStyles.container}>
+                    <ArrowButton rute='navBarClientSearch' />
+
+                    <Searchbar
+                        style={styles.searchInput}
+                        placeholder="Buscar local por nombre"
+                        theme={{ colors: { primary: colors.APP_MAIN } }}
+                        iconColor={colors.APP_MAIN}
+                        onChangeText={this._onChangeSearch}
+                        value={searchQuery}
+                    />
+
+                    <View style={{ marginTop: sizes.hp('-70%') }}>
+                        <ActivityIndicator />
+                    </View>
+                </View>
+            );
+        }
         const { searchQuery } = this.state;
         return (
             <View style={appStyles.container}>
-                <ArrowButton rute='navbarclient'/>
+                <ArrowButton rute='navBarClientSearch' />
 
                 <Searchbar
-                    style = {styles.searchInput}
+                    style={styles.searchInput}
                     placeholder="Buscar local por nombre"
-                    theme={{colors: {primary: colors.APP_MAIN}}}
+                    theme={{ colors: { primary: colors.APP_MAIN } }}
                     iconColor={colors.APP_MAIN}
                     onChangeText={this._onChangeSearch}
                     value={searchQuery}
                 />
 
-<VirtualizedList
+                <VirtualizedList
                     style={styles.list}
                     ItemSeparatorComponent={this.renderSeparator}
                     data={DATA}
@@ -62,7 +88,7 @@ export default class SearchShopByNameScreen extends Component {
                     keyExtractor={item => item.key}
                     getItemCount={getItemCount}
                     getItem={getItem}
-                    />
+                />
             </View>
         );
     }
@@ -70,15 +96,15 @@ export default class SearchShopByNameScreen extends Component {
 
 const styles = StyleSheet.create({
     searchInput: {
-		position: 'absolute',
+        position: 'absolute',
         top: sizes.hp('5.5%'),
         width: sizes.wp('78%'),
         left: sizes.wp('20%'),
         fontSize: sizes.TEXT_INPUT,
     },
-    list:{
+    list: {
         top: sizes.hp('12%'),
-        marginBottom: sizes.hp('15%'),
+        marginBottom: sizes.hp('14%'),
         width: '100%'
     },
 })

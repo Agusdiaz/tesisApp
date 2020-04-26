@@ -35,7 +35,7 @@ class FavouritesShopsScreen extends Component {
         return (
             <View style={appStyles.container}>
 
-                <ArrowButton rute='navbarclient' />
+                <ArrowButton rute='navBarClientProfile' />
 
                 <Surface style={styles.surface}>
                     <Text style={{ fontSize: 20, color: colors.APP_BACKGR, fontWeight: 'bold', textAlign: 'center' }}>ESTOS SON TUS LOCALES FAVORITOS</Text>

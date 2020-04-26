@@ -8,7 +8,7 @@ import ShopCard from '../../commons/shopCard'
 const DATA = [];
 
 const getItem = (data, index) => {
-    if (data == null){
+    if (data == null) {
         return null
     }
     return {
@@ -42,18 +42,18 @@ export default class SearchShopByAddressScreen extends Component {
         const { searchQuery } = this.state;
         return (
             <View style={appStyles.container}>
-                <ArrowButton rute='navbarclient'/>
+                <ArrowButton rute='navBarClientSearch' />
 
                 <Searchbar
-                    style = {styles.searchInput}
+                    style={styles.searchInput}
                     placeholder="Buscar local por dirección"
-                    theme={{colors: {primary: colors.APP_MAIN}}}
+                    theme={{ colors: { primary: colors.APP_MAIN } }}
                     iconColor={colors.APP_MAIN}
                     onChangeText={this._onChangeSearch}
                     value={searchQuery}
                 />
 
-<VirtualizedList
+                <VirtualizedList
                     style={styles.list}
                     ItemSeparatorComponent={this.renderSeparator}
                     data={DATA}
@@ -62,7 +62,7 @@ export default class SearchShopByAddressScreen extends Component {
                     keyExtractor={item => item.key}
                     getItemCount={getItemCount}
                     getItem={getItem}
-                    />
+                />
             </View>
         );
     }
@@ -70,15 +70,15 @@ export default class SearchShopByAddressScreen extends Component {
 
 const styles = StyleSheet.create({
     searchInput: {
-		position: 'absolute',
+        position: 'absolute',
         top: sizes.hp('5.5%'),
         width: sizes.wp('78%'),
         left: sizes.wp('20%'),
         fontSize: sizes.TEXT_INPUT,
     },
-    list:{
+    list: {
         top: sizes.hp('12%'),
-        marginBottom: sizes.hp('15%'),
+        marginBottom: sizes.hp('14%'),
         width: '100%'
     },
 })

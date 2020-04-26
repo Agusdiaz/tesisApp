@@ -13,8 +13,11 @@ class OrderCardShop extends Component {
     constructor() {
         super();
         this.state = { //PONER METODO PARA SABER EL ESTADO
-            visibleDialog: false,
-            isReady: false,
+            orderNumber: 7856,
+            isReady: true,
+            total: '$1500',
+            time: '20 min',
+            visibleDialog: false,  
         };
     }
 
@@ -24,15 +27,15 @@ class OrderCardShop extends Component {
 
     render() {
 
-        const orderNumber = props => <Text style={styles.rightText}> 10 </Text>
+        const orderNumber = props => <Text style={styles.rightText}> {this.state.orderNumber} </Text>
 
         const stateOrder = props => (this.state.isReady) ? <Button style={{ borderRadius: 20, width: sizes.wp('30%'), marginRight: sizes.wp('2%') }} mode="contained" color={colors.APP_GREEN} labelStyle={{ fontSize: 11, color: '#FFF' }} contentStyle={{ width: sizes.wp('50%'), alignSelf: 'center' }} >
             Listo </Button> : <Button style={{ borderRadius: 20, width: sizes.wp('30%'), marginRight: sizes.wp('2%') }} mode="contained" color={colors.APP_PENDING} labelStyle={{ fontSize: 11, color: '#FFF' }} contentStyle={{ width: sizes.wp('50%'), alignSelf: 'center' }} >
                 En proceso </Button>
 
-        const total = props => <Text style={styles.rightText}> $10 </Text>
+        const total = props => <Text style={styles.rightText}> {this.state.total} </Text>
 
-        const time = props => <Text style={styles.rightText}> 20 min </Text>
+        const time = props => <Text style={styles.rightText}> {this.state.time} </Text>
 
         return (
 
@@ -63,7 +66,7 @@ class OrderCardShop extends Component {
                             disabled={!this.state.isReady}
                             color={colors.APP_MAIN}
                             onPress={this._showDialog}>
-                            Retirar
+                            Retirado
                 </Button>
                     </Card.Actions>
                 </ImageBackground>
@@ -71,10 +74,10 @@ class OrderCardShop extends Component {
                 <Dialog
                     visible={this.state.visibleDialog}
                     onDismiss={this._hideDialog}>
-                    <Dialog.Title style={{ alignSelf: 'center' }}>¿Desea retirar el pedido?</Dialog.Title>
+                    <Dialog.Title style={{ alignSelf: 'center' }}>¿Ya tenés tu pedido?</Dialog.Title>
                     <Dialog.Actions>
-                        <Button style={{ marginRight: sizes.wp('3%') }} color={colors.APP_RED} onPress={this._hideDialog}>Cancelar</Button>
-                        <Button color={colors.APP_GREEN} onPress={() => console.log("Ok")}>Ok</Button>
+                        <Button style={{ marginRight: sizes.wp('3%') }} color={colors.APP_RED} onPress={this._hideDialog}>No</Button>
+                        <Button color={colors.APP_GREEN} onPress={() => console.log("Ok")}>Sí</Button>
                     </Dialog.Actions>
                 </Dialog>
 

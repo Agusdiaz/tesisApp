@@ -6,6 +6,8 @@ import HomeShop from '../../screens/home/homeShop'
 
 const HomeRoute = () => <HomeShop/>;
 
+const StatisticsRoute = () => <Text>Estadísticas</Text>;
+
 const MenuRoute = () => <Text>Perfil</Text>;
 
 export default class NavigationBarScreen extends React.Component {
@@ -13,6 +15,7 @@ export default class NavigationBarScreen extends React.Component {
     index: 0,
     routes: [
       { key: 'orders', title: 'Pedidos', icon: 'receipt', color: colors.APP_BACKGR },
+      { key: 'statistics', title: 'Estadísticas', icon: 'chart-bar', color: colors.APP_BACKGR },
       { key: 'profile', title: 'Perfil', icon: 'chef-hat', color: colors.APP_BACKGR }, //icon:'book'
     ],
   };
@@ -21,6 +24,7 @@ export default class NavigationBarScreen extends React.Component {
 
   _renderScene = BottomNavigation.SceneMap({
     orders: HomeRoute, 
+    statistics: StatisticsRoute,
     profile: MenuRoute,
   });
 

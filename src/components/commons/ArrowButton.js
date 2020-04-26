@@ -9,8 +9,14 @@ class ArrowButton extends Component {
 	goBack() {
 		if (this.props.rute == 'logsign')
 			return Actions.logsign()
-		if (this.props.rute == 'navbarclient')
-			return Actions.navbarclient()
+		if (this.props.rute == 'navBarClientHome')
+			return Actions.navbarclient({ page: 0 })
+		if (this.props.rute == 'navBarClientSearch')
+			return Actions.navbarclient({ page: 1 })
+		if (this.props.rute == 'navBarClientNotifications')
+			return Actions.navbarclient({ page: 2 })
+		if (this.props.rute == 'navBarClientProfile')
+			return Actions.navbarclient({ page: 3 })
 		return null
 	}
 
