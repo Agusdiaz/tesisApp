@@ -29,7 +29,7 @@ class OrderCardShop extends Component {
         return (
 
             <Card style={styles.cardContent}>
-                <ImageBackground source={require('../../icons/ticket.jpg')} style={styles.imageOutside} imageStyle={styles.imageInside} >
+                <ImageBackground source={require('../../icons/order.jpg')} style={styles.imageOutside} imageStyle={styles.imageInside} >
                     <Card.Title style={styles.cardTitle} titleStyle={styles.leftText} title="Número del pedido:" right={orderNumber} />
                     <Divider style={styles.divider} />
                     <Card.Title style={styles.cardTitle} titleStyle={styles.leftText} title="Mail del cliente:" right={user} />
@@ -97,7 +97,7 @@ const styles = StyleSheet.create({
         resizeMode: 'contain',
     },
     imageInside: {
-        opacity: 0.3,
+        opacity: 0.27,
         borderRadius: 15
     },
 });

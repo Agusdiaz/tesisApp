@@ -1,20 +1,22 @@
 import * as React from 'react';
 import { BottomNavigation, Text, } from 'react-native-paper';
-import { appStyles, colors } from '../../../../src/index.styles';
-import HomeShop from '../../screens/home/homeShop'
+import { appStyles, colors } from '../../../index.styles'
+import HomeShop from '../home/homeShop'
+import ProfileShop from '../profile/porfileShop'
+import StatsShop from '../statistics/statsShop'
 
 
 const HomeRoute = () => <HomeShop/>;
 
-const StatisticsRoute = () => <Text>Estadísticas</Text>;
+const StatisticsRoute = () => <StatsShop/>;
 
-const MenuRoute = () => <Text>Perfil</Text>;
+const MenuRoute = () => <ProfileShop/>;
 
 export default class NavigationBarScreen extends React.Component {
   state = {
     index: 0,
     routes: [
-      { key: 'orders', title: 'Pedidos', icon: 'receipt', color: colors.APP_BACKGR },
+      { key: 'orders', title: 'Pedidos', icon: 'receipt', badge: 2, color: colors.APP_BACKGR },
       { key: 'statistics', title: 'Estadísticas', icon: 'chart-bar', color: colors.APP_BACKGR },
       { key: 'profile', title: 'Perfil', icon: 'chef-hat', color: colors.APP_BACKGR }, //icon:'book'
     ],

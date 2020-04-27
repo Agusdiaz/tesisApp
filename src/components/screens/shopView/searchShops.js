@@ -21,6 +21,12 @@ export default class SearchShopsScreen extends Component {
                     </ImageBackground>
                 </TouchableOpacity>
 
+                <TouchableOpacity style={styles.touchable} onPress={() => Actions.searchshopaddress()}>
+                    <ImageBackground source={require('../../../icons/sale.jpg')} style={styles.imageContainerSale} imageStyle={styles.imageInside} resizeMode={'stretch'}>
+                        <Text style={styles.text}>BUSCAR PROMOCIONES</Text>
+                    </ImageBackground>
+                </TouchableOpacity>
+
             </View>
         );
     }
@@ -28,17 +34,18 @@ export default class SearchShopsScreen extends Component {
 
 const styles = StyleSheet.create({
     imageContainerName: {
-        height: sizes.hp('39%'),
+        height: sizes.hp('26%'),
         width: sizes.wp('98%'),
-        //position: 'absolute',
-        //left: sizes.wp('-50%'),
-        top: sizes.hp('2%'),
+        top: sizes.hp('3%'),
     },
     imageContainerAddress: {
-        height: sizes.hp('39%'),
+        height: sizes.hp('26%'),
         width: sizes.wp('98%'),
-        //position: 'absolute',
-        //right: sizes.wp('-50%'),
+        bottom: sizes.hp('-3%'),
+    },
+    imageContainerSale: {
+        height: sizes.hp('26%'),
+        width: sizes.wp('98%'),
         bottom: sizes.hp('-3%'),
     },
     imageInside: {
@@ -54,9 +61,9 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         color: '#FFF',
         alignSelf: 'center',
-        marginTop: sizes.hp('12%'),
+        marginTop: sizes.hp('6.5%'),
         textAlign: 'center',
         borderWidth: 2,
-        borderColor: '#FFF'
+        borderColor: '#FFF',
     },
 });
