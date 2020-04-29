@@ -21,7 +21,7 @@ const getItemCount = (data) => {
     return 10;
 }
 
-export default class SearchShopByNameScreen extends Component {
+export default class SearchShopBySaleScreen extends Component {
 
     constructor(props) {
         super(props);

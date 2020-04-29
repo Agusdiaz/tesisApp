@@ -1,58 +1,18 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, KeyboardAvoidingView, FlatList, ImageBackground, Linking } from 'react-native';
+import { StyleSheet, Text, View, KeyboardAvoidingView, ImageBackground, } from 'react-native';
 import { appStyles, colors, sizes } from '../../../index.styles';
-import { Avatar, Button, Dialog, TextInput, Modal, Card, Divider } from 'react-native-paper';
+import { Button, Dialog, } from 'react-native-paper';
 import { Tabs, Tab, } from 'material-bread';
+import ShopCard from '../../commons/shopCard'
 import { Actions } from 'react-native-router-flux';
 
-const uriImageBckg = '../../../icons/lights.jpg'
-
-function Item({ title }) {
-    return (
-        <View>
-            <Text style={styles.textList}>{title}</Text>
-        </View>
-    );
-}
+const uriImageBckg = '../../../icons/forks.jpg'
 
 export default class ProfileShopScreen extends Component {
 
     constructor(props) {
         super(props);
         this.state = { //IMAGENES?
-            name: 'Nombre del Local',
-            address: 'Lima 123',
-            phoneNumber: '45897620',
-            mail: 'local@mail.com',
-            password: '123',
-            schedule: [{
-                id: '1',
-                title: 'Domingo: 11am-11pm',
-            },
-            {
-                id: '2',
-                title: 'Lunes: CERRADO',
-            },
-            {
-                id: '3',
-                title: 'Martes: 10am-11pm',
-            },
-            {
-                id: '4',
-                title: 'Miércoles: 10am-11pm',
-            },
-            {
-                id: '5',
-                title: 'Jueves: 10am-11pm',
-            },
-            {
-                id: '6',
-                title: 'Viernes: 10am-1am',
-            },
-            {
-                id: '7',
-                title: 'Sábado: 11am-3am',
-            },],
             selectedTab: 0,
             visibleDialogSessionOut: false,
         }
@@ -64,19 +24,7 @@ export default class ProfileShopScreen extends Component {
 
     render() {
 
-        const Adress = props => <Text style={styles.rightText}>{this.state.address}</Text>
-
-        const PhoneNumber = props => <Text style={styles.rightText}>{this.state.phoneNumber}</Text>
-
-        const Schedule = props => <FlatList
-            data={this.state.schedule}
-            renderItem={({ item }) => <Item title={item.title} />}
-            keyExtractor={item => item.id}
-            style={styles.flatListContent}
-        />
-
-        const Mail = propr => <Text style={styles.rightText}>{this.state.mail}</Text>
-
+        
         return (
             <View style={appStyles.container}>
 
@@ -87,28 +35,16 @@ export default class ProfileShopScreen extends Component {
                     backgroundColor={colors.APP_MAIN}
                     scrollEnabled
                     actionItems={[
-                        <Tab key={1} icon='info' label='Tu Información' />, //pie-chart-outlined
+                        <Tab key={1} icon='info' label='Tu Información' />,
                         <Tab key={2} icon='restaurant-menu' label='Tu Menú' />,
-                        <Tab key={3} icon='new-releases' label='Tus Promociones' />, //attach-money monetization-on new-releases
+                        <Tab key={3} icon='new-releases' label='Tus Promociones' />, //attach-money
                         <Tab key={4} icon='settings' label='Ajustes' />,
                     ]}
                 />
 
                 {(this.state.selectedTab === 0) ?
                     <ImageBackground source={require(uriImageBckg)} style={styles.imageOutside} imageStyle={styles.imageInside} >
-                        <Card style={styles.shopCard}>
-                            <Card.Title style={{ margin: 20 }} titleStyle={{ alignSelf: 'center', fontSize: 22 }} title={this.state.name} />
-                            <Divider />
-                            <Card.Cover source={{ uri: 'https://picsum.photos/500' }} />
-                            <Divider />
-                            <Card.Title titleStyle={styles.leftText} title="Dirección:" right={Adress} rightStyle={styles.rightText} />
-                            <Divider />
-                            <Card.Title titleStyle={styles.leftText} title="Teléfono:" right={PhoneNumber} rightStyle={styles.rightText} />
-                            <Divider />
-                            <Card.Title titleStyle={styles.leftText} title="Horarios:" right={Schedule} rightStyle={styles.rightText} />
-                            <Divider />
-                            <Card.Title titleStyle={styles.leftText} title="Mail:" right={Mail} rightStyle={styles.rightText} />
-                        </Card>
+                        <ShopCard/>
                     </ImageBackground>
 
                     : (this.state.selectedTab === 1) ?
@@ -166,31 +102,6 @@ const styles = StyleSheet.create({
         right: 0,
         top: sizes.hp('5%'),
 
-    },
-    shopCard: {
-        width: sizes.wp('91%'),
-        height: sizes.hp('70%'),
-        marginTop: sizes.hp('2%'),
-        elevation: 10,
-        borderRadius: 15,
-        marginBottom: sizes.hp('3%'),
-    },
-    rightText: {
-        fontSize: 16,
-        right: sizes.wp('3%'),
-    },
-    leftText: {
-        fontSize: 18,
-    },
-    flatListContent: {
-        height: sizes.hp('9%'),
-        top: sizes.hp('2.5%'),
-        marginBottom: sizes.hp('5%')
-    },
-    textList: {
-        fontSize: 16,
-        margin: 5,
-        alignSelf: 'flex-end'
     },
     imageOutside: {
         alignItems: 'center',

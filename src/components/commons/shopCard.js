@@ -1,65 +1,116 @@
 import React, { Component } from 'react';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, FlatList, Text, View } from 'react-native';
 import { colors, sizes } from '../../index.styles';
-import { Avatar, Button, Card, Title, Paragraph, IconButton, Chip } from 'react-native-paper';
-import { Actions } from 'react-native-router-flux';
+import { Button, Card, IconButton, Divider, FAB,  } from 'react-native-paper';
+
+function Item({ title }) {
+    return (
+        <View>
+            <Text style={styles.textList}>{title}</Text>
+        </View>
+    );
+}
 
 class ShopCard extends Component {
-    constructor() {
-        super();
-        this.state = { //PONER METODO PARA SABER EL ESTADO
+    constructor(props) {
+        super(props);
+        this.state = { //IMAGENES?
             name: 'Nombre del Local',
-            address: 'Dirección del Local',
-            isFav: false, 
-            isOpen: true,
-         }; 
+            address: 'Lima 123',
+            phoneNumber: '45897620',
+            mail: 'local@mail.com',
+            password: '123',
+            schedule: [{
+                id: '1',
+                title: 'Domingo: 11am-11pm',
+            },
+            {
+                id: '2',
+                title: 'Lunes: CERRADO',
+            },
+            {
+                id: '3',
+                title: 'Martes: 10am-11pm',
+            },
+            {
+                id: '4',
+                title: 'Miércoles: 10am-11pm',
+            },
+            {
+                id: '5',
+                title: 'Jueves: 10am-11pm',
+            },
+            {
+                id: '6',
+                title: 'Viernes: 10am-1am',
+            },
+            {
+                id: '7',
+                title: 'Sábado: 11am-3am',
+            },],
+        }
     }
 
     render() {
 
-        const LeftContent = props => (this.state.isOpen) ? <Button style={{ borderRadius: 20 }} mode="contained" color={colors.APP_GREEN} labelStyle={{ fontSize: 9, color: colors.APP_BACKGR }} contentStyle={{ width: 90 }} >
-        Abierto </Button> : <Button style={{ borderRadius: 20 }} mode="contained" color={colors.APP_RED} labelStyle={{ fontSize: 9, color: colors.APP_BACKGR }} contentStyle={{ width: 90 }} >
-        Cerrado </Button>
+        const Adress = props => <Text style={styles.rightText}>{this.state.address}</Text>
 
-        const RightContent = props => <IconButton {...props}
-            icon={(this.state.isFav) ? "star" : "star-outline"}
-            color={colors.STAR}
-            size={30}
-            onPress={() => {
-                this.setState(
-                    { isFav: !this.state.isFav })
-            }} />
+        const PhoneNumber = props => <Text style={styles.rightText}>{this.state.phoneNumber}</Text>
+
+        const Schedule = props => <FlatList
+            data={this.state.schedule}
+            renderItem={({ item }) => <Item title={item.title} />}
+            keyExtractor={item => item.id}
+            style={styles.flatListContent}
+        />
+
+        const Mail = propr => <Text style={styles.rightText}>{this.state.mail}</Text>
 
         return (
-            <Card style={styles.cardContent}>
-                <Card.Title titleStyle={styles.titleAndSubtitle} title={this.state.name} subtitleStyle={styles.titleAndSubtitle} subtitle={this.state.address} left={LeftContent} leftStyle={{ width: 90, right: 8 }} right={RightContent} />
-                <Card.Cover source={{ uri: 'https://picsum.photos/500' }} />
-                <Card.Actions>
-                    <Button
-                        style={{ left: sizes.wp('28%'), width: '40%', }} //ESTANDARIZAR
-                        icon="plus"
-                        mode="contained"
-                        color={colors.APP_MAIN}
-                        onPress={() => Actions.shopinformation()}>
-                        Detalles
-                </Button>
-                </Card.Actions>
-            </Card>
+
+            <Card style={styles.shopCard}>
+                            <Card.Title style={{ margin: 20 }} titleStyle={{ alignSelf: 'center', fontSize: 22 }} title={this.state.name} />
+                            <Divider />
+                            <Card.Cover source={{ uri: 'https://picsum.photos/500' }} />
+                            <Divider />
+                            <Card.Title titleStyle={styles.leftText} title="Dirección:" right={Adress} rightStyle={styles.rightText} />
+                            <Divider />
+                            <Card.Title titleStyle={styles.leftText} title="Teléfono:" right={PhoneNumber} rightStyle={styles.rightText} />
+                            <Divider />
+                            <Card.Title titleStyle={styles.leftText} title="Horarios:" right={Schedule} rightStyle={styles.rightText} />
+                            <Divider />
+                            <Card.Title titleStyle={styles.leftText} title="Mail:" right={Mail} rightStyle={styles.rightText} />
+                        </Card>
         )
     }
-};
+}
 
 const styles = StyleSheet.create({
-    cardContent: {
-        elevation: 5,
+    shopCard: {
+        width: sizes.wp('91%'),
+        height: sizes.hp('70%'),
+        marginTop: sizes.hp('2%'),
+        elevation: 10,
         borderRadius: 15,
+        marginBottom: sizes.hp('3%'),
     },
-    titleAndSubtitle: {
-        right: 10,
-       // maxWidth: sizes.wp('50%'),
-       // maxHeight: sizes.hp('6%'),
-        //flexWrap: 'nowrap'
-    }
+    rightText: {
+        fontSize: 16,
+        right: sizes.wp('3%'),
+    },
+    leftText: {
+        fontSize: 18,
+    },
+    flatListContent: {
+        height: sizes.hp('9%'),
+        top: sizes.hp('2.5%'),
+        marginBottom: sizes.hp('5%')
+    },
+    textList: {
+        fontSize: 16,
+        margin: 5,
+        alignSelf: 'flex-end'
+    },
 });
 
 export default ShopCard;

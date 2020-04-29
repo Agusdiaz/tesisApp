@@ -47,7 +47,7 @@ class PendingOrdersClientScreen extends Component {
         return (
             <View
                 style={{
-                    height: 10,
+                    height: 5,
                 }}
             />
         );

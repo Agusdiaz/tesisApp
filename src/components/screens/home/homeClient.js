@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import { StyleSheet, View, Text, TouchableOpacity, ImageBackground, VirtualizedList } from 'react-native';
 import { Surface } from 'react-native-paper';
 import { appStyles, colors, sizes } from '../../../index.styles';
-import ShopCard from '../../commons/shopCard'
+import ShopCardSummary from '../../commons/shopCardSummary'
+import ProductCard from '../../commons/productCard'
 import { Actions } from 'react-native-router-flux';
 
 const DATA = [];
@@ -54,7 +55,7 @@ class HomeClientScreen extends Component {
                     ItemSeparatorComponent={this.renderSeparator}
                     data={DATA}
                     initialNumToRender={0}
-                    renderItem={({ item }) => <ShopCard />}
+                    renderItem={({ item }) => <ShopCardSummary />}
                     keyExtractor={item => item.key}
                     getItemCount={getItemCount}
                     getItem={getItem} />

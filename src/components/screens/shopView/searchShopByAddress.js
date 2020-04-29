@@ -3,7 +3,7 @@ import { StyleSheet, View, VirtualizedList } from 'react-native';
 import { appStyles, colors, sizes } from '../../../index.styles'
 import { Searchbar } from 'react-native-paper';
 import ArrowButton from '../../commons/arrowButton'
-import ShopCard from '../../commons/shopCard'
+import ShopCard from '../../commons/shopCardSummary'
 
 const DATA = [];
 

@@ -26,7 +26,7 @@ export default class StatsShopScreen extends Component {
                     handleChange={index => this.setState({ selectedTab: index })}
                     backgroundColor={colors.APP_MAIN}
                     actionItems={[
-                        <Tab key={1} icon='pie-chart' label='Productos' />, //pie-chart-outlined
+                        <Tab key={1} icon='pie-chart-outlined' label='Productos' />, //pie-chart
                         <Tab key={2} icon='insert-chart' label='Pedidos' />,
                         <Tab key={3} icon='access-time' label='Horarios' />,
                     ]}

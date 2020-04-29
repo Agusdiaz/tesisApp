@@ -1,52 +1,58 @@
 import React, { Component } from 'react';
 import { StyleSheet, View, Text, KeyboardAvoidingView, Platform } from 'react-native';
-import { TextInput, Button } from 'react-native-paper';
-import { appStyles, colors } from '../../../index.styles';
-import ArrowButton from '../../commons/ArrowButton'
+import { TextInput, Button, Snackbar } from 'react-native-paper';
+import { appStyles, colors, sizes } from '../../../index.styles';
+import ArrowButton from '../../commons/arrowButton'
 
-class HomeClientScreen extends Component {
+class SignUpShopScreen extends Component {
 
 	constructor(props) {
 		super(props);
 		this.state = {
-			
+			email: '',
+			password: '',
+			visibleSnackBar: true,
 		}
 	}
+
+	signup = (email, password) => {
+		if (email == '' || password == '')
+			alert('Campos Incompletos')
+	}
+
+	_onDismissSnackBar = () => this.setState({ visibleSnackBar: false })
 
 	render() {
 		return (
 			<KeyboardAvoidingView style={appStyles.container} behavior={Platform.OS == "ios" ? "padding" : "height"}>
-				<ArrowButton />
+				<ArrowButton rute={'logsign'} />
 
-				<Text style={styles.signupText}> Bienvenido{"\n"}Crea tu nueva cuenta</Text>
+				<Snackbar
+				style={styles.snackbar}
+				theme={{ colors: { accent: '#FFFFFF' } }}
+					visible={this.state.visibleSnackBar}
+					onDismiss={this._onDismissSnackBar}
+					duration={30000}
+					action={{
+						label: 'Ok',
+						onPress: () => { this._onDismissSnackBar },
+					}}>
+					<Text style={{fontSize: 18, textAlign:'left'}}>
+						IMPORTANTE: Una vez cargada toda tu información correspondiente, te enviaremos un mail a esa 
+					dirrección notificando el alta o no del local en nuestro sistema.
+					</Text>
 
-				<TextInput
-					style={styles.inputView}
-					mode='outlined'
-					label='Nombre'
-					placeholder="Nombre(s)"
-					theme={{ colors: { text: colors.TEXT_INPUT, primary: colors.APP_MAIN } }}
-					onChangeText={(firstName) => this.setState({ firstName })}
-					value={this.state.firstName}
-				/>
+        </Snackbar>
 
-				<TextInput
-					style={styles.inputView}
-					mode='outlined'
-					label='Apellido'
-					placeholder="Apellido(s)"
-					theme={{ colors: { text: colors.TEXT_INPUT, primary: colors.APP_MAIN } }}
-					onChangeText={(lastName) => this.setState({ lastName })}
-					value={this.state.lastName}
-				/>
+				<Text style={styles.signupText}> Crea una nueva cuenta para tu local</Text>
 
 				<TextInput
 					style={styles.inputView}
 					mode='outlined'
 					label='Email'
-					placeholder="ejemplo@email.com"
+					placeholder='ejemplo@mail.com'
 					theme={{ colors: { text: colors.TEXT_INPUT, primary: colors.APP_MAIN } }}
-					onChangeText={(email) => this.setState({ email })}
+					onChangeText={(text) => this.setState({ email: text })}
 					value={this.state.email}
 				/>
 
@@ -54,21 +60,20 @@ class HomeClientScreen extends Component {
 					style={styles.inputView}
 					mode='outlined'
 					label='Contraseña'
-					secureTextEntry={true}
-					placeholder="Contraseña"
+					placeholder='Contraseña'
 					theme={{ colors: { text: colors.TEXT_INPUT, primary: colors.APP_MAIN } }}
-					onChangeText={(password) => this.setState({ password })}
+					onChangeText={(text) => this.setState({ password: text })}
 					value={this.state.password}
 				/>
 
 				<Button
-					style={{ marginTop: 15 }}
-					icon="account-plus"
+					style={{ marginTop: sizes.hp('-2%') }}
+					icon="arrow-right-bold-outline"
 					mode="contained"
 					color={colors.APP_MAIN}
 					//disabled="true"
-					onPress={() => this.signup(this.state.firstName, this.state.lastName, this.state.email, this.state.password)}>
-					Registrarse
+					onPress={() => this.signup(this.state.email, this.state.password)}>
+					Siguiente
  				</Button>
 
 			</KeyboardAvoidingView>
@@ -79,19 +84,26 @@ class HomeClientScreen extends Component {
 const styles = StyleSheet.create({
 	signupText: {
 		//fontFamily: "",
-		color: "#E1454A",
-		fontSize: 35,
+		color: colors.APP_MAIN,
+		fontSize: 30,
 		fontWeight: "bold",
 		textAlign: "center",
-		marginBottom: 30
+		top: sizes.hp('-5%'),
+		padding: 40,
 	},
 	inputView: {
+		top: sizes.hp('-4%'),
 		width: "80%",
 		height: 50,
 		marginBottom: 20,
 		justifyContent: "center",
 		padding: 5,
 	},
+	snackbar:{
+		marginBottom: sizes.hp('5%'),
+		padding:5,
+		backgroundColor: colors.APP_MAIN,
+	},
 })
 
-export default HomeClientScreen;
+export default SignUpShopScreen;

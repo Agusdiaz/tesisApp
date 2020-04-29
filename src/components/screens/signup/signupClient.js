@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, Text, KeyboardAvoidingView, Platform } from 'react-native';
+import { StyleSheet, View, Text, KeyboardAvoidingView, Platform, TouchableOpacity } from 'react-native';
 import { TextInput, Button, Portal, Dialog } from 'react-native-paper';
 import { appStyles, colors, sizes } from '../../../index.styles';
 import ArrowButton from '../../commons/arrowButton'
+import { Actions } from 'react-native-router-flux';
 
 //this.signup(this.state.firstName, this.state.lastName, this.state.email, this.state.password)
 
@@ -44,10 +45,10 @@ class SignUpClientScreen extends Component {
 
 	render() {
 		return (
-			<KeyboardAvoidingView style={appStyles.container} behavior={Platform.OS === "ios" ? "padding" : "height"} keyboardVerticalOffset={Platform.OS === "ios" ? -150 : 0} >
+			<KeyboardAvoidingView style={appStyles.container} behavior={Platform.OS === "ios" ? "padding" : "height"} keyboardVerticalOffset={Platform.OS === "ios" ? -165 : 0} >
 				<ArrowButton rute={'logsign'} />
 
-				<Text style={styles.signupText}> Crea tu nueva cuenta</Text>
+				<Text style={styles.signupText}> Crea tu nueva cuenta y comienza a hacer pedidos</Text>
 
 				<TextInput
 					style={styles.inputView}
@@ -100,6 +101,10 @@ class SignUpClientScreen extends Component {
 					Registrarse
  				</Button>
 
+				 <TouchableOpacity style={{bottom: sizes.hp('-4%')}} onPress={() => Actions.signupshop()}>
+					<Text style={{ color: colors.APP_MAIN, fontSize: 12.8 }}>¿Querés registrar tu local? Hace click acá</Text>
+				</TouchableOpacity>
+
 				<Dialog
 					visible={this.state.visibleDialog}
 					onDismiss={this._hideDialog}>
@@ -118,8 +123,8 @@ class SignUpClientScreen extends Component {
 const styles = StyleSheet.create({
 	signupText: {
 		//fontFamily: "",
-		color: "#E1454A",
-		fontSize: 35,
+		color: colors.APP_MAIN,
+		fontSize: 30,
 		fontWeight: "bold",
 		textAlign: "center",
 		marginBottom: 30

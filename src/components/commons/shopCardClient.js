@@ -1,9 +1,7 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, FlatList, Linking } from 'react-native';
-import { Button, Card, IconButton, Surface, FAB, Divider } from 'react-native-paper';
-import { appStyles, colors, sizes } from '../../index.styles';
-import Tabs from 'react-native-tabs';
-import ArrowButton from './arrowButton';
+import { StyleSheet, FlatList, Text, View } from 'react-native';
+import { colors, sizes } from '../../index.styles';
+import { Button, Card, IconButton, Divider, FAB,  } from 'react-native-paper';
 
 function Item({ title }) {
     return (
@@ -13,7 +11,7 @@ function Item({ title }) {
     );
 }
 
-class ShopInformationScreen extends Component {
+class ShopCardClient extends Component {
     constructor() {
         super();
         this.state = { //PONER METODO PARA SABER EL ESTADO
@@ -53,6 +51,10 @@ class ShopInformationScreen extends Component {
         };
     }
 
+    passToParent = () => {
+        this.props.callbackFromParent(this.state.isOpen);
+    }
+
     render() {
 
         const Adress = props => <Text style={styles.rightText}>{this.state.address}</Text>
@@ -88,46 +90,26 @@ class ShopInformationScreen extends Component {
             }} />
 
         return (
-            <View style={appStyles.container}>
-                <ArrowButton rute={'navBarClientHome'} />
-
-                <Card style={styles.shopCard}>
-                    <Card.Title titleStyle={{ right: 10 }} title={this.state.name} left={OpenClose} leftStyle={{ width: 90, right: 8 }} right={Star} />
-                    <Divider />
-                    <Card.Cover source={{ uri: 'https://picsum.photos/500' }} />
-                    <Divider />
-                    <Card.Title titleStyle={styles.leftText} title="Dirección:" right={Adress} rightStyle={styles.rightText} />
-                    <Divider />
-                    <Card.Title titleStyle={styles.leftText} title="Teléfono:" right={PhoneNumber} rightStyle={styles.rightText} />
-                    <Divider />
-                    <Card.Title titleStyle={styles.leftText} title="Horarios:" right={Schedule} rightStyle={styles.rightText} />
-                </Card>
-
-                <Button style={styles.buttonMenu}
-                    icon="book-open-page-variant" //chef-hat
-                    mode="contained"
-                    color={colors.APP_MAIN}
-                    onPress={() => { }}>
-                    Ver Menú
-                </Button>
-
-                <Button style={styles.buttonOrder}
-                    icon="basket"
-                    mode="contained"
-                    disabled={!this.state.isOpen}
-                    color={colors.APP_MAIN}
-                    onPress={() => { }}>
-                    Hacer Pedido
-                </Button>
-            </View>
-        );
+            //this.passToParent()
+            <Card style={styles.shopCard}>
+                <Card.Title titleStyle={{ right: 10 }} title={this.state.name} left={OpenClose} leftStyle={{ width: 90, right: 8 }} right={Star} />
+                <Divider />
+                <Card.Cover source={{ uri: 'https://picsum.photos/500' }} />
+                <Divider />
+                <Card.Title titleStyle={styles.leftText} title="Dirección:" right={Adress} rightStyle={styles.rightText} />
+                <Divider />
+                <Card.Title titleStyle={styles.leftText} title="Teléfono:" right={PhoneNumber} rightStyle={styles.rightText} />
+                <Divider />
+                <Card.Title titleStyle={styles.leftText} title="Horarios:" right={Schedule} rightStyle={styles.rightText} />
+            </Card>
+        )
     }
 }
 
 const styles = StyleSheet.create({
     shopCard: {
         width: sizes.wp('90%'),
-        marginTop: sizes.hp('5%'),
+        marginTop: sizes.hp('15%'),
         height: sizes.hp('65%'),
         elevation: 10,
         borderRadius: 15,
@@ -158,15 +140,6 @@ const styles = StyleSheet.create({
         margin: 5,
         alignSelf: 'flex-end'
     },
-    buttonMenu: {
-        width: sizes.wp('42%'),
-        alignSelf: 'center',
-    },
-    buttonOrder: {
-        width: sizes.wp('42%'),
-        alignSelf: 'center',
-        marginTop: sizes.hp('2.5%')
-    },
 });
 
-export default ShopInformationScreen;
+export default ShopCardClient;

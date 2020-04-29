@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { StyleSheet, View, Text, TouchableOpacity, ImageBackground, VirtualizedList } from 'react-native';
 import { Surface } from 'react-native-paper';
 import { appStyles, colors, sizes } from '../../../index.styles';
-import ShopCard from '../../commons/shopCard'
+import ShopCard from '../../commons/shopCardSummary'
 import { Actions } from 'react-native-router-flux';
 import ArrowButton from '../../commons/arrowButton'
 

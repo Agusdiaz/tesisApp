@@ -14,7 +14,7 @@ class LogSignScreen extends Component {
 
                 {/*}<Image source={require('../../../icons/book.gif')} style={{ width: 100, height: 100, marginBottom: 70 }} />{*/}
                 <View style={styles.containerButton}>
-                    <Text style={styles.textScreen}> ¿Ya eres usuario?</Text>
+                    <Text style={styles.textScreen}> ¿Ya sos usuario?</Text>
                     <Button
                         style={styles.buttonView}
                         icon="send"
@@ -32,7 +32,7 @@ class LogSignScreen extends Component {
                         mode="contained"
                         color={colors.APP_MAIN}
                         //disabled="true"
-                        onPress={() => Actions.signup()}>
+                        onPress={() => Actions.signupclient()}>
                         REGISTRATE
  				</Button>
                 </View>

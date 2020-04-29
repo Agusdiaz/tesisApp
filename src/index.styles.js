@@ -6,6 +6,7 @@ const colors = {
     APP_MAIN : '#E1454A',
     APP_BACKGR : '#FFFFFF',
     APP_INACTIVE : '#827C7C',
+    APP_INACTIVE_FAB : '#D2D4DA',
     APP_GREEN : '#56CB0E',
     APP_RED: '#F50808',
     APP_PENDING: '#E3BD12',
