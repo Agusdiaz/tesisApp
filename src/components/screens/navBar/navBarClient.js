@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { BottomNavigation, Text, } from 'react-native-paper';
+import { BottomNavigation, Text, Badge } from 'react-native-paper';
 import { appStyles, colors } from '../../../../src/index.styles';
 import HomeClient from '../home/homeClient'
 import ProfileClient from '../profile/profileClient'
@@ -10,23 +10,36 @@ const HomeRoute = () => <HomeClient />;
 
 const ShopRoute = () => <SearchShops />;
 
-const NotificationRoute = () => <PendingOrdersClient/>;
+const NotificationRoute = () => <PendingOrdersClient />;
 
 const ProfileRoute = () => <ProfileClient />;
 
 export default class NavigationBarScreen extends Component {
   state = {
-      index: (this.props.page != null) ? this.props.page : 0 ,
-      routes: [
-        { key: 'home', title: 'Principal', icon: 'food', color: colors.APP_BACKGR },
-        { key: 'shops', title: 'Buscar', icon: 'magnify', color: colors.APP_BACKGR },
-        { key: 'notifications', title: 'Notificaciones', icon: 'bell-ring-outline', badge: 2, color: colors.APP_BACKGR },
-        { key: 'profile', title: 'Perfil', icon: 'face', color: colors.APP_BACKGR },
-      ],
-    };
-  
+    index: (this.props.page != null) ? this.props.page : 0,
+    routes: [
+      { key: 'home', title: 'Principal', icon: 'food', color: colors.APP_BACKGR },
+      { key: 'shops', title: 'Buscar', icon: 'magnify', color: colors.APP_BACKGR },
+      { key: 'notifications', title: 'Notificaciones', icon: 'bell-ring-outline', badge: null, color: colors.APP_BACKGR },
+      { key: 'profile', title: 'Perfil', icon: 'face', color: colors.APP_BACKGR },
+    ],
+  };
 
-  _handleIndexChange = index => this.setState({ index });
+  _setNotifications = (value) => { 
+    const newBadge = [...this.state.routes]
+    newBadge[2].badge = value
+    this.setState( {routes: newBadge} )
+    }
+
+  _handleNotifications = () => {
+      this._setNotifications(null)
+    }
+
+  _handleIndexChange = index => {
+    this.setState({ index })
+    if(index === 2)
+      this._handleNotifications()
+  };
 
   _renderScene = BottomNavigation.SceneMap({
     home: HomeRoute,
@@ -35,10 +48,8 @@ export default class NavigationBarScreen extends Component {
     profile: ProfileRoute,
   });
 
-
-  _hideBadge = index => this.state.routes[this.state.index].badge
-
   render() {
+    
     return (
       <BottomNavigation
         navigationState={this.state}
@@ -47,7 +58,6 @@ export default class NavigationBarScreen extends Component {
         shifting={true}
         activeColor={colors.APP_MAIN}
         inactiveColor={colors.APP_INACTIVE}
-        //getBadge={this._hideBadge}
         barStyle={{ paddingBottom: 20 }}
         style={{ alignSelf: 'stretch' }}
       >

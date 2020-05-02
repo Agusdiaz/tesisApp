@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { StyleSheet, View, Text, VirtualizedList, RefreshControl, ActivityIndicator } from 'react-native';
 import { appStyles, colors, sizes } from '../../../index.styles';
 import OrderCardShop from '../../commons/orderCardShop'
-import { Surface } from 'react-native-paper';
+import { Surface, ToggleButton } from 'react-native-paper';
 
 const getItem = (data, index) => {
     return {
@@ -20,9 +20,18 @@ class HomeShopScreen extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            refreshing: false //cuando funcione bien -> true
+            refreshing: false, //cuando funcione bien -> true
+            valueButtons: 'time',
+            sortText: 'Orden de llegada',
         }
         this.GetData();
+    }
+
+    handleButtons = (values, callback) => {
+        if (values != null) {
+            this.setState({ valueButtons: values })
+            callback()
+        }
     }
 
     GetData = () => {
@@ -76,6 +85,26 @@ class HomeShopScreen extends Component {
                     <Text style={{ fontSize: 20, color: colors.APP_BACKGR, fontWeight: 'bold' }}>PEDIDOS PENDIENTES</Text>
                 </Surface>
 
+                <View style={{ flexDirection: 'row', justifyContent: 'center', width: sizes.wp('100%') }}>
+                    <Text numberOfLines={2} style={{ width:'70%', fontSize: 15, textAlign: 'left', left: sizes.wp('1%'), bottom: sizes.hp('-1.5%') }}>
+                        Ordenar por: {this.state.sortText}
+                            </Text>
+
+                    <ToggleButton.Group
+                       onValueChange={value => this.handleButtons(value, () => {
+                        this.setState({
+                            sortText: (value === 'time') ? 'Orden de llegada'
+                                : 'Más productos pedidos'
+                        });
+                    })}
+                    value={this.state.valueButtons}>
+                        <ToggleButton style={styles.toggleButton} icon="timelapse" value="time" 
+                        color= {(this.state.valueButtons === 'time') ? colors.APP_MAIN : colors.APP_INACTIVE}/>
+                        <ToggleButton style={styles.toggleButton} icon="shopping" value="products" 
+                        color= {(this.state.valueButtons === 'products') ? colors.APP_MAIN : colors.APP_INACTIVE}/>
+                    </ToggleButton.Group>
+                </View>
+
                 <VirtualizedList
                     style={styles.list}
                     ItemSeparatorComponent={this.renderSeparator}
@@ -86,7 +115,6 @@ class HomeShopScreen extends Component {
                     keyExtractor={item => item.key}
                     getItemCount={getItemCount}
                     getItem={getItem} />
-
 
             </View>
         );
@@ -105,6 +133,10 @@ const styles = StyleSheet.create({
         padding: 20,
         alignItems: 'center',
         backgroundColor: colors.APP_MAIN,
+    },
+    toggleButton: {
+        right: sizes.wp('1%'),
+        marginLeft: sizes.wp('2%'),
     },
 })
 

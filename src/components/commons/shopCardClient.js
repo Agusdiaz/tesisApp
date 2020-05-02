@@ -1,7 +1,8 @@
-import React, { Component } from 'react';
-import { StyleSheet, FlatList, Text, View } from 'react-native';
+import React, { Component  } from 'react';
+import { StyleSheet, FlatList, Text, View, Linking } from 'react-native';
 import { colors, sizes } from '../../index.styles';
 import { Button, Card, IconButton, Divider, FAB,  } from 'react-native-paper';
+import TextTicker from 'react-native-text-ticker'
 
 function Item({ title }) {
     return (
@@ -57,7 +58,12 @@ class ShopCardClient extends Component {
 
     render() {
 
-        const Adress = props => <Text style={styles.rightText}>{this.state.address}</Text>
+        const Adress = props => <TextTicker style={{fontSize: 16,  }} 
+        duration={2000}
+        loop
+        animationType='bounce'
+        repeatSpacer={50}
+        marqueeDelay={1000}>{this.state.address}</TextTicker>
 
         const PhoneNumber = props => <View>
             <Text style={{ fontSize: 16, right: sizes.wp('13%') }}>{this.state.phoneNumber}</Text>
@@ -76,31 +82,42 @@ class ShopCardClient extends Component {
             style={styles.flatListContent}
         />
 
-        const OpenClose = props => (this.state.isOpen) ? <Button style={{ borderRadius: 20 }} mode="contained" color={colors.APP_GREEN} labelStyle={{ fontSize: 9, color: colors.APP_BACKGR }} contentStyle={{ width: 90 }} >
-            Abierto </Button> : <Button style={{ borderRadius: 20 }} mode="contained" color={colors.APP_RED} labelStyle={{ fontSize: 9, color: colors.APP_BACKGR }} contentStyle={{ width: 90 }} >
-                Cerrado </Button>
+        const OpenClose = props => (this.state.isOpen) ? <Button style={{ borderRadius: 20, width: 105, alignItems: 'center' }} mode="contained" color={colors.APP_GREEN} labelStyle={{ fontSize: 9, color: colors.APP_BACKGR }} >
+        Abierto </Button> : <Button style={{ borderRadius: 20, width: 105, alignItems: 'center' }} mode="contained" color={colors.APP_RED} labelStyle={{ fontSize: 9, color: colors.APP_BACKGR }}>Cerrado </Button>
 
-        const Star = props => <IconButton {...props}
-            icon={(this.state.favState) ? "star" : "star-outline"}
-            color={colors.STAR}
-            size={30}
-            onPress={() => {
-                this.setState(
-                    { favState: !this.state.favState })
-            }} />
+const RightContent = props => <View style ={{ flexDirection: 'row', left: 7,}}>
+
+<View style ={{ flexDirection: 'column', width: sizes.wp('48%'), justifyContent: 'center',}}>
+    <TextTicker style={styles.title}
+        duration={5000}
+        loop
+        animationType='bounce'
+        repeatSpacer={50}
+        marqueeDelay={1000}>{this.state.name}</TextTicker>
+</View>
+
+    <IconButton {...props}
+        icon={(this.state.isFav) ? "star" : "star-outline"}
+        color={colors.STAR}
+        size={30}
+        onPress={() => {
+            this.setState(
+                { isFav: !this.state.isFav })
+        }} />
+</View>
 
         return (
             //this.passToParent()
             <Card style={styles.shopCard}>
-                <Card.Title titleStyle={{ right: 10 }} title={this.state.name} left={OpenClose} leftStyle={{ width: 90, right: 8 }} right={Star} />
+                <Card.Title left={OpenClose} leftStyle={{ right: 8, }} right={RightContent} />
                 <Divider />
                 <Card.Cover source={{ uri: 'https://picsum.photos/500' }} />
                 <Divider />
-                <Card.Title titleStyle={styles.leftText} title="Dirección:" right={Adress} rightStyle={styles.rightText} />
+                <Card.Title titleStyle={styles.leftText} title="Dirección:" right={Adress} rightStyle={styles.rightSide} />
                 <Divider />
-                <Card.Title titleStyle={styles.leftText} title="Teléfono:" right={PhoneNumber} rightStyle={styles.rightText} />
+                <Card.Title titleStyle={styles.leftText} title="Teléfono:" right={PhoneNumber} rightStyle={styles.rightSide} />
                 <Divider />
-                <Card.Title titleStyle={styles.leftText} title="Horarios:" right={Schedule} rightStyle={styles.rightText} />
+                <Card.Title titleStyle={styles.leftText} title="Horarios:" right={Schedule} rightStyle={styles.rightSide} />
             </Card>
         )
     }
@@ -115,9 +132,23 @@ const styles = StyleSheet.create({
         borderRadius: 15,
         marginBottom: sizes.hp('3%'),
     },
+    title: {
+        textAlign: 'center',
+        fontSize: 18,
+        fontWeight: 'bold',
+    },
+    subtitle: {
+        textAlign: 'center',
+        marginTop: 7,
+        fontSize: 14,
+    },
     rightText: {
         fontSize: 16,
-        right: sizes.wp('3%'),
+    },
+    rightSide: {
+        right: sizes.wp('4%'),
+        width: sizes.wp('58%'),
+        alignItems: 'flex-end'
     },
     leftText: {
         fontSize: 18,

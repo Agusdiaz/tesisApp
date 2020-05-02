@@ -79,7 +79,7 @@ export default class StatsShopScreen extends Component {
                                     onPress: () => { },
                                 },
                             ]}>
-                            <Text style={{ fontSize: 22, textAlign: 'center' }}>¿Cuáles son tus horarios populares?</Text>
+                            <Text style={{ fontSize: 22, textAlign: 'center' }}>¿Cuáles son tus horarios más populares?</Text>
                         </Banner>
                     </View>
 

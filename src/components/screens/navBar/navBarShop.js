@@ -16,13 +16,27 @@ export default class NavigationBarScreen extends React.Component {
   state = {
     index: 0,
     routes: [
-      { key: 'orders', title: 'Pedidos', icon: 'receipt', badge: 2, color: colors.APP_BACKGR },
+      { key: 'orders', title: 'Pedidos', icon: 'receipt', badge: null, color: colors.APP_BACKGR },
       { key: 'statistics', title: 'Estadísticas', icon: 'chart-bar', color: colors.APP_BACKGR },
       { key: 'profile', title: 'Perfil', icon: 'chef-hat', color: colors.APP_BACKGR }, //icon:'book'
     ],
   };
 
-  _handleIndexChange = index => this.setState({ index });
+  _setNotifications = (value) => { 
+    const newBadge = [...this.state.routes]
+    newBadge[0].badge = value
+    this.setState( {routes: newBadge} )
+    }
+
+  _handleNotifications = () => {
+      this._setNotifications(null)
+    }
+
+  _handleIndexChange = index => {
+    this.setState({ index })
+    if(index === 0)
+      this._handleNotifications()
+  };
 
   _renderScene = BottomNavigation.SceneMap({
     orders: HomeRoute, 

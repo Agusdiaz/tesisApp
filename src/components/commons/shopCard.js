@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { StyleSheet, FlatList, Text, View } from 'react-native';
 import { colors, sizes } from '../../index.styles';
 import { Button, Card, IconButton, Divider, FAB,  } from 'react-native-paper';
+import TextTicker from 'react-native-text-ticker'
 
 function Item({ title }) {
     return (
@@ -53,7 +54,19 @@ class ShopCard extends Component {
 
     render() {
 
-        const Adress = props => <Text style={styles.rightText}>{this.state.address}</Text>
+        const Name = props => <TextTicker style={{fontSize: 22, textAlign: 'center'}} 
+        duration={5000}
+        loop
+        animationType='bounce'
+        repeatSpacer={50}
+        marqueeDelay={1000}>{this.state.name}</TextTicker>
+
+        const Adress = props => <TextTicker style={{fontSize: 16,  }} 
+        duration={5000}
+        loop
+        bounce
+        repeatSpacer={50}
+        marqueeDelay={1000}>{this.state.address}</TextTicker>
 
         const PhoneNumber = props => <Text style={styles.rightText}>{this.state.phoneNumber}</Text>
 
@@ -64,22 +77,22 @@ class ShopCard extends Component {
             style={styles.flatListContent}
         />
 
-        const Mail = propr => <Text style={styles.rightText}>{this.state.mail}</Text>
+        const Mail = props => <Text style={styles.rightText}>{this.state.mail}</Text>
 
         return (
 
             <Card style={styles.shopCard}>
-                            <Card.Title style={{ margin: 20 }} titleStyle={{ alignSelf: 'center', fontSize: 22 }} title={this.state.name} />
+                            <Card.Title style={{ margin: 8 }} leftStyle={{ right: sizes.wp('-4%') ,width: sizes.wp('72%'), alignItems: 'center'}} left={Name} />
                             <Divider />
                             <Card.Cover source={{ uri: 'https://picsum.photos/500' }} />
                             <Divider />
-                            <Card.Title titleStyle={styles.leftText} title="Dirección:" right={Adress} rightStyle={styles.rightText} />
+                            <Card.Title titleStyle={styles.leftText} title="Dirección:" right={Adress} rightStyle={styles.rightSide} />
                             <Divider />
-                            <Card.Title titleStyle={styles.leftText} title="Teléfono:" right={PhoneNumber} rightStyle={styles.rightText} />
+                            <Card.Title titleStyle={styles.leftText} title="Teléfono:" right={PhoneNumber} rightStyle={styles.rightSide} />
                             <Divider />
-                            <Card.Title titleStyle={styles.leftText} title="Horarios:" right={Schedule} rightStyle={styles.rightText} />
+                            <Card.Title titleStyle={styles.leftText} title="Horarios:" right={Schedule} rightStyle={styles.rightSide} />
                             <Divider />
-                            <Card.Title titleStyle={styles.leftText} title="Mail:" right={Mail} rightStyle={styles.rightText} />
+                            <Card.Title titleStyle={styles.leftText} title="Mail:" right={Mail} rightStyle={styles.rightSide} />
                         </Card>
         )
     }
@@ -96,7 +109,11 @@ const styles = StyleSheet.create({
     },
     rightText: {
         fontSize: 16,
-        right: sizes.wp('3%'),
+    },
+    rightSide: {
+        right: sizes.wp('4%'),
+        width: sizes.wp('58%'),
+        alignItems: 'flex-end'
     },
     leftText: {
         fontSize: 18,

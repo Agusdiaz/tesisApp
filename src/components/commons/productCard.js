@@ -3,6 +3,7 @@ import { StyleSheet, Text, View, Image } from 'react-native';
 import { colors, sizes } from '../../index.styles';
 //import { Card, CardHeader, Avatar, IconButton } from 'material-bread'
 import { Surface, Card, IconButton, Divider, FAB, Title, Paragraph } from 'react-native-paper';
+import TextTicker from 'react-native-text-ticker'
 
 class ProductCard extends Component {
     constructor(props) {
@@ -10,7 +11,7 @@ class ProductCard extends Component {
         this.state = {
             name: 'Nombre del Producto',
             photo: 'https://picsum.photos/400',
-            price: '$200',
+            price: '$700',
             amount: 0,
         }
     }
@@ -26,15 +27,25 @@ class ProductCard extends Component {
 
     render() {
 
-        const pic = props => <Image source={{ uri: this.state.photo }} resizeMode='cover' style={styles.image} />
+        const Pic = props => <Image source={{ uri: this.state.photo }} resizeMode='cover' style={styles.image} />
+
+        const NamePrice = props => <View>
+            <TextTicker style={styles.title}
+                duration={5000}
+                loop
+                animationType='bounce'
+                repeatSpacer={50}
+                marqueeDelay={1000}>{this.state.name}</TextTicker>
+            <Text style={styles.subtitle}>{this.state.price}</Text>
+        </View>
 
         return (
 
             <Card style={styles.productCard}>
-                <Card.Title left={pic} leftStyle={styles.leftSide} titleStyle={styles.title} title={this.state.name}
-                    subtitle={this.state.price} subtitleStyle={styles.subtitle} />
+                <Card.Title left={Pic} leftStyle={styles.leftSide} right={NamePrice} rightStyle={styles.rightSide} />
 
                 <Card.Actions style={styles.actionStyles}>
+
                     <View style={{ flexDirection: 'row', alignItems: 'center', }}>
 
                         <FAB
@@ -86,17 +97,21 @@ const styles = StyleSheet.create({
         marginLeft: sizes.wp('-1%'),
         marginTop: sizes.hp('5.2%'),
     },
-    title: {
-        marginTop: sizes.hp('-1.7%'),
-        marginLeft: sizes.wp('20%'),
+    rightSide: {
         width: sizes.wp('60%'),
-        textAlign: 'center'
+        height: sizes.hp('7%'),
+        marginRight: sizes.wp('3.5%'),
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    title: {
+        textAlign: 'center',
+        fontSize: 18,
     },
     subtitle: {
-        width: sizes.wp('60%'),
         textAlign: 'center',
+        marginTop: 5,
         fontSize: 16,
-        marginLeft: sizes.wp('20%'),
     },
     actionStyles: {
         right: sizes.wp('-41%'),

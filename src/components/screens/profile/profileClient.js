@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { StyleSheet, Text, View, KeyboardAvoidingView, } from 'react-native';
 import { appStyles, colors, sizes } from '../../../index.styles';
 import { Avatar, Button, Dialog, TextInput, Modal } from 'react-native-paper';
+import TextTicker from 'react-native-text-ticker'
 import { Actions } from 'react-native-router-flux';
 
 export default class ProfileClientScreen extends Component {
@@ -124,8 +125,18 @@ export default class ProfileClientScreen extends Component {
                     <View style={styles.header}>
                         <View style={styles.headerContent}>
                             <Avatar.Text style={styles.avatar} size={100} label={this.state.avatarLabel} labelStyle={{ color: colors.APP_MAIN }} />
-                            <Text style={styles.name}> {this.state.firstName} {this.state.lastName}</Text>
-                            <Text style={styles.userInfo}> {this.state.mail} </Text>
+                            <TextTicker style={styles.fullName}
+                                duration={5000}
+                                loop
+                                animationType='bounce'
+                                repeatSpacer={50}
+                                marqueeDelay={1000}> {this.state.firstName} {this.state.lastName}</TextTicker>
+                            <TextTicker style={styles.userInfo}
+                                duration={5000}
+                                loop
+                                animationType='bounce'
+                                repeatSpacer={50}
+                                marqueeDelay={1000}> {this.state.mail} </TextTicker>
                         </View>
                     </View>
 
@@ -139,7 +150,7 @@ export default class ProfileClientScreen extends Component {
                                     color={colors.APP_MAIN}
                                     onPress={() => Actions.lastorders()}>
                                     Últimos pedidos
- 				            </Button>
+ 				                </Button>
                                 <Button
                                     style={{ margin: sizes.hp('3%'), width: '50%' }}
                                     icon="star-outline"
@@ -147,7 +158,7 @@ export default class ProfileClientScreen extends Component {
                                     color={colors.APP_MAIN}
                                     onPress={() => Actions.favouritesshops()}>
                                     Favoritos
- 				            </Button>
+ 				                </Button>
                                 <Button
                                     style={{ margin: sizes.hp('3%'), width: '50%' }}
                                     icon="pencil-outline"
@@ -155,8 +166,7 @@ export default class ProfileClientScreen extends Component {
                                     color={colors.APP_MAIN}
                                     onPress={this._showModal}>
                                     Editar Perfil
- 				            </Button>
-
+ 				                </Button>
                                 <Button
                                     style={{ margin: sizes.hp('3%'), width: '50%' }}
                                     icon="logout-variant"
@@ -164,8 +174,7 @@ export default class ProfileClientScreen extends Component {
                                     color={colors.APP_MAIN}
                                     onPress={this._showDialogSessionOut}>
                                     Cerrar Sesión
- 				            </Button>
-
+ 				                </Button>
                             </View>
                         </View>
 
@@ -313,15 +322,17 @@ const styles = StyleSheet.create({
         backgroundColor: colors.APP_BACKGR,
         marginBottom: sizes.hp('2%'),
     },
-    name: {
+    fullName: {
         fontSize: 25,
         color: colors.APP_BACKGR,
         fontWeight: 'bold',
         marginBottom: sizes.hp('1%'),
+        textAlign: 'center',
     },
     userInfo: {
         fontSize: 16,
         color: colors.APP_BACKGR,
+        textAlign: 'center',
     },
     body: {
         backgroundColor: colors.APP_BACKGR,

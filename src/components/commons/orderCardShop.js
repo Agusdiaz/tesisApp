@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { StyleSheet, Text, ImageBackground } from 'react-native';
 import { colors, sizes } from '../../index.styles';
 import { Button, Card, Title, Dialog, IconButton, Divider } from 'react-native-paper';
+import TextTicker from 'react-native-text-ticker'
 
 class OrderCardShop extends Component {
     constructor() {
@@ -21,22 +22,27 @@ class OrderCardShop extends Component {
 
     render() {
         
-        const orderNumber = props => <Text style={styles.rightText}> {this.state.orderNumber} </Text>
-        const user = props => <Text style={styles.rightText}> {this.state.mail} </Text>
-        const total = props => <Text style={styles.rightText}> {this.state.total} </Text>
-        const time = props => <Text style={styles.rightText}> {this.state.time} </Text>
+        const OrderNumber = props => <Text style={styles.rightText}> {this.state.orderNumber} </Text>
+        const User = props => <TextTicker style={styles.rightText} 
+        duration={5000}
+        loop
+        animationType='bounce'
+        repeatSpacer={50}
+        marqueeDelay={1000}>{this.state.mail}</TextTicker>
+        const Total = props => <Text style={styles.rightText}> {this.state.total} </Text>
+        const Time = props => <Text style={styles.rightText}> {this.state.time} </Text>
 
         return (
 
             <Card style={styles.cardContent}>
                 <ImageBackground source={require('../../icons/order.jpg')} style={styles.imageOutside} imageStyle={styles.imageInside} >
-                    <Card.Title style={styles.cardTitle} titleStyle={styles.leftText} title="Número del pedido:" right={orderNumber} />
+                    <Card.Title style={styles.cardTitle} titleStyle={styles.leftText} title="Número del pedido:" right={OrderNumber} rightStyle={styles.rightSide} />
                     <Divider style={styles.divider} />
-                    <Card.Title style={styles.cardTitle} titleStyle={styles.leftText} title="Mail del cliente:" right={user} />
+                    <Card.Title style={styles.cardTitle} titleStyle={styles.leftText} title="Mail del cliente:" right={User} rightStyle={styles.rightSide}/>
                     <Divider style={styles.divider} />
-                    <Card.Title style={styles.cardTitle} titleStyle={styles.leftText} title="Total:" right={total} />
+                    <Card.Title style={styles.cardTitle} titleStyle={styles.leftText} title="Total:" right={Total} rightStyle={styles.rightSide} />
                     <Divider style={styles.divider} />
-                    <Card.Title style={styles.cardTitle} titleStyle={styles.leftText} title="Tiempo desde creación:" right={time} />
+                    <Card.Title style={styles.cardTitle} titleStyle={styles.leftText} title="Tiempo desde creación:" right={Time} rightStyle={styles.rightSide} />
                     <Divider style={styles.divider} />
                     <Card.Actions style={{ margin: 5 }}>
                         <Button
@@ -88,7 +94,12 @@ const styles = StyleSheet.create({
     },
     rightText: {
         fontSize: 16,
-        right: sizes.wp('3%'),
+        textAlign: 'left'
+    },
+    rightSide: {
+        right: sizes.wp('4%'),
+        width: sizes.wp('42%'),
+        alignItems: 'flex-end',
     },
     leftText: {
         fontSize: 18,

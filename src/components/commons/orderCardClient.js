@@ -44,7 +44,6 @@ class OrderCardShop extends Component {
 
         const time = props => <Text style={styles.rightText}> {this.state.time} </Text>
 
-
         return (
 
             <View>
