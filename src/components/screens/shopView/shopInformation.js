@@ -15,9 +15,8 @@ class ShopInformationScreen extends Component {
         };
     }
 
-    setIsOpen(state){
-        console.log('entre')
-        this.setState({ isOpen: state})
+    setIsOpen = (stateIsOpen) => {
+        this.setState({ isOpen: stateIsOpen})
     }
 
     render() {
@@ -51,7 +50,7 @@ class ShopInformationScreen extends Component {
 
                 {(this.state.selectedTab === 0) ?
 
-                    <ShopCardClient callbackFromParent={this.setIsOpen.bind(this)}/>
+                    <ShopCardClient callbackFromParent={this.setIsOpen}/>
 
                     : (this.state.selectedTab === 1) ?
 

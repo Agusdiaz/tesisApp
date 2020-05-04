@@ -1,7 +1,7 @@
-import React, { Component  } from 'react';
+import React, { Component } from 'react';
 import { StyleSheet, FlatList, Text, View, Linking } from 'react-native';
 import { colors, sizes } from '../../index.styles';
-import { Button, Card, IconButton, Divider, FAB,  } from 'react-native-paper';
+import { Button, Card, IconButton, Divider, FAB, } from 'react-native-paper';
 import TextTicker from 'react-native-text-ticker'
 
 function Item({ title }) {
@@ -52,18 +52,22 @@ class ShopCardClient extends Component {
         };
     }
 
-    passToParent = () => {
-        this.props.callbackFromParent(this.state.isOpen);
+    passToParent = (value) => {
+        this.props.callbackFromParent(value);
+    }
+
+    componentDidMount(){
+        this.passToParent(this.state.isOpen)
     }
 
     render() {
 
-        const Adress = props => <TextTicker style={{fontSize: 16,  }} 
-        duration={2000}
-        loop
-        animationType='bounce'
-        repeatSpacer={50}
-        marqueeDelay={1000}>{this.state.address}</TextTicker>
+        const Adress = props => <TextTicker style={{ fontSize: 16, }}
+            duration={2000}
+            loop
+            animationType='bounce'
+            repeatSpacer={50}
+            marqueeDelay={1000}>{this.state.address}</TextTicker>
 
         const PhoneNumber = props => <View>
             <Text style={{ fontSize: 16, right: sizes.wp('13%') }}>{this.state.phoneNumber}</Text>
@@ -83,28 +87,28 @@ class ShopCardClient extends Component {
         />
 
         const OpenClose = props => (this.state.isOpen) ? <Button style={{ borderRadius: 20, width: 105, alignItems: 'center' }} mode="contained" color={colors.APP_GREEN} labelStyle={{ fontSize: 9, color: colors.APP_BACKGR }} >
-        Abierto </Button> : <Button style={{ borderRadius: 20, width: 105, alignItems: 'center' }} mode="contained" color={colors.APP_RED} labelStyle={{ fontSize: 9, color: colors.APP_BACKGR }}>Cerrado </Button>
+            Abierto </Button> : <Button style={{ borderRadius: 20, width: 105, alignItems: 'center' }} mode="contained" color={colors.APP_RED} labelStyle={{ fontSize: 9, color: colors.APP_BACKGR }}>Cerrado </Button>
 
-const RightContent = props => <View style ={{ flexDirection: 'row', left: 7,}}>
+        const RightContent = props => <View style={{ flexDirection: 'row', left: 7, }}>
 
-<View style ={{ flexDirection: 'column', width: sizes.wp('48%'), justifyContent: 'center',}}>
-    <TextTicker style={styles.title}
-        duration={5000}
-        loop
-        animationType='bounce'
-        repeatSpacer={50}
-        marqueeDelay={1000}>{this.state.name}</TextTicker>
-</View>
+            <View style={{ flexDirection: 'column', width: sizes.wp('48%'), justifyContent: 'center', }}>
+                <TextTicker style={styles.title}
+                    duration={5000}
+                    loop
+                    animationType='bounce'
+                    repeatSpacer={50}
+                    marqueeDelay={1000}>{this.state.name}</TextTicker>
+            </View>
 
-    <IconButton {...props}
-        icon={(this.state.isFav) ? "star" : "star-outline"}
-        color={colors.STAR}
-        size={30}
-        onPress={() => {
-            this.setState(
-                { isFav: !this.state.isFav })
-        }} />
-</View>
+            <IconButton {...props}
+                icon={(this.state.isFav) ? "star" : "star-outline"}
+                color={colors.STAR}
+                size={30}
+                onPress={() => {
+                    this.setState(
+                        { isFav: !this.state.isFav })
+                }} />
+        </View>
 
         return (
             //this.passToParent()

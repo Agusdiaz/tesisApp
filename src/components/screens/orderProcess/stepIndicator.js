@@ -34,7 +34,7 @@ export default class HorizontalStepIndicator extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            currentPosition: 2
+            currentPosition: 0
         }
     }
 

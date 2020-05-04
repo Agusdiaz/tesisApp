@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, Text, TouchableOpacity, ImageBackground, VirtualizedList } from 'react-native';
+import { StyleSheet, View, Text, TouchableOpacity, ImageBackground, FlatList } from 'react-native';
 import { Surface, ToggleButton, } from 'react-native-paper';
 import { appStyles, colors, sizes } from '../../../index.styles';
 import ShopCardSummary from '../../commons/shopCardSummary'
@@ -7,19 +7,62 @@ import ProductCard from '../../commons/productCard'
 import { Actions } from 'react-native-router-flux';
 import Animated from 'react-native-reanimated';
 
-const HEADER_EXPANDED_HEIGHT = 220
-const HEADER_COLLAPSED_HEIGHT = 40
+const DATA = [
+    { key: '1' }, { key: '2' }, { key: '3' }, { key: '4' }, { key: '5' }, { key: '6' }, { key: '7' },
+]
 
-class HomeClientScreen extends Component {
+const HEADER_EXPANDED_HEIGHT = (DATA.length == 2) ? 28 : 205
+const HEADER_COLLAPSED_HEIGHT = -205
+
+const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
+
+class AnimatedList extends Component {
+
+    state = {
+        isLoading: false,
+        animatedValue: new Animated.Value(0),
+    };
+
+    onRefresh = () => {
+        this.setState({ isLoading: true })
+        setTimeout(() => this.setState({ isLoading: false }), 1500)
+    }
+
+    renderSeparator = () => {
+        return (
+            <View
+                style={{
+                    height: 10,
+                }}
+            />
+        );
+    };
+
+    render() {
+        return (
+            <AnimatedFlatList
+                style={styles.list}
+                refreshing={this.state.isLoading}
+                onRefresh={this.onRefresh}
+                data={DATA}
+                onScroll={this.props.onScroll}
+                scrollEventThrottle={16}
+                renderItem={({ item }) => <ShopCardSummary />}
+                ItemSeparatorComponent={this.renderSeparator}
+                keyExtractor={(item, i) => i.toString()}
+            />
+        );
+    }
+}
+
+export default class AnimatedHeader extends React.Component {
 
     constructor(props) {
         super(props);
-        this.styleHeader={}
         this.state = {
-            isHeaderHidden: false,
             valueButtons: 'open',
             sortText: 'Abierto/Cerrado',
-            scrollY: new Animated.Value(0)
+            animatedValue: new Animated.Value(0),
         }
     }
 
@@ -31,28 +74,28 @@ class HomeClientScreen extends Component {
     }
 
     render() {
-        const headerHeight = this.state.scrollY.interpolate({
-            inputRange: [0, HEADER_EXPANDED_HEIGHT-HEADER_COLLAPSED_HEIGHT],
-            outputRange: [HEADER_EXPANDED_HEIGHT, HEADER_COLLAPSED_HEIGHT],
-            extrapolate: 'clamp'
-          })
+        let translateY = this.state.animatedValue.interpolate({
+            inputRange: [0, HEADER_EXPANDED_HEIGHT],
+            outputRange: [0, HEADER_COLLAPSED_HEIGHT],
+            extrapolate: 'clamp',
+        });
 
         return (
             <View style={appStyles.container}>
-                <Animated.View style={{height: headerHeight}}>
+
+                <Animated.View style={[styles.headerWrapper, { transform: [{ translateY }] }]}>
                     <TouchableOpacity style={styles.touchable}>
                         <ImageBackground source={require('../../../icons/tabla.jpg')} style={styles.imageContainer} imageStyle={styles.imageInside} resizeMode={'stretch'}>
                             <Text style={styles.text}>HAZ TU PEDIDO</Text>
                         </ImageBackground>
                     </TouchableOpacity>
-                    </Animated.View>
-
-                    <Surface style={styles.surface}>
-                        <Text style={{ fontSize: 20, color: colors.APP_BACKGR, fontWeight: 'bold', textAlign: 'center' }}>ESTOS SON NUESTROS LOCALES ADHERIDOS</Text>
-                    </Surface>
                 
 
-                <View style={{ flexDirection: 'row', justifyContent: 'center', width: sizes.wp('100%'), backgroundColor: colors.APP_BACKGR }}>
+                <Surface style={styles.surface}>
+                    <Text style={{ fontSize: 20, color: colors.APP_BACKGR, fontWeight: 'bold', textAlign: 'center' }}>ESTOS SON NUESTROS LOCALES ADHERIDOS</Text>
+                </Surface>
+
+                <View style={{ flexDirection: 'row', justifyContent: 'center', width: sizes.wp('100%'), height: 43, }}>
                     <Text style={{ fontSize: 15, textAlign: 'left', left: sizes.wp('-3%'), bottom: sizes.hp('-1%') }}>
                         Ordenar por: {this.state.sortText}
                     </Text>
@@ -73,25 +116,19 @@ class HomeClientScreen extends Component {
                             color={(this.state.valueButtons === 'sales') ? colors.APP_MAIN : colors.APP_INACTIVE} />
                     </ToggleButton.Group>
                 </View>
+                
 
-                    <Animated.ScrollView 
-                    style={styles.list}
+                <AnimatedList
                     onScroll={Animated.event(
-                        [{ nativeEvent: {
-                             contentOffset: {
-                               y: this.state.scrollY
-                             }
-                           }
-                        }])}
-                      scrollEventThrottle={16}>
-                     <ShopCardSummary />
-                     <View style = {{height: 2}}/>
-                     <ShopCardSummary />
-                     <View style = {{height: 2}}/>
-                     <ShopCardSummary />
-                     
-                    </Animated.ScrollView>
-                    
+                        [
+                            {
+                                nativeEvent: { contentOffset: { y: this.state.animatedValue } },
+                            },
+                        ],
+                        { useNativeDriver: true }
+                    )}
+                />
+                </Animated.View>
             </View>
         );
     }
@@ -140,10 +177,13 @@ const styles = StyleSheet.create({
     },
     list: {
         marginTop: sizes.hp('0%'),
-        marginBottom: sizes.hp('0.5%'),
-        //height: sizes.hp('200%'),
+        //marginBottom: sizes.hp('0.5%'),
+        height: sizes.hp('69%'),
         width: '100%',
-    }
+    },
+    headerWrapper : {
+        width: '100%',
+        marginTop: sizes.hp('24%')
+    },
+    
 })
-
-export default HomeClientScreen;
