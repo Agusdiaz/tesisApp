@@ -20,6 +20,7 @@ class PendingOrdersClientScreen extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            arePendings: false,
             refreshing: false //cuando funcione bien -> true
         }
         this.GetData();
@@ -72,20 +73,27 @@ class PendingOrdersClientScreen extends Component {
         return (
             <View style={appStyles.container}>
 
-                <Surface style={styles.surface}>
-                    <Text style={{ fontSize: 20, color: colors.APP_BACKGR, fontWeight: 'bold', textAlign:'center' }}>ESTOS SON TUS PEDIDOS PENDIENTES</Text>
+                <Surface style={[styles.surface, { top: (this.state.arePendings) ? sizes.hp('6%') : sizes.hp('-20%') }]}>
+                    <Text style={{ fontSize: 20, color: colors.APP_BACKGR, fontWeight: 'bold', textAlign: 'center' }}>ESTOS SON TUS PEDIDOS PENDIENTES</Text>
                 </Surface>
 
-                <VirtualizedList
-                    style={styles.list}
-                    ItemSeparatorComponent={this.renderSeparator}
-                    refreshControl={<RefreshControl refreshing={this.state.refreshing} onRefresh={this.onRefresh.bind(this)} />}
-                    data={this.state.dataSource}
-                    initialNumToRender={0}
-                    renderItem={({ item }) => <OrderCardClient />}
-                    keyExtractor={item => item.key}
-                    getItemCount={getItemCount}
-                    getItem={getItem} />
+                {(this.state.arePendings) ?
+                    <VirtualizedList
+                        style={styles.list}
+                        ItemSeparatorComponent={this.renderSeparator}
+                        refreshControl={<RefreshControl refreshing={this.state.refreshing} onRefresh={this.onRefresh.bind(this)} />}
+                        data={this.state.dataSource}
+                        initialNumToRender={0}
+                        renderItem={({ item }) => <OrderCardClient />}
+                        keyExtractor={item => item.key}
+                        getItemCount={getItemCount}
+                        getItem={getItem} />
+                    :
+                    <View style={styles.viewImage}>
+                        <Image source={require('../../../icons/noOrderClient.png')} style={styles.image} />
+                        <Text style={styles.infoImage}>En este momento no tenés ningún pedido pendiente</Text>
+                    </View>
+                }
 
             </View>
         );
@@ -94,14 +102,29 @@ class PendingOrdersClientScreen extends Component {
 
 const styles = StyleSheet.create({
     surface: {
-        top: sizes.hp('6%'),
         width: sizes.wp('100%'),
-        padding: 20,
+        padding: 15,
         alignItems: 'center',
         backgroundColor: colors.APP_MAIN,
     },
+    viewImage: {
+        justifyContent: 'center',
+        margin: 20,
+    },
+    image: {
+        width: 170,
+        height: 170,
+        marginBottom: sizes.hp('2%'),
+        alignSelf:'center'
+    },
+    infoImage: {
+        fontSize: 17,
+        fontWeight: 'bold',
+        justifyContent: 'center',
+        textAlign: 'center',
+    },
     list: {
-        marginTop: sizes.hp('6.5%'),
+        top: sizes.hp('6.5%'),
         marginBottom: sizes.hp('0.5%'),
         width: '100%',
     },

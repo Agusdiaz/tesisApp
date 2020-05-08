@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, Text, TouchableOpacity, ImageBackground, FlatList } from 'react-native';
+import { StyleSheet, View, Text, TouchableOpacity, ImageBackground, FlatList, Image } from 'react-native';
 import { Surface, ToggleButton, } from 'react-native-paper';
 import { appStyles, colors, sizes } from '../../../index.styles';
 import ShopCardSummary from '../../commons/shopCardSummary'
@@ -62,6 +62,7 @@ export default class AnimatedHeader extends React.Component {
         this.state = {
             valueButtons: 'open',
             sortText: 'Abierto/Cerrado',
+            areStores: true,
             animatedValue: new Animated.Value(0),
         }
     }
@@ -89,45 +90,51 @@ export default class AnimatedHeader extends React.Component {
                             <Text style={styles.text}>HAZ TU PEDIDO</Text>
                         </ImageBackground>
                     </TouchableOpacity>
-                
 
-                <Surface style={styles.surface}>
-                    <Text style={{ fontSize: 20, color: colors.APP_BACKGR, fontWeight: 'bold', textAlign: 'center' }}>ESTOS SON NUESTROS LOCALES ADHERIDOS</Text>
-                </Surface>
+                    <Surface style={styles.surface}>
+                        <Text style={{ fontSize: 20, color: colors.APP_BACKGR, fontWeight: 'bold', textAlign: 'center' }}>ESTOS SON NUESTROS LOCALES ADHERIDOS</Text>
+                    </Surface>
 
-                <View style={{ flexDirection: 'row', justifyContent: 'center', width: sizes.wp('100%'), height: 43, }}>
-                    <Text style={{ fontSize: 15, textAlign: 'left', left: sizes.wp('-3%'), bottom: sizes.hp('-1%') }}>
-                        Ordenar por: {this.state.sortText}
-                    </Text>
+                    <View style={{ flexDirection: 'row', justifyContent: 'center', width: sizes.wp('100%'), height: 43, }}>
+                        <Text style={{ fontSize: 15, textAlign: 'left', left: sizes.wp('-3%'), bottom: sizes.hp('-1%') }}>
+                            Ordenar por: {this.state.sortText}
+                        </Text>
 
-                    <ToggleButton.Group
-                        onValueChange={value => this.handleButtons(value, () => {
-                            this.setState({
-                                sortText: (value === 'open') ? 'Abierto/Cerrado'
-                                    : (value === 'letters') ? 'Orden Alfabético' : 'Promociones'
-                            });
-                        })}
-                        value={this.state.valueButtons}>
-                        <ToggleButton style={styles.toggleButton} icon="sort-alphabetical" value="letters" onPress={() => { }}
-                            color={(this.state.valueButtons === 'letters') ? colors.APP_MAIN : colors.APP_INACTIVE} />
-                        <ToggleButton style={styles.toggleButton} icon="store-24-hour" value="open" onPress={() => { }}
-                            color={(this.state.valueButtons === 'open') ? colors.APP_MAIN : colors.APP_INACTIVE} />
-                        <ToggleButton style={styles.toggleButton} icon="sale" value="sales" onPress={() => { }}
-                            color={(this.state.valueButtons === 'sales') ? colors.APP_MAIN : colors.APP_INACTIVE} />
-                    </ToggleButton.Group>
-                </View>
-                
+                        <ToggleButton.Group
+                            onValueChange={value => this.handleButtons(value, () => {
+                                this.setState({
+                                    sortText: (value === 'open') ? 'Abierto/Cerrado'
+                                        : (value === 'letters') ? 'Orden Alfabético' : 'Promociones'
+                                });
+                            })}
+                            value={this.state.valueButtons}>
+                            <ToggleButton style={styles.toggleButton} icon="sort-alphabetical" value="letters" onPress={() => { }}
+                                color={(this.state.valueButtons === 'letters') ? colors.APP_MAIN : colors.APP_INACTIVE} />
+                            <ToggleButton style={styles.toggleButton} icon="store-24-hour" value="open" onPress={() => { }}
+                                color={(this.state.valueButtons === 'open') ? colors.APP_MAIN : colors.APP_INACTIVE} />
+                            <ToggleButton style={styles.toggleButton} icon="sale" value="sales" onPress={() => { }}
+                                color={(this.state.valueButtons === 'sales') ? colors.APP_MAIN : colors.APP_INACTIVE} />
+                        </ToggleButton.Group>
+                    </View>
 
-                <AnimatedList
-                    onScroll={Animated.event(
-                        [
-                            {
-                                nativeEvent: { contentOffset: { y: this.state.animatedValue } },
-                            },
-                        ],
-                        { useNativeDriver: true }
-                    )}
-                />
+                    {(this.state.areStores) ?
+
+                        <AnimatedList
+                            onScroll={Animated.event(
+                                [
+                                    {
+                                        nativeEvent: { contentOffset: { y: this.state.animatedValue } },
+                                    },
+                                ],
+                                { useNativeDriver: true }
+                            )}
+                        />
+                        :
+                        <View style={styles.viewImage}>
+                            <Image source={require('../../../icons/noStore.png')} style={styles.image} />
+                            <Text style={styles.infoImage}>Actualmente no hay locales adheridos</Text>
+                        </View>
+                    }
                 </Animated.View>
             </View>
         );
@@ -181,9 +188,26 @@ const styles = StyleSheet.create({
         height: sizes.hp('69%'),
         width: '100%',
     },
-    headerWrapper : {
+    headerWrapper: {
         width: '100%',
         marginTop: sizes.hp('24%')
     },
-    
+    viewImage: {
+        justifyContent: 'center',
+        margin: 20,
+        marginTop: sizes.hp('48%'),
+        top: sizes.hp('-40%')
+    },
+    image: {
+        width: 170,
+        height: 170,
+        marginBottom: sizes.hp('2%'),
+        alignSelf: 'center',
+    },
+    infoImage: {
+        fontSize: 17,
+        fontWeight: 'bold',
+        justifyContent: 'center',
+        textAlign: 'center',
+    },
 })

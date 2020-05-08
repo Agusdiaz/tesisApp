@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, Text, VirtualizedList, RefreshControl, ActivityIndicator } from 'react-native';
+import { StyleSheet, View, Text, VirtualizedList, RefreshControl, ActivityIndicator, Image } from 'react-native';
 import { appStyles, colors, sizes } from '../../../index.styles';
 import OrderCardShop from '../../commons/orderCardShop'
 import { Surface, ToggleButton } from 'react-native-paper';
@@ -23,6 +23,7 @@ class HomeShopScreen extends Component {
             refreshing: false, //cuando funcione bien -> true
             valueButtons: 'time',
             sortText: 'Orden de llegada',
+            areOrders: false,
         }
         this.GetData();
     }
@@ -86,35 +87,45 @@ class HomeShopScreen extends Component {
                 </Surface>
 
                 <View style={{ flexDirection: 'row', justifyContent: 'center', width: sizes.wp('100%') }}>
-                    <Text numberOfLines={2} style={{ width:'70%', fontSize: 15, textAlign: 'left', left: sizes.wp('1%'), bottom: sizes.hp('-1.5%') }}>
+                    <Text numberOfLines={2} style={{ width: '70%', fontSize: 15, textAlign: 'left', left: sizes.wp('1%'), bottom: sizes.hp('-1.5%') }}>
                         Ordenar por: {this.state.sortText}
-                            </Text>
+                    </Text>
 
                     <ToggleButton.Group
-                       onValueChange={value => this.handleButtons(value, () => {
-                        this.setState({
-                            sortText: (value === 'time') ? 'Orden de llegada'
-                                : 'Más productos pedidos'
-                        });
-                    })}
-                    value={this.state.valueButtons}>
-                        <ToggleButton style={styles.toggleButton} icon="timelapse" value="time" 
-                        color= {(this.state.valueButtons === 'time') ? colors.APP_MAIN : colors.APP_INACTIVE}/>
-                        <ToggleButton style={styles.toggleButton} icon="shopping" value="products" 
-                        color= {(this.state.valueButtons === 'products') ? colors.APP_MAIN : colors.APP_INACTIVE}/>
+                        onValueChange={value => this.handleButtons(value, () => {
+                            this.setState({
+                                sortText: (value === 'time') ? 'Orden de llegada'
+                                    : 'Más productos pedidos'
+                            });
+                        })}
+                        value={this.state.valueButtons}>
+                        <ToggleButton style={styles.toggleButton} icon="timelapse" value="time"
+                            color={(this.state.valueButtons === 'time') ? colors.APP_MAIN : colors.APP_INACTIVE} />
+                        <ToggleButton style={styles.toggleButton} icon="shopping" value="products"
+                            color={(this.state.valueButtons === 'products') ? colors.APP_MAIN : colors.APP_INACTIVE} />
                     </ToggleButton.Group>
                 </View>
 
-                <VirtualizedList
-                    style={styles.list}
-                    ItemSeparatorComponent={this.renderSeparator}
-                    refreshControl={<RefreshControl refreshing={this.state.refreshing} onRefresh={this.onRefresh.bind(this)} />}
-                    data={this.state.dataSource}
-                    initialNumToRender={0}
-                    renderItem={({ item }) => <OrderCardShop />}
-                    keyExtractor={item => item.key}
-                    getItemCount={getItemCount}
-                    getItem={getItem} />
+                {(this.state.areOrders) ?
+
+                    <VirtualizedList
+                        style={styles.list}
+                        ItemSeparatorComponent={this.renderSeparator}
+                        refreshControl={<RefreshControl refreshing={this.state.refreshing} onRefresh={this.onRefresh.bind(this)} />}
+                        data={this.state.dataSource}
+                        initialNumToRender={0}
+                        renderItem={({ item }) => <OrderCardShop />}
+                        keyExtractor={item => item.key}
+                        getItemCount={getItemCount}
+                        getItem={getItem} />
+
+                    :
+
+                    <View style={styles.viewImage}>
+                        <Image source={require('../../../icons/noOrderShop.png')} style={styles.image} />
+                        <Text style={styles.infoImage}>Actualmente no tenés pedidos que entregar</Text>
+                    </View>
+                }
 
             </View>
         );
@@ -137,6 +148,24 @@ const styles = StyleSheet.create({
     toggleButton: {
         right: sizes.wp('1%'),
         marginLeft: sizes.wp('2%'),
+    },
+    viewImage: {
+        justifyContent: 'center',
+        margin: 20,
+        marginTop: sizes.hp('44.5%'),
+        top: sizes.hp('-31%')
+    },
+    image: {
+        width: 170,
+        height: 170,
+        marginBottom: sizes.hp('2%'),
+        alignSelf: 'center',
+    },
+    infoImage: {
+        fontSize: 17,
+        fontWeight: 'bold',
+        justifyContent: 'center',
+        textAlign: 'center',
     },
 })
 
