@@ -27,7 +27,7 @@ const appStyles = StyleSheet.create({
 		backgroundColor: colors.APP_BACKGR,
 		alignItems: 'center',
         justifyContent: 'center',
-        marginTop: (Platform.OS === 'ios') ? 10 : 15, 
+        //marginTop: (Platform.OS === 'ios') ? 10 : 15, 
     },
 })
 

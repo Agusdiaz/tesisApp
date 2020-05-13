@@ -11,7 +11,7 @@ const DATA = [
     { key: '1' }, { key: '2' }, { key: '3' }, { key: '4' }, { key: '5' }, { key: '6' }, { key: '7' },
 ]
 
-const HEADER_EXPANDED_HEIGHT = (DATA.length == 2) ? 28 : 205
+const HEADER_EXPANDED_HEIGHT = 205 //(DATA.length == 2) ? 28 : 205
 const HEADER_COLLAPSED_HEIGHT = -205
 
 const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
@@ -185,7 +185,7 @@ const styles = StyleSheet.create({
     list: {
         marginTop: sizes.hp('0%'),
         //marginBottom: sizes.hp('0.5%'),
-        height: sizes.hp('69%'),
+        height: (DATA.length == 2) ? sizes.hp('69%') : sizes.hp('70%'),
         width: '100%',
     },
     headerWrapper: {

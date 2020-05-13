@@ -23,7 +23,8 @@ class HomeShopScreen extends Component {
             refreshing: false, //cuando funcione bien -> true
             valueButtons: 'time',
             sortText: 'Orden de llegada',
-            areOrders: false,
+            areOrders: true,
+            amountOrders: 10,
         }
         this.GetData();
     }
@@ -83,7 +84,7 @@ class HomeShopScreen extends Component {
             <View style={appStyles.container}>
 
                 <Surface style={styles.surface}>
-                    <Text style={{ fontSize: 20, color: colors.APP_BACKGR, fontWeight: 'bold' }}>PEDIDOS PENDIENTES</Text>
+                    <Text style={{ fontSize: 20, color: colors.APP_BACKGR, fontWeight: 'bold' }}>TENÉS {this.state.amountOrders} PEDIDOS PENDIENTES</Text>
                 </Surface>
 
                 <View style={{ flexDirection: 'row', justifyContent: 'center', width: sizes.wp('100%') }}>

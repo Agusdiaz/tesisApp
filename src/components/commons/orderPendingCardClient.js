@@ -2,20 +2,13 @@ import React, { Component } from 'react';
 import { StyleSheet, Text, ImageBackground, View } from 'react-native';
 import { colors, sizes } from '../../index.styles';
 import { Button, Card, Title, Dialog, IconButton, Divider, FAB, TextInput } from 'react-native-paper';
-import { Fab } from 'material-bread';
 
-const orderNumber = props => <Text style={styles.rightText}> 10 </Text>
-
-const total = props => <Text style={styles.rightText}> $10 </Text>
-
-const time = props => <Text style={styles.rightText}> 20 min </Text>
-
-class OrderCardShop extends Component {
+class OrderPendingCardClient extends Component {
     constructor() {
         super();
         this.state = { //PONER METODO PARA SABER EL ESTADO
             orderNumber: 7856,
-            isReady: true,
+            isReady: false,
             total: '$1500',
             time: '20 min',
             mailShare:'',
@@ -36,8 +29,8 @@ class OrderCardShop extends Component {
 
         const orderNumber = props => <Text style={styles.rightText}> {this.state.orderNumber} </Text>
 
-        const stateOrder = props => (this.state.isReady) ? <Button style={{ borderRadius: 20, width: sizes.wp('30%'), marginRight: sizes.wp('2%') }} mode="contained" color={colors.APP_GREEN} labelStyle={{ fontSize: 11, color: '#FFF' }} contentStyle={{ width: sizes.wp('50%'), alignSelf: 'center' }} >
-            Listo </Button> : <Button style={{ borderRadius: 20, width: sizes.wp('30%'), marginRight: sizes.wp('2%') }} mode="contained" color={colors.APP_PENDING} labelStyle={{ fontSize: 11, color: '#FFF' }} contentStyle={{ width: sizes.wp('50%'), alignSelf: 'center' }} >
+        const stateOrder = props => (this.state.isReady) ? <Button style={{ borderRadius: 20, width: sizes.wp('30%'), marginRight: sizes.wp('3%') }} mode="contained" color={colors.APP_GREEN} labelStyle={{ fontSize: 11, color: '#FFF' }} contentStyle={{ width: sizes.wp('50%'), alignSelf: 'center' }} >
+            Listo </Button> : <Button style={{ borderRadius: 20, width: sizes.wp('30%'), marginRight: sizes.wp('3%') }} mode="contained" color={colors.APP_PENDING} labelStyle={{ fontSize: 11, color: '#FFF' }} contentStyle={{ width: sizes.wp('50%'), alignSelf: 'center' }} >
                 En proceso </Button>
 
         const total = props => <Text style={styles.rightText}> {this.state.total} </Text>
@@ -52,7 +45,7 @@ class OrderCardShop extends Component {
                 
                 <ImageBackground source={require('../../icons/ticket.jpg')} style={styles.imageOutside} imageStyle={styles.imageInside} >
                     
-                    <Card.Title style={{marginTop: 10}} titleStyle={styles.leftText} title="Número del pedido:" right={orderNumber} />
+                    <Card.Title style={styles.cardTitle} titleStyle={styles.leftText} title="Número del pedido:" right={orderNumber} />
                     <Divider style={styles.divider} />
                     <Card.Title style={styles.cardTitle} titleStyle={styles.leftText} title="Estado:" right={stateOrder} />
                     <Divider style={styles.divider} />
@@ -82,7 +75,7 @@ class OrderCardShop extends Component {
                         </Button>
                         
                         <FAB small icon='share-variant' color={'#FFFFFF'} 
-                        style={{backgroundColor: (!this.state.isReady) ? colors.APP_MAIN : colors.APP_INACTIVE_FAB, left: sizes.hp('5%')}}
+                        style={{backgroundColor: (!this.state.isReady) ? colors.APP_MAIN : colors.APP_INACTIVE_FAB, left: sizes.hp('6%')}}
                         disabled={this.state.isReady}
                         onPress={this._showDialogShare}
                         />
@@ -164,4 +157,4 @@ const styles = StyleSheet.create({
 	},  
 });
 
-export default OrderCardShop;
+export default OrderPendingCardClient;

@@ -148,8 +148,8 @@ export default class ProfileClientScreen extends Component {
                                     icon="room-service-outline"
                                     mode="contained"
                                     color={colors.APP_MAIN}
-                                    onPress={() => Actions.lastorders()}>
-                                    Últimos pedidos
+                                    onPress={() => Actions.ordersclient()}>
+                                    Mis pedidos
  				                </Button>
                                 <Button
                                     style={{ margin: sizes.hp('3%'), width: '50%' }}
@@ -157,7 +157,7 @@ export default class ProfileClientScreen extends Component {
                                     mode="contained"
                                     color={colors.APP_MAIN}
                                     onPress={() => Actions.favouritesshops()}>
-                                    Favoritos
+                                    Mis Favoritos
  				                </Button>
                                 <Button
                                     style={{ margin: sizes.hp('3%'), width: '50%' }}
@@ -289,18 +289,16 @@ export default class ProfileClientScreen extends Component {
                                 }}>
                                 Confirmar
                             </Button>
-
-                            <Dialog
-                                visible={this.state.visibleDialogEditProfile}
-                                onDismiss={this._hideDialogEditProfile}>
-                                <Dialog.Title style={{ alignSelf: 'center' }}>Error al querer cambiar la contraseña</Dialog.Title>
-                                <Dialog.Actions>
-                                    <Button style={{ marginRight: sizes.wp('3%') }} color={'#000000'} onPress={this._hideDialogEditProfile}>Ok</Button>
-                                </Dialog.Actions>
-                            </Dialog>
-
                         </View>
                     </KeyboardAvoidingView>
+                    <Dialog
+                        visible={this.state.visibleDialogEditProfile}
+                        onDismiss={this._hideDialogEditProfile}>
+                        <Dialog.Title style={{ alignSelf: 'center' }}>Error al querer cambiar la contraseña</Dialog.Title>
+                        <Dialog.Actions>
+                            <Button style={{ marginRight: sizes.wp('3%') }} color={'#000000'} onPress={this._hideDialogEditProfile}>Ok</Button>
+                        </Dialog.Actions>
+                    </Dialog>
                 </Modal>
             </View>
         );
@@ -356,7 +354,7 @@ const styles = StyleSheet.create({
 
     },
     modalView: {
-        marginTop: sizes.hp('10%'),
+        //marginTop: sizes.hp('5%'),
         margin: sizes.hp('2%'),
         backgroundColor: "#ffffff",
         borderRadius: 20,

@@ -3,7 +3,7 @@ import { StyleSheet, Text, Image, View, VirtualizedList, RefreshControl, Activit
 import { Button } from 'react-native-paper';
 import { appStyles, colors, sizes } from '../../../index.styles';
 import { Surface } from 'react-native-paper';
-import OrderCardClient from '../../commons/orderCardClient';
+import OrderDeliveredCardClient from '../../commons/orderDeliveredCard';
 import ArrowButton from '../../commons/arrowButton'
 
 const getItem = (data, index) => {
@@ -17,12 +17,12 @@ const getItemCount = (data) => {
     return 10 ;
 }
 
-class LastOrdersClientScreen extends Component { //EL ESTADO DEL PEDIDO TIENE QUE SER 'ENTREGADO'
+class OrdersClientScreen extends Component { //EL ESTADO DEL PEDIDO TIENE QUE SER 'ENTREGADO'
 
     constructor() {
         super()
         this.state = {
-            areOrders: false,
+            areOrders: true,
             refreshing: false,
         }
         this.GetData();
@@ -70,8 +70,8 @@ class LastOrdersClientScreen extends Component { //EL ESTADO DEL PEDIDO TIENE QU
 
                 <ArrowButton rute='navBarClientProfile' />
 
-                <Surface style={[styles.surface, {top: (this.state.areOrders) ? sizes.hp('12.8%') : (this.state.areOrders && !this.state.refreshing) ? sizes.hp('-18.5%') : sizes.hp('12.8%')}]}>
-                    <Text style={{ fontSize: 20, color: colors.APP_BACKGR, fontWeight: 'bold', textAlign: 'center' }}>ESTOS SON TUS PEDIDOS DENTRO DE LAS ÚLTIMAS 48HS</Text>
+                <Surface style={[styles.surface, {top: (this.state.areOrders) ? sizes.hp('12.8%') : (this.state.areOrders && !this.state.refreshing) ? sizes.hp('-20%') : sizes.hp('12.8%')}]}>
+                    <Text style={{ fontSize: 20, color: colors.APP_BACKGR, fontWeight: 'bold', textAlign: 'center' }}>ESTE ES TU HISTORIAL DE PEDIDOS</Text>
                 </Surface>
                 
                 <View style={{ flex: 1, marginTop: 145 }}>
@@ -85,8 +85,8 @@ class LastOrdersClientScreen extends Component { //EL ESTADO DEL PEDIDO TIENE QU
 
                 <ArrowButton rute='navBarClientProfile' />
 
-                <Surface style={[styles.surface, {top: (this.state.areOrders) ? sizes.hp('12.8%') : sizes.hp('-18.5%')}]}>
-                    <Text style={{ fontSize: 20, color: colors.APP_BACKGR, fontWeight: 'bold', textAlign: 'center' }}>ESTOS SON TUS PEDIDOS DENTRO DE LAS ÚLTIMAS 48HS</Text>
+                <Surface style={[styles.surface, {top: (this.state.areOrders) ? sizes.hp('12.8%') : sizes.hp('-20%')}]}>
+                    <Text style={{ fontSize: 20, color: colors.APP_BACKGR, fontWeight: 'bold', textAlign: 'center' }}>ESTE ES TU HISTORIAL DE PEDIDOS</Text>
                 </Surface>
 
                 {(this.state.areOrders) ?
@@ -96,7 +96,7 @@ class LastOrdersClientScreen extends Component { //EL ESTADO DEL PEDIDO TIENE QU
                         refreshControl={<RefreshControl refreshing={this.state.refreshing} onRefresh={this.onRefresh.bind(this)} />}
                         data={this.state.dataSource}
                         initialNumToRender={0}
-                        renderItem={({ item }) => <OrderCardClient />}
+                        renderItem={({ item }) => <OrderDeliveredCardClient />}
                         keyExtractor={item => item.key}
                         getItemCount={getItemCount}
                         getItem={getItem} />
@@ -141,4 +141,4 @@ const styles = StyleSheet.create({
     },
 })
 
-export default LastOrdersClientScreen;
+export default OrdersClientScreen;

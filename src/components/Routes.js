@@ -8,7 +8,7 @@ import NavBarShop from './screens/navBar/navBarShop'
 import LogSign from './screens/log-sign/log-sign'
 import MakeOrder from './screens/orderProcess/stepIndicator'
 import ShopInformation from './screens/shopView/shopInformation'
-import LastOrders from './screens/orderView/lastOrdersClient'
+import OrdersClients from './screens/orderView/ordersClient'
 import SearchShopByName from './screens/shopView/searchShopByName'
 import SearchShopByAddress from './screens/shopView/searchShopByAddress'
 import SearchShopBySale from './screens/shopView/searchShopBySale'
@@ -27,7 +27,7 @@ export default class Routes extends Component {
                     <Scene key="makeorder" component={MakeOrder} title="MakeOrder" />
                     <Scene key="navbarshop" component={NavBarShop} title="NavBarShop" />
                     <Scene key="shopinformation" component={ShopInformation} title="ShopInformation" />
-                    <Scene key="lastorders" component={LastOrders} title="LastOrders" />
+                    <Scene key="ordersclient" component={OrdersClients} title="OrdersClients" />
                     <Scene key="searchshopname" component={SearchShopByName} title="SearchShopByName" />
                     <Scene key="searchshopaddress" component={SearchShopByAddress} title="SearchShopByAddress" />
                     <Scene key="searchshopsale" component={SearchShopBySale} title="SearchShopBySale" />

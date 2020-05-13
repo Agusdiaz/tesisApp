@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { StyleSheet, Text, Image, View, VirtualizedList, RefreshControl, ActivityIndicator } from 'react-native';
 import { Surface } from 'react-native-paper';
 import { appStyles, colors, sizes } from '../../../index.styles';
-import OrderCardClient from '../../commons/orderCardClient';
+import OrderPendingCardClient from '../../commons/orderPendingCardClient';
 
 const getItem = (data, index) => {
     return {
@@ -20,7 +20,7 @@ class PendingOrdersClientScreen extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            arePendings: false,
+            arePendings: true,
             refreshing: false //cuando funcione bien -> true
         }
         this.GetData();
@@ -84,7 +84,7 @@ class PendingOrdersClientScreen extends Component {
                         refreshControl={<RefreshControl refreshing={this.state.refreshing} onRefresh={this.onRefresh.bind(this)} />}
                         data={this.state.dataSource}
                         initialNumToRender={0}
-                        renderItem={({ item }) => <OrderCardClient />}
+                        renderItem={({ item }) => <OrderPendingCardClient />}
                         keyExtractor={item => item.key}
                         getItemCount={getItemCount}
                         getItem={getItem} />

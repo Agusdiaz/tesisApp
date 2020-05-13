@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, VirtualizedList, Text, ActivityIndicator, Alert } from 'react-native';
+import { StyleSheet, View, VirtualizedList, Text, ActivityIndicator, Image, } from 'react-native';
 import { appStyles, colors, sizes } from '../../../index.styles'
 import { Searchbar } from 'react-native-paper';
 import ArrowButton from '../../commons/arrowButton'
@@ -28,6 +28,7 @@ export default class SearchShopByNameScreen extends Component {
         this.state = {
             isLoading: false,
             searchQuery: '',
+            areStores: true,
         };
         this.arrayholder = [];
     }
@@ -79,16 +80,25 @@ export default class SearchShopByNameScreen extends Component {
                     value={searchQuery}
                 />
 
-                <VirtualizedList
-                    style={styles.list}
-                    ItemSeparatorComponent={this.renderSeparator}
-                    data={DATA}
-                    initialNumToRender={0}
-                    renderItem={({ item }) => <ShopCard />}
-                    keyExtractor={item => item.key}
-                    getItemCount={getItemCount}
-                    getItem={getItem}
-                />
+{(this.state.areStores) ?
+                   <VirtualizedList
+                   style={styles.list}
+                   ItemSeparatorComponent={this.renderSeparator}
+                   data={DATA}
+                   initialNumToRender={0}
+                   renderItem={({ item }) => <ShopCard />}
+                   keyExtractor={item => item.key}
+                   getItemCount={getItemCount}
+                   getItem={getItem}
+               />
+                    :
+                    <View style={styles.viewImage}>
+                        <Image source={require('../../../icons/noStore.png')} style={styles.image} />
+                        <Text style={styles.infoImage}>No se encontraron locales con ese nombre</Text>
+                    </View>
+                }
+
+                
             </View>
         );
     }
@@ -106,5 +116,23 @@ const styles = StyleSheet.create({
         top: sizes.hp('12%'),
         marginBottom: sizes.hp('14%'),
         width: '100%'
+    },
+    viewImage: {
+        justifyContent: 'center',
+        margin: 20,
+        marginTop: sizes.hp('45%'),
+        top: sizes.hp('-40%')
+    },
+    image: {
+        width: 170,
+        height: 170,
+        marginBottom: sizes.hp('2%'),
+        alignSelf: 'center',
+    },
+    infoImage: {
+        fontSize: 17,
+        fontWeight: 'bold',
+        justifyContent: 'center',
+        textAlign: 'center',
     },
 })

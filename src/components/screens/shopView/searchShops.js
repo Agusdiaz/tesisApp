@@ -23,7 +23,7 @@ export default class SearchShopsScreen extends Component {
 
                 <TouchableOpacity style={styles.touchable} onPress={() => Actions.searchshopsale()}>
                     <ImageBackground source={require('../../../icons/sale.jpg')} style={styles.imageContainerSale} imageStyle={styles.imageInside} resizeMode={'stretch'}>
-                        <Text style={styles.text}>BUSCAR PROMOCIONES</Text>
+                        <Text style={styles.text}>ENCONTRÁ PROMOCIONES</Text>
                     </ImageBackground>
                 </TouchableOpacity>
 

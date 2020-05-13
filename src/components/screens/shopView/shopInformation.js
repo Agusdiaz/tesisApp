@@ -16,7 +16,7 @@ class ShopInformationScreen extends Component {
     }
 
     setIsOpen = (stateIsOpen) => {
-        this.setState({ isOpen: stateIsOpen})
+        this.setState({ isOpen: stateIsOpen })
     }
 
     render() {
@@ -50,7 +50,7 @@ class ShopInformationScreen extends Component {
 
                 {(this.state.selectedTab === 0) ?
 
-                    <ShopCardClient callbackFromParent={this.setIsOpen}/>
+                    <ShopCardClient callbackFromParent={this.setIsOpen} />
 
                     : (this.state.selectedTab === 1) ?
 
@@ -78,7 +78,7 @@ const styles = StyleSheet.create({
         width: sizes.wp('52%'),
         alignSelf: 'center',
         justifyContent: 'flex-start',
-        top: 1
+        top: sizes.hp('1.2%')
     },
 });
 
