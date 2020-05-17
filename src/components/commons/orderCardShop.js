@@ -8,6 +8,7 @@ class OrderCardShop extends Component {
     constructor() {
         super();
         this.state = {
+            isTakeAway: true,
             orderNumber: 7856,
             mail: 'juan@mail.com',
             total: '$1500',
@@ -36,6 +37,10 @@ class OrderCardShop extends Component {
 
             <Card style={styles.cardContent}>
                 <ImageBackground source={require('../../icons/order.jpg')} style={styles.imageOutside} imageStyle={styles.imageInside} >
+                    <Button mode='outlined' style={styles.takeAwayButton} color={colors.APP_MAIN}>
+                     {(this.state.isTakeAway) ? 'Para Llevar' : 'Para Comer Aquí'}   
+                    </Button>
+                <Divider style={styles.divider} />
                     <Card.Title style={styles.cardTitle} titleStyle={styles.leftText} title="Número del pedido:" right={OrderNumber} rightStyle={styles.rightSide} />
                     <Divider style={styles.divider} />
                     <Card.Title style={styles.cardTitle} titleStyle={styles.leftText} title="Mail del cliente:" right={User} rightStyle={styles.rightSide}/>
@@ -87,7 +92,7 @@ const styles = StyleSheet.create({
         elevation: 5,
     },
     cardTitle: {
-        margin: -5
+        margin: -9
     },
     divider: {
 
@@ -111,6 +116,12 @@ const styles = StyleSheet.create({
         opacity: 0.27,
         borderRadius: 15
     },
+    takeAwayButton: {
+        width: sizes.wp('50%'), 
+        alignSelf: 'center', 
+        borderColor: colors.APP_MAIN,
+        borderWidth: 2
+    }
 });
 
 export default OrderCardShop;

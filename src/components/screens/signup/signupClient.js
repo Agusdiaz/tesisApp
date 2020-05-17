@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, Text, KeyboardAvoidingView, Platform, TouchableOpacity } from 'react-native';
-import { TextInput, Button, Portal, Dialog } from 'react-native-paper';
+import { StyleSheet, View, Text, KeyboardAvoidingView, Platform, TouchableOpacity, Alert } from 'react-native';
+import { TextInput, Button, Dialog } from 'react-native-paper';
 import { appStyles, colors, sizes } from '../../../index.styles';
 import ArrowButton from '../../commons/arrowButton'
 import { Actions } from 'react-native-router-flux';
@@ -20,9 +20,11 @@ class SignUpClientScreen extends Component {
 		}
 	}
 
-	signup = (firstName, lastName, email, password) => {
-		if (firstName == '' || lastName == '' || email == '' || password == '')
-			alert('Campos Incompletos')
+	signup = () => {
+		if (this.state.firstName == '' || this.state.lastName == '' || this.state.email == '' || this.state.password == '')
+			Alert.alert('Atención','Campos Incompletos')
+		else
+			this._showDialog()
 	}
 
 	_getDisabled() {
@@ -97,7 +99,7 @@ class SignUpClientScreen extends Component {
 					mode="contained"
 					color={colors.APP_MAIN}
 					//disabled="true"
-					onPress={this._showDialog}>
+					onPress={() => this.signup()}>
 					Registrarse
  				</Button>
 

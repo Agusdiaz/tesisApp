@@ -23,6 +23,10 @@ class ShopCardSummary extends Component {
         };
     }
 
+    nextStepParent = () => {
+        this.props.nextStepParent();
+    }
+
     render() {
 
         const LeftContent = props => (this.state.isOpen) ? <Button style={{ borderRadius: 20, width: 105, alignItems: 'center' }} mode="contained" color={colors.APP_GREEN} labelStyle={{ fontSize: 9, color: colors.APP_BACKGR }} >
@@ -132,15 +136,25 @@ class ShopCardSummary extends Component {
                             null
                         }
                     </View>
-
-                    <Button
-                        style={{ left: sizes.wp('10%'), width: '40%', }}
-                        icon="plus"
-                        mode="contained"
-                        color={colors.APP_MAIN}
-                        onPress={() => Actions.shopinformation()}>
-                        Detalles
+                    {(this.props.rute == 'chooseShop') ?
+                        <Button
+                            style={{ left: sizes.wp('10%'), width: '40%', }}
+                            icon="cart-outline"
+                            mode="contained"
+                            color={colors.APP_MAIN}
+                            onPress={this.nextStepParent}>
+                            Pedir Aca
+             </Button>
+                        :
+                        <Button
+                            style={{ left: sizes.wp('10%'), width: '40%', }}
+                            icon="plus"
+                            mode="contained"
+                            color={colors.APP_MAIN}
+                            onPress={() => Actions.shopinformation()}>
+                            Detalles
                 </Button>
+                    }
                 </Card.Actions>
             </Card>
         )

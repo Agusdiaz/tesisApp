@@ -96,7 +96,6 @@ const styles = StyleSheet.create({
         left: 0,
         right: 0,
         top: sizes.hp('5%'),
-
     },
     banner: {
         justifyContent: 'center',

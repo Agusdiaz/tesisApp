@@ -17,7 +17,8 @@ class OrderDeliveredCard extends Component {
 
         const orderNumber = props => <Text style={styles.rightText}> {this.state.orderNumber} </Text>
 
-        const stateOrder = props => <Button style={{ borderRadius: 20, width: sizes.wp('30%'), marginRight: sizes.wp('3%') }} mode="contained" color={colors.APP_DELIVERED} labelStyle={{ fontSize: 11, color: '#FFF' }} contentStyle={{ width: sizes.wp('50%'), alignSelf: 'center' }} >
+        const stateOrder = props => <Button style={{ borderRadius: 20, width: sizes.wp('30%'), marginRight: sizes.wp('3%') }} mode="contained" 
+        color={colors.APP_DELIVERED} labelStyle={{ fontSize: 11, color: '#FFF' }} contentStyle={{ width: sizes.wp('50%'), alignSelf: 'center' }} >
             Entregado </Button>
 
         const total = props => <Text style={styles.rightText}> {this.state.total} </Text>

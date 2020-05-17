@@ -17,6 +17,7 @@ class ShopCard extends Component {
         super(props);
         this.state = { //IMAGENES?
             name: 'Nombre del Local',
+            photo: 'https://picsum.photos/500',
             address: 'Lima 123',
             phoneNumber: '45897620',
             mail: 'local@mail.com',
@@ -84,7 +85,7 @@ class ShopCard extends Component {
             <Card style={styles.shopCard}>
                             <Card.Title style={{ margin: 8 }} leftStyle={{ right: sizes.wp('-4%') ,width: sizes.wp('72%'), alignItems: 'center'}} left={Name} />
                             <Divider />
-                            <Card.Cover source={{ uri: 'https://picsum.photos/500' }} />
+                            <Card.Cover source={{ uri: this.state.photo }} />
                             <Divider />
                             <Card.Title titleStyle={styles.leftText} title="Dirección:" right={Adress} rightStyle={styles.rightSide} />
                             <Divider />

@@ -102,7 +102,7 @@ class HomeShopScreen extends Component {
                         value={this.state.valueButtons}>
                         <ToggleButton style={styles.toggleButton} icon="timelapse" value="time"
                             color={(this.state.valueButtons === 'time') ? colors.APP_MAIN : colors.APP_INACTIVE} />
-                        <ToggleButton style={styles.toggleButton} icon="shopping" value="products"
+                        <ToggleButton style={styles.toggleButton} icon="sort-numeric" value="products" //icon="shopping"
                             color={(this.state.valueButtons === 'products') ? colors.APP_MAIN : colors.APP_INACTIVE} />
                     </ToggleButton.Group>
                 </View>
@@ -116,7 +116,7 @@ class HomeShopScreen extends Component {
                         data={this.state.dataSource}
                         initialNumToRender={0}
                         renderItem={({ item }) => <OrderCardShop />}
-                        keyExtractor={item => item.key}
+                        keyExtractor={item => item.id}
                         getItemCount={getItemCount}
                         getItem={getItem} />
 
@@ -135,8 +135,6 @@ class HomeShopScreen extends Component {
 
 const styles = StyleSheet.create({
     list: {
-        // marginTop: sizes.hp('0%'),
-        marginBottom: 10,
         width: '100%',
     },
     surface: {

@@ -1,27 +1,17 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, VirtualizedList, Text, ActivityIndicator, Image, } from 'react-native';
-import { appStyles, colors, sizes } from '../../../index.styles'
+import { StyleSheet, View, Text, ActivityIndicator, Image, FlatList } from 'react-native';
+import { appStyles, colors, sizes } from '../../../index.styles';
 import { Searchbar } from 'react-native-paper';
-import ArrowButton from '../../commons/arrowButton'
-import ShopCard from '../../commons/shopCardSummary'
+import Animated from 'react-native-reanimated';
+import ShopCardSummary from '../../commons/shopCardSummary'
 
-const DATA = [];
+const DATA = [
+    { key: '1' }, { key: '2' }, { key: '3' }, { key: '4' }, { key: '5' }, { key: '6' }, { key: '7' },
+]
 
-const getItem = (data, index) => {
-    if (data == null) {
-        return null
-    }
-    return {
-        id: Math.random().toString(12).substring(0),
-        title: `Item ${index + 1}`
-    }
-}
+const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
 
-const getItemCount = (data) => {
-    return 10;
-}
-
-export default class SearchShopByNameScreen extends Component {
+export default class ChooseShopScreen extends Component {
 
     constructor(props) {
         super(props);
@@ -29,8 +19,13 @@ export default class SearchShopByNameScreen extends Component {
             isLoading: false,
             searchQuery: '',
             areStores: true,
+            animatedValue: new Animated.Value(0),
         };
         this.arrayholder = [];
+    }
+
+    nextStepParent = () => {
+        this.props.nextStepParent();
     }
 
     _onChangeSearch = query => this.setState({ searchQuery: query });
@@ -49,7 +44,6 @@ export default class SearchShopByNameScreen extends Component {
         if (this.state.isLoading) { //ESTA BUSCANDO
             return (
                 <View style={appStyles.container}>
-                    <ArrowButton rute='navBarClientSearch' />
 
                     <Searchbar
                         style={styles.searchInput}
@@ -69,7 +63,6 @@ export default class SearchShopByNameScreen extends Component {
         const { searchQuery } = this.state;
         return (
             <View style={appStyles.container}>
-                <ArrowButton rute='navBarClientSearch' />
 
                 <Searchbar
                     style={styles.searchInput}
@@ -81,15 +74,16 @@ export default class SearchShopByNameScreen extends Component {
                 />
 
                 {(this.state.areStores) ?
-                    <VirtualizedList
+                    <AnimatedFlatList
                         style={styles.list}
                         ItemSeparatorComponent={this.renderSeparator}
                         data={DATA}
                         initialNumToRender={0}
-                        renderItem={({ item }) => <ShopCard />}
-                        keyExtractor={item => item.key}
-                        getItemCount={getItemCount}
-                        getItem={getItem}
+                        onScroll={this.props.onScroll}
+                        scrollEventThrottle={16}
+                        renderItem={({ item }) => <ShopCardSummary rute={'chooseShop'} nextStepParent={this.nextStepParent} />}
+                        ItemSeparatorComponent={this.renderSeparator}
+                        keyExtractor={(item, i) => i.toString()}
                     />
                     :
                     <View style={styles.viewImage}>
@@ -97,8 +91,6 @@ export default class SearchShopByNameScreen extends Component {
                         <Text style={styles.infoImage}>No se encontraron locales con ese nombre</Text>
                     </View>
                 }
-
-
             </View>
         );
     }
@@ -107,15 +99,16 @@ export default class SearchShopByNameScreen extends Component {
 const styles = StyleSheet.create({
     searchInput: {
         position: 'absolute',
-        top: sizes.hp('5.5%'),
-        width: sizes.wp('78%'),
-        left: sizes.wp('20%'),
+        top: sizes.hp('2%'),
+        width: sizes.wp('98%'),
+        //left: sizes.wp('20%'),
         fontSize: sizes.TEXT_INPUT,
     },
     list: {
-        top: sizes.hp('12%'),
-        marginBottom: sizes.hp('14%'),
-        width: '100%'
+        top: sizes.hp('9%'),
+        marginBottom: sizes.hp('1%'),
+        width: sizes.wp('100%'),
+        //height: sizes.hp('80%'),
     },
     viewImage: {
         justifyContent: 'center',

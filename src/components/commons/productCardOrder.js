@@ -2,24 +2,33 @@ import React, { Component } from 'react';
 import { StyleSheet, Text, View, Image } from 'react-native';
 import { colors, sizes } from '../../index.styles';
 //import { Card, CardHeader, Avatar, IconButton } from 'material-bread'
-import { Card, FAB, Modal, Portal } from 'react-native-paper';
+import { Surface, Card, FAB, Portal, Modal } from 'react-native-paper';
 import TextTicker from 'react-native-text-ticker';
 import ProductDetails from '../commons/productDetails'
-import { Actions } from 'react-native-router-flux';
 
-class ProductCard extends Component {
+class ProductCardOrder extends Component {
     constructor(props) {
         super(props);
         this.state = {
             name: 'Nombre del Producto',
             photo: 'https://picsum.photos/400',
             price: '$700',
+            amount: 0,
             visibleModal: false,
         }
     }
 
     _showModal = () => this.setState({ visibleModal: true });
     _hideModal = () => this.setState({ visibleModal: false });
+
+    addAmount() {
+        this.setState({ amount: this.state.amount + 1 })
+    }
+
+    lessAmount() {
+        if (this.state.amount > 0)
+            this.setState({ amount: this.state.amount - 1 })
+    }
 
     render() {
 
@@ -37,20 +46,44 @@ class ProductCard extends Component {
 
         return (
             <View>
-
                 <Card style={styles.productCard}>
                     <Card.Title left={Pic} leftStyle={styles.leftSide} right={NamePrice} rightStyle={styles.rightSide} />
+
                     <Card.Actions style={styles.actionStyles}>
-                        <FAB
-                            style={{ backgroundColor: '#FFFFFF', borderColor: colors.APP_MAIN, borderWidth: 2, marginLeft: sizes.wp('17%') }}
-                            color={colors.APP_MAIN}
-                            icon="eye"
-                            small
-                            onPress={this._showModal}
-                        />
+
+                        <View style={{ flexDirection: 'row', alignItems: 'center', }}>
+
+                            <FAB
+                                style={styles.fabAmount}
+                                color={colors.APP_MAIN}
+                                small
+                                icon="minus"
+                                onPress={() => this.lessAmount()}
+                            />
+
+                            <Surface style={styles.surfaceAmount}>
+                                <Text>{this.state.amount}</Text>
+                            </Surface>
+
+                            <FAB
+                                style={styles.fabAmount}
+                                color={colors.APP_MAIN}
+                                small
+                                icon="plus"
+                                onPress={() => this.addAmount()}
+                            />
+
+                            <FAB
+                                style={{ backgroundColor: '#FFFFFF', borderColor: colors.APP_MAIN, borderWidth: 2, marginLeft: sizes.wp('17%') }}
+                                color={colors.APP_MAIN}
+                                small
+                                icon="eye"
+                                onPress={this._showModal}
+                            />
+                        </View>
+
                     </Card.Actions>
                 </Card>
-
                 <Portal>
                     <Modal contentContainerStyle={styles.modalView} visible={this.state.visibleModal} onDismiss={this._hideModal}>
                         <ProductDetails hideModalFromChild={this._hideModal} />
@@ -107,9 +140,27 @@ const styles = StyleSheet.create({
         fontSize: 16,
     },
     actionStyles: {
-        right: sizes.wp('-60%'),
+        right: sizes.wp('-41%'),
         bottom: sizes.hp('2%')
+    },
+    fabAmount: {
+        backgroundColor: '#FFFFFF',
+        borderColor: colors.APP_MAIN,
+        borderWidth: 2,
+        width: 30,
+        height: 30,
+        alignItems: "center",
+        justifyContent: "center",
+    },
+    surfaceAmount: {
+        width: 32,
+        height: 32,
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginRight: sizes.wp('2%'),
+        marginLeft: sizes.wp('2%'),
+        borderRadius: 8,
     },
 });
 
-export default ProductCard;
+export default ProductCardOrder;

@@ -3,7 +3,7 @@ import { StyleSheet, View, Text, TouchableOpacity, ImageBackground, FlatList, Im
 import { Surface, ToggleButton, } from 'react-native-paper';
 import { appStyles, colors, sizes } from '../../../index.styles';
 import ShopCardSummary from '../../commons/shopCardSummary'
-import ProductCard from '../../commons/productCard'
+import ProductCard from '../../commons/productCardOrder'
 import { Actions } from 'react-native-router-flux';
 import Animated from 'react-native-reanimated';
 
@@ -85,9 +85,9 @@ export default class AnimatedHeader extends React.Component {
             <View style={appStyles.container}>
 
                 <Animated.View style={[styles.headerWrapper, { transform: [{ translateY }] }]}>
-                    <TouchableOpacity style={styles.touchable}>
+                    <TouchableOpacity style={styles.touchable} onPress={() => Actions.makeorder()}>
                         <ImageBackground source={require('../../../icons/tabla.jpg')} style={styles.imageContainer} imageStyle={styles.imageInside} resizeMode={'stretch'}>
-                            <Text style={styles.text}>HAZ TU PEDIDO</Text>
+                            <Text style={styles.text}>PEDÍ AHORA</Text>
                         </ImageBackground>
                     </TouchableOpacity>
 
@@ -104,16 +104,14 @@ export default class AnimatedHeader extends React.Component {
                             onValueChange={value => this.handleButtons(value, () => {
                                 this.setState({
                                     sortText: (value === 'open') ? 'Abierto/Cerrado'
-                                        : (value === 'letters') ? 'Orden Alfabético' : 'Promociones'
+                                        : 'Orden Alfabético'
                                 });
                             })}
                             value={this.state.valueButtons}>
+                                <ToggleButton style={styles.toggleButton} icon="store-24-hour" value="open" onPress={() => { }}
+                                color={(this.state.valueButtons === 'open') ? colors.APP_MAIN : colors.APP_INACTIVE} />
                             <ToggleButton style={styles.toggleButton} icon="sort-alphabetical" value="letters" onPress={() => { }}
                                 color={(this.state.valueButtons === 'letters') ? colors.APP_MAIN : colors.APP_INACTIVE} />
-                            <ToggleButton style={styles.toggleButton} icon="store-24-hour" value="open" onPress={() => { }}
-                                color={(this.state.valueButtons === 'open') ? colors.APP_MAIN : colors.APP_INACTIVE} />
-                            <ToggleButton style={styles.toggleButton} icon="sale" value="sales" onPress={() => { }}
-                                color={(this.state.valueButtons === 'sales') ? colors.APP_MAIN : colors.APP_INACTIVE} />
                         </ToggleButton.Group>
                     </View>
 

@@ -54,7 +54,6 @@ class LoginScreen extends Component {
                     size={120}
                     style={styles.iconUser}
                     color={colors.APP_MAIN}
-
                 />
 
                 <TextInput
@@ -88,7 +87,7 @@ class LoginScreen extends Component {
                     mode="contained"
                     color={colors.APP_MAIN}
                     //disabled="true"
-                    onPress={() => this.login(this.state.firstName, this.state.lastName, this.state.email, this.state.password)}>
+                    onPress={() => this._login()}>
                     INICIAR SESIÓN
  				</Button>
 

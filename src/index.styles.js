@@ -11,6 +11,12 @@ const colors = {
     APP_RED: '#F50808',
     APP_PENDING: '#E3BD12',
     APP_DELIVERED : '#1253E3',
+    SALTY : '#EE9226',
+    SWEET : '#E863A5',
+    DRINKS : '#3658C6',
+    VEGAN: '#20B620', 
+    VEGETARIAN : '#208C28',
+    CELIAC : '#B2AB11',
     TEXT_INPUT : '#000000',
     STAR : '#F5CD08',
 };
