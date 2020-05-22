@@ -26,7 +26,7 @@ export default class Routes extends Component {
                     <Scene key="signupshop" component={SignUpShop} title="SignUpShop" />
                     <Scene key="navbarclient" component={NavBarClient} title="NavBarClient" initial/>
                     <Scene key="makeorder" component={MakeOrder} title="MakeOrder" />
-                    <Scene key="navbarshop" component={NavBarShop} title="NavBarShop"  />
+                    <Scene key="navbarshop" component={NavBarShop} title="NavBarShop" />
                     <Scene key="shopinformation" component={ShopInformation} title="ShopInformation" />
                     <Scene key="ordersclient" component={OrdersClients} title="OrdersClients" />
                     <Scene key="searchshopname" component={SearchShopByName} title="SearchShopByName" />

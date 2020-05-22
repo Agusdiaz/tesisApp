@@ -27,6 +27,12 @@ const sizes = {
     TEXT_INPUT : 15,
 };
 
+const orderStage = {
+    PENDING: 'Pendiente',
+    READY: 'Listo',
+    DELIVERED : 'Entregado',
+}
+
 const appStyles = StyleSheet.create({
     container: {
         flex: 1,
@@ -37,4 +43,4 @@ const appStyles = StyleSheet.create({
     },
 })
 
-export { colors, appStyles, sizes };
+export { colors, appStyles, sizes, orderStage };

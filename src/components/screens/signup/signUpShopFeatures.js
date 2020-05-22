@@ -11,25 +11,18 @@ class SignUpShopFeaturesScreen extends Component {
         super(props);
         this.state = {
             type: '',
-            pets: '',
-            checkedPets: 1,
-            kids: '',
-            checkedKids: 1,
-            games: '',
-            checkedGames: 1,
-            outside: '',
-            checkedOutside: 1,
-            smoking: '',
-            checkedSmoking: 1,
-            wifi: '',
-            checkedWifi: 1,
+            checkedPets: true,
+            checkedKids: true,
+            checkedGames: true,
+            checkedOutside: true,
+            checkedSmoking: true,
+            checkedWifi: true,
             visibleDialog: false,
             selectedType: 'Bar/Cervecería',
         }
     }
 
     _showDialog = () => this.setState({ visibleDialog: true });
-
     _hideDialog = () => this.setState({ visibleDialog: false });
 
     render() {
@@ -45,21 +38,21 @@ class SignUpShopFeaturesScreen extends Component {
                 <ArrowButton rute={'logsign'} />
 
                 <Text style={styles.titleText}> ¡Bienvenido! Primero debes seleccionar las carecterísticas de tu local. </Text>
-                
-                <View style={{width: '93%', alignSelf: 'center', top: sizes.hp('3%')}}>
-                <Select
-                    buttonStyle={styles.selectList}
-                    label={'¿Qué tipo de local sos?'}
-                    type={'outlined'}
-                    menuItems={types}
-                    onSelect={value => this.setState({ selectedType: value.name })}
-                    selectedItem={this.state.selectedType}
-                    textFieldProps={{
-                        borderColor: colors.APP_MAIN,
-                        labelColor: '#000',
-                        focusedLabelColor: '#000',
-                      }}
-                />
+
+                <View style={{ width: '93%', alignSelf: 'center', top: sizes.hp('3%') }}>
+                    <Select
+                        buttonStyle={styles.selectList}
+                        label={'¿Qué tipo de local sos?'}
+                        type={'outlined'}
+                        menuItems={types}
+                        onSelect={value => this.setState({ selectedType: value.name })}
+                        selectedItem={this.state.selectedType}
+                        textFieldProps={{
+                            borderColor: colors.APP_MAIN,
+                            labelColor: '#000',
+                            focusedLabelColor: '#000',
+                        }}
+                    />
                 </View>
 
                 <Text style={styles.questionText}> ¿Tu local admite la presencia de animales? </Text>
@@ -68,15 +61,15 @@ class SignUpShopFeaturesScreen extends Component {
                         radioButtonColor={colors.APP_MAIN}
                         rippleColor={colors.APP_MAIN}
                         labelStyle={styles.options}
-                        checked={this.state.checkedPets == 1}
-                        onPress={() => this.setState({ checkedPets: 1 })}
+                        checked={this.state.checkedPets}
+                        onPress={() => this.setState({ checkedPets: true })}
                         label="Sí"
                     />
                     <RadioButton
                         radioButtonColor={colors.APP_MAIN}
                         rippleColor={colors.APP_MAIN}
-                        checked={this.state.checkedPets == 2}
-                        onPress={() => this.setState({ checkedPets: 2 })}
+                        checked={!this.state.checkedPets}
+                        onPress={() => this.setState({ checkedPets: false })}
                         label="No"
                     />
                 </View>
@@ -87,15 +80,15 @@ class SignUpShopFeaturesScreen extends Component {
                         radioButtonColor={colors.APP_MAIN}
                         rippleColor={colors.APP_MAIN}
                         labelStyle={styles.options}
-                        checked={this.state.checkedKids == 1}
-                        onPress={() => this.setState({ checkedKids: 1 })}
+                        checked={this.state.checkedKids}
+                        onPress={() => this.setState({ checkedKids: true })}
                         label="Sí"
                     />
                     <RadioButton
                         radioButtonColor={colors.APP_MAIN}
                         rippleColor={colors.APP_MAIN}
-                        checked={this.state.checkedKids == 2}
-                        onPress={() => this.setState({ checkedKids: 2 })}
+                        checked={!this.state.checkedKids}
+                        onPress={() => this.setState({ checkedKids: false })}
                         label="No"
                     />
                 </View>
@@ -106,15 +99,15 @@ class SignUpShopFeaturesScreen extends Component {
                         radioButtonColor={colors.APP_MAIN}
                         rippleColor={colors.APP_MAIN}
                         labelStyle={styles.options}
-                        checked={this.state.checkedGames == 1}
-                        onPress={() => this.setState({ checkedGames: 1 })}
+                        checked={this.state.checkedGames}
+                        onPress={() => this.setState({ checkedGames: true })}
                         label="Sí"
                     />
                     <RadioButton
                         radioButtonColor={colors.APP_MAIN}
                         rippleColor={colors.APP_MAIN}
-                        checked={this.state.checkedGames == 2}
-                        onPress={() => this.setState({ checkedGames: 2 })}
+                        checked={!this.state.checkedGames}
+                        onPress={() => this.setState({ checkedGames: false })}
                         label="No"
                     />
                 </View>
@@ -125,15 +118,15 @@ class SignUpShopFeaturesScreen extends Component {
                         radioButtonColor={colors.APP_MAIN}
                         rippleColor={colors.APP_MAIN}
                         labelStyle={styles.options}
-                        checked={this.state.checkedOutside == 1}
-                        onPress={() => this.setState({ checkedOutside: 1 })}
+                        checked={this.state.checkedOutside}
+                        onPress={() => this.setState({ checkedOutside: true })}
                         label="Sí"
                     />
                     <RadioButton
                         radioButtonColor={colors.APP_MAIN}
                         rippleColor={colors.APP_MAIN}
-                        checked={this.state.checkedOutside == 2}
-                        onPress={() => this.setState({ checkedOutside: 2 })}
+                        checked={!this.state.checkedOutside}
+                        onPress={() => this.setState({ checkedOutside: false })}
                         label="No"
                     />
                 </View>
@@ -144,15 +137,15 @@ class SignUpShopFeaturesScreen extends Component {
                         radioButtonColor={colors.APP_MAIN}
                         rippleColor={colors.APP_MAIN}
                         labelStyle={styles.options}
-                        checked={this.state.checkedSmoking == 1}
-                        onPress={() => this.setState({ checkedSmoking: 1 })}
+                        checked={this.state.checkedSmoking}
+                        onPress={() => this.setState({ checkedSmoking: true })}
                         label="Sí"
                     />
                     <RadioButton
                         radioButtonColor={colors.APP_MAIN}
                         rippleColor={colors.APP_MAIN}
-                        checked={this.state.checkedSmoking == 2}
-                        onPress={() => this.setState({ checkedSmoking: 2 })}
+                        checked={!this.state.checkedSmoking}
+                        onPress={() => this.setState({ checkedSmoking: false })}
                         label="No"
                     />
                 </View>
@@ -163,15 +156,15 @@ class SignUpShopFeaturesScreen extends Component {
                         radioButtonColor={colors.APP_MAIN}
                         rippleColor={colors.APP_MAIN}
                         labelStyle={styles.options}
-                        checked={this.state.checkedWifi == 1}
-                        onPress={() => this.setState({ checkedWifi: 1 })}
+                        checked={this.state.checkedWifi}
+                        onPress={() => this.setState({ checkedWifi: true })}
                         label="Sí"
                     />
                     <RadioButton
                         radioButtonColor={colors.APP_MAIN}
                         rippleColor={colors.APP_MAIN}
-                        checked={this.state.checkedWifi == 2}
-                        onPress={() => this.setState({ checkedWifi: 2 })}
+                        checked={!this.state.checkedWifi}
+                        onPress={() => this.setState({ checkedWifi: false })}
                         label="No"
                     />
                 </View>

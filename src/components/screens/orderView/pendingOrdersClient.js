@@ -85,7 +85,7 @@ class PendingOrdersClientScreen extends Component {
                         data={this.state.dataSource}
                         initialNumToRender={0}
                         renderItem={({ item }) => <OrderPendingCardClient />}
-                        keyExtractor={item => item.key}
+                        keyExtractor={item => item.id}
                         getItemCount={getItemCount}
                         getItem={getItem} />
                     :

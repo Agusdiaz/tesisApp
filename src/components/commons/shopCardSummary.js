@@ -13,7 +13,7 @@ class ShopCardSummary extends Component {
             address: 'Dirección del Local',
             isFav: false,
             isOpen: true,
-            amountPeople: 2,
+            delay: 'Poca',
             pets: true,
             kids: true,
             games: true,
@@ -65,8 +65,8 @@ class ShopCardSummary extends Component {
             labelStyle={{ fontSize: 12, color: colors.APP_MAIN, }}
             color={colors.APP_MAIN}
             mode='outlined'
-            icon='account-group-outline'>
-            {this.state.amountPeople} personas están pidiendo aquí</Button>
+            icon='account-clock-outline'>
+            En este momento hay {this.state.delay} demora</Button>
 
         return (
             <Card style={styles.cardContent}>

@@ -192,7 +192,7 @@ export default class ProfileClientScreen extends Component {
                 </Dialog>
 
                 <Modal visible={this.state.visibleModal} onDismiss={this._hideModal}>
-                    <KeyboardAvoidingView behavior='position' >
+                    <KeyboardAvoidingView behavior='position' keyboardVerticalOffset={Platform.OS === "ios" ? 70 : 120}>
                         <View style={styles.modalView}>
 
                             <Text style={styles.signupText}>Estos son los datos que podés modificar</Text>
@@ -236,59 +236,61 @@ export default class ProfileClientScreen extends Component {
                                 onChangeText={text => this.setState({ passwordRepeated: text })}
                             />
 
-                            <Button
-                                style={{ margin: sizes.hp('1%'), width: '42%', left: sizes.hp('-11%'), top: sizes.hp('4%') }}
-                                icon="close-outline"
-                                mode="contained"
-                                color={colors.APP_MAIN}
-                                onPress={this._hideModal}>
-                                Cancelar
+                            <View style={{ flexDirection: "row", marginTop: sizes.wp('3%') }}>
+                                <Button
+                                    style={{ margin: sizes.hp('1%'), width: '42%', marginRight: sizes.wp('10%') }}
+                                    icon="close-outline"
+                                    mode="contained"
+                                    color={colors.APP_MAIN}
+                                    onPress={this._hideModal}>
+                                    Cancelar
                             </Button>
 
-                            <Button
-                                style={{ margin: sizes.hp('1%'), width: '42%', right: sizes.hp('-11%'), top: sizes.hp('-1.8%') }}
-                                icon="check-outline"
-                                mode="contained"
-                                color={colors.APP_MAIN}
-                                onPress={() => {
-                                    switch (this.editProfile()) {
-                                        case 0:
-                                            this._hideModal();
-                                            break;
-                                        case 1:
-                                            this._hideModal();
-                                            break;
-                                        case 2:
-                                            this._hideModal();
-                                            break;
-                                        case 3:
-                                            this._hideModal();
-                                            break;
-                                        case 4: //ERROR
-                                            this._showDialogEditProfile();
-                                            break;
-                                        case 5: //ERROR
-                                            this._showDialogEditProfile();
-                                            break;
-                                        case 6: //ERROR
-                                            this._showDialogEditProfile();
-                                            break;
-                                        case 7:
-                                            this._hideModal();
-                                            break;
-                                        case 8:
-                                            this._hideModal();
-                                            break;
-                                        case 9:
-                                            this._hideModal();
-                                            break;
-                                        case 10:
-                                            this._hideModal();
-                                            break;
-                                    }
-                                }}>
-                                Confirmar
+                                <Button
+                                    style={{ margin: sizes.hp('1%'), width: '42%', }}
+                                    icon="check-outline"
+                                    mode="contained"
+                                    color={colors.APP_MAIN}
+                                    onPress={() => {
+                                        switch (this.editProfile()) {
+                                            case 0:
+                                                this._hideModal();
+                                                break;
+                                            case 1:
+                                                this._hideModal();
+                                                break;
+                                            case 2:
+                                                this._hideModal();
+                                                break;
+                                            case 3:
+                                                this._hideModal();
+                                                break;
+                                            case 4: //ERROR
+                                                this._showDialogEditProfile();
+                                                break;
+                                            case 5: //ERROR
+                                                this._showDialogEditProfile();
+                                                break;
+                                            case 6: //ERROR
+                                                this._showDialogEditProfile();
+                                                break;
+                                            case 7:
+                                                this._hideModal();
+                                                break;
+                                            case 8:
+                                                this._hideModal();
+                                                break;
+                                            case 9:
+                                                this._hideModal();
+                                                break;
+                                            case 10:
+                                                this._hideModal();
+                                                break;
+                                        }
+                                    }}>
+                                    Confirmar
                             </Button>
+                            </View>
                         </View>
                     </KeyboardAvoidingView>
                     <Dialog
@@ -372,7 +374,7 @@ const styles = StyleSheet.create({
     },
     signupText: {
         //fontFamily: "",
-        color: "#E1454A",
+        color: colors.APP_MAIN,
         fontSize: 30,
         fontWeight: "bold",
         textAlign: "center",

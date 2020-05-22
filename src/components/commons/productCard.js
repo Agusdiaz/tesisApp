@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { StyleSheet, Text, View, Image } from 'react-native';
 import { colors, sizes } from '../../index.styles';
 //import { Card, CardHeader, Avatar, IconButton } from 'material-bread'
-import { Card, FAB, Modal, Portal } from 'react-native-paper';
+import { Card, FAB, Modal, Portal, Button } from 'react-native-paper';
 import TextTicker from 'react-native-text-ticker';
 import ProductDetails from '../commons/productDetails'
 import { Actions } from 'react-native-router-flux';
@@ -11,6 +11,7 @@ class ProductCard extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            condition: 'Vegetariano',
             name: 'Nombre del Producto',
             photo: 'https://picsum.photos/400',
             price: '$700',
@@ -38,11 +39,24 @@ class ProductCard extends Component {
         return (
             <View>
 
-                <Card style={styles.productCard}>
-                    <Card.Title left={Pic} leftStyle={styles.leftSide} right={NamePrice} rightStyle={styles.rightSide} />
+                <Card style={{height: (this.state.condition == '') ? sizes.hp('15%') : sizes.hp('19%'),}}>
+                    <Card.Actions style={{alignSelf: 'flex-end', margin: -2}} >
+                        {(this.state.condition != '') ?
+                            <Button style={{}}
+                                mode="contained"
+                                dark
+                                color={(this.state.condition == 'Vegano') ? colors.VEGAN : (this.state.condition == 'Celíaco') ? colors.CELIAC : colors.VEGETARIAN} >
+                                {this.state.condition}
+                            </Button>
+                            :
+                            null}
+
+                    </Card.Actions>
+                    <Card.Title left={Pic} leftStyle={{marginLeft: sizes.wp('-1%'), marginTop: (this.state.condition == '') ? sizes.hp('3.9%') : sizes.hp('0.5%'),}} 
+                    right={NamePrice} rightStyle={styles.rightSide} />
                     <Card.Actions style={styles.actionStyles}>
                         <FAB
-                            style={{ backgroundColor: '#FFFFFF', borderColor: colors.APP_MAIN, borderWidth: 2, marginLeft: sizes.wp('17%') }}
+                            style={{ backgroundColor: '#FFFFFF', borderColor: colors.APP_MAIN, borderWidth: 2, marginLeft: sizes.wp('22%') }}
                             color={colors.APP_MAIN}
                             icon="eye"
                             small
@@ -78,17 +92,10 @@ const styles = StyleSheet.create({
         shadowRadius: 3.84,
         elevation: 10,
     },
-    productCard: {
-        height: sizes.hp('15%'),
-    },
     image: {
         width: sizes.wp('30%'),
         height: sizes.hp('13%'),
         borderRadius: 5
-    },
-    leftSide: {
-        marginLeft: sizes.wp('-1%'),
-        marginTop: sizes.hp('5.2%'),
     },
     rightSide: {
         width: sizes.wp('60%'),
@@ -108,7 +115,7 @@ const styles = StyleSheet.create({
     },
     actionStyles: {
         right: sizes.wp('-60%'),
-        bottom: sizes.hp('2%')
+        bottom: sizes.hp('2%'),
     },
 });
 

@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { StyleSheet, Text, View, KeyboardAvoidingView, ImageBackground, } from 'react-native';
 import { appStyles, colors, sizes } from '../../../index.styles';
-import { Button, Dialog, } from 'react-native-paper';
-import { Tabs, Tab, } from 'material-bread';
+import { Button, Dialog, Modal, Portal, } from 'react-native-paper';
+import { Tabs, Tab, RadioButton } from 'material-bread';
 import ShopCard from '../../commons/shopCard'
 import { Actions } from 'react-native-router-flux';
 
@@ -14,17 +14,32 @@ export default class ProfileShopScreen extends Component {
         super(props);
         this.state = { //IMAGENES?
             selectedTab: 0,
+            //pets: '',
+            checkedPets: true,
+            //kids: '',
+            checkedKids: true,
+            //games: '',
+            checkedGames: true,
+            //outside: '',
+            checkedOutside: true,
+            //smoking: '',
+            checkedSmoking: true,
+            //wifi: '',
+            checkedWifi: true,
             visibleDialogSessionOut: false,
+            visibleModalEdit: false
         }
     }
 
     _showDialogSessionOut = () => this.setState({ visibleDialogSessionOut: true });
-
     _hideDialogSessionOut = () => this.setState({ visibleDialogSessionOut: false });
+
+    _showModalEdit = () => this.setState({ visibleModalEdit: true });
+    _hideModalEdit = () => this.setState({ visibleModalEdit: false });
 
     render() {
 
-        
+
         return (
             <View style={appStyles.container}>
 
@@ -44,7 +59,7 @@ export default class ProfileShopScreen extends Component {
 
                 {(this.state.selectedTab === 0) ?
                     <ImageBackground source={require(uriImageBckg)} style={styles.imageOutside} imageStyle={styles.imageInside} >
-                        <ShopCard/>
+                        <ShopCard />
                     </ImageBackground>
 
                     : (this.state.selectedTab === 1) ?
@@ -63,8 +78,8 @@ export default class ProfileShopScreen extends Component {
                                     icon="pencil-outline"
                                     mode="contained"
                                     color={colors.APP_MAIN}
-                                    onPress={() => { }}>
-                                    Editar Perfil
+                                    onPress={this._showModalEdit}>
+                                    Editar Información
                                 </Button>
 
                                 <Button
@@ -86,8 +101,147 @@ export default class ProfileShopScreen extends Component {
                                         <Button color={colors.APP_GREEN} onPress={() => console.log("Ok")}>Ok</Button>
                                     </Dialog.Actions>
                                 </Dialog>
-                            </ImageBackground>
 
+                                <Portal>
+                                    <Modal contentContainerStyle={styles.modalView} visible={this.state.visibleModalEdit} onDismiss={this._hideModalEdit}>
+                                        <Text style={styles.titleText}> Cambia las carecterísticas de tu local. </Text>
+
+                                        <Text style={styles.questionText}> ¿Tu local admite la presencia de animales? </Text>
+                                        <View style={styles.viewRadioButtons}>
+                                            <RadioButton
+                                                radioButtonColor={colors.APP_MAIN}
+                                                rippleColor={colors.APP_MAIN}
+                                                labelStyle={styles.options}
+                                                checked={this.state.checkedPets}
+                                                onPress={() => this.setState({ checkedPets: true })}
+                                                label="Sí"
+                                            />
+                                            <RadioButton
+                                                radioButtonColor={colors.APP_MAIN}
+                                                rippleColor={colors.APP_MAIN}
+                                                checked={!this.state.checkedPets}
+                                                onPress={() => this.setState({ checkedPets: false })}
+                                                label="No"
+                                            />
+                                        </View>
+
+                                        <Text style={styles.questionText}> ¿Tu local dispone de entretenimiento para niños? </Text>
+                                        <View style={styles.viewRadioButtons}>
+                                            <RadioButton
+                                                radioButtonColor={colors.APP_MAIN}
+                                                rippleColor={colors.APP_MAIN}
+                                                labelStyle={styles.options}
+                                                checked={this.state.checkedKids}
+                                                onPress={() => this.setState({ checkedKids: true })}
+                                                label="Sí"
+                                            />
+                                            <RadioButton
+                                                radioButtonColor={colors.APP_MAIN}
+                                                rippleColor={colors.APP_MAIN}
+                                                checked={!this.state.checkedKids}
+                                                onPress={() => this.setState({ checkedKids: false })}
+                                                label="No"
+                                            />
+                                        </View>
+
+                                        <Text style={styles.questionText}> ¿Tu local dispone de juegos/arcade para los clientes? </Text>
+                                        <View style={styles.viewRadioButtons}>
+                                            <RadioButton
+                                                radioButtonColor={colors.APP_MAIN}
+                                                rippleColor={colors.APP_MAIN}
+                                                labelStyle={styles.options}
+                                                checked={this.state.checkedGames}
+                                                onPress={() => this.setState({ checkedGames: true })}
+                                                label="Sí"
+                                            />
+                                            <RadioButton
+                                                radioButtonColor={colors.APP_MAIN}
+                                                rippleColor={colors.APP_MAIN}
+                                                checked={!this.state.checkedGames}
+                                                onPress={() => this.setState({ checkedGames: false })}
+                                                label="No"
+                                            />
+                                        </View>
+
+                                        <Text style={styles.questionText}> ¿Tu local dispone de espacio al aire libre? </Text>
+                                        <View style={styles.viewRadioButtons}>
+                                            <RadioButton
+                                                radioButtonColor={colors.APP_MAIN}
+                                                rippleColor={colors.APP_MAIN}
+                                                labelStyle={styles.options}
+                                                checked={this.state.checkedOutside}
+                                                onPress={() => this.setState({ checkedOutside: true })}
+                                                label="Sí"
+                                            />
+                                            <RadioButton
+                                                radioButtonColor={colors.APP_MAIN}
+                                                rippleColor={colors.APP_MAIN}
+                                                checked={!this.state.checkedOutside}
+                                                onPress={() => this.setState({ checkedOutside: false })}
+                                                label="No"
+                                            />
+                                        </View>
+
+                                        <Text style={styles.questionText}> ¿Tu local es libre de humo? </Text>
+                                        <View style={styles.viewRadioButtons}>
+                                            <RadioButton
+                                                radioButtonColor={colors.APP_MAIN}
+                                                rippleColor={colors.APP_MAIN}
+                                                labelStyle={styles.options}
+                                                checked={this.state.checkedSmoking}
+                                                onPress={() => this.setState({ checkedSmoking: true })}
+                                                label="Sí"
+                                            />
+                                            <RadioButton
+                                                radioButtonColor={colors.APP_MAIN}
+                                                rippleColor={colors.APP_MAIN}
+                                                checked={!this.state.checkedSmoking}
+                                                onPress={() => this.setState({ checkedSmoking: false })}
+                                                label="No"
+                                            />
+                                        </View>
+
+                                        <Text style={styles.questionText}> ¿Tu local dispone de wifi para los clientes? </Text>
+                                        <View style={styles.viewRadioButtons}>
+                                            <RadioButton
+                                                radioButtonColor={colors.APP_MAIN}
+                                                rippleColor={colors.APP_MAIN}
+                                                labelStyle={styles.options}
+                                                checked={this.state.checkedWifi}
+                                                onPress={() => this.setState({ checkedWifi: true })}
+                                                label="Sí"
+                                            />
+                                            <RadioButton
+                                                radioButtonColor={colors.APP_MAIN}
+                                                rippleColor={colors.APP_MAIN}
+                                                checked={!this.state.checkedWifi}
+                                                onPress={() => this.setState({ checkedWifi: false })}
+                                                label="No"
+                                            />
+                                        </View>
+
+                                        <View style={{ flexDirection: "row", marginTop: sizes.wp('1%') }}>
+                                            <Button
+                                                style={{ margin: sizes.hp('1%'), width: '42%', marginRight: sizes.wp('10%') }}
+                                                icon="close-outline"
+                                                mode="contained"
+                                                color={colors.APP_MAIN}
+                                                onPress={this._hideModalEdit}>
+                                                Cancelar
+                            </Button>
+
+                                            <Button
+                                                style={{ margin: sizes.hp('1%'), width: '42%', }}
+                                                icon="check-outline"
+                                                mode="contained"
+                                                color={colors.APP_MAIN}
+                                                onPress={this._hideModalEdit}>
+                                                Confirmar
+                            </Button>
+                                        </View>
+                                    </Modal>
+                                </Portal>
+                            </ImageBackground>
                 }
 
             </View>
@@ -108,15 +262,49 @@ const styles = StyleSheet.create({
         resizeMode: 'contain',
         width: sizes.wp('100%'),
         height: sizes.hp('100%'),
-        marginTop: sizes.hp('39.3%')
+        marginTop: sizes.hp('38.1%')
     },
     imageInside: {
         opacity: 0.75,
     },
+    modalView: {
+        marginTop: sizes.hp('0%'),
+        margin: sizes.hp('2%'),
+        backgroundColor: "#ffffff",
+        borderRadius: 20,
+        padding: 20,
+        alignItems: "center",
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 1,
+            height: 2
+        },
+        shadowOpacity: 0.5,
+        shadowRadius: 3.84,
+        elevation: 10,
+    },
     buttonStyle: {
         marginTop: sizes.hp('18%'),
-        width: sizes.wp('50%'),
+        width: sizes.wp('55%'),
         height: sizes.hp('5%'),
         justifyContent: 'center'
+    },
+    titleText: {
+        color: colors.APP_MAIN,
+        fontSize: 30,
+        fontWeight: "bold",
+        textAlign: "center",
+    },
+    viewRadioButtons: {
+        flexDirection: 'row',
+        flexWrap: 'wrap'
+    },
+    questionText: {
+        fontSize: 16,
+        textAlign: "center",
+        marginTop: sizes.hp('1.5%')
+    },
+    options: {
+        marginRight: sizes.wp('6%')
     },
 });

@@ -97,7 +97,7 @@ class OrdersClientScreen extends Component { //EL ESTADO DEL PEDIDO TIENE QUE SE
                         data={this.state.dataSource}
                         initialNumToRender={0}
                         renderItem={({ item }) => <OrderDeliveredCardClient />}
-                        keyExtractor={item => item.key}
+                        keyExtractor={item => item.id}
                         getItemCount={getItemCount}
                         getItem={getItem} />
                     :

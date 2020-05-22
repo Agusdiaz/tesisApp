@@ -39,7 +39,7 @@ class ShopCardClient extends Component {
                 id: 7,
                 title: '11am-3am',
             },],
-            amountPeople: 2,
+            delay: 'Poca',
             isFav: false,
             isOpen: true,
             pets: true,
@@ -66,8 +66,8 @@ class ShopCardClient extends Component {
             labelStyle={{ fontSize: 12, color: colors.APP_MAIN, }}
             color={colors.APP_MAIN}
             mode='outlined'
-            icon='account-group-outline'>
-            {this.state.amountPeople} personas están pidiendo aquí</Button>
+            icon='account-clock-outline'>
+            En este momento hay {this.state.delay} demora</Button>
 
         const Adress = props => <TextTicker style={{ fontSize: 16, }}
             duration={5000}
@@ -183,7 +183,7 @@ class ShopCardClient extends Component {
                                 <FAB
                                     color={colors.APP_MAIN}
                                     style={styles.fab}
-                                    label={'Tiene Wifi'}
+                                    label={'Wifi'}
                                     visible={this.state.wifi}
                                     icon="wifi"
                                 />
