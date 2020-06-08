@@ -71,7 +71,7 @@ class OrderDetailsClient extends Component {
 
         return (
 
-            <Card style={styles.productCard}>
+            <Card style={styles.orderCard}>
                 <Card.Title style={{ margin: -10, marginTop: sizes.hp('-2') }} left={Close} leftStyle={styles.close} right={stageOrder} rightStyle={styles.stageOrder} />
                 <Divider />
                 <Card.Title style={styles.cardTitle} titleStyle={styles.leftText} title="Número:" right={orderNumber} />

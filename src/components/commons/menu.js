@@ -66,11 +66,14 @@ class Menu extends Component {
 
                 {(this.state.valueButtons == 'salty') ?
                     <VirtualizedList
-                        style={styles.list}
+                        style={[styles.list, {
+                            marginBottom: (this.props.rute == 'client') ? sizes.hp('23%') :
+                                sizes.hp('26%'),
+                        }]}
                         data={DATA}
                         initialNumToRender={0}
                         data={DATA}
-                        renderItem={({ item }) => <ProductCard />}
+                        renderItem={({ item }) => <ProductCard rute={this.props.rute} />}
                         keyExtractor={item => item.id}
                         getItemCount={getItemCount}
                         getItem={getItem}
@@ -79,11 +82,14 @@ class Menu extends Component {
                     :
                     (this.state.valueButtons == 'sweet') ?
                         <VirtualizedList
-                            style={styles.list}
+                            style={[styles.list, {
+                                marginBottom: (this.props.rute == 'client') ? sizes.hp('23%') :
+                                    sizes.hp('26%'),
+                            }]}
                             data={DATA}
                             initialNumToRender={0}
                             data={DATA}
-                            renderItem={({ item }) => <ProductCard />}
+                            renderItem={({ item }) => <ProductCard rute={this.props.rute} />}
                             keyExtractor={item => item.id}
                             getItemCount={getItemCount}
                             getItem={getItem}
@@ -92,11 +98,14 @@ class Menu extends Component {
                         :
 
                         <VirtualizedList
-                            style={styles.list}
+                            style={[styles.list, {
+                                marginBottom: (this.props.rute == 'client') ? sizes.hp('23%') :
+                                    sizes.hp('26%'),
+                            }]}
                             data={DATA}
                             initialNumToRender={0}
                             data={DATA}
-                            renderItem={({ item }) => <ProductCard />}
+                            renderItem={({ item }) => <ProductCard rute={this.props.rute} />}
                             keyExtractor={item => item.id}
                             getItemCount={getItemCount}
                             getItem={getItem}
@@ -119,7 +128,6 @@ const styles = StyleSheet.create({
     list: {
         top: sizes.hp('1%'),
         width: sizes.wp('100%'),
-        marginBottom: sizes.hp('23%'),
     },
 });
 

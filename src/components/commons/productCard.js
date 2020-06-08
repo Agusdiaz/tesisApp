@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { StyleSheet, Text, View, Image } from 'react-native';
 import { colors, sizes } from '../../index.styles';
 //import { Card, CardHeader, Avatar, IconButton } from 'material-bread'
-import { Card, FAB, Modal, Portal, Button } from 'react-native-paper';
+import { Card, FAB, Modal, Portal, Button, Dialog } from 'react-native-paper';
 import TextTicker from 'react-native-text-ticker';
 import ProductDetails from '../commons/productDetails'
 import { Actions } from 'react-native-router-flux';
@@ -15,12 +15,22 @@ class ProductCard extends Component {
             name: 'Nombre del Producto',
             photo: 'https://picsum.photos/400',
             price: '$700',
-            visibleModal: false,
+            available: true,
+            visibleModalDetails: false,
+            visibleDialogDisabled: false,
+            visibleDialogEnabled: false,
         }
     }
 
-    _showModal = () => this.setState({ visibleModal: true });
-    _hideModal = () => this.setState({ visibleModal: false });
+    _showModalDetails = () => this.setState({ visibleModalDetails: true });
+    _hideModalDetails = () => this.setState({ visibleModalDetails: false });
+
+    _showDialogDisabled = () => this.setState({ visibleDialogDisabled: true });
+    _hideDialogDisabled = () => this.setState({ visibleDialogDisabled: false });
+
+    _showDialogEnabled = () => this.setState({ visibleDialogEnabled: true });
+    _hideDialogEnabled = () => this.setState({ visibleDialogEnabled: false });
+
 
     render() {
 
@@ -39,8 +49,8 @@ class ProductCard extends Component {
         return (
             <View>
 
-                <Card style={{height: (this.state.condition == '') ? sizes.hp('15%') : sizes.hp('19%'),}}>
-                    <Card.Actions style={{alignSelf: 'flex-end', margin: -2}} >
+                <Card style={{ height: (this.state.condition == '') ? sizes.hp('15%') : sizes.hp('19%'), }}>
+                    <Card.Actions style={{ alignSelf: 'flex-end', margin: -2 }} >
                         {(this.state.condition != '') ?
                             <Button style={{}}
                                 mode="contained"
@@ -52,23 +62,69 @@ class ProductCard extends Component {
                             null}
 
                     </Card.Actions>
-                    <Card.Title left={Pic} leftStyle={{marginLeft: sizes.wp('-1%'), marginTop: (this.state.condition == '') ? sizes.hp('3.9%') : sizes.hp('0.5%'),}} 
-                    right={NamePrice} rightStyle={styles.rightSide} />
+                    <Card.Title left={Pic} leftStyle={{ marginLeft: sizes.wp('-1%'), marginTop: (this.state.condition == '') ? sizes.hp('3.9%') : sizes.hp('0.5%'), }}
+                        right={NamePrice} rightStyle={styles.rightSide} />
                     <Card.Actions style={styles.actionStyles}>
                         <FAB
-                            style={{ backgroundColor: '#FFFFFF', borderColor: colors.APP_MAIN, borderWidth: 2, marginLeft: sizes.wp('22%') }}
+                            style={{
+                                backgroundColor: '#FFFFFF', borderColor: colors.APP_MAIN, borderWidth: 2, marginLeft: (this.props.rute == 'shop' || this.props.rute == 'disabled')
+                                    ? sizes.wp('-23%') : sizes.wp('22%')
+                            }}
                             color={colors.APP_MAIN}
                             icon="eye"
                             small
-                            onPress={this._showModal}
+                            onPress={this._showModalDetails}
                         />
+
+                        {(this.props.rute == 'shop') ?
+                            <FAB
+                                style={{ backgroundColor: '#FFFFFF', borderColor: colors.APP_MAIN, borderWidth: 2, marginLeft: sizes.wp('34%') }}
+                                color={colors.APP_MAIN}
+                                icon="cart-remove"
+                                small
+                                onPress={this._showDialogDisabled} />
+                            :
+                            null
+                        }
+
+                        {(this.props.rute == 'disabled') ?
+                            <FAB
+                                style={{ backgroundColor: '#FFFFFF', borderColor: colors.APP_MAIN, borderWidth: 2, marginLeft: sizes.wp('34%') }}
+                                color={colors.APP_MAIN}
+                                icon="cart-plus"
+                                small
+                                onPress={this._showDialogEnabled} />
+                            :
+                            null
+                        }
+
                     </Card.Actions>
                 </Card>
 
                 <Portal>
-                    <Modal contentContainerStyle={styles.modalView} visible={this.state.visibleModal} onDismiss={this._hideModal}>
-                        <ProductDetails hideModalFromChild={this._hideModal} />
+                    <Modal contentContainerStyle={styles.modalView} visible={this.state.visibleModalDetails} onDismiss={this._hideModalDetails}>
+                        <ProductDetails hideModalFromChild={this._hideModalDetails} />
                     </Modal>
+
+                    <Dialog
+                        visible={this.state.visibleDialogDisabled}
+                        onDismiss={this._hideDialogDisabled}>
+                        <Dialog.Title style={{ alignSelf: 'center' }}>¿Esta seguro que desea deshabilitar este producto?</Dialog.Title>
+                        <Dialog.Actions>
+                            <Button style={{ marginRight: sizes.wp('3%') }} color={colors.APP_RED} onPress={this._hideDialogDisabled}>Cancelar</Button>
+                            <Button color={colors.APP_GREEN} onPress={() => console.log("Ok")}>Sí</Button>
+                        </Dialog.Actions>
+                    </Dialog>
+
+                    <Dialog
+                        visible={this.state.visibleDialogEnabled}
+                        onDismiss={this._hideDialogEnabled}>
+                        <Dialog.Title style={{ alignSelf: 'center' }}>¿Esta seguro que desea habilitar este producto?</Dialog.Title>
+                        <Dialog.Actions>
+                            <Button style={{ marginRight: sizes.wp('3%') }} color={colors.APP_RED} onPress={this._hideDialogEnabled}>Cancelar</Button>
+                            <Button color={colors.APP_GREEN} onPress={() => console.log("Ok")}>Sí</Button>
+                        </Dialog.Actions>
+                    </Dialog>
                 </Portal>
             </View>
         )

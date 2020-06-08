@@ -1,11 +1,9 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, VirtualizedList, Image, Text } from 'react-native';
+import { StyleSheet, View, VirtualizedList, Image, Text, ActivityIndicator } from 'react-native';
 import { appStyles, colors, sizes } from '../../../index.styles'
 import { Searchbar } from 'react-native-paper';
 import ArrowButton from '../../commons/arrowButton'
 import ShopCard from '../../commons/shopCardSummary'
-
-const DATA = [];
 
 const getItem = (data, index) => {
     if (data == null) {
@@ -26,8 +24,10 @@ export default class SearchShopByAddressScreen extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            isLoading: false,
             searchQuery: '',
             areStores: true,
+            DATA: [],
         };
     }
 
@@ -44,39 +44,60 @@ export default class SearchShopByAddressScreen extends Component {
     }
 
     render() {
-        const { searchQuery } = this.state;
-        return (
-            <View style={appStyles.container}>
-                <ArrowButton rute='navBarClientSearch' />
+        if (this.state.isLoading) { //ESTA BUSCANDO
+            return (
+                <View style={appStyles.container}>
+                    <ArrowButton rute='navBarClientSearch' />
 
-                <Searchbar
-                    style={styles.searchInput}
-                    placeholder="Buscar local por dirección"
-                    theme={{ colors: { primary: colors.APP_MAIN } }}
-                    iconColor={colors.APP_MAIN}
-                    onChangeText={this._onChangeSearch}
-                    value={searchQuery}
-                />
-
-                {(this.state.areStores) ?
-                    <VirtualizedList
-                        style={styles.list}
-                        ItemSeparatorComponent={this.renderSeparator}
-                        data={DATA}
-                        initialNumToRender={0}
-                        renderItem={({ item }) => <ShopCard />}
-                        keyExtractor={item => item.key}
-                        getItemCount={getItemCount}
-                        getItem={getItem}
+                    <Searchbar
+                        style={styles.searchInput}
+                        placeholder="Buscar local por dirección"
+                        theme={{ colors: { primary: colors.APP_MAIN } }}
+                        iconColor={colors.APP_MAIN}
+                        onChangeText={this._onChangeSearch}
+                        value={this.state.searchQuery}
                     />
-                    :
-                    <View style={styles.viewImage}>
-                        <Image source={require('../../../icons/noStore.png')} style={styles.image} />
-                        <Text style={styles.infoImage}>No se encontraron locales con esa dirección</Text>
+
+                    <View style={{ marginTop: sizes.hp('-70%') }}>
+                        <ActivityIndicator />
                     </View>
-                }
-            </View>
-        );
+                </View>
+            );
+        }
+        else {
+            return (
+                <View style={appStyles.container}>
+                    <ArrowButton rute='navBarClientSearch' />
+
+                    <Searchbar
+                        style={styles.searchInput}
+                        placeholder="Buscar local por dirección"
+                        theme={{ colors: { primary: colors.APP_MAIN } }}
+                        iconColor={colors.APP_MAIN}
+                        onChangeText={this._onChangeSearch}
+                        value={this.state.searchQuery}
+                    />
+
+                    {(this.state.areStores) ?
+                        <VirtualizedList
+                            style={styles.list}
+                            ItemSeparatorComponent={this.renderSeparator}
+                            data={this.state.DATA}
+                            initialNumToRender={0}
+                            renderItem={({ item }) => <ShopCard />}
+                            keyExtractor={item => item.id}
+                            getItemCount={getItemCount}
+                            getItem={getItem}
+                        />
+                        :
+                        <View style={styles.viewImage}>
+                            <Image source={require('../../../icons/noStore.png')} style={styles.image} />
+                            <Text style={styles.infoImage}>No se encontraron locales con esa dirección</Text>
+                        </View>
+                    }
+                </View>
+            );
+        }
     }
 }
 

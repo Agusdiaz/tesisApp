@@ -7,6 +7,7 @@ import { Actions } from 'react-native-router-flux';
 import Animated from 'react-native-reanimated';
 import ChooseShop from '../orderProcess/chooseShop'
 import ChooseMenu from '../orderProcess/chooseMenu'
+import OrderSummary from '../orderProcess/orderSummary'
 
 const labels = ["Elegir local", "Realizar pedido", "Resumen pedido", "Pagar"];
 const customStyles = {
@@ -41,7 +42,7 @@ export default class HorizontalStepIndicator extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            currentPosition: 1,
+            currentPosition: (this.props.pos != null) ? this.props.pos : 0,
             visibleDialogOut: false,
             animatedValue: new Animated.Value(0),
         }
@@ -52,14 +53,20 @@ export default class HorizontalStepIndicator extends Component {
 
     previousStep = () => {
         this.setState({ currentPosition: this.state.currentPosition - 1 })
+        this.updateScroll()
     }
 
     nextStep = () => {
         this.setState({ currentPosition: this.state.currentPosition + 1 })
+        this.updateScroll()
     }
 
     onPageChange(position) {
         this.setState({ currentPosition: position });
+    }
+
+    updateScroll = () => {
+        this.setState({ animatedValue: new Animated.Value(0)})
     }
 
     render() {
@@ -83,38 +90,42 @@ export default class HorizontalStepIndicator extends Component {
                         </Dialog>
                     </Portal>
 
-                    {(this.state.currentPosition == 0) ?
-                        <IconButton
-                            icon='keyboard-backspace'
-                            size={50}
-                            style={styles.arrowButton}
-                            color={colors.APP_MAIN}
-                            onPress={this._showDialogOut}
-                        />
-                        :
-                        null
-                    }
+                    <View style={{ flexDirection: 'row', top: sizes.hp('8%'),left: sizes.wp('-5%'), justifyContent: 'center'}}>
 
-                    {(this.state.currentPosition != 0) ?
-                        <IconButton
-                            style={{ left: sizes.wp('1%'), top: sizes.hp('5%') }}
-                            icon='chevron-left'
-                            color={colors.APP_MAIN}
-                            size={40}
-                            onPress={() => this.previousStep()} />
-                        :
-                        null
-                    }
+                        {(this.state.currentPosition == 0) ?
+                            <IconButton
+                                icon='keyboard-backspace'
+                                size={50}
+                                style={{ left: sizes.wp('1%'), top: sizes.hp('-3.3%') }}
+                                color={colors.APP_MAIN}
+                                onPress={this._showDialogOut}
+                            />
+                            :
+                            null
+                        }
 
-                    <View style={[styles.stepIndicator, { top: (this.state.currentPosition != 1) ? sizes.hp('3%') : sizes.hp('-5%'), }]}>
-                        <StepIndicator
-                            stepCount={4}
-                            direction="horizontal"
-                            customStyles={customStyles}
-                            currentPosition={this.state.currentPosition}
-                            labels={labels}
-                        //renderStepIndicator={renderIcon(this.state.currentPosition,'Second')}
-                        />
+                        {(this.state.currentPosition != 0) ?
+                            <IconButton
+                                style={{ left: sizes.wp('-2%'), top: sizes.hp('-2%') }}
+                                icon='chevron-left'
+                                color={colors.APP_MAIN}
+                                size={40}
+                                onPress={() => this.previousStep()} />
+                            :
+                            null
+                        }
+
+                        <View style={[styles.stepIndicator]}>
+                            <StepIndicator
+                                stepCount={4}
+                                direction="horizontal"
+                                customStyles={customStyles}
+                                currentPosition={this.state.currentPosition}
+                                labels={labels}
+                            //renderStepIndicator={renderIcon(this.state.currentPosition,'Second')}
+                            />
+                        </View>
+
                     </View>
 
                     {(this.state.currentPosition == 0) ?
@@ -142,7 +153,9 @@ export default class HorizontalStepIndicator extends Component {
                             )} />
 
                             : (this.state.currentPosition == 2) ?
-                                <Text>Resumen del Pedido</Text>
+
+                                <OrderSummary />
+
                                 :
                                 <Text>Pagar</Text>
                     }
@@ -178,7 +191,8 @@ const styles = StyleSheet.create({
         left: 0
     },
     stepIndicator: {
-        marginLeft: sizes.wp('18%'),
+        top: sizes.hp('-4%'),
+        marginLeft: sizes.wp('-2%'),
         height: sizes.hp('15%'),
         width: sizes.wp('70%'),
         justifyContent: "center",

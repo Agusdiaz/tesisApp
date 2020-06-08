@@ -3,6 +3,7 @@ import { StyleSheet, Text, View, } from 'react-native';
 import { Button } from 'react-native-paper';
 import { appStyles, colors, sizes } from '../../../index.styles';
 import { Tabs, Tab, } from 'material-bread';
+import { Actions } from 'react-native-router-flux';
 import Menu from '../../commons/menu'
 import ArrowButton from '../../commons/arrowButton';
 import ShopCardClient from '../../commons/shopCardClient'
@@ -35,7 +36,7 @@ class ShopInformationScreen extends Component {
                     mode="contained"
                     disabled={!this.state.isOpen}
                     color={colors.APP_MAIN}
-                    onPress={() => { }}>
+                    onPress={() => Actions.makeorder({ pos : 1})}>
                     Hace tu pedido aca
                 </Button>
 
@@ -62,7 +63,7 @@ class ShopInformationScreen extends Component {
 
                     : (this.state.selectedTab === 1) ?
 
-                        <Menu />
+                        <Menu rute='client'/>
 
                         :
 

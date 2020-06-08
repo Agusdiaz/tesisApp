@@ -2,14 +2,14 @@ import * as React from 'react';
 import { BottomNavigation, Text, } from 'react-native-paper';
 import { appStyles, colors } from '../../../index.styles'
 import HomeShop from '../home/homeShop'
-import ProfileShop from '../profile/porfileShop'
+import ProfileShop from '../profile/profileShop'
 import StatsShop from '../statistics/statsShop'
+import DisabledProductsShop from '../disabled/disabledProductsShop'
 
 
 const HomeRoute = () => <HomeShop/>;
-
 const StatisticsRoute = () => <StatsShop/>;
-
+const DisabledProductsRoute = () => <DisabledProductsShop/>
 const MenuRoute = () => <ProfileShop/>;
 
 export default class NavigationBarScreen extends React.Component {
@@ -17,6 +17,7 @@ export default class NavigationBarScreen extends React.Component {
     index: 0,
     routes: [
       { key: 'orders', title: 'Pedidos', icon: 'receipt', badge: null, color: colors.APP_BACKGR },
+      { key: 'disabledProducts', title: 'Deshabilitados', icon: 'cart-remove', color: colors.APP_BACKGR },
       { key: 'statistics', title: 'Estadísticas', icon: 'chart-bar', color: colors.APP_BACKGR },
       { key: 'profile', title: 'Perfil', icon: 'chef-hat', color: colors.APP_BACKGR }, //icon:'book'
     ],
@@ -41,6 +42,7 @@ export default class NavigationBarScreen extends React.Component {
   _renderScene = BottomNavigation.SceneMap({
     orders: HomeRoute, 
     statistics: StatisticsRoute,
+    disabledProducts: DisabledProductsRoute,
     profile: MenuRoute,
   });
 

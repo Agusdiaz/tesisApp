@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+
 import { StyleSheet, Text, View, VirtualizedList, FlatList } from 'react-native';
 import { colors, sizes } from '../../../index.styles'
 //import { Card, CardHeader, Avatar, IconButton } from 'material-bread'
@@ -17,7 +18,6 @@ class MenuProcess extends Component {
         super(props);
         this.state = {
             valueButtons: 'salty',
-            animatedValue: new Animated.Value(0),
         }
     }
 
@@ -30,7 +30,7 @@ class MenuProcess extends Component {
 
         return (
             <View style={{ width: sizes.wp('100%'), height: sizes.hp('100%'), top: sizes.hp('19%') }}>
-                <View style={{ flexDirection: 'row', justifyContent: 'center', width: sizes.wp('100%'), height: sizes.hp('4%'), marginTop: sizes.hp('-6%') }}>
+                <View style={{ flexDirection: 'row', justifyContent: 'center', width: sizes.wp('100%'), height: sizes.hp('4%'), marginTop: sizes.hp('-10%') }}>
                     <Button
                         style={styles.toggleButton}
                         dark

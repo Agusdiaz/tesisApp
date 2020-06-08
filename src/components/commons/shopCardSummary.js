@@ -6,6 +6,7 @@ import TextTicker from 'react-native-text-ticker'
 import { Actions } from 'react-native-router-flux';
 
 class ShopCardSummary extends Component {
+
     constructor() {
         super();
         this.state = { //PONER METODO PARA SABER EL ESTADO
@@ -50,7 +51,7 @@ class ShopCardSummary extends Component {
                     marqueeDelay={1000}>{this.state.address}</TextTicker>
             </View>
 
-            <IconButton {...props}
+            <IconButton 
                 icon={(this.state.isFav) ? "star" : "star-outline"}
                 color={colors.STAR}
                 size={30}
@@ -144,7 +145,7 @@ class ShopCardSummary extends Component {
                             color={colors.APP_MAIN}
                             onPress={this.nextStepParent}>
                             Pedir Aca
-             </Button>
+                        </Button>
                         :
                         <Button
                             style={{ left: sizes.wp('10%'), width: '40%', }}
@@ -153,7 +154,7 @@ class ShopCardSummary extends Component {
                             color={colors.APP_MAIN}
                             onPress={() => Actions.shopinformation()}>
                             Detalles
-                </Button>
+                        </Button>
                     }
                 </Card.Actions>
             </Card>

@@ -19,7 +19,6 @@ export default class ChooseShopScreen extends Component {
             isLoading: false,
             searchQuery: '',
             areStores: true,
-            animatedValue: new Animated.Value(0),
         };
         this.arrayholder = [];
     }
@@ -43,7 +42,7 @@ export default class ChooseShopScreen extends Component {
     render() {
         if (this.state.isLoading) { //ESTA BUSCANDO
             return (
-                <View style={appStyles.container}>
+                <View style={[appStyles.container, {top: sizes.hp('1%')}]}>
 
                     <Searchbar
                         style={styles.searchInput}
@@ -62,7 +61,7 @@ export default class ChooseShopScreen extends Component {
         }
         const { searchQuery } = this.state;
         return (
-            <View style={appStyles.container}>
+            <View style={[appStyles.container, {top: sizes.hp('1%')}]}>
 
                 <Searchbar
                     style={styles.searchInput}

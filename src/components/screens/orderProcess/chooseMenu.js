@@ -23,7 +23,7 @@ class ChooseMenuScreen extends Component {
     render() {
 
         return (
-            <View style={appStyles.container}>
+            <View style={[appStyles.container, {top: sizes.hp('9%')}]}>
 
                 <Tabs
                     style={styles.appBar}

@@ -5,8 +5,6 @@ import { Searchbar } from 'react-native-paper';
 import ArrowButton from '../../commons/arrowButton'
 import ShopCard from '../../commons/shopCardSummary'
 
-const DATA = [];
-
 const getItem = (data, index) => {
     if (data == null) {
         return null
@@ -29,8 +27,9 @@ export default class SearchShopByNameScreen extends Component {
             isLoading: false,
             searchQuery: '',
             areStores: true,
+            DATA: [],
         };
-        this.arrayholder = [];
+        //this.arrayholder = [];
     }
 
     _onChangeSearch = query => this.setState({ searchQuery: query });
@@ -57,7 +56,7 @@ export default class SearchShopByNameScreen extends Component {
                         theme={{ colors: { primary: colors.APP_MAIN } }}
                         iconColor={colors.APP_MAIN}
                         onChangeText={this._onChangeSearch}
-                        value={searchQuery}
+                        value={this.state.searchQuery}
                     />
 
                     <View style={{ marginTop: sizes.hp('-70%') }}>
@@ -66,41 +65,43 @@ export default class SearchShopByNameScreen extends Component {
                 </View>
             );
         }
-        const { searchQuery } = this.state;
-        return (
-            <View style={appStyles.container}>
-                <ArrowButton rute='navBarClientSearch' />
+        else {
+            //const { searchQuery } = this.state;
+            return (
+                <View style={appStyles.container}>
+                    <ArrowButton rute='navBarClientSearch' />
 
-                <Searchbar
-                    style={styles.searchInput}
-                    placeholder="Buscar local por nombre"
-                    theme={{ colors: { primary: colors.APP_MAIN } }}
-                    iconColor={colors.APP_MAIN}
-                    onChangeText={this._onChangeSearch}
-                    value={searchQuery}
-                />
-
-                {(this.state.areStores) ?
-                    <VirtualizedList
-                        style={styles.list}
-                        ItemSeparatorComponent={this.renderSeparator}
-                        data={DATA}
-                        initialNumToRender={0}
-                        renderItem={({ item }) => <ShopCard />}
-                        keyExtractor={item => item.key}
-                        getItemCount={getItemCount}
-                        getItem={getItem}
+                    <Searchbar
+                        style={styles.searchInput}
+                        placeholder="Buscar local por nombre"
+                        theme={{ colors: { primary: colors.APP_MAIN } }}
+                        iconColor={colors.APP_MAIN}
+                        onChangeText={this._onChangeSearch}
+                        value={this.state.searchQuery}
                     />
-                    :
-                    <View style={styles.viewImage}>
-                        <Image source={require('../../../icons/noStore.png')} style={styles.image} />
-                        <Text style={styles.infoImage}>No se encontraron locales con ese nombre</Text>
-                    </View>
-                }
+
+                    {(this.state.areStores) ?
+                        <VirtualizedList
+                            style={styles.list}
+                            ItemSeparatorComponent={this.renderSeparator}
+                            data={this.state.DATA}
+                            initialNumToRender={0}
+                            renderItem={({ item }) => <ShopCard />}
+                            keyExtractor={item => item.id}
+                            getItemCount={getItemCount}
+                            getItem={getItem}
+                        />
+                        :
+                        <View style={styles.viewImage}>
+                            <Image source={require('../../../icons/noStore.png')} style={styles.image} />
+                            <Text style={styles.infoImage}>No se encontraron locales con ese nombre</Text>
+                        </View>
+                    }
 
 
-            </View>
-        );
+                </View>
+            );
+        }
     }
 }
 

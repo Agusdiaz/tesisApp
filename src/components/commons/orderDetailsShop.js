@@ -67,7 +67,7 @@ class OrderDetailsShop extends Component {
 
         return (
 
-            <Card style={styles.productCard}>
+            <Card style={styles.orderCard}>
                 <Card.Title style={{ margin: -10, marginTop: sizes.hp('-2') }} left={Close} leftStyle={styles.close} right={ConditionOrder} rightStyle={styles.stageOrder} />
                 <Divider />
                 <Card.Title style={styles.cardTitle} titleStyle={styles.leftText} title="Número del Pedido:" right={OrderNumber} />
@@ -111,7 +111,7 @@ class OrderDetailsShop extends Component {
 }
 
 const styles = StyleSheet.create({
-    productCard: {
+    orderCard: {
         height: sizes.hp('80%'),
         width: sizes.wp('90%'),
         padding: 10,

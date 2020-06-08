@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, useEffect } from 'react';
 import { StyleSheet, FlatList, Text, View, Linking, ScrollView } from 'react-native';
 import { colors, sizes } from '../../index.styles';
 import { Button, Card, IconButton, Divider, FAB, } from 'react-native-paper';
@@ -55,7 +55,7 @@ class ShopCardClient extends Component {
         this.props.callbackFromParent(value);
     }
 
-    componentDidMount() {
+   componentDidMount() {
         this.passToParent(this.state.isOpen)
     }
 
