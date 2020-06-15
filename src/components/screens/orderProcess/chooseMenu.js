@@ -1,34 +1,35 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, } from 'react-native';
+import { StyleSheet, Text, View,  } from 'react-native';
 import { Button } from 'react-native-paper';
 import { appStyles, colors, sizes } from '../../../index.styles';
 import { Tabs, Tab, } from 'material-bread';
-import Animated from 'react-native-reanimated';
 import MenuProcess from '../orderProcess/menuProcess'
-import ShopCardClient from '../../commons/shopCardClient'
+import SalesProcess from '../orderProcess/salesProcess'
 
 class ChooseMenuScreen extends Component {
     constructor() {
         super();
         this.state = {
-            isOpen: null,
             selectedTab: 0,
         };
     }
 
-    setIsOpen = (stateIsOpen) => {
-        this.setState({ isOpen: stateIsOpen })
+    updateScroll = () => {
+        this.props.updateScrollFromParent();
     }
 
     render() {
 
         return (
-            <View style={[appStyles.container, {top: sizes.hp('9%')}]}>
+            <View style={[appStyles.container, { top: sizes.hp('9%') }]}>
 
                 <Tabs
                     style={styles.appBar}
                     selectedIndex={this.state.selectedTab}
-                    handleChange={index => this.setState({ selectedTab: index })}
+                    handleChange={index => {
+                        this.updateScroll();
+                        this.setState({ selectedTab: index });
+                    }}
                     backgroundColor={colors.APP_BACKGR}
                     underlineColor={colors.APP_MAIN}
 
@@ -41,14 +42,12 @@ class ChooseMenuScreen extends Component {
                 />
 
                 {(this.state.selectedTab === 0) ?
-
                     <MenuProcess onScroll={this.props.onScroll} />
-
                     :
-
-                    <Text>Promociones</Text>
+                    
+                    <SalesProcess onScroll={this.props.onScroll} />
+                            
                 }
-
 
             </View>
         );
@@ -60,7 +59,7 @@ const styles = StyleSheet.create({
         position: 'absolute',
         width: sizes.wp('100%'),
         //left: sizes.wp('0%'),
-        right: 0,
+        //right: 0,
         top: sizes.hp('-7%'),
         borderTopWidth: 2,
         borderColor: colors.APP_MAIN,

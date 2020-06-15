@@ -47,7 +47,7 @@ class DisabledProducts extends Component {
                     />
                     :
                     <View style={styles.viewImage}>
-                        <Image source={require('../../../icons/noProductsDisabled.png')} style={styles.image} />
+                        <Image source={require('../../../icons/noProducts.png')} style={styles.image} />
                         <Text style={styles.infoImage}>No tenés productos deshabilitados</Text>
                     </View>
                 }

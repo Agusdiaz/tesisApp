@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, } from 'react-native';
+import { StyleSheet, Text, View, Image } from 'react-native';
 import { Button } from 'react-native-paper';
 import { appStyles, colors, sizes } from '../../../index.styles';
 import { Tabs, Tab, } from 'material-bread';
@@ -7,12 +7,15 @@ import { Actions } from 'react-native-router-flux';
 import Menu from '../../commons/menu'
 import ArrowButton from '../../commons/arrowButton';
 import ShopCardClient from '../../commons/shopCardClient'
+import Sales from '../../commons/salesMenu'
 
 class ShopInformationScreen extends Component {
     constructor() {
         super();
         this.state = {
             isOpen: null,
+            areSales: true,
+            areProducts: true,
             selectedTab: 0,
         };
     }
@@ -29,14 +32,13 @@ class ShopInformationScreen extends Component {
                 <ArrowButton rute={'navBarClientHome'} />
 
                 <Button style={[styles.buttonOrder, {
-                    top: (this.state.selectedTab == 0) ? sizes.hp('1.2%') :
-                        (this.state.selectedTab == 1) ? sizes.hp('8.2%') : sizes.hp('1.2%')
+                    top: (this.state.selectedTab == 0) ? sizes.hp('1.2%') : sizes.hp('8.2%')
                 }]}
                     icon="cart-outline"
                     mode="contained"
-                    disabled={!this.state.isOpen}
+                    disabled={(this.state.isOpen == false || this.state.isOpen === null) ? true : (this.state.areProducts == false) ? true : false}
                     color={colors.APP_MAIN}
-                    onPress={() => Actions.makeorder({ pos : 1})}>
+                    onPress={() => Actions.makeorder({ pos: 1 })}>
                     Hace tu pedido aca
                 </Button>
 
@@ -59,15 +61,24 @@ class ShopInformationScreen extends Component {
 
                 {(this.state.selectedTab === 0) ?
 
-                    <ShopCardClient callbackFromParent={this.setIsOpen} />
+                    <ShopCardClient  callbackFromParent={this.setIsOpen}/> //callbackFromParent={this.setIsOpen}
 
-                    : (this.state.selectedTab === 1) ?
-
-                        <Menu rute='client'/>
-
-                        :
-
-                        <Text>Promociones</Text>
+                : (this.state.selectedTab === 1) ?
+                        (this.state.areProducts) ?
+                            <Menu rute='client' />
+                            :
+                            <View style={styles.viewImage}>
+                                <Image source={require('../../../icons/noProducts.png')} style={styles.image} />
+                                <Text style={styles.infoImage}>Actualmente hay productos cargados en el menú</Text>
+                            </View>
+                :
+                        (this.state.areSales) ?
+                            <Sales />
+                            :
+                            <View style={styles.viewImage}>
+                                <Image source={require('../../../icons/noSales.png')} style={styles.image} />
+                                <Text style={styles.infoImage}>Actualmente no hay promociones vigentes</Text>
+                            </View>
 
                 }
 
@@ -84,6 +95,26 @@ const styles = StyleSheet.create({
         top: sizes.hp('12.5%'),
         borderTopWidth: 2,
         borderColor: colors.APP_MAIN,
+    },
+    viewImage: {
+        justifyContent: 'center',
+        margin: 20,
+        marginTop: sizes.hp('47.7%'),
+        top: sizes.hp('-25%'),
+        width: sizes.wp('80%'),
+        height: sizes.hp('50%'),
+    },
+    image: {
+        width: 170,
+        height: 170,
+        marginBottom: sizes.hp('2%'),
+        alignSelf: 'center',
+    },
+    infoImage: {
+        fontSize: 17,
+        fontWeight: 'bold',
+        justifyContent: 'center',
+        textAlign: 'center',
     },
     buttonOrder: {
         width: sizes.wp('52%'),

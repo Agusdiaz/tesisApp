@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, KeyboardAvoidingView, ImageBackground, } from 'react-native';
+import { StyleSheet, Text, View, KeyboardAvoidingView, ImageBackground, Image } from 'react-native';
 import { appStyles, colors, sizes } from '../../../index.styles';
 import { Button, Dialog, Modal, Portal, Menu, } from 'react-native-paper';
 import { Tabs, Tab, } from 'material-bread';
@@ -8,8 +8,7 @@ import MenuShop from '../../commons/menu'
 import EditFeatures from '../profile/profileShopFeatures'
 import EditSchedule from '../profile/profileShopSchedule'
 import { Actions } from 'react-native-router-flux';
-
-const uriImageBckg = '../../../icons/forks.jpg'
+import SalesMenu from '../../commons/salesMenu';
 
 export default class ProfileShopScreen extends Component {
 
@@ -17,6 +16,8 @@ export default class ProfileShopScreen extends Component {
         super(props);
         this.state = { //IMAGENES?
             selectedTab: 0,
+            areSales: true,
+            areProducts: true,
             visibleDialogSessionOut: false,
             visibleModalEditFeatures: false,
             visibleModalEditSchedule: false,
@@ -33,7 +34,6 @@ export default class ProfileShopScreen extends Component {
     _hideModalEditSchedule = () => this.setState({ visibleModalEditSchedule: false });
 
     render() {
-
 
         return (
             <View style={appStyles.container}>
@@ -53,19 +53,31 @@ export default class ProfileShopScreen extends Component {
                 />
 
                 {(this.state.selectedTab === 0) ?
-                    <ImageBackground source={require(uriImageBckg)} style={styles.imageOutside} imageStyle={styles.imageInside} >
+                    <View style={{ top: sizes.hp('7%') }}>
                         <ShopCard />
-                    </ImageBackground>
+                    </View>
 
                     : (this.state.selectedTab === 1) ?
-                        <MenuShop rute='shop'/>
+                        (this.state.areProducts) ?
+                            <MenuShop rute='shop' />
+                            :
+                            <View style={styles.viewImage}>
+                                <Image source={require('../../../icons/noProducts.png')} style={styles.image} />
+                                <Text style={styles.infoImage}>Actualmente no tenés productos cargados en tu menú</Text>
+                            </View>
 
                         : (this.state.selectedTab === 2) ?
-                            <Text>Promociones</Text>
+                            (this.state.areSales) ?
+                                <SalesMenu />
+                                :
+                                <View style={styles.viewImage}>
+                                    <Image source={require('../../../icons/noSales.png')} style={styles.image} />
+                                    <Text style={styles.infoImage}>Actualmente no tenés promociones vigentes</Text>
+                                </View>
 
-                            :
+                        :
 
-                            <ImageBackground source={require(uriImageBckg)} style={styles.imageOutside} imageStyle={styles.imageInside} >
+                            <View>
 
                                 <Button
                                     style={styles.buttonStyle}
@@ -107,14 +119,14 @@ export default class ProfileShopScreen extends Component {
 
                                 <Portal>
                                     <Modal contentContainerStyle={styles.modalView} visible={this.state.visibleModalEditFeatures} onDismiss={this._hideModalEditFeatures}>
-                                        <EditFeatures hideModalFromChild={this._hideModalEditFeatures}/>
+                                        <EditFeatures hideModalFromChild={this._hideModalEditFeatures} />
                                     </Modal>
 
                                     <Modal contentContainerStyle={styles.modalView} visible={this.state.visibleModalEditSchedule} onDismiss={this._hideModalEditSchedule}>
-                                        <EditSchedule hideModalFromChild={this._hideModalEditSchedule}/>
+                                        <EditSchedule hideModalFromChild={this._hideModalEditSchedule} />
                                     </Modal>
                                 </Portal>
-                            </ImageBackground>
+                            </View>
                 }
 
             </View>
@@ -130,15 +142,23 @@ const styles = StyleSheet.create({
         top: sizes.hp('5%'),
 
     },
-    imageOutside: {
-        alignItems: 'center',
-        resizeMode: 'contain',
-        width: sizes.wp('100%'),
-        height: sizes.hp('100%'),
-        marginTop: sizes.hp('38.1%')
+    viewImage: {
+        justifyContent: 'center',
+        margin: 20,
+        marginTop: sizes.hp('75%'),
+        top: sizes.hp('-40%')
     },
-    imageInside: {
-        opacity: 0.75,
+    image: {
+        width: 170,
+        height: 170,
+        marginBottom: sizes.hp('2%'),
+        alignSelf: 'center',
+    },
+    infoImage: {
+        fontSize: 17,
+        fontWeight: 'bold',
+        justifyContent: 'center',
+        textAlign: 'center',
     },
     modalView: {
         marginTop: sizes.hp('0%'),

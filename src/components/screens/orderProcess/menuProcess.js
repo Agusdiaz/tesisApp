@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-
 import { StyleSheet, Text, View, VirtualizedList, FlatList } from 'react-native';
 import { colors, sizes } from '../../../index.styles'
 //import { Card, CardHeader, Avatar, IconButton } from 'material-bread'
@@ -68,7 +67,6 @@ class MenuProcess extends Component {
                         onScroll={this.props.onScroll}
                         scrollEventThrottle={16}
                         renderItem={({ item }) => <ProductCard />}
-                        ItemSeparatorComponent={this.renderSeparator}
                         keyExtractor={(item, i) => i.toString()}
                     />
 
@@ -82,7 +80,6 @@ class MenuProcess extends Component {
                             onScroll={this.props.onScroll}
                             scrollEventThrottle={16}
                             renderItem={({ item }) => <ProductCard />}
-                            ItemSeparatorComponent={this.renderSeparator}
                             keyExtractor={(item, i) => i.toString()}
                         />
 
@@ -96,7 +93,6 @@ class MenuProcess extends Component {
                             onScroll={this.props.onScroll}
                             scrollEventThrottle={16}
                             renderItem={({ item }) => <ProductCard />}
-                            ItemSeparatorComponent={this.renderSeparator}
                             keyExtractor={(item, i) => i.toString()}
                         />
                 }

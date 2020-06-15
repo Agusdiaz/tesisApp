@@ -90,7 +90,7 @@ export default class HorizontalStepIndicator extends Component {
                         </Dialog>
                     </Portal>
 
-                    <View style={{ flexDirection: 'row', top: sizes.hp('8%'),left: sizes.wp('-5%'), justifyContent: 'center'}}>
+                    <View style={{ flexDirection: 'row', top: sizes.hp('8%'), left: sizes.wp('-5%'), justifyContent: 'center' }}>
 
                         {(this.state.currentPosition == 0) ?
                             <IconButton
@@ -150,7 +150,8 @@ export default class HorizontalStepIndicator extends Component {
                                     },
                                 ],
                                 { useNativeDriver: true }
-                            )} />
+                            )}
+                            updateScrollFromParent = {this.updateScroll} />
 
                             : (this.state.currentPosition == 2) ?
 

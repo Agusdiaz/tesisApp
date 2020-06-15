@@ -51,12 +51,8 @@ class ShopCardClient extends Component {
         };
     }
 
-    passToParent = (value) => {
-        this.props.callbackFromParent(value);
-    }
-
    componentDidMount() {
-        this.passToParent(this.state.isOpen)
+        this.props.callbackFromParent(this.state.isOpen)
     }
 
     render() {
@@ -211,6 +207,8 @@ const styles = StyleSheet.create({
         height: sizes.hp('72%'),
         elevation: 10,
         borderRadius: 15,
+        borderWidth: 2,
+        borderColor: colors.APP_MAIN
     },
     title: {
         textAlign: 'center',

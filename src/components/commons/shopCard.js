@@ -177,6 +177,8 @@ const styles = StyleSheet.create({
         elevation: 10,
         borderRadius: 15,
         marginBottom: sizes.hp('3%'),
+        borderWidth: 2,
+        borderColor: colors.APP_MAIN
     },
     rightText: {
         fontSize: 16,

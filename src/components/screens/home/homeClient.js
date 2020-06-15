@@ -86,7 +86,7 @@ export default class AnimatedHeader extends React.Component {
 
                 <Animated.View style={[styles.headerWrapper, { transform: [{ translateY }] }]}>
                     <TouchableOpacity style={styles.touchable} onPress={() => Actions.makeorder()}>
-                        <ImageBackground source={require('../../../icons/tabla.jpg')} style={styles.imageContainer} imageStyle={styles.imageInside} resizeMode={'stretch'}>
+                        <ImageBackground source={require('../../../icons/flame.jpg')} style={styles.imageContainer} imageStyle={styles.imageInside} resizeMode={'stretch'}>
                             <Text style={styles.text}>PEDÍ AHORA</Text>
                         </ImageBackground>
                     </TouchableOpacity>
@@ -164,10 +164,10 @@ const styles = StyleSheet.create({
         marginTop: sizes.hp('6%'),
     },
     text: {
-        fontSize: 28,
+        fontSize: 40,
         fontWeight: 'bold',
         color: '#FFF',
-        marginTop: sizes.hp('13%'),
+        marginTop: sizes.hp('0%'), //13
     },
     surface: {
         marginTop: sizes.hp('1%'),

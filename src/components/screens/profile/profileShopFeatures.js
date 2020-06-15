@@ -146,7 +146,7 @@ export default class ProfileShopFeaturesScreen extends Component {
 
                 <View style={{ flexDirection: "row", marginTop: sizes.wp('1%') }}>
                     <Button
-                        style={{ margin: sizes.hp('1%'), width: '42%', marginRight: sizes.wp('10%') }}
+                        style={{ margin: sizes.hp('1%'), width: '42%', marginRight: sizes.wp('6.5%') }}
                         icon="close-outline"
                         mode="contained"
                         color={colors.APP_MAIN}
