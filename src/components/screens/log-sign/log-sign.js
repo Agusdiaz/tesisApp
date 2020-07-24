@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { logsign } from '../../../redux/actions';
 import { StyleSheet, Text, Image, View } from 'react-native';
 import { Button, IconButton } from 'react-native-paper';
-import { appStyles, colors } from '../../../index.styles';
+import { appStyles, colors, sizes } from '../../../index.styles';
 import { Actions } from 'react-native-router-flux';
 
 class LogSignScreen extends Component {
@@ -12,7 +12,7 @@ class LogSignScreen extends Component {
         return (
             <View style={appStyles.container} >
 
-                {/*}<Image source={require('../../../icons/book.gif')} style={{ width: 100, height: 100, marginBottom: 70 }} />{*/}
+                <Image source={require('../../../icons/flamma.png')} style={styles.imageLogo} />
                 <View style={styles.containerButton}>
                     <Text style={styles.textScreen}> ¿Ya sos usuario?</Text>
                     <Button
@@ -42,8 +42,16 @@ class LogSignScreen extends Component {
 }
 
 const styles = StyleSheet.create({
+    imageLogo: {
+        width: sizes.wp('95%'), 
+        height: sizes.hp('95%'), 
+        top: sizes.hp('-4%'),
+        resizeMode: 'center',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
     containerButton: {
-        marginTop: 120,
+        top: sizes.hp('-29%'),
         width: '100%',
         alignItems: 'center',
         justifyContent: 'center',

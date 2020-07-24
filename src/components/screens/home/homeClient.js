@@ -164,7 +164,7 @@ const styles = StyleSheet.create({
         marginTop: sizes.hp('6%'),
     },
     text: {
-        fontSize: 40,
+        fontSize: 40, //28
         fontWeight: 'bold',
         color: '#FFF',
         marginTop: sizes.hp('0%'), //13

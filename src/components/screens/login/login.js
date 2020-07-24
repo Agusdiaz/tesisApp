@@ -48,13 +48,7 @@ class LoginScreen extends Component {
             <KeyboardAvoidingView style={appStyles.container} behavior={Platform.OS === "ios" ? "padding" : "height"} keyboardVerticalOffset={Platform.OS === "ios" ? -150 : -100}>
                 <ArrowButton rute={'logsign'}/>
 
-                {/*}<Image source={require('../../../icons/book.gif')} style={{ width: 100, height: 100, marginBottom: 70 }} />{*/}
-                <IconButton
-                    icon='account-circle-outline'
-                    size={120}
-                    style={styles.iconUser}
-                    color={colors.APP_MAIN}
-                />
+                <Image source={require('../../../icons/flammaPic.png')} style={styles.imageLogo} />
 
                 <TextInput
                     style={styles.inputView}
@@ -82,7 +76,7 @@ class LoginScreen extends Component {
                 </TouchableOpacity>
 
                 <Button
-                    style={{ marginTop: sizes.hp('5%') }}
+                    style={{ top: sizes.hp('-10%') }}
                     icon="send"
                     mode="contained"
                     color={colors.APP_MAIN}
@@ -98,19 +92,22 @@ class LoginScreen extends Component {
 }
 
 const styles = StyleSheet.create({
+    imageLogo: {
+        width: sizes.wp('50%'), 
+        height: sizes.hp('48%'), 
+        top: sizes.hp('-10%'),
+        resizeMode: 'cover',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
     inputView: {
-        width: "80%",
-        height: 50,
+        width: sizes.wp('80%'),
+        height: sizes.hp('5%'),
+        top: sizes.hp('-12%'),
         marginBottom: 20,
         justifyContent: "center",
         padding: 5,
         fontSize: sizes.TEXT_INPUT,
-    },
-    iconUser: {
-        top: -35,
-        justifyContent: 'space-evenly',
-        alignSelf: 'center',
-        marginBottom: 10
     },
 });
 

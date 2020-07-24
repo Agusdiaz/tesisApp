@@ -75,7 +75,7 @@ export default class ProfileShopScreen extends Component {
                                     <Text style={styles.infoImage}>Actualmente no tenés promociones vigentes</Text>
                                 </View>
 
-                        :
+                            :
 
                             <View>
 
@@ -106,17 +106,6 @@ export default class ProfileShopScreen extends Component {
                                     Cerrar Sesión
                                 </Button>
 
-                                <Dialog
-                                    style={{ top: sizes.hp('-15%') }}
-                                    visible={this.state.visibleDialogSessionOut}
-                                    onDismiss={this._hideDialogSessionOut}>
-                                    <Dialog.Title style={{ alignSelf: 'center' }}>¿Desea cerrar sesión?</Dialog.Title>
-                                    <Dialog.Actions>
-                                        <Button style={{ marginRight: sizes.wp('3%') }} color={colors.APP_RED} onPress={this._hideDialogSessionOut}>Cancelar</Button>
-                                        <Button color={colors.APP_GREEN} onPress={() => console.log("Ok")}>Ok</Button>
-                                    </Dialog.Actions>
-                                </Dialog>
-
                                 <Portal>
                                     <Modal contentContainerStyle={styles.modalView} visible={this.state.visibleModalEditFeatures} onDismiss={this._hideModalEditFeatures}>
                                         <EditFeatures hideModalFromChild={this._hideModalEditFeatures} />
@@ -125,6 +114,17 @@ export default class ProfileShopScreen extends Component {
                                     <Modal contentContainerStyle={styles.modalView} visible={this.state.visibleModalEditSchedule} onDismiss={this._hideModalEditSchedule}>
                                         <EditSchedule hideModalFromChild={this._hideModalEditSchedule} />
                                     </Modal>
+
+                                    <Dialog
+                                        style={{ top: sizes.hp('-3%') }}
+                                        visible={this.state.visibleDialogSessionOut}
+                                        onDismiss={this._hideDialogSessionOut}>
+                                        <Dialog.Title style={{ alignSelf: 'center' }}>¿Desea cerrar sesión?</Dialog.Title>
+                                        <Dialog.Actions>
+                                            <Button style={{ marginRight: sizes.wp('3%') }} color={colors.APP_RED} onPress={this._hideDialogSessionOut}>Cancelar</Button>
+                                            <Button color={colors.APP_GREEN} onPress={() => console.log("Ok")}>Ok</Button>
+                                        </Dialog.Actions>
+                                    </Dialog>
                                 </Portal>
                             </View>
                 }

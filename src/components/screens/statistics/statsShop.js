@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, KeyboardAvoidingView, FlatList, ImageBackground } from 'react-native';
+import { StyleSheet, Text, View, } from 'react-native';
 import { appStyles, colors, sizes } from '../../../index.styles';
-import { Avatar, Button, Dialog, TextInput, Modal, Card, Divider, Banner } from 'react-native-paper';
+import { Banner } from 'react-native-paper';
 import { Tabs, Tab, Icon } from 'material-bread';
+import PieChartGraph from './pieChart'
 import { Actions } from 'react-native-router-flux';
 
-export default class StatsShopScreen extends Component {
+export default class StatsShopScreen extends React.Component {
 
     constructor(props) {
         super(props);
@@ -47,41 +48,46 @@ export default class StatsShopScreen extends Component {
                             ]}>
                             <Text style={{ fontSize: 22, textAlign: 'center' }}>¿Cuáles son los productos mas demandados por tu público?</Text>
                         </Banner>
+
+                       <PieChartGraph/>
+
                     </View>
 
                     : (this.state.selectedTab === 1) ?
 
-                    <View style={{ alignItems: 'center' }}>
-                        <Banner
-                            style={styles.banner}
-                            contentStyle={{ marginTop: sizes.hp('3.5%'), }}
-                            visible={this.state.visibleProducts}
-                            actions={[
-                                {
-                                    label: '',
-                                    onPress: () => { },
-                                },
-                            ]}>
-                            <Text style={{ fontSize: 22, textAlign: 'center' }}>¿Cuántos pedidos recibes por mes en los últimos seis meses?</Text>
-                        </Banner>
-                    </View>
+                        <View style={{ alignItems: 'center' }}>
+                            <Banner
+                                style={styles.banner}
+                                contentStyle={{ marginTop: sizes.hp('3.5%'), }}
+                                visible={this.state.visibleProducts}
+                                actions={[
+                                    {
+                                        label: '',
+                                        onPress: () => { },
+                                    },
+                                ]}>
+                                <Text style={{ fontSize: 22, textAlign: 'center' }}>¿Cuántos pedidos recibes por mes en los últimos seis meses?</Text>
+                            </Banner>
+
+                            
+                        </View>
 
                         :
 
                         <View style={{ alignItems: 'center' }}>
-                        <Banner
-                            style={styles.banner}
-                            contentStyle={{ marginTop: sizes.hp('3.5%'), }}
-                            visible={this.state.visibleProducts}
-                            actions={[
-                                {
-                                    label: '',
-                                    onPress: () => { },
-                                },
-                            ]}>
-                            <Text style={{ fontSize: 22, textAlign: 'center' }}>¿Cuáles son tus horarios más populares?</Text>
-                        </Banner>
-                    </View>
+                            <Banner
+                                style={styles.banner}
+                                contentStyle={{ marginTop: sizes.hp('3.5%'), }}
+                                visible={this.state.visibleProducts}
+                                actions={[
+                                    {
+                                        label: '',
+                                        onPress: () => { },
+                                    },
+                                ]}>
+                                <Text style={{ fontSize: 22, textAlign: 'center' }}>¿Cuáles son tus horarios más populares?</Text>
+                            </Banner>
+                        </View>
 
                 }
 

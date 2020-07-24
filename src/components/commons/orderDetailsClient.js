@@ -30,7 +30,8 @@ class OrderDetailsClient extends Component {
                     amount: 2,
                     unitPrice: 100,
                 },],
-            total: '$1500',
+            propina: 0,
+            total: 1500,
         }
     }
 
@@ -65,7 +66,9 @@ class OrderDetailsClient extends Component {
             repeatSpacer={50}
             marqueeDelay={1000}>{this.state.shopName}</TextTicker>
 
-        const total = props => <Text style={styles.rightText}> {this.state.total} </Text>
+        const propina = props => <Text style={styles.rightText}> ${this.state.propina} </Text>
+
+        const total = props => <Text style={styles.rightText}> ${this.state.total} </Text>
 
         const date = props => <Text style={styles.rightText}> {this.state.date} </Text>
 
@@ -80,11 +83,11 @@ class OrderDetailsClient extends Component {
                 <Divider style={styles.divider} />
                 <Card.Title style={styles.cardTitle} titleStyle={styles.leftText} title="Fecha:" right={date} />
                 <Divider style={styles.divider} />
-                <Card.Content style={{ alignItems: 'center', width: sizes.wp('90%'), marginLeft: sizes.wp('-6%') }}>
-                    <DataTable style={{width: sizes.wp('100%')}}>
+                <Card.Content style={{ alignSelf: 'center', width: sizes.wp('90%'), }}>
+                    <DataTable style={{width: sizes.wp('50%')}}>
                         <DataTableHeader
                             title={'¿Qué es lo que pediste?'}
-                            style={{ right: sizes.wp('-15%') }}
+                            style={{ right: sizes.wp('-12.5%') }}
                         />
                         <DataTableRow style={{}}>
                             <DataTableCell text={'Productos'} type={'header'} borderRight textStyle={{ textAlign: 'center' }} style={{ maxWidth: '30%'}}/>
@@ -92,7 +95,7 @@ class OrderDetailsClient extends Component {
                             <DataTableCell text={'Precio Unit'} type={'header'} style={{ maxWidth: '5%', left: sizes.wp('-10%') }} textStyle={{ textAlign: 'center' }} />
                             <DataTableCell text={'Precio Total'} type={'header'} style={{ maxWidth: '5%', left: sizes.wp('-16%') }} textStyle={{ textAlign: 'center' }} />
                         </DataTableRow>
-                        <ScrollView style={{ height: sizes.hp('37%') }}>
+                        <ScrollView style={{ height: sizes.hp('32%') }}>
                             {this.state.items
                                 .map(row => (
                                     <DataTableRow key={row.id}>
@@ -107,6 +110,8 @@ class OrderDetailsClient extends Component {
                     </DataTable>
                 </Card.Content>
                 <Divider style={styles.divider} />
+                <Card.Title style={styles.cardTitle} titleStyle={styles.leftText} title="Propina:" right={propina} />
+                <Divider style={styles.divider} />
                 <Card.Title style={styles.cardTitle} titleStyle={styles.leftText} title="Total:" right={total} />
                 <Divider style={styles.divider} />
             </Card>
@@ -115,11 +120,11 @@ class OrderDetailsClient extends Component {
 }
 
 const styles = StyleSheet.create({
-    productCard: {
+   orderCard: {
         height: sizes.hp('80%'),
         width: sizes.wp('90%'),
         padding: 10,
-        elevation: 0
+        elevation: 0,
     },
     close: {
         left: sizes.wp('-2%')

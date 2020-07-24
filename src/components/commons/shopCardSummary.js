@@ -52,7 +52,7 @@ class ShopCardSummary extends Component {
             </View>
 
             <IconButton 
-                icon={(this.state.isFav) ? "star" : "star-outline"}
+                icon={(this.state.isFav) ? "star" : "star-outline"} //require('../../icons/flammaPic.p')
                 color={colors.STAR}
                 size={30}
                 onPress={() => {
