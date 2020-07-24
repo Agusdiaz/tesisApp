@@ -14,6 +14,33 @@ app.get('/', async (req, res) => {
     res.send(payments)
 })
 
+app.post('/createPayment', async (req, res) => {
+    const payments = await mercadopago.payment.create({
+        description: 'Buying a PS4',
+        transaction_amount: 10500,
+        payment_method_id: 'rapipago',
+        notification_url:"https://frontend-flamma.herokuapp.com", //simular llamado al webhook
+        payer: {
+          email: 'agustina@palabra.io',
+          identification: {
+            type: 'DNI',
+            number: '34123123'
+          }
+      
+        }
+      })
+    
+    res.send(payments)
+})
+
+app.use('/', async (req, res) => {
+    res.send()
+
+   // const data = await mercadopago.payment.get(req.body.data.id)
+
+    console.log(req.headers, req.body)
+})
+
 app.listen (3000, () => console.log('App working'))
 
 
