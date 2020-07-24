@@ -1,6 +1,7 @@
 const mercadopago = require('mercadopago')
 const express = require('express');
 const app = express();
+const port = process.env.PORT || 3000;
 
 
 mercadopago.configure({
@@ -41,7 +42,7 @@ app.use('/', async (req, res) => {
     console.log(req.headers, req.body)
 })
 
-app.listen (3000, () => console.log('App working'))
+app.listen (port, () => console.log('App working'))
 
 
 
