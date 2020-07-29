@@ -1,3 +1,4 @@
+/*
 import axios from 'axios';
 import { API_LOGIN } from '../../../assets/constants';
 
@@ -28,4 +29,18 @@ export const login = ({ email, password }) => (dispatch, getState) => {
 					return reject({ error : true, message : "Ocurrio un error por favor intenta más tarde."});
 			});
 	});
+}*/
+
+import {FETCHING_DATA, FETCHING_DATA_SUCCESS, FETCHING_DATA_FAILURE} from '../../../assets/constants'
+
+export const getData = () => {
+    return {type: FETCHING_DATA}
+}
+
+export const getDataSuccess = (data) => {
+    return {type: FETCHING_DATA_SUCCESS, data}
+}
+
+export const getDateFailure = (error) => {
+    return {type: FETCHING_DATA_FAILURE, error}
 }

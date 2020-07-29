@@ -1,23 +1,11 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, Text, Image, VirtualizedList } from 'react-native';
+import { StyleSheet, View, Text, Image, VirtualizedList, RefreshControl } from 'react-native';
 import { Surface } from 'react-native-paper';
 import { appStyles, colors, sizes } from '../../../index.styles';
 import ShopCard from '../../commons/shopCardSummary'
 import { Actions } from 'react-native-router-flux';
 import ArrowButton from '../../commons/arrowButton'
-
-const DATA = [];
-
-const getItem = (data, index) => {
-    return {
-        id: Math.random().toString(12).substring(0),
-        title: `Item ${index + 1}`
-    }
-}
-
-const getItemCount = (data) => {
-    return 10;
-}
+import { getClientFavourites } from '../../../api/shops'
 
 class FavouritesShopsScreen extends Component {
 
@@ -25,7 +13,25 @@ class FavouritesShopsScreen extends Component {
         super()
         this.state = {
             areFavourites: false,
+            shops: null,
+            refreshing: false,
         }
+    }
+
+    componentDidMount(){
+        this.getFavourites()
+    }
+
+    getFavourites = () => {
+        getClientFavourites('mp@mail.com').then((shops) => {
+        this.setState({ shops: shops, areFavourites: (shops != null) ? true : false })})
+    }
+
+    onRefresh() {
+        //Clear old data of the list
+        this.setState({ shops: [] });
+        //Call the Service to get the latest data
+        this.getFavourites()
     }
 
     renderSeparator = () => {
@@ -39,6 +45,23 @@ class FavouritesShopsScreen extends Component {
     }
 
     render() {
+        if (this.state.refreshing) {
+            return (
+                <View style={appStyles.container}>
+
+                <ArrowButton rute='navBarClientProfile' />
+
+                <Surface style={[styles.surface, { top: (this.state.areFavourites) ? sizes.hp('12.8%') : sizes.hp('-20%') }]}>
+                    <Text style={{ fontSize: 20, color: colors.APP_BACKGR, fontWeight: 'bold', textAlign: 'center' }}>ESTOS SON TUS LOCALES FAVORITOS</Text>
+                </Surface>
+                
+                <View style={{ flex: 1, marginTop: 145 }}>
+                    <ActivityIndicator size='large'/>
+                </View>
+                </View>
+            );
+
+        }
         return (
             <View style={appStyles.container}>
 
@@ -52,12 +75,13 @@ class FavouritesShopsScreen extends Component {
                     <VirtualizedList
                         style={styles.list}
                         ItemSeparatorComponent={this.renderSeparator}
-                        data={DATA}
+                        refreshControl={<RefreshControl refreshing={this.state.refreshing} onRefresh={this.onRefresh.bind(this)} />}
+                        data={this.state.shops}
                         initialNumToRender={0}
-                        renderItem={({ item }) => <ShopCard />}
-                        keyExtractor={item => item.key}
-                        getItemCount={getItemCount}
-                        getItem={getItem} />
+                        renderItem={({ item }) => <ShopCard data={item}/>}
+                        keyExtractor={(item, i) => i.toString()}
+                        getItemCount={() => this.state.shops.length}
+                        getItem={(item, i) => item[i]} />
                     :
                     <View style={styles.viewImage}>
                         <Image source={require('../../../icons/noStar.png')} style={styles.image} />
@@ -93,8 +117,10 @@ const styles = StyleSheet.create({
         textAlign: 'center',
     },
     list: {
+        //borderWidth: 5,
+        //height: sizes.hp('-5%'),
         top: sizes.hp('13%'),
-        marginBottom: sizes.hp('0.5%'),
+        marginBottom: sizes.hp('14%'),
         width: '100%'
     }
 })

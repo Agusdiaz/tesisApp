@@ -1,8 +1,17 @@
 import { combineReducers } from 'redux';
 import session from './sesion.js';
 
-const reducers = combineReducers({
+export default combineReducers({
   session
 });
 
-export default reducers;
+/*
+import {combineReducers} from 'redux';
+import tabBarReducer from './tabBar.reducer'
+import dataReducer from './data.reducer'
+
+export default combineReducers({
+    tabId: tabBarReducer,
+    data: dataReducer
+})
+*/

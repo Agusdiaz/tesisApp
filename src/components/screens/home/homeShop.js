@@ -25,6 +25,7 @@ class HomeShopScreen extends Component {
             sortText: 'Orden de llegada',
             areOrders: true,
             amountOrders: 10,
+            data: [],
         }
         this.GetData();
     }
@@ -36,17 +37,20 @@ class HomeShopScreen extends Component {
         }
     }
 
+
+    async componentDidMount(){
+        await this.GetData()
+    }
+
+
     GetData = () => {
         /*
       //Service to get the data from the server to render
-      return fetch('https://jsonplaceholder.typicode.com/posts')
+      return fetch('http://localhost:8080/getAllShopsAZ')
         .then(response => response.json())
         .then(responseJson => {
-          this.setState({
-            refreshing: false,
-            //Setting the data source for the list to render
-            dataSource: responseJson
-          });
+            console.log(responseJson)
+            this.setState({ data: responseJson })
         })
         .catch(error => {
           console.error(error);
@@ -72,6 +76,7 @@ class HomeShopScreen extends Component {
     }
 
     render() {
+        //console.log(this.state.data)
         if (this.state.refreshing) {
             return (
                 //loading view while data is loading

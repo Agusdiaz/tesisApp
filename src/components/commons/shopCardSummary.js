@@ -4,6 +4,8 @@ import { colors, sizes } from '../../index.styles';
 import { Avatar, Button, Card, IconButton, FAB, Divider } from 'react-native-paper';
 import TextTicker from 'react-native-text-ticker'
 import { Actions } from 'react-native-router-flux';
+import { connect } from 'react-redux';
+import { fetchData } from '../../redux/actions'
 
 class ShopCardSummary extends Component {
 
@@ -29,8 +31,7 @@ class ShopCardSummary extends Component {
     }
 
     render() {
-
-        const LeftContent = props => (this.state.isOpen) ? <Button style={{ borderRadius: 20, width: 105, alignItems: 'center' }} mode="contained" color={colors.APP_GREEN} labelStyle={{ fontSize: 9, color: colors.APP_BACKGR }} >
+        const LeftContent = props => (this.props.data.abierto == 1) ? <Button style={{ borderRadius: 20, width: 105, alignItems: 'center' }} mode="contained" color={colors.APP_GREEN} labelStyle={{ fontSize: 9, color: colors.APP_BACKGR }} >
             Abierto </Button> : <Button style={{ borderRadius: 20, width: 105, alignItems: 'center' }} mode="contained" color={colors.APP_RED} labelStyle={{ fontSize: 9, color: colors.APP_BACKGR }}>Cerrado </Button>
 
         const RightContent = props => <View style={{ flexDirection: 'row', left: -6 }}>
@@ -41,17 +42,17 @@ class ShopCardSummary extends Component {
                     loop
                     animationType='bounce'
                     repeatSpacer={50}
-                    marqueeDelay={1000}>{this.state.name}</TextTicker>
+                    marqueeDelay={1000}>{this.props.data.nombre}</TextTicker>
 
                 <TextTicker style={styles.subtitle}
                     duration={5000}
                     loop
                     animationType='bounce'
                     repeatSpacer={50}
-                    marqueeDelay={1000}>{this.state.address}</TextTicker>
+                    marqueeDelay={1000}>{this.props.data.direccion}</TextTicker>
             </View>
 
-            <IconButton 
+            <IconButton
                 icon={(this.state.isFav) ? "star" : "star-outline"} //require('../../icons/flammaPic.p')
                 color={colors.STAR}
                 size={30}
@@ -70,95 +71,96 @@ class ShopCardSummary extends Component {
             En este momento hay {this.state.delay} demora</Button>
 
         return (
-            <Card style={styles.cardContent}>
-                <Card.Title left={LeftContent} leftStyle={{ right: 8 }} right={RightContent} />
-                <Divider />
-                <Card.Title style={{ margin: -10 }} left={PeopleButton} leftStyle={{ alignItems: 'center', width: sizes.wp('80%'), right: sizes.wp('-8%') }} />
-                <Card.Cover style={{ height: sizes.hp('20%') }} source={{ uri: 'https://picsum.photos/500' }} />
-                <Card.Actions>
-                    <View style={{ flexDirection: 'row', flexWrap: 'wrap', marginLeft: sizes.wp('3%'), width: sizes.wp('40%'), alignItems: 'center', justifyContent: 'flex-start' }}>
-                        {(this.state.pets) ?
+                <Card style={styles.cardContent}>
+                    <Card.Title left={LeftContent} leftStyle={{ right: 8 }} right={RightContent} />
+                    <Divider />
+                    <Card.Title style={{ margin: -10 }} left={PeopleButton} leftStyle={{ alignItems: 'center', width: sizes.wp('80%'), right: sizes.wp('-8%') }} />
+                    <Card.Cover style={{ height: sizes.hp('20%') }} source={{ uri: 'https://picsum.photos/500' }} />
+                    <Card.Actions>
+                        <View style={{ flexDirection: 'row', flexWrap: 'wrap', marginLeft: sizes.wp('3%'), width: sizes.wp('40%'), alignItems: 'center', justifyContent: 'flex-start' }}>
+                            {(this.props.data.mascotas == 1) ?
+                                <FAB
+                                    color={colors.APP_MAIN}
+                                    style={styles.fab}
+                                    small
+                                    icon="dog-side"
+                                />
+                                :
+                                null
+                            }
+                            {(this.props.data.bebes == 1) ?
+                                <FAB
+                                    color={colors.APP_MAIN}
+                                    style={styles.fab}
+                                    small
+                                    icon="baby"
+                                />
+                                :
+                                null
+                            }
+                            {(this.props.data.juegos == 1) ?
+                                <FAB
+                                    color={colors.APP_MAIN}
+                                    style={styles.fab}
+                                    visible={this.state.games}
+                                    small
+                                    icon="gamepad-variant"
+                                />
+                                :
+                                null
+                            }
+                            {(this.props.data.aireLibre == 1) ?
+                                <FAB
+                                    color={colors.APP_MAIN}
+                                    style={styles.fab}
+                                    visible={this.state.outside}
+                                    small
+                                    icon="image-filter-hdr"
+                                />
+                                :
+                                null
+                            }
                             <FAB
                                 color={colors.APP_MAIN}
                                 style={styles.fab}
                                 small
-                                icon="dog-side"
+                                icon={(this.props.data.libreHumo == 0) ? 'smoking' : 'smoking-off'}
                             />
-                            :
-                            null
-                        }
-                        {(this.state.kids) ?
-                            <FAB
+                            {(this.props.data.wifi == 1) ?
+                                <FAB
+                                    color={colors.APP_MAIN}
+                                    style={styles.fab}
+                                    visible={this.state.wifi}
+                                    small
+                                    icon="wifi"
+                                />
+                                :
+                                null
+                            }
+                        </View>
+                        {(this.props.rute == 'chooseShop') ?
+                            <Button
+                                style={{ left: sizes.wp('10%'), width: '40%', }}
+                                icon="cart-outline"
+                                mode="contained"
                                 color={colors.APP_MAIN}
-                                style={styles.fab}
-                                small
-                                icon="baby"
-                            />
-                            :
-                            null
-                        }
-                        {(this.state.games) ?
-                            <FAB
-                                color={colors.APP_MAIN}
-                                style={styles.fab}
-                                visible={this.state.games}
-                                small
-                                icon="gamepad-variant"
-                            />
-                            :
-                            null
-                        }
-                        {(this.state.outside) ?
-                            <FAB
-                                color={colors.APP_MAIN}
-                                style={styles.fab}
-                                visible={this.state.outside}
-                                small
-                                icon="image-filter-hdr"
-                            />
-                            :
-                            null
-                        }
-                        <FAB
-                            color={colors.APP_MAIN}
-                            style={styles.fab}
-                            small
-                            icon={(this.state.smoking) ? 'smoking' : 'smoking-off'}
-                        />
-                        {(this.state.wifi) ?
-                            <FAB
-                                color={colors.APP_MAIN}
-                                style={styles.fab}
-                                visible={this.state.wifi}
-                                small
-                                icon="wifi"
-                            />
-                            :
-                            null
-                        }
-                    </View>
-                    {(this.props.rute == 'chooseShop') ?
-                        <Button
-                            style={{ left: sizes.wp('10%'), width: '40%', }}
-                            icon="cart-outline"
-                            mode="contained"
-                            color={colors.APP_MAIN}
-                            onPress={this.nextStepParent}>
-                            Pedir Aca
+                                onPress={this.nextStepParent}>
+                                Pedir Aca
                         </Button>
-                        :
-                        <Button
-                            style={{ left: sizes.wp('10%'), width: '40%', }}
-                            icon="plus"
-                            mode="contained"
-                            color={colors.APP_MAIN}
-                            onPress={() => Actions.shopinformation()}>
-                            Detalles
+                            :
+                            <Button
+                                style={{ left: sizes.wp('10%'), width: '40%', }}
+                                icon="plus"
+                                mode="contained"
+                                color={colors.APP_MAIN}
+                                onPress={() => Actions.shopinformation({data: this.props.data})}>
+                                Detalles
                         </Button>
-                    }
-                </Card.Actions>
-            </Card>
+                        }
+                    </Card.Actions>
+                </Card>
         )
+
     }
 };
 
@@ -190,4 +192,18 @@ const styles = StyleSheet.create({
     },
 });
 
-export default ShopCardSummary;
+const mapStateToProps = state => {
+    return {
+        dataShopSummary: state.data
+    }
+}
+
+const mapDispatchToProps = dispatch => {
+    return {
+        fetchData: () => {
+            return dispatch(fetchData())
+        }
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(ShopCardSummary);

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { StyleSheet, Text, View, ScrollView, ImageBackground } from 'react-native';
 import { colors, sizes } from '../../index.styles';
 //import { Card, CardHeader, Avatar, IconButton } from 'material-bread'
-import { Card, FAB, Modal, Portal, Button, Dialog, Divider, } from 'react-native-paper';
+import { Card, FAB, Modal, Portal, Button, Dialog, Divider } from 'react-native-paper';
 import { DataTable, DataTableHeader, DataTableCell, DataTableRow } from 'material-bread'
 import TextTicker from 'react-native-text-ticker';
 import ProductDetails from '../commons/productDetails'
@@ -28,7 +28,7 @@ class SalesCard extends Component {
                 name: 'Producto 3',
                 amount: 1,
             },],
-            //available: true,
+            available: true,
             visibleModalDetails: false,
         }
     }
@@ -38,7 +38,7 @@ class SalesCard extends Component {
 
     render() {
 
-        const NamePrice = props => <View>
+        const NamePriceButton = props => <View style={{width: sizes.wp('50%')}}>
             <TextTicker style={styles.title}
                 duration={5000}
                 loop
@@ -46,13 +46,23 @@ class SalesCard extends Component {
                 repeatSpacer={50}
                 marqueeDelay={1000}>{this.state.name}</TextTicker>
             <Text style={styles.subtitle}>${this.state.total}</Text>
+            <Button
+                style={styles.buttonAvailable}
+                labelStyle={{fontSize: 10, textAlign: 'center'}}
+                compact
+                mode='contained'
+                dark
+                color={(this.state.available) ? colors.APP_GREEN : colors.APP_RED}
+               >
+               {(this.state.available) ? 'Válida' : 'No válida'}
+                </Button>
         </View>
 
         return (
             <View>
                 <Card style={styles.salesCard}>
-                <ImageBackground source={require('../../icons/promo.jpg')} style={styles.imageOutside} imageStyle={styles.imageInside} >
-                    <Card.Title right={NamePrice} rightStyle={styles.rightSide} />
+                    <ImageBackground source={require('../../icons/promo.jpg')} style={styles.imageOutside} imageStyle={styles.imageInside} >
+                        <Card.Title right={NamePriceButton} rightStyle={styles.rightSide} />
                     </ImageBackground>
                     <Divider />
                     <Card.Content style={{ alignItems: 'center' }}>
@@ -74,7 +84,7 @@ class SalesCard extends Component {
                                         <DataTableRow key={row.id}>
                                             <DataTableCell text={row.name} borderRight textStyle={{ textAlign: 'center' }} style={{ maxWidth: '35%' }} />
                                             <DataTableCell text={row.amount.toString()} textStyle={{ textAlign: 'center' }} style={{ maxWidth: '35%' }} />
-                                            <DataTableCell text={'VER'} textStyle={{color: colors.APP_MAIN, fontWeight: 'bold'}} onPress={this._showModalDetails} style={{ left: sizes.wp('8%') }}/>
+                                            <DataTableCell text={'VER'} textStyle={{ color: colors.APP_MAIN, fontWeight: 'bold' }} onPress={this._showModalDetails} style={{ left: sizes.wp('8%') }} />
                                         </DataTableRow>
                                     ))}
                             </ScrollView>
@@ -124,11 +134,10 @@ const styles = StyleSheet.create({
         opacity: 0.48,
     },
     rightSide: {
-        width: sizes.wp('90%'),
         height: sizes.hp('7%'),
-        marginRight: sizes.wp('5%'),
+        marginRight: sizes.wp('28%'),
         alignItems: 'center',
-        justifyContent: 'center',
+        top: sizes.hp('1%')
     },
     title: {
         textAlign: 'center',
@@ -147,10 +156,16 @@ const styles = StyleSheet.create({
         fontSize: 16,
         textAlign: 'center',
     },
+    buttonAvailable: {
+        width: sizes.wp('20%'),
+        right: sizes.wp('-55%'),
+        top: sizes.hp('-4.4%'),
+        fontSize: 5 
+    },
     fab: {
-        backgroundColor: '#FFFFFF', 
-        borderColor: colors.APP_MAIN, 
-        borderWidth: 2, 
+        backgroundColor: '#FFFFFF',
+        borderColor: colors.APP_MAIN,
+        borderWidth: 2,
         width: sizes.wp('10%'),
         height: sizes.hp('4%'),
         alignSelf: 'center',

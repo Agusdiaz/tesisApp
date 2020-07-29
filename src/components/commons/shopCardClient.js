@@ -51,12 +51,7 @@ class ShopCardClient extends Component {
         };
     }
 
-   componentDidMount() {
-        this.props.callbackFromParent(this.state.isOpen)
-    }
-
     render() {
-
         const PeopleButton = props => <Button
             style={{ borderRadius: 20, borderColor: colors.APP_MAIN, borderWidth: 1, width: sizes.wp('80%'), alignItems: 'center', }}
             labelStyle={{ fontSize: 12, color: colors.APP_MAIN, }}
@@ -70,15 +65,15 @@ class ShopCardClient extends Component {
             loop
             animationType='bounce'
             repeatSpacer={50}
-            marqueeDelay={1000}>{this.state.address}</TextTicker>
+            marqueeDelay={1000}>{this.props.data.direccion}</TextTicker>
 
         const PhoneNumber = props => <View>
-            <Text style={{ fontSize: 16, right: sizes.wp('13%') }}>{this.state.phoneNumber}</Text>
+            <Text style={{ fontSize: 16, right: sizes.wp('13%') }}>{this.props.data.telefono}</Text>
             <FAB style={styles.fabPhone}
                 color={colors.APP_BACKGR}
                 small
                 icon="phone"
-                onPress={() => { Linking.openURL(`tel:${this.state.phoneNumber}`) }}
+                onPress={() => { Linking.openURL(`tel:${this.props.data.telefono}`) }}
             />
         </View>
 
@@ -92,7 +87,7 @@ class ShopCardClient extends Component {
             <Text style={styles.textSchedule}>Sábado: {this.state.schedule.find(e => e.id == 7).title}</Text>
         </View>
 
-        const OpenClose = props => (this.state.isOpen) ? <Button style={{ borderRadius: 20, width: 105, alignItems: 'center' }} mode="contained" color={colors.APP_GREEN} labelStyle={{ fontSize: 9, color: colors.APP_BACKGR }} >
+        const OpenClose = props => (this.props.data.abierto == 1) ? <Button style={{ borderRadius: 20, width: 105, alignItems: 'center' }} mode="contained" color={colors.APP_GREEN} labelStyle={{ fontSize: 9, color: colors.APP_BACKGR }} >
             Abierto </Button> : <Button style={{ borderRadius: 20, width: 105, alignItems: 'center' }} mode="contained" color={colors.APP_RED} labelStyle={{ fontSize: 9, color: colors.APP_BACKGR }}>Cerrado </Button>
 
         const TitleStar = props => <View style={{ flexDirection: 'row', left: 7, }}>
@@ -103,7 +98,7 @@ class ShopCardClient extends Component {
                     loop
                     animationType='bounce'
                     repeatSpacer={50}
-                    marqueeDelay={1000}>{this.state.name}</TextTicker>
+                    marqueeDelay={1000}>{this.props.data.nombre}</TextTicker>
             </View>
 
             <IconButton {...props}
@@ -126,7 +121,7 @@ class ShopCardClient extends Component {
                     <Divider />
                     <Card.Actions style={{ alignContent: 'center' }}>
                         <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center', width: sizes.wp('89.5%') }}>
-                            {(this.state.pets) ?
+                            {(this.props.data.mascotas == 1) ?
                                 <FAB
                                     color={colors.APP_MAIN}
                                     style={styles.fab}
@@ -136,7 +131,7 @@ class ShopCardClient extends Component {
                                 :
                                 null
                             }
-                            {(this.state.kids) ?
+                            {(this.props.data.bebes == 1) ?
                                 <FAB
                                     color={colors.APP_MAIN}
                                     style={styles.fab}
@@ -147,7 +142,7 @@ class ShopCardClient extends Component {
                                 :
                                 null
                             }
-                            {(this.state.games) ?
+                            {(this.props.data.juegos == 1) ?
                                 <FAB
                                     color={colors.APP_MAIN}
                                     style={styles.fab}
@@ -158,7 +153,7 @@ class ShopCardClient extends Component {
                                 :
                                 null
                             }
-                            {(this.state.outside) ?
+                            {(this.props.data.aireLibre == 1) ?
                                 <FAB
                                     color={colors.APP_MAIN}
                                     style={styles.fab}
@@ -172,10 +167,10 @@ class ShopCardClient extends Component {
                             <FAB
                                 color={colors.APP_MAIN}
                                 style={styles.fab}
-                                label={(this.state.smoking) ? 'Apto fumadores' : 'Libre de humo'}
-                                icon={(this.state.smoking) ? 'smoking' : 'smoking-off'}
+                                label={(this.props.data.libreHumo == 0) ? 'Apto fumadores' : 'Libre de humo'}
+                                icon={(this.props.data.libreHumo == 0) ? 'smoking' : 'smoking-off'}
                             />
-                            {(this.state.wifi) ?
+                            {(this.props.data.wifi == 1) ?
                                 <FAB
                                     color={colors.APP_MAIN}
                                     style={styles.fab}

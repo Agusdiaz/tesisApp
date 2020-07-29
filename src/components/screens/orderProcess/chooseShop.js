@@ -4,6 +4,7 @@ import { appStyles, colors, sizes } from '../../../index.styles';
 import { Searchbar } from 'react-native-paper';
 import Animated from 'react-native-reanimated';
 import ShopCardSummary from '../../commons/shopCardSummary'
+import { getAllOpenShops } from '../../../api/shops'
 
 const DATA = [
     { key: '1' }, { key: '2' }, { key: '3' }, { key: '4' }, { key: '5' }, { key: '6' }, { key: '7' },
@@ -19,8 +20,17 @@ export default class ChooseShopScreen extends Component {
             isLoading: false,
             searchQuery: '',
             areStores: true,
+            shops: null
         };
         this.arrayholder = [];
+    }
+
+    componentDidMount() {
+        this.getOpenShops()
+    }
+
+    getOpenShops = () => {
+        getAllOpenShops().then((shops) => this.setState({ shops: shops, areStores: (shops != null) ? true : false }))
     }
 
     nextStepParent = () => {
@@ -42,7 +52,7 @@ export default class ChooseShopScreen extends Component {
     render() {
         if (this.state.isLoading) { //ESTA BUSCANDO
             return (
-                <View style={[appStyles.container, {top: sizes.hp('1%')}]}>
+                <View style={[appStyles.container, { top: sizes.hp('1%') }]}>
 
                     <Searchbar
                         style={styles.searchInput}
@@ -61,7 +71,7 @@ export default class ChooseShopScreen extends Component {
         }
         const { searchQuery } = this.state;
         return (
-            <View style={[appStyles.container, {top: sizes.hp('1%')}]}>
+            <View style={[appStyles.container, { top: sizes.hp('1%') }]}>
 
                 <Searchbar
                     style={styles.searchInput}
@@ -76,18 +86,18 @@ export default class ChooseShopScreen extends Component {
                     <AnimatedFlatList
                         style={styles.list}
                         ItemSeparatorComponent={this.renderSeparator}
-                        data={DATA}
+                        data={this.state.shops}
                         initialNumToRender={0}
                         onScroll={this.props.onScroll}
                         scrollEventThrottle={16}
-                        renderItem={({ item }) => <ShopCardSummary rute={'chooseShop'} nextStepParent={this.nextStepParent} />}
+                        renderItem={({ item }) => <ShopCardSummary rute={'chooseShop'} data={item} nextStepParent={this.nextStepParent} />}
                         ItemSeparatorComponent={this.renderSeparator}
                         keyExtractor={(item, i) => i.toString()}
                     />
                     :
                     <View style={styles.viewImage}>
                         <Image source={require('../../../icons/noStore.png')} style={styles.image} />
-                        <Text style={styles.infoImage}>No se encontraron locales con ese nombre</Text>
+                        <Text style={styles.infoImage}>No se encontraron locales</Text>
                     </View>
                 }
             </View>

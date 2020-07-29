@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { login } from '../../../redux/actions';
-import { StyleSheet, Text, KeyboardAvoidingView, Platform, TouchableOpacity, Image, View } from 'react-native';
-import { TextInput, Button, IconButton } from 'react-native-paper';
+//import { login } from '../../../redux/actions';
+import { StyleSheet, Text, KeyboardAvoidingView, Platform, TouchableOpacity, Image, Alert } from 'react-native';
+import { TextInput, Button, IconButton, ActivityIndicator, Modal } from 'react-native-paper';
 import { appStyles, colors, sizes } from '../../../index.styles';
 import ArrowButton from '../../commons/arrowButton'
 import { Actions } from 'react-native-router-flux';
-
+import { login } from '../../../api/user'
 
 class LoginScreen extends Component {
 
@@ -15,7 +15,7 @@ class LoginScreen extends Component {
         this.state = {
             email: '',
             password: '',
-            loader: false
+            loading: false
         }
     }
 
@@ -25,28 +25,33 @@ class LoginScreen extends Component {
             disabled = true;
         if (!this.state.password || this.state.password.length <= 5)
             disabled = true;
-        if (this.state.loader)
+        if (this.state.loading)
             disabled = true;
         return disabled;
     }
 
     _login() {
-        this.setState({ loader: true })
-        this.props.login(this.state).then(($result) => {
-            //todo salio bien enviamos a otra vista donde veremos el perfild del usuario
+        this.setState({ loading: true })
+        setTimeout(() => {
+            this.setState({
+              loading: false,
+            email: '',
+            password: ''
+            });
+          }, 4000);
+        login(this.state.email, this.state.password).then((result) => {
+         
         }).catch((err) => {
-            Alert.alert('Error', err.message);
+            this.setState({ loading: false })
+            this.setState({ email: '', password: '' })
+            Alert.alert('Error', err);
         })
-    }
-
-    tryLogin = () => {
-        this.props.attemptLogin(this.state.email, this.state.password, () => this.setState({ email: '', password: '' }))
     }
 
     render() {
         return (
             <KeyboardAvoidingView style={appStyles.container} behavior={Platform.OS === "ios" ? "padding" : "height"} keyboardVerticalOffset={Platform.OS === "ios" ? -150 : -100}>
-                <ArrowButton rute={'logsign'}/>
+                <ArrowButton rute={'logsign'} />
 
                 <Image source={require('../../../icons/flammaPic.png')} style={styles.imageLogo} />
 
@@ -80,10 +85,20 @@ class LoginScreen extends Component {
                     icon="send"
                     mode="contained"
                     color={colors.APP_MAIN}
-                    //disabled="true"
+                    disabled={(this.state.email != '' && this.state.password != '') ? false : true}
                     onPress={() => this._login()}>
                     INICIAR SESIÓN
  				</Button>
+
+                 <Modal dismissable={false}
+                    visible={this.state.loading}
+                    style={styles.modalActivityIndicator} >
+                    <ActivityIndicator
+                        animating={this.state.loading}
+                        size={60}
+                        color={colors.APP_MAIN}
+                    />
+                </Modal>
 
             </KeyboardAvoidingView>
 
@@ -93,8 +108,8 @@ class LoginScreen extends Component {
 
 const styles = StyleSheet.create({
     imageLogo: {
-        width: sizes.wp('50%'), 
-        height: sizes.hp('48%'), 
+        width: sizes.wp('50%'),
+        height: sizes.hp('48%'),
         top: sizes.hp('-10%'),
         resizeMode: 'cover',
         justifyContent: 'center',
@@ -108,6 +123,13 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         padding: 5,
         fontSize: sizes.TEXT_INPUT,
+    },
+    modalActivityIndicator: {
+        //flex: 1,
+        alignItems: 'center',
+        //flexDirection: 'column',
+        //justifyContent: 'space-around',
+        backgroundColor: '#00000040'
     },
 });
 

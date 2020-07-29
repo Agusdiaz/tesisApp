@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View,  } from 'react-native';
-import { Button } from 'react-native-paper';
+import { StyleSheet, Text, View, Image, TouchableHighlight } from 'react-native';
+import { Button, FAB } from 'react-native-paper';
 import { appStyles, colors, sizes } from '../../../index.styles';
 import { Tabs, Tab, } from 'material-bread';
 import MenuProcess from '../orderProcess/menuProcess'
@@ -49,6 +49,10 @@ class ChooseMenuScreen extends Component {
                             
                 }
 
+                <TouchableHighlight activeOpacity={0.6}  onPress={() => {}}>
+                <Image source={require('../../../icons/cartShop.png')} style={styles.imageFab} />
+                </TouchableHighlight>
+
             </View>
         );
     }
@@ -69,6 +73,16 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
         justifyContent: 'flex-start',
     },
+    imageFab:{
+        width: sizes.wp('31%'),
+        height: sizes.hp('14.7%'),
+        position: 'absolute',
+        backgroundColor: '#fff',
+        borderRadius: sizes.wp('50%'),
+        right: sizes.wp('15%'),
+        bottom: sizes.hp('18%'),
+        resizeMode: 'center',
+    }
 });
 
 export default ChooseMenuScreen;

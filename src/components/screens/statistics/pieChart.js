@@ -61,7 +61,7 @@ export default class PieChartGraph extends React.PureComponent {
 
         return (
             <View>
-                <TouchableRipple>
+                
                 <PieChart
                     style={styles.pieChart}
                     outerRadius={'90%'}
@@ -69,7 +69,7 @@ export default class PieChartGraph extends React.PureComponent {
                     data={pieData}
                     valueAccessor={({ item }) => item.value}
                 />
-                </TouchableRipple> {/*PROBARLO */}
+                
                 <HelperText type="info" visible={this.state.helperText} style={styles.helper}>
                     Producto: {data[this.state.index].name}{"\n"}
                     Cantidad vendida: {data[this.state.index].value}

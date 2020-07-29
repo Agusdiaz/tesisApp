@@ -13,7 +13,6 @@ class ShopInformationScreen extends Component {
     constructor() {
         super();
         this.state = {
-            isOpen: null,
             areSales: true,
             areProducts: true,
             selectedTab: 0,
@@ -25,7 +24,6 @@ class ShopInformationScreen extends Component {
     }
 
     render() {
-
         return (
             <View style={appStyles.container}>
 
@@ -36,7 +34,7 @@ class ShopInformationScreen extends Component {
                 }]}
                     icon="cart-outline"
                     mode="contained"
-                    disabled={(this.state.isOpen == false || this.state.isOpen === null) ? true : (this.state.areProducts == false) ? true : false}
+                    disabled={(this.props.data.abierto == 0) ? true : (!this.state.areProducts) ? true : false}
                     color={colors.APP_MAIN}
                     onPress={() => Actions.makeorder({ pos: 1 })}>
                     Hace tu pedido aca
@@ -61,7 +59,7 @@ class ShopInformationScreen extends Component {
 
                 {(this.state.selectedTab === 0) ?
 
-                    <ShopCardClient  callbackFromParent={this.setIsOpen}/> //callbackFromParent={this.setIsOpen}
+                    <ShopCardClient data={this.props.data}/> //callbackFromParent={this.setIsOpen}
 
                 : (this.state.selectedTab === 1) ?
                         (this.state.areProducts) ?

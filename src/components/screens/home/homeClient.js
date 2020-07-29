@@ -6,6 +6,7 @@ import ShopCardSummary from '../../commons/shopCardSummary'
 import ProductCard from '../../commons/productCardOrder'
 import { Actions } from 'react-native-router-flux';
 import Animated from 'react-native-reanimated';
+import { getAllShopsAZ, getAllShopsOpenClose } from '../../../api/shops'
 
 const DATA = [
     { key: '1' }, { key: '2' }, { key: '3' }, { key: '4' }, { key: '5' }, { key: '6' }, { key: '7' },
@@ -21,6 +22,21 @@ class AnimatedList extends Component {
     state = {
         isLoading: false,
         animatedValue: new Animated.Value(0),
+        shops: []
+    };
+
+    async componentDidMount() {
+        await this.getShopsOpenClose()
+    }
+
+    getShopsOpenClose = () => {
+        //console.log('entreeeee OP')
+        getAllShopsOpenClose().then(([shops]) => this.setState({ shops: shops }))
+    };
+
+    getShopsAZ = () => {
+        //console.log('entreeeee AZ')
+        getAllShopsAZ().then(([shops]) => this.setState({ shops: shops }))
     };
 
     onRefresh = () => {
@@ -44,10 +60,10 @@ class AnimatedList extends Component {
                 style={styles.list}
                 refreshing={this.state.isLoading}
                 onRefresh={this.onRefresh}
-                data={DATA}
+                data={this.state.shops}
                 onScroll={this.props.onScroll}
                 scrollEventThrottle={16}
-                renderItem={({ item }) => <ShopCardSummary />}
+                renderItem={({ item }) => <ShopCardSummary data={item} />}
                 ItemSeparatorComponent={this.renderSeparator}
                 keyExtractor={(item, i) => i.toString()}
             />
@@ -108,7 +124,7 @@ export default class AnimatedHeader extends React.Component {
                                 });
                             })}
                             value={this.state.valueButtons}>
-                                <ToggleButton style={styles.toggleButton} icon="store-24-hour" value="open" onPress={() => { }}
+                            <ToggleButton style={styles.toggleButton} icon="store-24-hour" value="open" onPress={() => { }}
                                 color={(this.state.valueButtons === 'open') ? colors.APP_MAIN : colors.APP_INACTIVE} />
                             <ToggleButton style={styles.toggleButton} icon="sort-alphabetical" value="letters" onPress={() => { }}
                                 color={(this.state.valueButtons === 'letters') ? colors.APP_MAIN : colors.APP_INACTIVE} />

@@ -155,7 +155,7 @@ export default class HorizontalStepIndicator extends Component {
 
                             : (this.state.currentPosition == 2) ?
 
-                                <OrderSummary />
+                                <OrderSummary nextStepParent={this.nextStep}/>
 
                                 :
                                 <Text>Pagar</Text>
