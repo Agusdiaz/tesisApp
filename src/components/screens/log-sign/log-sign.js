@@ -1,12 +1,22 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { logsign } from '../../../redux/actions';
 import { StyleSheet, Text, Image, View } from 'react-native';
 import { Button, IconButton } from 'react-native-paper';
 import { appStyles, colors, sizes } from '../../../index.styles';
 import { Actions } from 'react-native-router-flux';
+import { verifyToken } from '../../../api/user'
 
 class LogSignScreen extends Component {
+
+    async UNSAFE_componentWillMount(){ 
+        const data = await verifyToken(this.props.user.token)
+        if(data.status === 200){ //VALIDO
+            
+        }
+        else{ //INVALIDO
+
+        }
+    }
 
     render() {
         return (
@@ -70,10 +80,18 @@ const styles = StyleSheet.create({
     },
 });
 
-function MapStateToProps(state) {
+function mapStateToProps(state) {
     return {
-        user: state.session && state.session.user ? state.session.user : false
-    }
+        user: state.authState
+    };
 }
 
-export default connect(MapStateToProps, { logsign })(LogSignScreen);
+const mapDispatchToProps = (dispatch) => {
+    return {
+        
+    }
+};
+
+export default connect(
+    mapStateToProps, mapDispatchToProps
+)(LogSignScreen);

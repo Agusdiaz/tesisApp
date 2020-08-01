@@ -5,29 +5,33 @@ import { Avatar, Button, Card, IconButton, FAB, Divider } from 'react-native-pap
 import TextTicker from 'react-native-text-ticker'
 import { Actions } from 'react-native-router-flux';
 import { connect } from 'react-redux';
-import { fetchData } from '../../redux/actions'
+import { setShopAsFavourite, deleteShopAsFavourite } from '../../api/shops'
+import ShopActions from '../../redux/shops/action'
 
 class ShopCardSummary extends Component {
 
     constructor() {
         super();
-        this.state = { //PONER METODO PARA SABER EL ESTADO
-            name: 'Nombre del Local',
-            address: 'Dirección del Local',
-            isFav: false,
-            isOpen: true,
+        this.state = {
             delay: 'Poca',
-            pets: true,
-            kids: true,
-            games: true,
-            outside: true,
-            smoking: true,
-            wifi: true,
         };
     }
 
     nextStepParent = () => {
         this.props.nextStepParent();
+    }
+
+    async setFavourite(){
+        const data = await setShopAsFavourite(this.props.user.mail, this.props.data.cuit, this.props.user.token)
+        if (data.status === 200 ) 
+            this.props.updateShopFavourite(this.props.data.cuit, true)
+    }
+
+    async removeFavourite(){
+        const data = await deleteShopAsFavourite(this.props.user.mail, this.props.data.cuit, this.props.user.token)
+        if (data.status === 200 ){
+            this.props.updateShopFavourite(this.props.data.cuit, false)
+        }
     }
 
     render() {
@@ -53,13 +57,10 @@ class ShopCardSummary extends Component {
             </View>
 
             <IconButton
-                icon={(this.state.isFav) ? "star" : "star-outline"} //require('../../icons/flammaPic.p')
+                icon={(this.props.data.favorito) ? "star" : "star-outline"} //require('../../icons/flammaPic.p')
                 color={colors.STAR}
                 size={30}
-                onPress={() => {
-                    this.setState(
-                        { isFav: !this.state.isFav })
-                }} />
+                onPress={() =>  (this.props.data.favorito) ? this.removeFavourite() : this.setFavourite()} />
         </View>
 
         const PeopleButton = props => <Button
@@ -102,7 +103,6 @@ class ShopCardSummary extends Component {
                                 <FAB
                                     color={colors.APP_MAIN}
                                     style={styles.fab}
-                                    visible={this.state.games}
                                     small
                                     icon="gamepad-variant"
                                 />
@@ -113,7 +113,6 @@ class ShopCardSummary extends Component {
                                 <FAB
                                     color={colors.APP_MAIN}
                                     style={styles.fab}
-                                    visible={this.state.outside}
                                     small
                                     icon="image-filter-hdr"
                                 />
@@ -130,7 +129,6 @@ class ShopCardSummary extends Component {
                                 <FAB
                                     color={colors.APP_MAIN}
                                     style={styles.fab}
-                                    visible={this.state.wifi}
                                     small
                                     icon="wifi"
                                 />
@@ -194,15 +192,13 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = state => {
     return {
-        dataShopSummary: state.data
+        user: state.authState,
     }
 }
 
 const mapDispatchToProps = dispatch => {
     return {
-        fetchData: () => {
-            return dispatch(fetchData())
-        }
+        updateShopFavourite: (cuit, favourite) => dispatch(ShopActions.updateShopFavourite(cuit, favourite))
     }
 }
 

@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import { StyleSheet, View, Text, TouchableOpacity, ImageBackground, FlatList, Image } from 'react-native';
 import { Surface, ToggleButton, } from 'react-native-paper';
 import { appStyles, colors, sizes } from '../../../index.styles';
@@ -6,6 +7,7 @@ import ShopCardSummary from '../../commons/shopCardSummary'
 import ProductCard from '../../commons/productCardOrder'
 import { Actions } from 'react-native-router-flux';
 import Animated from 'react-native-reanimated';
+import ShopActions from '../../../redux/shops/action'
 import { getAllShopsAZ, getAllShopsOpenClose } from '../../../api/shops'
 
 const DATA = [
@@ -17,31 +19,33 @@ const HEADER_COLLAPSED_HEIGHT = -205
 
 const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
 
+const globalState = {
+    areStores: true,
+    buttonValue: 'open'
+}
+
 class AnimatedList extends Component {
 
     state = {
-        isLoading: false,
+        refreshing: false,
         animatedValue: new Animated.Value(0),
-        shops: []
-    };
-
-    async componentDidMount() {
-        await this.getShopsOpenClose()
-    }
-
-    getShopsOpenClose = () => {
-        //console.log('entreeeee OP')
-        getAllShopsOpenClose().then(([shops]) => this.setState({ shops: shops }))
-    };
-
-    getShopsAZ = () => {
-        //console.log('entreeeee AZ')
-        getAllShopsAZ().then(([shops]) => this.setState({ shops: shops }))
     };
 
     onRefresh = () => {
-        this.setState({ isLoading: true })
-        setTimeout(() => this.setState({ isLoading: false }), 1500)
+        this.setState({ refreshing: true });
+        if(globalState.buttonValue === 'open')
+            this.refreshOpenClose()
+        else
+            this.refreshAZ()
+        this.setState({ refreshing: false }); 
+    }
+
+    async refreshOpenClose(){
+        await this.props.getOpenClose()  
+    }
+
+    async refreshAZ(){
+        await this.props.getAZ()
     }
 
     renderSeparator = () => {
@@ -58,9 +62,9 @@ class AnimatedList extends Component {
         return (
             <AnimatedFlatList
                 style={styles.list}
-                refreshing={this.state.isLoading}
+                refreshing={this.state.refreshing}
                 onRefresh={this.onRefresh}
-                data={this.state.shops}
+                data={this.props.data}
                 onScroll={this.props.onScroll}
                 scrollEventThrottle={16}
                 renderItem={({ item }) => <ShopCardSummary data={item} />}
@@ -71,26 +75,53 @@ class AnimatedList extends Component {
     }
 }
 
-export default class AnimatedHeader extends React.Component {
+class AnimatedHeader extends React.Component {
 
     constructor(props) {
         super(props);
         this.state = {
             valueButtons: 'open',
             sortText: 'Abierto/Cerrado',
-            areStores: true,
             animatedValue: new Animated.Value(0),
         }
     }
 
+    componentDidMount() {
+        this.getShopsOpenClose()
+    }
+
+    async getShopsOpenClose() {
+        console.log('OP')
+        const data = await getAllShopsOpenClose(this.props.user.mail, this.props.user.token)
+        if (data.status === 500 || data.status === 204) {
+            globalState.areStores = false
+        } else {
+            this.props.setShopsData(data.body)
+            globalState.areStores = true
+        }
+    };
+
+    async getShopsAZ() {
+        console.log('AZ')
+        const data = await getAllShopsAZ(this.props.user.mail, this.props.user.token)
+        if (data.status === 500 || data.status === 204) {
+            globalState.areStores = false
+        } else {
+            this.props.setShopsData(data.body)
+            globalState.areStores = true
+        }
+    };
+
     handleButtons = (values, callback) => {
         if (values != null) {
             this.setState({ valueButtons: values })
+            globalState.buttonValue= values
             callback()
         }
     }
 
     render() {
+       
         let translateY = this.state.animatedValue.interpolate({
             inputRange: [0, HEADER_EXPANDED_HEIGHT],
             outputRange: [0, HEADER_COLLAPSED_HEIGHT],
@@ -123,17 +154,20 @@ export default class AnimatedHeader extends React.Component {
                                         : 'Orden Alfabético'
                                 });
                             })}
-                            value={this.state.valueButtons}>
-                            <ToggleButton style={styles.toggleButton} icon="store-24-hour" value="open" onPress={() => { }}
-                                color={(this.state.valueButtons === 'open') ? colors.APP_MAIN : colors.APP_INACTIVE} />
-                            <ToggleButton style={styles.toggleButton} icon="sort-alphabetical" value="letters" onPress={() => { }}
-                                color={(this.state.valueButtons === 'letters') ? colors.APP_MAIN : colors.APP_INACTIVE} />
+                            value={globalState.buttonValue}>
+                            <ToggleButton style={styles.toggleButton} icon="store-24-hour" value="open" onPress={() => this.getShopsOpenClose()}
+                                color={(globalState.buttonValue === 'open') ? colors.APP_MAIN : colors.APP_INACTIVE} />
+                            <ToggleButton style={styles.toggleButton} icon="sort-alphabetical" value="letters" onPress={() => this.getShopsAZ()}
+                                color={(globalState.buttonValue === 'letters') ? colors.APP_MAIN : colors.APP_INACTIVE} />
                         </ToggleButton.Group>
                     </View>
 
-                    {(this.state.areStores) ?
+                    {(globalState.areStores) ?
 
                         <AnimatedList
+                            data={this.props.shops.allShops}
+                            getOpenClose= {this.getShopsOpenClose}
+                            getAZ={this.getShopsAZ}
                             onScroll={Animated.event(
                                 [
                                     {
@@ -225,3 +259,18 @@ const styles = StyleSheet.create({
         textAlign: 'center',
     },
 })
+
+function mapStateToProps(state) {
+    return {
+        user: state.authState,
+        shops: state.shops,
+    };
+}
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        setShopsData: (shops) => dispatch(ShopActions.setShopsData(shops))
+    }
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(AnimatedHeader)

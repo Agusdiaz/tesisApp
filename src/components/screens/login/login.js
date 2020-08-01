@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 //import { login } from '../../../redux/actions';
-import { StyleSheet, Text, KeyboardAvoidingView, Platform, TouchableOpacity, Image, Alert } from 'react-native';
-import { TextInput, Button, IconButton, ActivityIndicator, Modal } from 'react-native-paper';
+import { StyleSheet, Text, KeyboardAvoidingView, Platform, TouchableOpacity, Image } from 'react-native';
+import LoginActions from '../../../redux/authState/action'
+import { TextInput, Button, ActivityIndicator, Modal, Dialog, Paragraph } from 'react-native-paper';
 import { appStyles, colors, sizes } from '../../../index.styles';
 import ArrowButton from '../../commons/arrowButton'
 import { Actions } from 'react-native-router-flux';
@@ -15,37 +16,33 @@ class LoginScreen extends Component {
         this.state = {
             email: '',
             password: '',
-            loading: false
+            loading: false,
+            visibleDialog: false,
+            messageError: '',
         }
     }
 
-    _getDisabled() {
-        let disabled = false;
-        if (!this.state.email)
-            disabled = true;
-        if (!this.state.password || this.state.password.length <= 5)
-            disabled = true;
-        if (this.state.loading)
-            disabled = true;
-        return disabled;
-    }
+    _showDialog = () => this.setState({ visibleDialog: true });
+    _hideDialog = () => this.setState({ visibleDialog: false });
 
-    _login() {
+    async _login() {
         this.setState({ loading: true })
-        setTimeout(() => {
+        const data = await login(this.state.email, this.state.password)
+        if (data.status === 500 || data.status === 404 || data.status === 401) {
+            this.setState({ loading: false, email: '', password: '', messageError: data.body })
+            this._showDialog()
+        } else {
+            this.setState({ loading: false, email: '', password: '' })
+            this.props.setLoginData(data.body.mail, data.body.nombre, data.body.apellido, data.body.token)
+            Actions.navbarclient()
+        }
+        /*setTimeout(() => {
             this.setState({
               loading: false,
             email: '',
             password: ''
             });
-          }, 4000);
-        login(this.state.email, this.state.password).then((result) => {
-         
-        }).catch((err) => {
-            this.setState({ loading: false })
-            this.setState({ email: '', password: '' })
-            Alert.alert('Error', err);
-        })
+          }, 4000);*/
     }
 
     render() {
@@ -90,7 +87,18 @@ class LoginScreen extends Component {
                     INICIAR SESIÓN
  				</Button>
 
-                 <Modal dismissable={false}
+                <Dialog
+                    style={{ width: sizes.wp('70%'), alignSelf: 'center' }}
+                    visible={this.state.visibleDialog}
+                    onDismiss={this._hideDialog}>
+                    <Dialog.Title style={{ alignSelf: 'center' }}>Error</Dialog.Title>
+                    <Dialog.Content style={{ alignItems: 'center' }}><Paragraph style={{ textAlign: 'center', fontWeight: 'bold' }}>{this.state.messageError}</Paragraph></Dialog.Content>
+                    <Dialog.Actions>
+                        <Button style={{ marginRight: sizes.wp('3%') }} color={'#000000'} onPress={this._hideDialog}>Ok</Button>
+                    </Dialog.Actions>
+                </Dialog>
+
+                <Modal dismissable={false}
                     visible={this.state.loading}
                     style={styles.modalActivityIndicator} >
                     <ActivityIndicator
@@ -101,7 +109,6 @@ class LoginScreen extends Component {
                 </Modal>
 
             </KeyboardAvoidingView>
-
         );
     }
 }
@@ -133,10 +140,18 @@ const styles = StyleSheet.create({
     },
 });
 
-function MapStateToProps(state) {
+function mapStateToProps(state) {
     return {
-        user: state.session && state.session.user ? state.session.user : false
-    }
+        user: state.authState
+    };
 }
 
-export default connect(MapStateToProps, { login })(LoginScreen);
+const mapDispatchToProps = (dispatch) => {
+    return {
+        setLoginData: (mail, name, lastName, token) => dispatch(LoginActions.setLoginData(mail, name, lastName, token))
+    }
+};
+
+export default connect(
+    mapStateToProps, mapDispatchToProps
+)(LoginScreen);

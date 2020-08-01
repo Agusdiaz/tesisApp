@@ -1,20 +1,18 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import { StyleSheet, Text, View, KeyboardAvoidingView, } from 'react-native';
 import { appStyles, colors, sizes } from '../../../index.styles';
-import { Avatar, Button, Dialog, TextInput, Modal, IconButton, Portal } from 'react-native-paper';
+import { Avatar, Button, Dialog, TextInput, Modal, IconButton, Portal, ActivityIndicator } from 'react-native-paper';
 import TextTicker from 'react-native-text-ticker'
 import { Actions } from 'react-native-router-flux';
+import {updateClient } from '../../../api/user'
+import ClientActions from '../../../redux/authState/action'
 
-export default class ProfileClientScreen extends Component {
+class ProfileClientScreen extends Component {
 
     constructor(props) {
         super(props);
         this.state = {
-            firstName: 'Juan',
-            lastName: 'Perez',
-            mail: 'juanperez@mail.com',
-            avatarLabel: 'JP', //`${state.firstName.charAt(0)}${state.lastName.charAt(0)}`
-            password: '123',
             firstNameNew: '',
             lastNameNew: '',
             passwordNew: '',
@@ -23,6 +21,8 @@ export default class ProfileClientScreen extends Component {
             visibleDialogEditProfile: false,
             visibleModalName: false,
             visibleModalPassword: false,
+            errorMessage: '',
+            loading: false,
         }
     }
 
@@ -55,56 +55,47 @@ export default class ProfileClientScreen extends Component {
         }
         else
             this._showDialogEditProfile()
-    }
+    }        
 
-    /*
-        if ((this.state.firstNameNew != '' && this.state.firstNameNew.localeCompare(this.state.firstName) != 0) &&
-            (this.state.lastNameNew != '' && this.state.lastNameNew.localeCompare(this.state.lastName) != 0)) { //CAMBIAR NOMBRE Y APELLIDO
-            this.setState({
-                firstName: this.state.firstNameNew, lastName: this.state.lastNameNew,
-                avatarLabel: `${this.state.firstNameNew.charAt(0)}${this.state.lastNameNew.charAt(0)}`, firstNameNew: '', lastNameNew: ''
-            });
-            return 7;
+    async editNameLastName() {
+        if ((this.state.firstNameNew != '' && this.state.firstNameNew.localeCompare(this.props.user.name) != 0) &&
+            (this.state.lastNameNew != '' && this.state.lastNameNew.localeCompare(this.props.user.lastName) != 0)) {
+                this.setState({ loading: true })
+            const data = await updateClient(this.props.user.mail, this.state.firstNameNew, this.state.lastNameNew, this.props.user.token)
+            if (data.status === 500 || data.status === 404) {
+                this.setState({ firstNameNew: '', lastNameNew: '', loading: false, messageError: data.body})
+                this._showDialogEditProfile()
+            } else {
+                this.props.updateClientData(this.state.firstNameNew, this.state.lastNameNew)
+                this.setState({ loading: false, firstNameNew: '', lastNameNew: '', errorMessage: 'Se guardaron tus cambios'})
+                this._showDialogEditProfile()
+                this._hideModalName()
+            }
+        } else if (this.state.firstNameNew != '' && this.state.firstNameNew.localeCompare(this.props.user.name) != 0) {
+            this.setState({ loading: true })
+            const data = await updateClient(this.props.user.mail, this.state.firstNameNew, this.props.user.lastName, this.props.user.token)
+            if (data.status === 500 || data.status === 404) {
+                this.setState({ firstNameNew: '', loading: false, messageError: data.body})
+                this._showDialogEditProfile()
+            } else {
+                this.props.updateClientData(this.state.firstNameNew, this.props.user.lastName)
+                this.setState({ loading: false, firstNameNew: '', errorMessage: 'Se guardaron tus cambios'})
+                this._showDialogEditProfile()
+                this._hideModalName()
+            }
         }
-        else if (this.state.firstNameNew != '' && this.state.firstNameNew.localeCompare(this.state.firstName) != 0) { //CAMBIAR NOMBRE
-            this.setState({
-                firstName: this.state.firstNameNew, firstNameNew: '',
-                avatarLabel: `${this.state.firstNameNew.charAt(0)}${this.state.lastName.charAt(0)}`
-            });
-            return 8;
-        }
-        else if (this.state.lastNameNew != '' && this.state.lastNameNew.localeCompare(this.state.lastName) != 0) { //CAMBIAR APELLIDO
-            this.setState({
-                lastName: this.state.lastNameNew, lastNameNew: '',
-                avatarLabel: `${this.state.firstName.charAt(0)}${this.state.lastNameNew.charAt(0)}`,
-            });
-            return 9;
-        }
-        else { //NO CAMBIAR NADA
-            return 10;
-        }
-    }*/
-
-    editNameLastName() {
-        if ((this.state.firstNameNew != '' && this.state.firstNameNew.localeCompare(this.state.firstName) != 0) &&
-            (this.state.lastNameNew != '' && this.state.lastNameNew.localeCompare(this.state.lastName) != 0)) { //CAMBIAR NOMBRE, APELLIDO Y CONTRASEñA
-            this.setState({
-                firstName: this.state.firstNameNew, lastName: this.state.lastNameNew, avatarLabel: `${this.state.firstNameNew.charAt(0)}${this.state.lastNameNew.charAt(0)}`,
-                firstNameNew: '', lastNameNew: ''
-            });
-            this._hideModalName()
-        }
-        else if (this.state.firstNameNew != '' && this.state.firstNameNew.localeCompare(this.state.firstName) != 0) { //CAMBIAR NOMBRE Y CONTRASEñA
-            this.setState({
-                firstName: this.state.firstNameNew, avatarLabel: `${this.state.firstNameNew.charAt(0)}${this.state.lastName.charAt(0)}`
-            });
-            this._hideModalName()
-        }
-        else if (this.state.lastNameNew != '' && this.state.lastNameNew.localeCompare(this.state.lastName) != 0) { //CAMBIAR APELLIDO Y CONTRASEñA
-            this.setState({
-                lastName: this.state.lastNameNew, avatarLabel: `${this.state.firstName.charAt(0)}${this.state.lastNameNew.charAt(0)}`
-            });
-            this._hideModalName()
+        else if (this.state.lastNameNew != '' && this.state.lastNameNew.localeCompare(this.props.user.lastName) != 0) {
+            this.setState({ loading: true })
+            const data = await updateClient(this.props.user.mail, this.props.user.name, this.state.lastNameNew, this.props.user.token)
+            if (data.status === 500 || data.status === 404) {
+                this.setState({ lastNameNew: '', loading: false, messageError: data.body})
+                this._showDialogEditProfile()
+            } else {
+                this.props.updateClientData(this.props.user.name, this.state.lastNameNew)
+                this.setState({ loading: false, firstNameNew: '', lastNameNew: '', errorMessage: 'Se guardaron tus cambios'})
+                this._showDialogEditProfile()
+                this._hideModalName()
+            }
         }
         else
             this._hideModalName()
@@ -116,22 +107,22 @@ export default class ProfileClientScreen extends Component {
                 <View style={{ alignItems: 'center', top: 0, bottom: 0 }}>
                     <View style={styles.header}>
                         <View style={styles.headerContent}>
-                            <Avatar.Text style={styles.avatar} size={100} label={this.state.avatarLabel} labelStyle={{ color: colors.APP_MAIN }} />
+                        <Avatar.Text style={styles.avatar} size={100} label={this.props.user.name.charAt(0)+this.props.user.lastName.charAt(0)} labelStyle={{ color: colors.APP_MAIN }} />
                             <TextTicker style={styles.fullName}
                                 duration={5000}
                                 loop
                                 animationType='bounce'
                                 repeatSpacer={50}
-                                marqueeDelay={1000}> {this.state.firstName} {this.state.lastName}</TextTicker>
+                                marqueeDelay={1000}> {this.props.user.name} {this.props.user.lastName}</TextTicker>
 
                             <TextTicker style={styles.userInfo}
                                 duration={5000}
                                 loop
                                 animationType='bounce'
                                 repeatSpacer={50}
-                                marqueeDelay={1000}> {this.state.mail} </TextTicker>
+                                marqueeDelay={1000}> {this.props.user.mail} </TextTicker>
                             <IconButton
-                                icon="account-edit"
+                                icon='pencil'//"account-edit"
                                 style={styles.iconEdit}
                                 color={'#fff'}
                                 size={50}
@@ -189,7 +180,9 @@ export default class ProfileClientScreen extends Component {
                         <Dialog.Title style={{ alignSelf: 'center' }}>¿Desea cerrar sesión?</Dialog.Title>
                         <Dialog.Actions>
                             <Button style={{ marginRight: sizes.wp('3%') }} color={colors.APP_RED} onPress={this._hideDialogSessionOut}>Cancelar</Button>
-                            <Button color={colors.APP_GREEN} onPress={() => console.log("Ok")}>Ok</Button>
+                            <Button color={colors.APP_GREEN} onPress={() => {
+                                this._hideDialogSessionOut()
+                                Actions.logsign()}}>Ok</Button>
                         </Dialog.Actions>
                     </Dialog>
 
@@ -199,7 +192,7 @@ export default class ProfileClientScreen extends Component {
                         <TextInput
                             style={styles.inputView}
                             mode='outlined'
-                            label='Contraseña'
+                            label='Nueva Contraseña'
                             secureTextEntry={true}
                             placeholder="Nueva contraseña"
                             theme={{ colors: { text: colors.TEXT_INPUT, primary: colors.APP_MAIN } }}
@@ -231,6 +224,7 @@ export default class ProfileClientScreen extends Component {
                                 icon="check-outline"
                                 mode="contained"
                                 color={colors.APP_MAIN}
+                                disabled={(this.state.passwordNew == '' || this.state.passwordRepeated == '') ? true : false}
                                 onPress={() => this.editPassword()} >
                                 Confirmar
                             </Button>
@@ -244,7 +238,7 @@ export default class ProfileClientScreen extends Component {
                             style={styles.inputView}
                             mode='outlined'
                             label='Nombre'
-                            placeholder={this.state.firstName}
+                            placeholder={this.props.user.name}
                             theme={{ colors: { text: colors.TEXT_INPUT, primary: colors.APP_MAIN } }}
                             onChangeText={text => this.setState({ firstNameNew: text })}
                         />
@@ -253,7 +247,7 @@ export default class ProfileClientScreen extends Component {
                             style={styles.inputView}
                             mode='outlined'
                             label='Apellido'
-                            placeholder={this.state.lastName}
+                            placeholder={this.props.user.lastName}
                             theme={{ colors: { text: colors.TEXT_INPUT, primary: colors.APP_MAIN } }}
                             onChangeText={text => this.setState({ lastNameNew: text })}
                         />
@@ -273,7 +267,7 @@ export default class ProfileClientScreen extends Component {
                                 icon="check-outline"
                                 mode="contained"
                                 color={colors.APP_MAIN}
-                                disabled={(this.state.firstNameNew == ''&& this.state.lastNameNew == '') ? true : false}
+                                disabled={(this.state.firstNameNew == '' && this.state.lastNameNew == '') ? true : false}
                                 onPress={() => this.editNameLastName()}>
                                 Confirmar
                             </Button>
@@ -283,14 +277,23 @@ export default class ProfileClientScreen extends Component {
                     <Dialog
                         visible={this.state.visibleDialogEditProfile}
                         onDismiss={this._hideDialogEditProfile}>
-                        <Dialog.Title style={{ alignSelf: 'center' }}>Error al querer cambiar la contraseña</Dialog.Title>
+                        <Dialog.Title style={{ alignSelf: 'center' }}>{this.state.errorMessage}</Dialog.Title>
                         <Dialog.Actions>
                             <Button style={{ marginRight: sizes.wp('3%') }} color={'#000000'} onPress={this._hideDialogEditProfile}>Ok</Button>
                         </Dialog.Actions>
                     </Dialog>
+
+                    <Modal dismissable={false}
+                    visible={this.state.loading}
+                    style={styles.modalActivityIndicator} >
+                    <ActivityIndicator
+                        animating={this.state.loading}
+                        size={60}
+                        color={colors.APP_MAIN}
+                    />
+                </Modal>
                 </Portal>
             </View>
-
         );
     }
 }
@@ -374,3 +377,19 @@ const styles = StyleSheet.create({
         fontSize: sizes.TEXT_INPUT,
     },
 });
+
+function mapStateToProps(state) {
+    return {
+        user: state.authState
+    };
+}
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        updateClientData: (name, lastName) => dispatch(ClientActions.updateClientData(name, lastName))
+    }
+};
+
+export default connect(
+    mapStateToProps, mapDispatchToProps
+)(ProfileClientScreen);

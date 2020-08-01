@@ -8,9 +8,6 @@ class ShopCardClient extends Component {
     constructor() {
         super();
         this.state = { //PONER METODO PARA SABER EL ESTADO
-            name: 'Nombre del Local',
-            address: 'Lima 123',
-            phoneNumber: '45213256',
             schedule: [{
                 id: 1,
                 title: '11am-11pm',
@@ -40,14 +37,6 @@ class ShopCardClient extends Component {
                 title: '11am-3am',
             },],
             delay: 'Poca',
-            isFav: false,
-            isOpen: true,
-            pets: true,
-            kids: true,
-            games: true,
-            outside: true,
-            smoking: true,
-            wifi: true,
         };
     }
 
@@ -102,12 +91,12 @@ class ShopCardClient extends Component {
             </View>
 
             <IconButton {...props}
-                icon={(this.state.isFav) ? "star" : "star-outline"}
+                icon={(this.props.data.favorito) ? "star" : "star-outline"}
                 color={colors.STAR}
                 size={30}
                 onPress={() => {
                     this.setState(
-                        { isFav: !this.state.isFav })
+                        { isFav: !this.props.data.favorito })
                 }} />
         </View>
 
@@ -136,7 +125,6 @@ class ShopCardClient extends Component {
                                     color={colors.APP_MAIN}
                                     style={styles.fab}
                                     label={'Sala para niños'}
-                                    visible={this.state.kids}
                                     icon="baby"
                                 />
                                 :
@@ -147,7 +135,6 @@ class ShopCardClient extends Component {
                                     color={colors.APP_MAIN}
                                     style={styles.fab}
                                     label={'Juegos'}
-                                    visible={this.state.games}
                                     icon="gamepad-variant"
                                 />
                                 :
@@ -158,7 +145,6 @@ class ShopCardClient extends Component {
                                     color={colors.APP_MAIN}
                                     style={styles.fab}
                                     label={'Aire Libre'}
-                                    visible={this.state.outside}
                                     icon="image-filter-hdr"
                                 />
                                 :
@@ -175,7 +161,6 @@ class ShopCardClient extends Component {
                                     color={colors.APP_MAIN}
                                     style={styles.fab}
                                     label={'Wifi'}
-                                    visible={this.state.wifi}
                                     icon="wifi"
                                 />
                                 :

@@ -1,60 +1,84 @@
 import { APIURL } from '../../assets/constants'
 
-export const getAllShopsAZ = () => {
-    return fetch(`${APIURL}getAllShopsAZ`)
-        .then((response) => {
-            Promise.all([response.json()])
-        }).catch(e => {
-            console.error(e)
+export const getAllShopsAZ = async (mail, token) => {
+    let requestBody = {};
+    requestBody.mail = mail
+    const response = await fetch(`${APIURL}getAllShopsAZ`, {
+        method: 'POST',
+        body: JSON.stringify(requestBody),
+        headers: new Headers({
+            'Content-Type': 'application/json'
         })
+    }).then(r => (r.status === 204) ? r : r.json()
+        .then(data => 
+            ({ status: r.status, body: data })))
+        .then(obj => {return obj});
+    return response
 }
 
-export const getAllShopsOpenClose = () => {
-    return fetch(`${APIURL}getAllShopsOpenClose`)
-        .then((response) => Promise.all([response.json()])).catch(e => {
-            console.error(e)
+export const getAllShopsOpenClose = async (mail, token) => {
+    let requestBody = {};
+    requestBody.mail = mail
+    const response = await fetch(`${APIURL}getAllShopsOpenClose`, {
+        method: 'POST',
+        body: JSON.stringify(requestBody),
+        headers: new Headers({
+            'Content-Type': 'application/json'
         })
+    }).then(r => (r.status === 204) ? r : r.json()
+        .then(data => 
+            ({ status: r.status, body: data })))
+        .then(obj => {return obj});
+    return response
 }
 
-export const getAllOpenShops = async () => {
-    try {
-        const response = await fetch(`${APIURL}getAllOpenShops`, {
-            method: 'GET',
-            headers: new Headers({
-                'Content-Type': 'application/json'
-            })
+/*export const getAllOpenShops = async (mail, token) => {
+    console.log('entreOP')
+    let requestBody = {};
+    requestBody.mail = mail
+    const response = await fetch(`${APIURL}getAllOpenShops`, {
+        method: 'POST',
+        body: JSON.stringify(requestBody),
+        headers: new Headers({
+            'Content-Type': 'application/json'
         })
-        if (response.status == 204)
-            return null
-        return response.json()
-    } catch (error) {
-        console.error(e)
-    }
-}
-
-export const getClientFavourites = async (mail) => {
-    try {
-        let requestBody = {};
-        requestBody.mail = mail
-        const response = await fetch(`${APIURL}getFavourites`, {
-            method: 'POST',
-            body: JSON.stringify(requestBody),
-            headers: new Headers({
-                'Content-Type': 'application/json'
-            })
-        })
-        if (response.status == 204)
-            return null
-        return response.json()
-    } catch (error) {
-        console.error(e)
-    }
-}
-
-/*
-export const fetchPeople =  () => {
-    return fetch(URL_PEOPLE)
-    .then(Response =>{
-        return Promise.all([Response, Response.json()])
-    })
+    }).then(r => (r.status === 204) ? r : r.json()
+        .then(data => 
+            ({ status: r.status, body: data })))
+        .then(obj => {return obj});
+    return response
 }*/
+
+export const setShopAsFavourite = async (mail, cuit, token) => {
+    let requestBody = {};
+    requestBody.mail = mail
+    requestBody.cuit = cuit
+    const response = await fetch(`${APIURL}setShopAsFavourite`, {
+        method: 'POST',
+        body: JSON.stringify(requestBody),
+        headers: new Headers({
+            'Content-Type': 'application/json'
+        })
+    }).then(r => r.json()
+        .then(data => 
+            ({ status: r.status, body: data })))
+        .then(obj => {return obj});
+    return response
+}
+
+export const deleteShopAsFavourite = async (mail, cuit, token) => {
+    let requestBody = {};
+    requestBody.mail = mail
+    requestBody.cuit = cuit
+    const response = await fetch(`${APIURL}deleteShopAsFavourite`, {
+        method: 'POST',
+        body: JSON.stringify(requestBody),
+        headers: new Headers({
+            'Content-Type': 'application/json'
+        })
+    }).then(r => r.json()
+        .then(data => 
+            ({ status: r.status, body: data })))
+        .then(obj => {return obj});
+    return response
+}

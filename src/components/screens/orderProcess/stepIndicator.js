@@ -122,7 +122,6 @@ export default class HorizontalStepIndicator extends Component {
                                 customStyles={customStyles}
                                 currentPosition={this.state.currentPosition}
                                 labels={labels}
-                            //renderStepIndicator={renderIcon(this.state.currentPosition,'Second')}
                             />
                         </View>
 
@@ -166,21 +165,6 @@ export default class HorizontalStepIndicator extends Component {
         )
     }
 }
-
-/*function renderIcon(position, stepStatus){
-  if(position == 0){
-    return 'map-search-outline'
-  }
-  if(position == 1){
-
-  }
-  if(position == 2){
-
-  }
-  if(position == 3){
-
-  }
-}*/
 
 const styles = StyleSheet.create({
     arrowButton: {

@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
 import { StyleSheet, View, Text, KeyboardAvoidingView, Platform, TouchableOpacity, Alert } from 'react-native';
-import { TextInput, Button, Dialog } from 'react-native-paper';
+import { TextInput, Button, Dialog, Modal, ActivityIndicator, Paragraph } from 'react-native-paper';
 import { appStyles, colors, sizes } from '../../../index.styles';
 import ArrowButton from '../../commons/arrowButton'
 import { Actions } from 'react-native-router-flux';
-
-//this.signup(this.state.firstName, this.state.lastName, this.state.email, this.state.password)
+import { } from '../../../api/user'
 
 class SignUpClientScreen extends Component {
 
@@ -16,34 +15,26 @@ class SignUpClientScreen extends Component {
 			lastName: '',
 			email: '',
 			password: '',
-			visibleDialog: false,
+			loading: false,
+			visibleDialogCreate: false,
+			visibleDialogError: false,
+			messageError: '',
 		}
 	}
 
-	signup = () => {
-		if (this.state.firstName == '' || this.state.lastName == '' || this.state.email == '' || this.state.password == '')
-			Alert.alert('Atención','Campos Incompletos')
-		else
-			this._showDialog()
+	validateData(){
+		this.setState({ loading: true })
 	}
 
-	_getDisabled() {
-		let disabled = false;
-		if (!this.state.firstName || this.state.firstName.length <= 4)
-			disabled = true;
-		if (!this.state.lastName || this.state.lastName.length <= 4)
-			disabled = true;
-		if (!this.state.email)
-			disabled = true;
-		if (!this.state.password || this.state.password.length <= 5)
-			disabled = true;
+	signup(){
 
-		return disabled;
 	}
 
-	_showDialog = () => this.setState({ visibleDialog: true });
+	_showDialogCreate = () => this.setState({ visibleDialogCreate: true });
+	_hideDialogCreate = () => this.setState({ visibleDialogCreate: false });
 
-	_hideDialog = () => this.setState({ visibleDialog: false });
+	_showDialogError = () => this.setState({ visibleDialogError: true });
+	_hideDialogError = () => this.setState({ visibleDialogError: false });
 
 	render() {
 		return (
@@ -98,8 +89,8 @@ class SignUpClientScreen extends Component {
 					icon="account-plus"
 					mode="contained"
 					color={colors.APP_MAIN}
-					//disabled="true"
-					onPress={() => this.signup()}>
+					disabled={this.state.firstName == '' || this.state.lastName == '' || this.state.email == '' || this.state.password == ''}
+					onPress={this._showDialogCreate}>
 					Registrarse
  				</Button>
 
@@ -108,14 +99,35 @@ class SignUpClientScreen extends Component {
 				</TouchableOpacity>
 
 				<Dialog
-					visible={this.state.visibleDialog}
-					onDismiss={this._hideDialog}>
+					visible={this.state.visibleDialogCreate}
+					onDismiss={this._hideDialogCreate}>
 					<Dialog.Title style={{ alignSelf: 'center' }}>¿Desea crear cuenta?</Dialog.Title>
 					<Dialog.Actions>
-						<Button style={{ marginRight: sizes.wp('3%') }} color={colors.APP_RED} onPress={this._hideDialog}>Cancelar</Button>
-						<Button color={colors.APP_GREEN} onPress={() => console.log("Ok")}>Ok</Button>
+						<Button style={{ marginRight: sizes.wp('3%') }} color={colors.APP_RED} onPress={this._hideDialogCreate}>Cancelar</Button>
+						<Button color={colors.APP_GREEN} onPress={() => this.validateData()}>Ok</Button>
 					</Dialog.Actions>
 				</Dialog>
+
+				<Dialog
+                    style={{ width: sizes.wp('70%'), alignSelf: 'center' }}
+                    visible={this.state.visibleDialogError}
+                    onDismiss={this._hideDialogError}>
+                    <Dialog.Title style={{ alignSelf: 'center' }}>Error</Dialog.Title>
+                    <Dialog.Content style={{ alignItems: 'center' }}><Paragraph style={{ textAlign: 'center', fontWeight: 'bold' }}>{this.state.messageError}</Paragraph></Dialog.Content>
+                    <Dialog.Actions>
+                        <Button style={{ marginRight: sizes.wp('3%') }} color={'#000000'} onPress={this._hideDialogError}>Ok</Button>
+                    </Dialog.Actions>
+                </Dialog>
+
+                <Modal dismissable={false}
+                    visible={this.state.loading}
+                    style={styles.modalActivityIndicator} >
+                    <ActivityIndicator
+                        animating={this.state.loading}
+                        size={60}
+                        color={colors.APP_MAIN}
+                    />
+                </Modal>
 
 			</KeyboardAvoidingView>
 		);

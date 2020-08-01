@@ -1,38 +1,56 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import { StyleSheet, View, Text, Image, VirtualizedList, RefreshControl } from 'react-native';
 import { Surface } from 'react-native-paper';
 import { appStyles, colors, sizes } from '../../../index.styles';
 import ShopCard from '../../commons/shopCardSummary'
 import { Actions } from 'react-native-router-flux';
 import ArrowButton from '../../commons/arrowButton'
-import { getClientFavourites } from '../../../api/shops'
 
 class FavouritesShopsScreen extends Component {
 
-    constructor() {
-        super()
+    constructor(props) {
+        super(props)
         this.state = {
             areFavourites: false,
-            shops: null,
+            shops: [],
             refreshing: false,
         }
     }
 
-    componentDidMount(){
-        this.getFavourites()
+    componentDidMount() {
+        this.getFavouritesShops()
     }
 
-    getFavourites = () => {
-        getClientFavourites('mp@mail.com').then((shops) => {
-        this.setState({ shops: shops, areFavourites: (shops != null) ? true : false })})
+    getFavouritesShops(){
+        this.props.shops.allShops.map(obj => {
+            if (obj.favorito) {
+                this.state.shops.push(obj)
+            }
+        })
+        if (this.state.shops.length === 0)
+            this.setState({ areFavourites: false })
+        else this.setState({ areFavourites: true })
     }
+
+    /*componentDidUpdate(oldProps) {
+        var oldLength = 0
+        var newLength = 0
+        oldProps.shops.allShops.map(obj => {if(obj.favorito) oldLength++})
+        this.props.shops.allShops.map(obj => {if(obj.favorito) newLength++})
+        if(oldLength !== newLength){
+            console.log('force')
+            //this.setState({ shops: [] })
+            this.forceUpdate()
+        }
+      }
 
     onRefresh() {
         //Clear old data of the list
         this.setState({ shops: [] });
         //Call the Service to get the latest data
         this.getFavourites()
-    }
+    }*/
 
     renderSeparator = () => {
         return (
@@ -45,23 +63,7 @@ class FavouritesShopsScreen extends Component {
     }
 
     render() {
-        if (this.state.refreshing) {
-            return (
-                <View style={appStyles.container}>
 
-                <ArrowButton rute='navBarClientProfile' />
-
-                <Surface style={[styles.surface, { top: (this.state.areFavourites) ? sizes.hp('12.8%') : sizes.hp('-20%') }]}>
-                    <Text style={{ fontSize: 20, color: colors.APP_BACKGR, fontWeight: 'bold', textAlign: 'center' }}>ESTOS SON TUS LOCALES FAVORITOS</Text>
-                </Surface>
-                
-                <View style={{ flex: 1, marginTop: 145 }}>
-                    <ActivityIndicator size='large'/>
-                </View>
-                </View>
-            );
-
-        }
         return (
             <View style={appStyles.container}>
 
@@ -75,7 +77,7 @@ class FavouritesShopsScreen extends Component {
                     <VirtualizedList
                         style={styles.list}
                         ItemSeparatorComponent={this.renderSeparator}
-                        refreshControl={<RefreshControl refreshing={this.state.refreshing} onRefresh={this.onRefresh.bind(this)} />}
+                        //refreshControl={<RefreshControl refreshing={this.state.refreshing} onRefresh={this.onRefresh.bind(this)} />}
                         data={this.state.shops}
                         initialNumToRender={0}
                         renderItem={({ item }) => <ShopCard data={item}/>}
@@ -125,4 +127,17 @@ const styles = StyleSheet.create({
     }
 })
 
-export default FavouritesShopsScreen;
+function mapStateToProps(state) {
+    return {
+        user: state.authState,
+        shops: state.shops,
+    };
+}
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        //setShopsData: (shops) => dispatch(ShopActions.setShopsData(shops))
+    }
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(FavouritesShopsScreen)

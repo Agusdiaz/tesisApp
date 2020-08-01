@@ -1,18 +1,15 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import { StyleSheet, View, Text, ActivityIndicator, Image, FlatList } from 'react-native';
 import { appStyles, colors, sizes } from '../../../index.styles';
 import { Searchbar } from 'react-native-paper';
 import Animated from 'react-native-reanimated';
 import ShopCardSummary from '../../commons/shopCardSummary'
-import { getAllOpenShops } from '../../../api/shops'
-
-const DATA = [
-    { key: '1' }, { key: '2' }, { key: '3' }, { key: '4' }, { key: '5' }, { key: '6' }, { key: '7' },
-]
+import ShopActions from '../../../redux/shops/action'
 
 const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
 
-export default class ChooseShopScreen extends Component {
+class ChooseShopScreen extends Component {
 
     constructor(props) {
         super(props);
@@ -20,17 +17,20 @@ export default class ChooseShopScreen extends Component {
             isLoading: false,
             searchQuery: '',
             areStores: true,
-            shops: null
+            shops: []
         };
         this.arrayholder = [];
     }
 
-    componentDidMount() {
-        this.getOpenShops()
-    }
-
-    getOpenShops = () => {
-        getAllOpenShops().then((shops) => this.setState({ shops: shops, areStores: (shops != null) ? true : false }))
+    UNSAFE_componentWillMount() {
+        this.props.shops.allShops.map(obj => {
+            if (obj.abierto === 1) {
+                this.state.shops.push(obj)
+            }
+        })
+        if (this.state.shops.length === 0)
+            this.setState({ areStores: false })
+        else this.setState({ areStores: true })
     }
 
     nextStepParent = () => {
@@ -63,7 +63,7 @@ export default class ChooseShopScreen extends Component {
                         value={searchQuery}
                     />
 
-                    <View style={{ marginTop: sizes.hp('-70%') }}>
+                    <View style={{ marginTop: sizes.hp('-60%') }}>
                         <ActivityIndicator />
                     </View>
                 </View>
@@ -71,7 +71,7 @@ export default class ChooseShopScreen extends Component {
         }
         const { searchQuery } = this.state;
         return (
-            <View style={[appStyles.container, { top: sizes.hp('1%') }]}>
+            <View style={[appStyles.container, { top: sizes.hp('1%'), marginTop: sizes.hp('0%')}]}>
 
                 <Searchbar
                     style={styles.searchInput}
@@ -120,10 +120,7 @@ const styles = StyleSheet.create({
         //height: sizes.hp('80%'),
     },
     viewImage: {
-        justifyContent: 'center',
-        margin: 20,
-        marginTop: sizes.hp('45%'),
-        top: sizes.hp('-40%')
+        top: sizes.hp('-10%'),
     },
     image: {
         width: 170,
@@ -138,3 +135,18 @@ const styles = StyleSheet.create({
         textAlign: 'center',
     },
 })
+
+function mapStateToProps(state) {
+    return {
+        user: state.authState,
+        shops: state.shops,
+    };
+}
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        //setShopsData: (shops) => dispatch(ShopActions.setShopsData(shops))
+    }
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(ChooseShopScreen)

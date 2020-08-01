@@ -28,9 +28,9 @@ const sizes = {
 };
 
 const orderStage = {
-    PENDING: 'Pendiente',
-    READY: 'Listo',
-    DELIVERED : 'Entregado',
+    PENDING: 'pendiente',
+    READY: 'listo',
+    DELIVERED : 'entregado',
 }
 
 const appStyles = StyleSheet.create({

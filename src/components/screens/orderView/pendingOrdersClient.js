@@ -1,19 +1,10 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import { StyleSheet, Text, Image, View, VirtualizedList, RefreshControl, ActivityIndicator } from 'react-native';
 import { Surface } from 'react-native-paper';
 import { appStyles, colors, sizes } from '../../../index.styles';
-import OrderPendingCardClient from '../../commons/orderPendingCardClient';
-
-const getItem = (data, index) => {
-    return {
-        id: Math.random().toString(12).substring(0),
-        title: `Item ${index + 1}`
-    }
-}
-
-const getItemCount = (data) => {
-    return 10;
-}
+import OrderCardClient from '../../commons/orderCardClient';
+import {getPendingOrdersByClient} from '../../../api/orders'
 
 class PendingOrdersClientScreen extends Component {
 
@@ -21,28 +12,28 @@ class PendingOrdersClientScreen extends Component {
         super(props);
         this.state = {
             arePendings: true,
-            refreshing: false //cuando funcione bien -> true
+            refreshing: false, //cuando funcione bien -> true
+            orders: []
         }
-        this.GetData();
     }
 
-    GetData = () => {
-        /*
-      //Service to get the data from the server to render
-      return fetch('https://jsonplaceholder.typicode.com/posts')
-        .then(response => response.json())
-        .then(responseJson => {
-          this.setState({
-            refreshing: false,
-            //Setting the data source for the list to render
-            dataSource: responseJson
-          });
-        })
-        .catch(error => {
-          console.error(error);
-        });
-        */
-    };
+    componentDidMount(){
+        this.getPendings()
+    }
+
+    async getPendings(){
+        const data = await getPendingOrdersByClient(this.props.user.mail, this.props.user.token)
+        if (data.status === 500 || data.status === 204)
+            this.setState({ arePendings: false})
+        else 
+            this.setState({ arePendings: true, orders: data.body })
+    }
+
+    onRefresh() {
+        this.setState({ orders: [], refreshing: true });
+        this.getPendings()
+        this.setState({ refreshing: false });   
+    }
 
     renderSeparator = () => {
         return (
@@ -54,22 +45,7 @@ class PendingOrdersClientScreen extends Component {
         );
     }
 
-    onRefresh() {
-        //Clear old data of the list
-        this.setState({ dataSource: [] });
-        //Call the Service to get the latest data
-        this.GetData();
-    }
-
     render() {
-        if (this.state.refreshing) {
-            return (
-                //loading view while data is loading
-                <View style={{ flex: 1, marginTop: 70 }}>
-                    <ActivityIndicator />
-                </View>
-            );
-        }
         return (
             <View style={appStyles.container}>
 
@@ -82,19 +58,18 @@ class PendingOrdersClientScreen extends Component {
                         style={styles.list}
                         ItemSeparatorComponent={this.renderSeparator}
                         refreshControl={<RefreshControl refreshing={this.state.refreshing} onRefresh={this.onRefresh.bind(this)} />}
-                        data={this.state.dataSource}
+                        data={this.state.orders}
                         initialNumToRender={0}
-                        renderItem={({ item }) => <OrderPendingCardClient />}
-                        keyExtractor={item => item.id}
-                        getItemCount={getItemCount}
-                        getItem={getItem} />
+                        renderItem={({ item }) => <OrderCardClient data={item}/>}
+                        keyExtractor={(item, i) => i.toString()}
+                        getItemCount={() => this.state.orders.length}
+                        getItem={(item, i) => item[i]} />
                     :
                     <View style={styles.viewImage}>
                         <Image source={require('../../../icons/noOrderClient.png')} style={styles.image} />
                         <Text style={styles.infoImage}>En este momento no tenés ningún pedido pendiente</Text>
                     </View>
                 }
-
             </View>
         );
     }
@@ -130,4 +105,10 @@ const styles = StyleSheet.create({
     },
 })
 
-export default PendingOrdersClientScreen;
+function mapStateToProps(state) {
+    return {
+        user: state.authState
+    };
+}
+
+export default connect(mapStateToProps)(PendingOrdersClientScreen);
