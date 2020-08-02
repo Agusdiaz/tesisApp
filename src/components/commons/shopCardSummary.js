@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import { StyleSheet, View } from 'react-native';
 import { colors, sizes } from '../../index.styles';
 import { Avatar, Button, Card, IconButton, FAB, Divider } from 'react-native-paper';
 import TextTicker from 'react-native-text-ticker'
 import { Actions } from 'react-native-router-flux';
-import { connect } from 'react-redux';
 import { setShopAsFavourite, deleteShopAsFavourite } from '../../api/shops'
 import ShopActions from '../../redux/shops/action'
 

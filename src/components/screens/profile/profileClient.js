@@ -125,7 +125,7 @@ class ProfileClientScreen extends Component {
                                 icon='pencil'//"account-edit"
                                 style={styles.iconEdit}
                                 color={'#fff'}
-                                size={50}
+                                size={38}
                                 onPress={this._showModalName} />
                         </View>
 

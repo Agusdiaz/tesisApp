@@ -2,11 +2,15 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { StyleSheet, Text, ImageBackground, View } from 'react-native';
 import { colors, sizes, orderStage } from '../../index.styles';
-import { Button, Card, Modal, Dialog, Portal, Divider, FAB, TextInput } from 'react-native-paper';
+import { Button, Card, Modal, Dialog, Portal, Divider, FAB, TextInput, ActivityIndicator } from 'react-native-paper';
 import OrderDetailsClient from './orderDetailsClient'
 import moment from 'moment'
+import { shareOrder, setOrderDeliveredByClient } from '../../api/orders'
 
 class OrderCardClient extends Component {
+
+    _isMounted = false;
+
     constructor() {
         super();
         this.state = {
@@ -14,17 +18,54 @@ class OrderCardClient extends Component {
             visibleDialogTake: false,
             visibleDialogShare: false,
             visibleModalDetails: false,
+            visibleDialogResponse: false,
+            actionMessage: '',
+            loading: false,
         }
     }
 
-    _showDialogTake = () => this.setState({ visibleDialogTake: true });
-    _hideDialogTake = () => this.setState({ visibleDialogTake: false });
+    componentDidMount(){
+        this._isMounted = true;
+    }
 
-    _showDialogShare = () => this.setState({ visibleDialogShare: true });
-    _hideDialogShare = () => this.setState({ visibleDialogShare: false });
+    componentWillUnmount() {
+        this._isMounted = false;
+      }
 
-    _showModalDetails = () => this.setState({ visibleModalDetails: true });
-    _hideModalDetails = () => this.setState({ visibleModalDetails: false });
+    _showDialogTake = () => (this._isMounted) ? this.setState({ visibleDialogTake: true }) : null;
+    _hideDialogTake = () => (this._isMounted) ? this.setState({ visibleDialogTake: false }) : null;
+
+    _showDialogShare = () => (this._isMounted) ? this.setState({ visibleDialogShare: true }) : null;
+    _hideDialogShare = () => (this._isMounted) ? this.setState({ visibleDialogShare: false, mailShare: '' }) : null;
+
+    _showModalDetails = () => (this._isMounted) ? this.setState({ visibleModalDetails: true }) : null;
+    _hideModalDetails = () => (this._isMounted) ? this.setState({ visibleModalDetails: false }) : null;
+
+    _showDialogResponse = () => (this._isMounted) ? this.setState({ visibleDialogResponse: true }) : null;
+    _hideDialogResponse = () => (this._isMounted) ? this.setState({ visibleDialogResponse: false }) : null;
+
+    async deliveredOrder() {
+        if(this._isMounted){
+        this.setState({ loading: true })
+        const data = await setOrderDeliveredByClient(this.props.data.numero, this.props.user.token)
+        this._hideDialogTake()
+        this.setState({ actionMessage: data.body, loading: false })
+        if (data.status === 200)
+            this.props.refreshParent()
+        this._showDialogResponse()
+        }
+    }
+
+    async shareOrder() {
+        if(this._isMounted){
+        this.setState({ loading: true })
+        const data = await shareOrder(this.state.mailShare, this.props.data.numero, this.props.user.token)
+        if (data.status === 500) this.setState({ actionMessage: 'Error al compartir pedido', loading: false })
+        else if (data.status === 200) this._hideDialogShare()
+        this.setState({ actionMessage: data.body, loading: false })
+        this._showDialogResponse()
+        }
+    }
 
     render() {
         const orderNumber = props => <Text style={styles.rightText}> {this.props.data.numero} </Text>
@@ -71,7 +112,7 @@ class OrderCardClient extends Component {
                                     Ver Detalle
                                 </Button>
                                 :
-                                <View style={{flexDirection: 'row'}}>
+                                <View style={{ flexDirection: 'row' }}>
                                     <Button
                                         style={{ width: '42%', alignSelf: 'center', marginRight: sizes.wp('5%'), }}
                                         icon="eye"
@@ -92,7 +133,7 @@ class OrderCardClient extends Component {
                                     </Button>
 
                                     <FAB small icon='share-variant' color={'#FFFFFF'}
-                                        style={{ backgroundColor: (this.props.data.etapa === orderStage.PENDING) ? colors.APP_MAIN : colors.APP_INACTIVE_FAB,  }}
+                                        style={{ backgroundColor: (this.props.data.etapa === orderStage.PENDING) ? colors.APP_MAIN : colors.APP_INACTIVE_FAB, }}
                                         disabled={(this.props.data.etapa === orderStage.READY)}
                                         onPress={this._showDialogShare}
                                     />
@@ -106,8 +147,8 @@ class OrderCardClient extends Component {
                         onDismiss={this._hideDialogTake}>
                         <Dialog.Title style={{ alignSelf: 'center' }}>¿Ya tenés tu pedido?</Dialog.Title>
                         <Dialog.Actions>
-                            <Button style={{ marginRight: sizes.wp('3%') }} color={colors.APP_RED} onPress={this._hideDialogTake}>No</Button>
-                            <Button color={colors.APP_GREEN} onPress={() => console.log("Ok")}>Sí</Button>
+                            <Button style={{ marginRight: sizes.wp('8%') }} color={colors.APP_RED} onPress={this._hideDialogTake}>No</Button>
+                            <Button color={colors.APP_GREEN} onPress={() => this.deliveredOrder()}>Sí</Button>
                         </Dialog.Actions>
                     </Dialog>
 
@@ -130,18 +171,35 @@ class OrderCardClient extends Component {
                             </Dialog.Content>
                             <Dialog.Actions style={{ marginTop: sizes.hp('-2%') }}>
                                 <Button style={{ marginRight: sizes.wp('3%') }} color={colors.APP_RED} onPress={this._hideDialogShare}>Cancelar</Button>
-                                <Button color={colors.APP_GREEN} onPress={() => console.log("Ok")}>Compartir</Button>
+                                <Button color={colors.APP_GREEN} onPress={() => this.shareOrder()}>Compartir</Button>
                             </Dialog.Actions>
                         </Dialog>
+
+                        <Modal contentContainerStyle={styles.modalView} visible={this.state.visibleModalDetails} onDismiss={this._hideModalDetails}>
+                            <OrderDetailsClient data={this.props.data} hideModalFromChild={this._hideModalDetails} />
+                        </Modal>
+
+                        <Dialog
+                            visible={this.state.visibleDialogResponse}
+                            onDismiss={this._hideDialogResponse}>
+                            <Dialog.Title style={{ alignSelf: 'center', textAlign: 'center' }}>{this.state.actionMessage}</Dialog.Title>
+                            <Dialog.Actions>
+                                <Button style={{ marginRight: sizes.wp('3%') }} color={'#000000'} onPress={this._hideDialogResponse}>Ok</Button>
+                            </Dialog.Actions>
+                        </Dialog>
+
+                        <Modal dismissable={false}
+                            visible={this.state.loading}
+                            style={styles.modalActivityIndicator} >
+                            <ActivityIndicator
+                                animating={this.state.loading}
+                                size={60}
+                                color={colors.APP_MAIN}
+                            />
+                        </Modal>
                     </Portal>
 
                 </Card>
-
-                <Portal>
-                    <Modal contentContainerStyle={styles.modalView} visible={this.state.visibleModalDetails} onDismiss={this._hideModalDetails}>
-                        <OrderDetailsClient data={this.props.data} hideModalFromChild={this._hideModalDetails} />
-                    </Modal>
-                </Portal>
 
             </View>
         );

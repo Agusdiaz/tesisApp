@@ -6,6 +6,7 @@ import { Searchbar } from 'react-native-paper';
 import Animated from 'react-native-reanimated';
 import ShopCardSummary from '../../commons/shopCardSummary'
 import ShopActions from '../../../redux/shops/action'
+import { getAllShopsOpenClose } from '../../../api/shops'
 
 const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
 
@@ -17,27 +18,55 @@ class ChooseShopScreen extends Component {
             isLoading: false,
             searchQuery: '',
             areStores: true,
-            shops: []
+            shops: [],
+            refreshing: false,
         };
         this.arrayholder = [];
     }
 
-    UNSAFE_componentWillMount() {
-        this.props.shops.allShops.map(obj => {
-            if (obj.abierto === 1) {
-                this.state.shops.push(obj)
-            }
-        })
+    componentDidMount() {
+        this.getOpenShops()
+    }
+
+    async getOpenShops() {
+        const data = await getAllShopsOpenClose(this.props.user.mail, this.props.user.token)
+        if (data.status === 200) {
+            this.props.setShopsData(data.body)
+            this.props.shops.allShops.map(obj => {
+                if (obj.abierto === 1) {
+                    this.state.shops.push(obj)
+                    this.arrayholder.push(obj)
+                }
+            })
+        }
         if (this.state.shops.length === 0)
             this.setState({ areStores: false })
         else this.setState({ areStores: true })
+    }
+
+    onRefresh = () => {
+        this.setState({ shops: [], refreshing: true, searchQuery: '' })
+        this.arrayholder = []
+        this.getOpenShops()
+        setTimeout(() => { this.setState({ refreshing: false }) }, 1500);
     }
 
     nextStepParent = () => {
         this.props.nextStepParent();
     }
 
-    _onChangeSearch = query => this.setState({ searchQuery: query });
+    _onChangeSearch(query) {
+        const newData = this.arrayholder.filter(function (item) {
+            const itemData = item.nombre ? item.nombre.toUpperCase() : ''.toUpperCase();
+            const textData = query.toUpperCase();
+            return itemData.indexOf(textData) > -1;
+        });
+        this.setState({
+            shops: newData,
+            searchQuery: query,
+            areStores: (newData.length > 0) ? true : false
+        });
+    }
 
     renderSeparator = () => {
         return (
@@ -49,55 +78,52 @@ class ChooseShopScreen extends Component {
         );
     }
 
-    render() {
-        if (this.state.isLoading) { //ESTA BUSCANDO
+    _renderItem(item) {
+        if (this.state.areStores) {
             return (
-                <View style={[appStyles.container, { top: sizes.hp('1%') }]}>
-
-                    <Searchbar
-                        style={styles.searchInput}
-                        placeholder="Buscar local por nombre"
-                        theme={{ colors: { primary: colors.APP_MAIN } }}
-                        iconColor={colors.APP_MAIN}
-                        onChangeText={this._onChangeSearch}
-                        value={searchQuery}
-                    />
-
-                    <View style={{ marginTop: sizes.hp('-60%') }}>
-                        <ActivityIndicator />
-                    </View>
+                <ShopCardSummary rute={'chooseShop'} data={item} nextStepParent={this.nextStepParent} />
+            );
+        } else {
+            return (
+                <View style={styles.viewImage}>
+                    <Image source={require('../../../icons/noStore.png')} style={styles.image} />
+                    <Text style={styles.infoImage}>No se encontraron locales</Text>
                 </View>
             );
         }
-        const { searchQuery } = this.state;
+    }
+
+    render() {
         return (
-            <View style={[appStyles.container, { top: sizes.hp('1%'), marginTop: sizes.hp('0%')}]}>
+            <View style={[appStyles.container, { top: sizes.hp('1%'), marginTop: sizes.hp('0%') }]}>
 
                 <Searchbar
                     style={styles.searchInput}
                     placeholder="Buscar local por nombre"
                     theme={{ colors: { primary: colors.APP_MAIN } }}
                     iconColor={colors.APP_MAIN}
-                    onChangeText={this._onChangeSearch}
-                    value={searchQuery}
+                    onChangeText={text => this._onChangeSearch(text)}
+                    value={this.state.searchQuery}
                 />
 
-                {(this.state.areStores) ?
+                {(!this.state.isLoading) ?
+
                     <AnimatedFlatList
                         style={styles.list}
+                        refreshing={this.state.refreshing}
+                        onRefresh={this.onRefresh}
                         ItemSeparatorComponent={this.renderSeparator}
-                        data={this.state.shops}
+                        data={(this.state.areStores) ? this.state.shops : [1]}
                         initialNumToRender={0}
                         onScroll={this.props.onScroll}
                         scrollEventThrottle={16}
-                        renderItem={({ item }) => <ShopCardSummary rute={'chooseShop'} data={item} nextStepParent={this.nextStepParent} />}
+                        renderItem={({ item }) => this._renderItem(item)}
                         ItemSeparatorComponent={this.renderSeparator}
                         keyExtractor={(item, i) => i.toString()}
                     />
                     :
-                    <View style={styles.viewImage}>
-                        <Image source={require('../../../icons/noStore.png')} style={styles.image} />
-                        <Text style={styles.infoImage}>No se encontraron locales</Text>
+                    <View style={{ marginTop: sizes.hp('-70%') }}>
+                        <ActivityIndicator />
                     </View>
                 }
             </View>
@@ -115,12 +141,12 @@ const styles = StyleSheet.create({
     },
     list: {
         top: sizes.hp('9%'),
-        marginBottom: sizes.hp('1%'),
+        marginBottom: sizes.hp('7%'),
         width: sizes.wp('100%'),
         //height: sizes.hp('80%'),
     },
     viewImage: {
-        top: sizes.hp('-10%'),
+        top: sizes.hp('10%'),
     },
     image: {
         width: 170,
@@ -145,7 +171,7 @@ function mapStateToProps(state) {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        //setShopsData: (shops) => dispatch(ShopActions.setShopsData(shops))
+        setShopsData: (shops) => dispatch(ShopActions.setShopsData(shops))
     }
 };
 

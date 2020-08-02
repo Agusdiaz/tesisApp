@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { StyleSheet, Text, Image, View, VirtualizedList, RefreshControl, ActivityIndicator } from 'react-native';
+import { StyleSheet, Text, Image, View, FlatList,} from 'react-native';
 import { Surface } from 'react-native-paper';
 import { appStyles, colors, sizes } from '../../../index.styles';
 import OrderCardClient from '../../commons/orderCardClient';
@@ -12,9 +12,10 @@ class PendingOrdersClientScreen extends Component {
         super(props);
         this.state = {
             arePendings: true,
-            refreshing: false, //cuando funcione bien -> true
+            refreshing: false,
             orders: []
         }
+        this.onRefresh = this.onRefresh.bind(this);
     }
 
     componentDidMount(){
@@ -25,14 +26,13 @@ class PendingOrdersClientScreen extends Component {
         const data = await getPendingOrdersByClient(this.props.user.mail, this.props.user.token)
         if (data.status === 500 || data.status === 204)
             this.setState({ arePendings: false})
-        else 
-            this.setState({ arePendings: true, orders: data.body })
+        else this.setState({ arePendings: true, orders: data.body })
     }
 
-    onRefresh() {
-        this.setState({ orders: [], refreshing: true });
-        this.getPendings()
-        this.setState({ refreshing: false });   
+    onRefresh(){
+        this.setState({ orders: [], refreshing: true })
+        this.getPendings()  
+        setTimeout(() => { this.setState({ refreshing: false }) }, 1500);
     }
 
     renderSeparator = () => {
@@ -45,31 +45,39 @@ class PendingOrdersClientScreen extends Component {
         );
     }
 
+    _renderItem(item) {
+        if (this.state.arePendings) {
+            return (
+                <OrderCardClient data={item} refreshParent={this.onRefresh}/>
+            );
+        } else {
+            return (
+                <View style={styles.viewImage}>
+                        <Image source={require('../../../icons/noOrderClient.png')} style={styles.image} />
+                        <Text style={styles.infoImage}>En este momento no tenés ningún pedido pendiente</Text>
+                    </View>
+            );
+        }
+    }
+
     render() {
         return (
             <View style={appStyles.container}>
 
-                <Surface style={[styles.surface, { top: (this.state.arePendings) ? sizes.hp('6%') : sizes.hp('-20%') }]}>
+                <Surface style={styles.surface}>
                     <Text style={{ fontSize: 20, color: colors.APP_BACKGR, fontWeight: 'bold', textAlign: 'center' }}>ESTOS SON TUS PEDIDOS PENDIENTES</Text>
                 </Surface>
 
-                {(this.state.arePendings) ?
-                    <VirtualizedList
+                    <FlatList
                         style={styles.list}
+                        refreshing={this.state.refreshing}
+                        onRefresh={() => this.onRefresh()}
+                        data={(this.state.arePendings) ? this.state.orders : [1]}
                         ItemSeparatorComponent={this.renderSeparator}
-                        refreshControl={<RefreshControl refreshing={this.state.refreshing} onRefresh={this.onRefresh.bind(this)} />}
-                        data={this.state.orders}
                         initialNumToRender={0}
-                        renderItem={({ item }) => <OrderCardClient data={item}/>}
-                        keyExtractor={(item, i) => i.toString()}
-                        getItemCount={() => this.state.orders.length}
-                        getItem={(item, i) => item[i]} />
-                    :
-                    <View style={styles.viewImage}>
-                        <Image source={require('../../../icons/noOrderClient.png')} style={styles.image} />
-                        <Text style={styles.infoImage}>En este momento no tenés ningún pedido pendiente</Text>
-                    </View>
-                }
+                        renderItem={({ item }) => this._renderItem(item)}
+                        keyExtractor={(item, i) => i.toString()}/>                    
+            
             </View>
         );
     }
@@ -81,16 +89,17 @@ const styles = StyleSheet.create({
         padding: 15,
         alignItems: 'center',
         backgroundColor: colors.APP_MAIN,
+        top: sizes.hp('6%'),
     },
     viewImage: {
         justifyContent: 'center',
         margin: 20,
+        bottom: sizes.hp('-3%'),
     },
     image: {
         width: 170,
         height: 170,
-        marginBottom: sizes.hp('2%'),
-        alignSelf:'center'
+        alignSelf:'center',
     },
     infoImage: {
         fontSize: 17,
@@ -100,7 +109,7 @@ const styles = StyleSheet.create({
     },
     list: {
         top: sizes.hp('6.5%'),
-        marginBottom: sizes.hp('0.5%'),
+        marginBottom: sizes.hp('6%'),
         width: '100%',
     },
 })

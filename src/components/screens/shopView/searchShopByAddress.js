@@ -1,25 +1,14 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, VirtualizedList, Image, Text, ActivityIndicator } from 'react-native';
+import { connect } from 'react-redux';
+import { StyleSheet, View, FlatList, Image, Text, ActivityIndicator } from 'react-native';
 import { appStyles, colors, sizes } from '../../../index.styles'
 import { Searchbar } from 'react-native-paper';
 import ArrowButton from '../../commons/arrowButton'
-import ShopCard from '../../commons/shopCardSummary'
+import ShopCardSummary from '../../commons/shopCardSummary'
+import ShopActions from '../../../redux/shops/action'
+import { getAllShopsAZ } from '../../../api/shops'
 
-const getItem = (data, index) => {
-    if (data == null) {
-        return null
-    }
-    return {
-        id: Math.random().toString(12).substring(0),
-        title: `Item ${index + 1}`
-    }
-}
-
-const getItemCount = (data) => {
-    return 10;
-}
-
-export default class SearchShopByAddressScreen extends Component {
+class SearchShopByAddressScreen extends Component {
 
     constructor(props) {
         super(props);
@@ -27,11 +16,50 @@ export default class SearchShopByAddressScreen extends Component {
             isLoading: false,
             searchQuery: '',
             areStores: true,
-            DATA: [],
+            shops: [],
+            refreshing: false,
         };
+        this.arrayholder = [];
     }
 
-    _onChangeSearch = query => this.setState({ searchQuery: query });
+    componentDidMount() {
+        this.getShopsAZ()
+
+    }
+
+    async getShopsAZ() {
+        const data = await getAllShopsAZ(this.props.user.mail, this.props.user.token)
+        if (data.status === 200) {
+            this.props.setShopsData(data.body)
+            this.props.shops.allShops.map(obj => {
+                this.state.shops.push(obj)
+                this.arrayholder.push(obj)
+            })
+        }
+        if (this.state.shops.length === 0)
+            this.setState({ areStores: false })
+        else this.setState({ areStores: true })
+    }
+
+    onRefresh = () => {
+        this.setState({ shops: [], refreshing: true, searchQuery: '' })
+        this.arrayholder = []
+        this.getShopsAZ()
+        setTimeout(() => { this.setState({ refreshing: false }) }, 1500);
+    }
+
+    _onChangeSearch(query) {
+        const newData = this.arrayholder.filter(function (item) {
+            const itemData = item.direccion ? item.direccion.toUpperCase() : ''.toUpperCase();
+            const textData = query.toUpperCase();
+            return itemData.indexOf(textData) > -1;
+        });
+        this.setState({
+            shops: newData,
+            searchQuery: query,
+            areStores: (newData.length > 0) ? true : false
+        });
+    }
 
     renderSeparator = () => {
         return (
@@ -43,61 +71,55 @@ export default class SearchShopByAddressScreen extends Component {
         );
     }
 
-    render() {
-        if (this.state.isLoading) { //ESTA BUSCANDO
+    _renderItem(item) {
+        if (this.state.areStores) {
             return (
-                <View style={appStyles.container}>
-                    <ArrowButton rute='navBarClientSearch' />
+                <ShopCardSummary rute={'navBarClientSearch'} data={item} />
+            );
+        } else {
+            return (
+                <View style={styles.viewImage}>
+                    <Image source={require('../../../icons/noStore.png')} style={styles.image} />
+                    <Text style={styles.infoImage}>No se encontraron locales</Text>
+                </View>
+            );
+        }
+    }
 
-                    <Searchbar
-                        style={styles.searchInput}
-                        placeholder="Buscar local por dirección"
-                        theme={{ colors: { primary: colors.APP_MAIN } }}
-                        iconColor={colors.APP_MAIN}
-                        onChangeText={this._onChangeSearch}
-                        value={this.state.searchQuery}
+    render() {
+        return (
+            <View style={appStyles.container}>
+                <ArrowButton rute='navBarClientSearch' />
+
+                <Searchbar
+                    style={styles.searchInput}
+                    placeholder="Buscar local por dirección"
+                    theme={{ colors: { primary: colors.APP_MAIN } }}
+                    iconColor={colors.APP_MAIN}
+                    onChangeText={text => this._onChangeSearch(text)}
+                    value={this.state.searchQuery}
+                />
+
+                {(!this.state.isLoading) ?
+
+                    <FlatList
+                        style={styles.list}
+                        refreshing={this.state.refreshing}
+                        onRefresh={this.onRefresh}
+                        data={(this.state.areStores) ? this.state.shops : [1]}
+                        ItemSeparatorComponent={this.renderSeparator}
+                        initialNumToRender={0}
+                        renderItem={({ item }) => this._renderItem(item)}
+                        keyExtractor={(item, i) => i.toString()}
                     />
-
+                    :
                     <View style={{ marginTop: sizes.hp('-70%') }}>
                         <ActivityIndicator />
                     </View>
-                </View>
-            );
-        }
-        else {
-            return (
-                <View style={appStyles.container}>
-                    <ArrowButton rute='navBarClientSearch' />
+                }
 
-                    <Searchbar
-                        style={styles.searchInput}
-                        placeholder="Buscar local por dirección"
-                        theme={{ colors: { primary: colors.APP_MAIN } }}
-                        iconColor={colors.APP_MAIN}
-                        onChangeText={this._onChangeSearch}
-                        value={this.state.searchQuery}
-                    />
-
-                    {(this.state.areStores) ?
-                        <VirtualizedList
-                            style={styles.list}
-                            ItemSeparatorComponent={this.renderSeparator}
-                            data={this.state.DATA}
-                            initialNumToRender={0}
-                            renderItem={({ item }) => <ShopCard />}
-                            keyExtractor={item => item.id}
-                            getItemCount={getItemCount}
-                            getItem={getItem}
-                        />
-                        :
-                        <View style={styles.viewImage}>
-                            <Image source={require('../../../icons/noStore.png')} style={styles.image} />
-                            <Text style={styles.infoImage}>No se encontraron locales con esa dirección</Text>
-                        </View>
-                    }
-                </View>
-            );
-        }
+            </View>
+        );
     }
 }
 
@@ -133,3 +155,18 @@ const styles = StyleSheet.create({
         textAlign: 'center',
     },
 })
+
+function mapStateToProps(state) {
+    return {
+        user: state.authState,
+        shops: state.shops,
+    };
+}
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        setShopsData: (shops) => dispatch(ShopActions.setShopsData(shops))
+    }
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(SearchShopByAddressScreen)

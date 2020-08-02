@@ -74,14 +74,14 @@ const styles = StyleSheet.create({
         justifyContent: 'flex-start',
     },
     imageFab:{
-        width: sizes.wp('31%'),
-        height: sizes.hp('14.7%'),
+        width: sizes.wp('27%'),
+        height: sizes.hp('12%'),
         position: 'absolute',
         backgroundColor: '#fff',
         borderRadius: sizes.wp('50%'),
-        right: sizes.wp('15%'),
+        right: sizes.wp('18.5%'),
         bottom: sizes.hp('18%'),
-        resizeMode: 'center',
+        resizeMode: 'stretch',
     }
 });
 

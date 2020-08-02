@@ -10,42 +10,64 @@ import Animated from 'react-native-reanimated';
 import ShopActions from '../../../redux/shops/action'
 import { getAllShopsAZ, getAllShopsOpenClose } from '../../../api/shops'
 
-const DATA = [
-    { key: '1' }, { key: '2' }, { key: '3' }, { key: '4' }, { key: '5' }, { key: '6' }, { key: '7' },
-]
-
-const HEADER_EXPANDED_HEIGHT = 205 //(DATA.length == 2) ? 28 : 205
+const HEADER_EXPANDED_HEIGHT = 205
 const HEADER_COLLAPSED_HEIGHT = -205
 
 const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
 
-const globalState = {
-    areStores: true,
-    buttonValue: 'open'
-}
+class AnimatedHeader extends React.Component {
 
-class AnimatedList extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            valueButtons: 'open',
+            sortText: 'Abierto/Cerrado',
+            animatedValue: new Animated.Value(0),
+            refreshing: false,
+            areStores: true,
+        }
+    }
 
-    state = {
-        refreshing: false,
-        animatedValue: new Animated.Value(0),
-    };
+    componentDidMount() {
+        this.getShopsOpenClose()
+    }
+
+    async getShopsOpenClose() {
+        //console.log('OP')
+        const data = await getAllShopsOpenClose(this.props.user.mail, this.props.user.token)
+        if (data.status === 500 || data.status === 204) {
+            this.setState({ areStores: false })
+        } else {
+            this.props.setShopsData(data.body)
+            this.setState({ areStores: true })
+        }
+    }
+
+    async getShopsAZ() {
+        //console.log('AZ')
+        const data = await getAllShopsAZ(this.props.user.mail, this.props.user.token)
+        if (data.status === 500 || data.status === 204) {
+            this.setState({ areStores: false })
+        } else {
+            this.props.setShopsData(data.body)
+            this.setState({ areStores: true })
+        }
+    }
 
     onRefresh = () => {
-        this.setState({ refreshing: true });
-        if(globalState.buttonValue === 'open')
-            this.refreshOpenClose()
+        this.setState({ refreshing: true, shops: [] });
+        if (this.state.valueButtons === 'open')
+            this.getShopsOpenClose()
         else
-            this.refreshAZ()
-        this.setState({ refreshing: false }); 
+            this.getShopsAZ()
+        setTimeout(() => { this.setState({ refreshing: false }) }, 1500);
     }
 
-    async refreshOpenClose(){
-        await this.props.getOpenClose()  
-    }
-
-    async refreshAZ(){
-        await this.props.getAZ()
+    handleButtons = (values, callback) => {
+        if (values != null) {
+            this.setState({ valueButtons: values })
+            callback()
+        }
     }
 
     renderSeparator = () => {
@@ -58,70 +80,23 @@ class AnimatedList extends Component {
         );
     };
 
-    render() {
-        return (
-            <AnimatedFlatList
-                style={styles.list}
-                refreshing={this.state.refreshing}
-                onRefresh={this.onRefresh}
-                data={this.props.data}
-                onScroll={this.props.onScroll}
-                scrollEventThrottle={16}
-                renderItem={({ item }) => <ShopCardSummary data={item} />}
-                ItemSeparatorComponent={this.renderSeparator}
-                keyExtractor={(item, i) => i.toString()}
-            />
-        );
-    }
-}
-
-class AnimatedHeader extends React.Component {
-
-    constructor(props) {
-        super(props);
-        this.state = {
-            valueButtons: 'open',
-            sortText: 'Abierto/Cerrado',
-            animatedValue: new Animated.Value(0),
-        }
-    }
-
-    componentDidMount() {
-        this.getShopsOpenClose()
-    }
-
-    async getShopsOpenClose() {
-        console.log('OP')
-        const data = await getAllShopsOpenClose(this.props.user.mail, this.props.user.token)
-        if (data.status === 500 || data.status === 204) {
-            globalState.areStores = false
+    _renderItem(item) {
+        if (this.state.areStores) {
+            return (
+                <ShopCardSummary data={item} />
+            );
         } else {
-            this.props.setShopsData(data.body)
-            globalState.areStores = true
-        }
-    };
-
-    async getShopsAZ() {
-        console.log('AZ')
-        const data = await getAllShopsAZ(this.props.user.mail, this.props.user.token)
-        if (data.status === 500 || data.status === 204) {
-            globalState.areStores = false
-        } else {
-            this.props.setShopsData(data.body)
-            globalState.areStores = true
-        }
-    };
-
-    handleButtons = (values, callback) => {
-        if (values != null) {
-            this.setState({ valueButtons: values })
-            globalState.buttonValue= values
-            callback()
+            return (
+                <View style={styles.viewImage}>
+                    <Image source={require('../../../icons/noStore.png')} style={styles.image} />
+                    <Text style={styles.infoImage}>Actualmente no hay locales adheridos</Text>
+                </View>
+            );
         }
     }
 
     render() {
-       
+
         let translateY = this.state.animatedValue.interpolate({
             inputRange: [0, HEADER_EXPANDED_HEIGHT],
             outputRange: [0, HEADER_COLLAPSED_HEIGHT],
@@ -133,7 +108,7 @@ class AnimatedHeader extends React.Component {
 
                 <Animated.View style={[styles.headerWrapper, { transform: [{ translateY }] }]}>
                     <TouchableOpacity style={styles.touchable} onPress={() => Actions.makeorder()}>
-                        <ImageBackground source={require('../../../icons/flame.jpg')} style={styles.imageContainer} imageStyle={styles.imageInside} resizeMode={'stretch'}>
+                        <ImageBackground source={require('../../../icons/tabla.jpg')} style={styles.imageContainer} imageStyle={styles.imageInside} resizeMode={'stretch'}>
                             <Text style={styles.text}>PEDÍ AHORA</Text>
                         </ImageBackground>
                     </TouchableOpacity>
@@ -154,35 +129,32 @@ class AnimatedHeader extends React.Component {
                                         : 'Orden Alfabético'
                                 });
                             })}
-                            value={globalState.buttonValue}>
+                            value={this.state.valueButtons}>
                             <ToggleButton style={styles.toggleButton} icon="store-24-hour" value="open" onPress={() => this.getShopsOpenClose()}
-                                color={(globalState.buttonValue === 'open') ? colors.APP_MAIN : colors.APP_INACTIVE} />
+                                color={(this.state.valueButtons === 'open') ? colors.APP_MAIN : colors.APP_INACTIVE} />
                             <ToggleButton style={styles.toggleButton} icon="sort-alphabetical" value="letters" onPress={() => this.getShopsAZ()}
-                                color={(globalState.buttonValue === 'letters') ? colors.APP_MAIN : colors.APP_INACTIVE} />
+                                color={(this.state.valueButtons === 'letters') ? colors.APP_MAIN : colors.APP_INACTIVE} />
                         </ToggleButton.Group>
                     </View>
 
-                    {(globalState.areStores) ?
-
-                        <AnimatedList
-                            data={this.props.shops.allShops}
-                            getOpenClose= {this.getShopsOpenClose}
-                            getAZ={this.getShopsAZ}
-                            onScroll={Animated.event(
-                                [
-                                    {
-                                        nativeEvent: { contentOffset: { y: this.state.animatedValue } },
-                                    },
-                                ],
-                                { useNativeDriver: true }
-                            )}
-                        />
-                        :
-                        <View style={styles.viewImage}>
-                            <Image source={require('../../../icons/noStore.png')} style={styles.image} />
-                            <Text style={styles.infoImage}>Actualmente no hay locales adheridos</Text>
-                        </View>
-                    }
+                    <AnimatedFlatList
+                        style={styles.list}
+                        refreshing={this.state.refreshing}
+                        onRefresh={this.onRefresh}
+                        data={(this.state.areStores) ? this.props.shops.allShops : [1]}
+                        onScroll={Animated.event(
+                            [
+                                {
+                                    nativeEvent: { contentOffset: { y: this.state.animatedValue } },
+                                },
+                            ],
+                            { useNativeDriver: true }
+                        )}
+                        scrollEventThrottle={16}
+                        renderItem={({ item }) => this._renderItem(item)}
+                        ItemSeparatorComponent={this.renderSeparator}
+                        keyExtractor={(item, i) => i.toString()}
+                    />
                 </Animated.View>
             </View>
         );
@@ -216,8 +188,12 @@ const styles = StyleSheet.create({
     text: {
         fontSize: 40, //28
         fontWeight: 'bold',
-        color: '#FFF',
-        marginTop: sizes.hp('0%'), //13
+        color: '#fff',
+        marginTop: sizes.hp('13%'), //13
+        textShadowRadius: 12,    
+        textShadowColor: '#000',
+        width: sizes.wp('70%'),
+        textAlign: 'center'
     },
     surface: {
         marginTop: sizes.hp('1%'),
@@ -233,7 +209,7 @@ const styles = StyleSheet.create({
     list: {
         marginTop: sizes.hp('0%'),
         //marginBottom: sizes.hp('0.5%'),
-        height: (DATA.length == 2) ? sizes.hp('69%') : sizes.hp('70%'),
+        height: sizes.hp('70%'), //sizes.hp('69%'),
         width: '100%',
     },
     headerWrapper: {

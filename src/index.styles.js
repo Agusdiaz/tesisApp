@@ -33,6 +33,12 @@ const orderStage = {
     DELIVERED : 'entregado',
 }
 
+const productCondition = {
+    VEGAN: 'vegano',
+    CELIAC: 'celiaco',
+    VEGETARIAN: 'vegetariano',
+}
+
 const appStyles = StyleSheet.create({
     container: {
         flex: 1,
@@ -43,4 +49,4 @@ const appStyles = StyleSheet.create({
     },
 })
 
-export { colors, appStyles, sizes, orderStage };
+export { colors, appStyles, sizes, orderStage, productCondition };

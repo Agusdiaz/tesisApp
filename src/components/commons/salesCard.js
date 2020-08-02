@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { StyleSheet, Text, View, ScrollView, ImageBackground } from 'react-native';
 import { colors, sizes } from '../../index.styles';
-//import { Card, CardHeader, Avatar, IconButton } from 'material-bread'
 import { Card, FAB, Modal, Portal, Button, Dialog, Divider } from 'react-native-paper';
 import { DataTable, DataTableHeader, DataTableCell, DataTableRow } from 'material-bread'
 import TextTicker from 'react-native-text-ticker';
@@ -12,24 +11,8 @@ class SalesCard extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            name: 'Nombre de la Promoción',
-            details: 'Detalles de la Promoción',
-            total: '700',
-            products: [{
-                id: 1,
-                name: 'Producto 1',
-                amount: 2,
-            }, {
-                id: 2,
-                name: 'Producto 2',
-                amount: 1,
-            }, {
-                id: 3,
-                name: 'Producto 3',
-                amount: 1,
-            },],
-            available: true,
             visibleModalDetails: false,
+            productDetails: [],
         }
     }
 
@@ -37,24 +20,23 @@ class SalesCard extends Component {
     _hideModalDetails = () => this.setState({ visibleModalDetails: false });
 
     render() {
-
-        const NamePriceButton = props => <View style={{width: sizes.wp('50%')}}>
+        const NamePriceButton = props => <View style={{width: sizes.wp('50%'), alignItems: 'center'}}>
             <TextTicker style={styles.title}
                 duration={5000}
                 loop
                 animationType='bounce'
                 repeatSpacer={50}
-                marqueeDelay={1000}>{this.state.name}</TextTicker>
-            <Text style={styles.subtitle}>${this.state.total}</Text>
+                marqueeDelay={1000}>{this.props.data.nombre}</TextTicker>
+            <Text style={styles.subtitle}>${this.props.data.precio}</Text>
             <Button
                 style={styles.buttonAvailable}
                 labelStyle={{fontSize: 10, textAlign: 'center'}}
                 compact
                 mode='contained'
                 dark
-                color={(this.state.available) ? colors.APP_GREEN : colors.APP_RED}
+                color={(this.props.data.valida === 1) ? colors.APP_GREEN : colors.APP_RED}
                >
-               {(this.state.available) ? 'Válida' : 'No válida'}
+               {(this.props.data.valida === 1) ? 'Válida' : 'No válida'}
                 </Button>
         </View>
 
@@ -66,7 +48,7 @@ class SalesCard extends Component {
                     </ImageBackground>
                     <Divider />
                     <Card.Content style={{ alignItems: 'center' }}>
-                        <Text style={styles.details} numberOfLines={6}>{this.state.details}</Text>
+                        <Text style={styles.details} numberOfLines={6}>{this.props.data.detalle}</Text>
                         <DataTable style={{ width: sizes.wp('90%'), left: -10 }}>
                             <DataTableHeader
                                 title={'¿Que inlcuye la promoción?'}
@@ -78,13 +60,14 @@ class SalesCard extends Component {
                                 <DataTableCell text={'Detalles'} type={'header'} textStyle={{ textAlign: 'center' }} />
                             </DataTableRow>
 
-                            <ScrollView style={{ height: sizes.hp('16.5%') }}>
-                                {this.state.products
+                            <ScrollView style={{ maxHeight: sizes.hp('16.5%') }}>
+                                {this.props.data.productos[0]
                                     .map(row => (
                                         <DataTableRow key={row.id}>
-                                            <DataTableCell text={row.name} borderRight textStyle={{ textAlign: 'center' }} style={{ maxWidth: '35%' }} />
-                                            <DataTableCell text={row.amount.toString()} textStyle={{ textAlign: 'center' }} style={{ maxWidth: '35%' }} />
-                                            <DataTableCell text={'VER'} textStyle={{ color: colors.APP_MAIN, fontWeight: 'bold' }} onPress={this._showModalDetails} style={{ left: sizes.wp('8%') }} />
+                                            <DataTableCell text={row.nombre} borderRight textStyle={{ textAlign: 'center' }} style={{ maxWidth: '35%' }} />
+                                            <DataTableCell text={row.cantidad.toString()} textStyle={{ textAlign: 'center' }} style={{ maxWidth: '35%' }} />
+                                            <DataTableCell text={'VER'} textStyle={{ color: colors.APP_MAIN, fontWeight: 'bold' }} onPress={() => {this.setState({productDetails: row})
+                                            this._showModalDetails()}} style={{ left: sizes.wp('8%') }} />
                                         </DataTableRow>
                                     ))}
                             </ScrollView>
@@ -95,7 +78,7 @@ class SalesCard extends Component {
 
                 <Portal>
                     <Modal contentContainerStyle={styles.modalView} visible={this.state.visibleModalDetails} onDismiss={this._hideModalDetails}>
-                        <ProductDetails hideModalFromChild={this._hideModalDetails} />
+                        <ProductDetails hideModalFromChild={this._hideModalDetails} data={this.state.productDetails}/>
                     </Modal>
                 </Portal>
             </View>
@@ -109,7 +92,6 @@ const styles = StyleSheet.create({
         marginTop: sizes.hp('1%'),
         elevation: 10,
         borderRadius: 15,
-        marginBottom: sizes.hp('1%'),
     },
     modalView: {
         marginTop: sizes.hp('5%'),
@@ -132,6 +114,8 @@ const styles = StyleSheet.create({
     },
     imageInside: {
         opacity: 0.48,
+        borderTopLeftRadius: 15, 
+        borderTopRightRadius: 15,
     },
     rightSide: {
         height: sizes.hp('7%'),
@@ -158,7 +142,7 @@ const styles = StyleSheet.create({
     },
     buttonAvailable: {
         width: sizes.wp('20%'),
-        right: sizes.wp('-55%'),
+        right: sizes.wp('-41%'),
         top: sizes.hp('-4.4%'),
         fontSize: 5 
     },

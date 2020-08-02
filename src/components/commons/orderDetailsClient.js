@@ -5,6 +5,7 @@ import { DataTable, DataTableHeader, DataTableCell, DataTablePagination, DataTab
 import { Card, FAB, Button, Divider, IconButton, Title } from 'react-native-paper';
 import TextTicker from 'react-native-text-ticker'
 import moment from 'moment'
+import { cos } from 'react-native-reanimated';
 
 class OrderDetailsClient extends Component {
     constructor(props) {
@@ -18,6 +19,7 @@ class OrderDetailsClient extends Component {
     }
 
     render() {
+      
         const Close = props => <IconButton
             icon='close'
             color={colors.APP_MAIN}
@@ -36,12 +38,19 @@ class OrderDetailsClient extends Component {
 
         const orderNumber = props => <Text style={styles.rightText}> {this.props.data.numero} </Text>
 
-        const Name = props => <TextTicker style={{ fontSize: 16 }}
+        const name = props => <TextTicker style={{ fontSize: 16 }}
             duration={6000}
             loop
             animationType='bounce'
             repeatSpacer={50}
             marqueeDelay={1000}>{this.props.data.nombre}</TextTicker>
+
+            const address = props => <TextTicker style={{ fontSize: 16 }}
+            duration={6000}
+            loop
+            animationType='bounce'
+            repeatSpacer={50}
+            marqueeDelay={1000}>{this.props.data.direccion}</TextTicker>
 
         const propina = props => <Text style={styles.rightText}> ${this.props.data.propina} </Text>
 
@@ -52,11 +61,13 @@ class OrderDetailsClient extends Component {
         return (
 
             <Card style={styles.orderCard}>
-                <Card.Title style={{ margin: -10, marginTop: sizes.hp('-2') }} left={Close} leftStyle={styles.close} right={stageOrder} rightStyle={styles.stageOrder} />
+                <Card.Title style={{ margin: -10, marginTop: sizes.hp('-4') }} left={Close} leftStyle={styles.close} right={stageOrder} rightStyle={styles.stageOrder} />
                 <Divider />
                 <Card.Title style={styles.cardTitle} titleStyle={styles.leftText} title="Número:" right={orderNumber} />
                 <Divider />
-                <Card.Title style={styles.cardTitle} titleStyle={styles.leftText} title="Local:" right={Name} rightStyle={{ width: sizes.wp('54%'), right: sizes.wp('3%'), alignItems: 'flex-end', }} />
+                <Card.Title style={styles.cardTitle} titleStyle={styles.leftText} title="Local:" right={name} rightStyle={{ width: sizes.wp('54%'), right: sizes.wp('3%'), alignItems: 'flex-end', }} />
+                <Divider style={styles.divider} />
+                <Card.Title style={styles.cardTitle} titleStyle={styles.leftText} title="Dirección:" right={address} rightStyle={{ width: sizes.wp('54%'), right: sizes.wp('3%'), alignItems: 'flex-end', }} />
                 <Divider style={styles.divider} />
                 <Card.Title style={styles.cardTitle} titleStyle={styles.leftText} title="Fecha:" right={date} />
                 <Divider style={styles.divider} />
@@ -72,7 +83,7 @@ class OrderDetailsClient extends Component {
                             <DataTableCell text={'Precio Unit'} type={'header'} style={{ maxWidth: '5%', left: sizes.wp('-10%') }} textStyle={{ textAlign: 'center' }} />
                             <DataTableCell text={'Precio Total'} type={'header'} style={{ maxWidth: '5%', left: sizes.wp('-16%') }} textStyle={{ textAlign: 'center' }} />
                         </DataTableRow>
-                        <ScrollView style={{ height: sizes.hp('32%') }}>
+                        <ScrollView style={{ height: sizes.hp('28.5%') }}>
                             {this.props.data.productos[0]
                                 .map(row => (
                                     <DataTableRow key={row.id}>

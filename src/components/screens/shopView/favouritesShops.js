@@ -1,11 +1,13 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { StyleSheet, View, Text, Image, VirtualizedList, RefreshControl } from 'react-native';
+import { StyleSheet, View, Text, Image, FlatList } from 'react-native';
 import { Surface } from 'react-native-paper';
 import { appStyles, colors, sizes } from '../../../index.styles';
 import ShopCard from '../../commons/shopCardSummary'
 import { Actions } from 'react-native-router-flux';
 import ArrowButton from '../../commons/arrowButton'
+import ShopActions from '../../../redux/shops/action'
+import { getAllShopsAZ } from '../../../api/shops'
 
 class FavouritesShopsScreen extends Component {
 
@@ -22,17 +24,6 @@ class FavouritesShopsScreen extends Component {
         this.getFavouritesShops()
     }
 
-    getFavouritesShops(){
-        this.props.shops.allShops.map(obj => {
-            if (obj.favorito) {
-                this.state.shops.push(obj)
-            }
-        })
-        if (this.state.shops.length === 0)
-            this.setState({ areFavourites: false })
-        else this.setState({ areFavourites: true })
-    }
-
     /*componentDidUpdate(oldProps) {
         var oldLength = 0
         var newLength = 0
@@ -43,14 +34,32 @@ class FavouritesShopsScreen extends Component {
             //this.setState({ shops: [] })
             this.forceUpdate()
         }
-      }
+      }*/
 
-    onRefresh() {
-        //Clear old data of the list
-        this.setState({ shops: [] });
-        //Call the Service to get the latest data
-        this.getFavourites()
-    }*/
+    getFavouritesShops() {
+        this.props.shops.allShops.map(obj => {
+            if (obj.favorito) {
+                this.state.shops.push(obj)
+            }
+        })
+        if (this.state.shops.length === 0)
+            this.setState({ areFavourites: false })
+        else this.setState({ areFavourites: true })
+    }
+
+    async getShopsAZ() {
+        //console.log('AZ')
+        const data = await getAllShopsAZ(this.props.user.mail, this.props.user.token)
+        if (data.status === 200)
+            this.props.setShopsData(data.body)
+        this.getFavouritesShops()
+    }
+
+    onRefresh = () => {
+        this.setState({ shops: [], refreshing: true })
+        this.getShopsAZ()
+        setTimeout(() => { this.setState({ refreshing: false }) }, 1500);
+    }
 
     renderSeparator = () => {
         return (
@@ -62,34 +71,40 @@ class FavouritesShopsScreen extends Component {
         );
     }
 
-    render() {
+    _renderItem(item) {
+        if (this.state.areFavourites) {
+            return (
+                <ShopCard data={item} />
+            );
+        } else {
+            return (
+                <View style={styles.viewImage}>
+                    <Image source={require('../../../icons/noStar.png')} style={styles.image} />
+                    <Text style={styles.infoImage}>Todavía no tenés ningún local favorito</Text>
+                </View>
+            );
+        }
+    }
 
+    render() {
         return (
             <View style={appStyles.container}>
 
                 <ArrowButton rute='navBarClientProfile' />
 
-                <Surface style={[styles.surface, { top: (this.state.areFavourites) ? sizes.hp('12.8%') : sizes.hp('-20%') }]}>
+                <Surface style={styles.surface}>
                     <Text style={{ fontSize: 20, color: colors.APP_BACKGR, fontWeight: 'bold', textAlign: 'center' }}>ESTOS SON TUS LOCALES FAVORITOS</Text>
                 </Surface>
 
-                {(this.state.areFavourites) ?
-                    <VirtualizedList
-                        style={styles.list}
-                        ItemSeparatorComponent={this.renderSeparator}
-                        //refreshControl={<RefreshControl refreshing={this.state.refreshing} onRefresh={this.onRefresh.bind(this)} />}
-                        data={this.state.shops}
-                        initialNumToRender={0}
-                        renderItem={({ item }) => <ShopCard data={item}/>}
-                        keyExtractor={(item, i) => i.toString()}
-                        getItemCount={() => this.state.shops.length}
-                        getItem={(item, i) => item[i]} />
-                    :
-                    <View style={styles.viewImage}>
-                        <Image source={require('../../../icons/noStar.png')} style={styles.image} />
-                        <Text style={styles.infoImage}>Todavía no tenés ningún local favorito</Text>
-                    </View>
-                }
+                <FlatList
+                    style={styles.list}
+                    refreshing={this.state.refreshing}
+                    onRefresh={this.onRefresh}
+                    data={(this.state.areFavourites) ? this.state.shops : [1]}
+                    ItemSeparatorComponent={this.renderSeparator}
+                    initialNumToRender={0}
+                    renderItem={({ item }) => this._renderItem(item)}
+                    keyExtractor={(item, i) => i.toString()} />
             </View>
         );
     }
@@ -101,10 +116,12 @@ const styles = StyleSheet.create({
         padding: 15,
         alignItems: 'center',
         backgroundColor: colors.APP_MAIN,
+        top: sizes.hp('12.8%'),
     },
     viewImage: {
         justifyContent: 'center',
         margin: 20,
+        bottom: sizes.hp('-3%')
     },
     image: {
         width: 170,
@@ -136,7 +153,7 @@ function mapStateToProps(state) {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        //setShopsData: (shops) => dispatch(ShopActions.setShopsData(shops))
+        setShopsData: (shops) => dispatch(ShopActions.setShopsData(shops))
     }
 };
 

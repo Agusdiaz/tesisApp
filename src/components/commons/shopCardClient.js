@@ -1,8 +1,11 @@
 import React, { Component, useEffect } from 'react';
+import { connect } from 'react-redux';
 import { StyleSheet, FlatList, Text, View, Linking, ScrollView } from 'react-native';
 import { colors, sizes } from '../../index.styles';
 import { Button, Card, IconButton, Divider, FAB, } from 'react-native-paper';
 import TextTicker from 'react-native-text-ticker'
+import { setShopAsFavourite, deleteShopAsFavourite } from '../../api/shops'
+import ShopActions from '../../redux/shops/action'
 
 class ShopCardClient extends Component {
     constructor() {
@@ -38,6 +41,19 @@ class ShopCardClient extends Component {
             },],
             delay: 'Poca',
         };
+    }
+
+    async setFavourite(){
+        const data = await setShopAsFavourite(this.props.user.mail, this.props.data.cuit, this.props.user.token)
+        if (data.status === 200 ) 
+            this.props.updateShopFavourite(this.props.data.cuit, true)
+    }
+
+    async removeFavourite(){
+        const data = await deleteShopAsFavourite(this.props.user.mail, this.props.data.cuit, this.props.user.token)
+        if (data.status === 200 ){
+            this.props.updateShopFavourite(this.props.data.cuit, false)
+        }
     }
 
     render() {
@@ -94,10 +110,7 @@ class ShopCardClient extends Component {
                 icon={(this.props.data.favorito) ? "star" : "star-outline"}
                 color={colors.STAR}
                 size={30}
-                onPress={() => {
-                    this.setState(
-                        { isFav: !this.props.data.favorito })
-                }} />
+                onPress={() => {(this.props.data.favorito) ? this.removeFavourite() : this.setFavourite()}} />
         </View>
 
         return (
@@ -238,4 +251,16 @@ const styles = StyleSheet.create({
     },
 });
 
-export default ShopCardClient;
+const mapStateToProps = state => {
+    return {
+        user: state.authState,
+    }
+}
+
+const mapDispatchToProps = dispatch => {
+    return {
+        updateShopFavourite: (cuit, favourite) => dispatch(ShopActions.updateShopFavourite(cuit, favourite))
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(ShopCardClient);

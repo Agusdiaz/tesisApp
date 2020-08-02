@@ -71,7 +71,7 @@ class ShopInformationScreen extends Component {
                             </View>
                 :
                         (this.state.areSales) ?
-                            <Sales />
+                            <Sales data={this.props.data}/>
                             :
                             <View style={styles.viewImage}>
                                 <Image source={require('../../../icons/noSales.png')} style={styles.image} />
