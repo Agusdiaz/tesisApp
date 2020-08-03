@@ -2,56 +2,34 @@ import React, { Component, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { StyleSheet, FlatList, Text, View, Linking, ScrollView } from 'react-native';
 import { colors, sizes } from '../../index.styles';
-import { Button, Card, IconButton, Divider, FAB, } from 'react-native-paper';
+import { Button, Card, IconButton, Divider, FAB, Modal, Portal } from 'react-native-paper';
 import TextTicker from 'react-native-text-ticker'
 import { setShopAsFavourite, deleteShopAsFavourite } from '../../api/shops'
 import ShopActions from '../../redux/shops/action'
+import Schedule from './schedule'
 
 class ShopCardClient extends Component {
     constructor() {
         super();
         this.state = { //PONER METODO PARA SABER EL ESTADO
-            schedule: [{
-                id: 1,
-                title: '11am-11pm',
-            },
-            {
-                id: 2,
-                title: 'CERRADO',
-            },
-            {
-                id: 3,
-                title: '10am-11pm',
-            },
-            {
-                id: 4,
-                title: '10am-11pm',
-            },
-            {
-                id: 5,
-                title: '10am-11pm',
-            },
-            {
-                id: 6,
-                title: '10am-1am',
-            },
-            {
-                id: 7,
-                title: '11am-3am',
-            },],
+            photo: 'https://picsum.photos/500',
             delay: 'Poca',
+            visibleModalSchedule: false,
         };
     }
 
-    async setFavourite(){
+    _showModalSchedule = () => this.setState({ visibleModalSchedule: true });
+    _hideModalSchedule = () => this.setState({ visibleModalSchedule: false });
+
+    async setFavourite() {
         const data = await setShopAsFavourite(this.props.user.mail, this.props.data.cuit, this.props.user.token)
-        if (data.status === 200 ) 
+        if (data.status === 200)
             this.props.updateShopFavourite(this.props.data.cuit, true)
     }
 
-    async removeFavourite(){
+    async removeFavourite() {
         const data = await deleteShopAsFavourite(this.props.user.mail, this.props.data.cuit, this.props.user.token)
-        if (data.status === 200 ){
+        if (data.status === 200) {
             this.props.updateShopFavourite(this.props.data.cuit, false)
         }
     }
@@ -65,7 +43,7 @@ class ShopCardClient extends Component {
             icon='account-clock-outline'>
             En este momento hay {this.state.delay} demora</Button>
 
-        const Adress = props => <TextTicker style={{ fontSize: 16, }}
+        const Address = props => <TextTicker style={{ fontSize: 16, }}
             duration={5000}
             loop
             animationType='bounce'
@@ -82,15 +60,13 @@ class ShopCardClient extends Component {
             />
         </View>
 
-        const Schedule = props => <View>
-            <Text style={styles.textSchedule}>Domingo: {this.state.schedule.find(e => e.id == 1).title}</Text>
-            <Text style={styles.textSchedule}>Lunes: {this.state.schedule.find(e => e.id == 2).title} </Text>
-            <Text style={styles.textSchedule}>Martes: {this.state.schedule.find(e => e.id == 3).title}</Text>
-            <Text style={styles.textSchedule}>Miércoles: {this.state.schedule.find(e => e.id == 4).title}</Text>
-            <Text style={styles.textSchedule}>Jueves: {this.state.schedule.find(e => e.id == 5).title}</Text>
-            <Text style={styles.textSchedule}>Viernes: {this.state.schedule.find(e => e.id == 6).title}</Text>
-            <Text style={styles.textSchedule}>Sábado: {this.state.schedule.find(e => e.id == 7).title}</Text>
-        </View>
+        const ScheduleFab = props => <FAB
+            style={{backgroundColor: colors.APP_MAIN}}
+            label={'Ver'}
+            icon="clock"
+            color='#fff'
+            onPress={() => this._showModalSchedule()}
+        />
 
         const OpenClose = props => (this.props.data.abierto == 1) ? <Button style={{ borderRadius: 20, width: 105, alignItems: 'center' }} mode="contained" color={colors.APP_GREEN} labelStyle={{ fontSize: 9, color: colors.APP_BACKGR }} >
             Abierto </Button> : <Button style={{ borderRadius: 20, width: 105, alignItems: 'center' }} mode="contained" color={colors.APP_RED} labelStyle={{ fontSize: 9, color: colors.APP_BACKGR }}>Cerrado </Button>
@@ -110,7 +86,7 @@ class ShopCardClient extends Component {
                 icon={(this.props.data.favorito) ? "star" : "star-outline"}
                 color={colors.STAR}
                 size={30}
-                onPress={() => {(this.props.data.favorito) ? this.removeFavourite() : this.setFavourite()}} />
+                onPress={() => { (this.props.data.favorito) ? this.removeFavourite() : this.setFavourite() }} />
         </View>
 
         return (
@@ -119,7 +95,7 @@ class ShopCardClient extends Component {
                 <Divider />
                 <ScrollView>
                     <Card.Title style={{ margin: -10 }} left={PeopleButton} leftStyle={{ alignItems: 'center', width: sizes.wp('80%'), right: sizes.wp('-5%') }} />
-                    <Card.Cover source={{ uri: 'https://picsum.photos/500' }} />
+                    <Card.Cover source={{ uri: this.state.photo }} />
                     <Divider />
                     <Card.Actions style={{ alignContent: 'center' }}>
                         <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center', width: sizes.wp('89.5%') }}>
@@ -182,13 +158,21 @@ class ShopCardClient extends Component {
                         </View>
                     </Card.Actions>
                     <Divider />
-                    <Card.Title titleStyle={styles.leftText} title="Dirección:" right={Adress} rightStyle={styles.rightSide} />
+                    <Card.Title titleStyle={styles.leftText} title="Dirección:" right={Address} rightStyle={styles.rightSide} />
                     <Divider />
                     <Card.Title titleStyle={styles.leftText} title="Teléfono:" right={PhoneNumber} rightStyle={styles.rightSide} />
                     <Divider />
-                    <Card.Title style={{ justifyContent: 'center', marginTop: 5, marginBottom: 5 }} titleStyle={styles.leftText} title="Horarios:" right={Schedule} rightStyle={styles.rightSide} />
+                    <Card.Title style={{ justifyContent: 'center', marginTop: 5, marginBottom: 5 }} titleStyle={styles.leftText} title="Horarios:" right={ScheduleFab} rightStyle={styles.rightSide} />
                 </ScrollView>
+
+                <Portal>
+                    <Modal contentContainerStyle={styles.modalView} visible={this.state.visibleModalSchedule} onDismiss={this._hideModalSchedule}>
+                        <Schedule hideModalFromChild={this._hideModalSchedule} data={this.props.data.horarios[0]} />
+                    </Modal>
+                </Portal>
             </Card>
+
+
         )
     }
 }
@@ -202,6 +186,22 @@ const styles = StyleSheet.create({
         borderRadius: 15,
         borderWidth: 2,
         borderColor: colors.APP_MAIN
+    },
+    modalView: {
+        marginTop: sizes.hp('5%'),
+        margin: sizes.hp('2%'),
+        backgroundColor: "#ffffff",
+        borderRadius: 20,
+        padding: 20,
+        alignItems: "center",
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 1,
+            height: 2
+        },
+        shadowOpacity: 0.5,
+        shadowRadius: 3.84,
+        elevation: 10,
     },
     title: {
         textAlign: 'center',
@@ -253,7 +253,7 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = state => {
     return {
-        user: state.authState,
+        user: state.authState.client,
     }
 }
 

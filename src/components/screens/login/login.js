@@ -33,8 +33,18 @@ class LoginScreen extends Component {
             this._showDialog()
         } else {
             this.setState({ loading: false, email: '', password: '' })
-            this.props.setLoginData(data.body.mail, data.body.nombre, data.body.apellido, data.body.token)
-            Actions.navbarclient()
+            if(data.body.cuit === undefined){
+                this.props.setLoginClientData(data.body.mail, data.body.nombre, data.body.apellido, data.body.token)
+                Actions.navbarclient()
+            } else if(data.body.nuevo === 0){
+                this.props.setLoginShopData(data.body.cuit, data.body.nombre, data.body.direccion, data.body.telefono, data.body.mail, 
+                    data.body.mascotas, data.body.bebes, data.body.juegos, data.body.aireLibre, data.body.libreHumo, data.body.wifi, 
+                    data.body.demora, data.body.abierto, data.body.horarios, data.body.token)                
+                Actions.navbarshop()
+            }
+            else{ //GUARDAR INFO?
+                Actions.signupshopfeatures()
+            }            
         }
         /*setTimeout(() => {
             this.setState({
@@ -142,13 +152,14 @@ const styles = StyleSheet.create({
 
 function mapStateToProps(state) {
     return {
-        user: state.authState
+        user: state.authState.client
     };
 }
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        setLoginData: (mail, name, lastName, token) => dispatch(LoginActions.setLoginData(mail, name, lastName, token))
+        setLoginClientData: (mail, name, lastName, token) => dispatch(LoginActions.setLoginClientData(mail, name, lastName, token)),
+        setLoginShopData: (cuit, nombre, direccion, telefono, mail, mascotas, bebes, juegos, aireLibre, libreHumo, wifi, demora, abierto, horarios, token) => dispatch(LoginActions.setLoginShopData(cuit, nombre, direccion, telefono, mail, mascotas, bebes, juegos, aireLibre, libreHumo, wifi, demora, abierto, horarios, token))
     }
 };
 

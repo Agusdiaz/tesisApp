@@ -1,13 +1,36 @@
 import configureStore from '../../store/configureStore'
 
-const setLoginData = (mail, name, lastName, token) => {
+const setLoginClientData = (mail, name, lastName, token) => {
     return {
-        type: 'LOGIN_USER',
+        type: 'LOGIN_CLIENT',
         payload: {
             name: name,
             lastName: lastName,
             mail: mail,
-            token: token
+            token: token,
+        },
+    }
+}
+
+const setLoginShopData = (cuit, nombre, direccion, telefono, mail, mascotas, bebes, juegos, aireLibre, libreHumo, wifi, demora, abierto, horarios, token) => {
+    return {
+        type: 'LOGIN_SHOP',
+        payload: {
+            cuit: cuit,
+            nombre: nombre,
+            direccion: direccion,
+            telefono: telefono,
+            mail: mail,
+            mascotas: mascotas,
+            bebes: bebes,
+            juegos: juegos,
+            aireLibre: aireLibre,
+            libreHumo: libreHumo,
+            wifi: wifi,
+            demora: demora,
+            abierto: abierto,
+            horarios: horarios,
+            token: token,
         },
     }
 }
@@ -25,7 +48,8 @@ const updateClientData = (name, lastName) => {
 }
 
 export default {
-    setLoginData,
+    setLoginClientData,
+    setLoginShopData,
     logout,
     updateClientData,
 }

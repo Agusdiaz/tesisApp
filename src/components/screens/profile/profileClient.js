@@ -107,7 +107,8 @@ class ProfileClientScreen extends Component {
                 <View style={{ alignItems: 'center', top: 0, bottom: 0 }}>
                     <View style={styles.header}>
                         <View style={styles.headerContent}>
-                        <Avatar.Text style={styles.avatar} size={100} label={this.props.user.name.charAt(0)+this.props.user.lastName.charAt(0)} labelStyle={{ color: colors.APP_MAIN }} />
+                        <Avatar.Text style={styles.avatar} size={100} label={(this.props.user.lastName !== undefined) ? 
+                        this.props.user.name.charAt(0)+this.props.user.lastName.charAt(0) : ''} labelStyle={{ color: colors.APP_MAIN }} />
                             <TextTicker style={styles.fullName}
                                 duration={5000}
                                 loop
@@ -380,7 +381,7 @@ const styles = StyleSheet.create({
 
 function mapStateToProps(state) {
     return {
-        user: state.authState
+        user: state.authState.client,
     };
 }
 

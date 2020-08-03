@@ -158,7 +158,7 @@ const styles = StyleSheet.create({
 
 function mapStateToProps(state) {
     return {
-        user: state.authState,
+        user: state.authState.client,
         shops: state.shops,
     };
 }

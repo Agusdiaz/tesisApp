@@ -1,99 +1,71 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import { StyleSheet, FlatList, Text, View, ScrollView } from 'react-native';
 import { colors, sizes } from '../../index.styles';
-import { Button, Card, IconButton, Divider, FAB,  } from 'react-native-paper';
+import { Button, Card, IconButton, Divider, FAB, Portal, Modal } from 'react-native-paper';
 import TextTicker from 'react-native-text-ticker'
+import Schedule from './schedule'
 
 class ShopCard extends Component {
     constructor(props) {
         super(props);
-        this.state = { //IMAGENES?
-            name: 'Nombre del Local',
+        this.state = {
             photo: 'https://picsum.photos/500',
-            address: 'Lima 123',
-            phoneNumber: '45897620',
-            mail: 'local@mail.com',
-            password: '123',
-            schedule: [{
-                id: 1,
-                title: '11am-11pm',
-            },
-            {
-                id: 2,
-                title: 'CERRADO',
-            },
-            {
-                id: 3,
-                title: '10am-11pm',
-            },
-            {
-                id: 4,
-                title: '10am-11pm',
-            },
-            {
-                id: 5,
-                title: '10am-11pm',
-            },
-            {
-                id: 6,
-                title: '10am-1am',
-            },
-            {
-                id: 7,
-                title: '11am-3am',
-            },],
-            isFav: false,
-            isOpen: true,
-            pets: true,
-            kids: true,
-            games: true,
-            outside: true,
-            smoking: true,
-            wifi: true,
+            delay: 'Poca',
+            visibleModalSchedule: false,
         }
     }
 
+    _showModalSchedule = () => this.setState({ visibleModalSchedule: true });
+    _hideModalSchedule = () => this.setState({ visibleModalSchedule: false });
+
     render() {
+        const PeopleButton = props => <Button
+            style={{ borderRadius: 20, borderColor: colors.APP_MAIN, borderWidth: 1, width: sizes.wp('80%'), alignSelf: 'center', }}
+            labelStyle={{ fontSize: 12, color: colors.APP_MAIN, }}
+            color={colors.APP_MAIN}
+            mode='outlined'
+            icon='account-clock-outline'>
+            En este momento tenés {this.state.delay} demora</Button>
 
-        const Name = props => <TextTicker style={{fontSize: 22, textAlign: 'center'}} 
-        duration={5000}
-        loop
-        animationType='bounce'
-        repeatSpacer={50}
-        marqueeDelay={1000}>{this.state.name}</TextTicker>
+        const Name = props => <TextTicker style={{ fontSize: 22, textAlign: 'center', fontWeight: 'bold' }}
+            duration={5000}
+            loop
+            animationType='bounce'
+            repeatSpacer={50}
+            marqueeDelay={1000}>{this.props.shop.nombre}</TextTicker>
 
-        const Adress = props => <TextTicker style={{fontSize: 16,  }} 
-        duration={5000}
-        loop
-        bounce
-        repeatSpacer={50}
-        marqueeDelay={1000}>{this.state.address}</TextTicker>
+        const Adress = props => <TextTicker style={{ fontSize: 16, }}
+            duration={5000}
+            loop
+            bounce
+            repeatSpacer={50}
+            marqueeDelay={1000}>{this.props.shop.direccion}</TextTicker>
 
-        const PhoneNumber = props => <Text style={styles.rightText}>{this.state.phoneNumber}</Text>
+        const PhoneNumber = props => <Text style={styles.rightText}>{this.props.shop.telefono}</Text>
 
-        const Schedule = props => <View>
-            <Text style={styles.textSchedule}>Domingo: {this.state.schedule.find(e => e.id == 1).title}</Text>
-            <Text style={styles.textSchedule}>Lunes: {this.state.schedule.find(e => e.id == 2).title} </Text>
-            <Text style={styles.textSchedule}>Martes: {this.state.schedule.find(e => e.id == 3).title}</Text>
-            <Text style={styles.textSchedule}>Miércoles: {this.state.schedule.find(e => e.id == 4).title}</Text>
-            <Text style={styles.textSchedule}>Jueves: {this.state.schedule.find(e => e.id == 5).title}</Text>
-            <Text style={styles.textSchedule}>Viernes: {this.state.schedule.find(e => e.id == 6).title}</Text>
-            <Text style={styles.textSchedule}>Sábado: {this.state.schedule.find(e => e.id == 7).title}</Text>
-        </View>
+        const ScheduleFab = props => <FAB
+        style={{backgroundColor: colors.APP_MAIN}}
+        label={'Ver'}
+        icon="clock"
+        color='#fff'
+        onPress={() => this._showModalSchedule()}
+    />
 
-        const Mail = props => <Text style={styles.rightText}>{this.state.mail}</Text>
+        const Mail = props => <Text style={styles.rightText}>{this.props.shop.mail}</Text>
 
         return (
 
             <Card style={styles.shopCard}>
-                            <Card.Title style={{ margin: 2 }} leftStyle={{ right: sizes.wp('-5%'), width: sizes.wp('72%'), alignItems: 'center'}} left={Name} />
-                            <ScrollView>
-                            <Divider />
-                            <Card.Cover source={{ uri: this.state.photo }} />
-                            <Divider />
+                <Card.Title style={{ margin: 2 }} leftStyle={{ right: sizes.wp('-5%'), width: sizes.wp('72%'), alignItems: 'center' }} left={Name} />
+                <ScrollView>
+                    <Divider />
+                    <Card.Title style={{ margin: -10,}} left={PeopleButton} leftStyle={{ alignSelf: 'center', right: sizes.wp('-38.5%')}} />
+                    <Card.Cover source={{ uri: this.state.photo }} />
+                    <Divider />
                     <Card.Actions style={{ alignContent: 'center' }}>
                         <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center', width: sizes.wp('89.5%') }}>
-                            {(this.state.pets) ?
+                            {(this.props.shop.mascotas === 1) ?
                                 <FAB
                                     color={colors.APP_MAIN}
                                     style={styles.fab}
@@ -103,34 +75,31 @@ class ShopCard extends Component {
                                 :
                                 null
                             }
-                            {(this.state.kids) ?
+                            {(this.props.shop.bebes === 1) ?
                                 <FAB
                                     color={colors.APP_MAIN}
                                     style={styles.fab}
                                     label={'Sala para niños'}
-                                    visible={this.state.kids}
                                     icon="baby"
                                 />
                                 :
                                 null
                             }
-                            {(this.state.games) ?
+                            {(this.props.shop.juegos === 1) ?
                                 <FAB
                                     color={colors.APP_MAIN}
                                     style={styles.fab}
                                     label={'Juegos'}
-                                    visible={this.state.games}
                                     icon="gamepad-variant"
                                 />
                                 :
                                 null
                             }
-                            {(this.state.outside) ?
+                            {(this.props.shop.aireLibre === 1) ?
                                 <FAB
                                     color={colors.APP_MAIN}
                                     style={styles.fab}
                                     label={'Aire Libre'}
-                                    visible={this.state.outside}
                                     icon="image-filter-hdr"
                                 />
                                 :
@@ -139,15 +108,14 @@ class ShopCard extends Component {
                             <FAB
                                 color={colors.APP_MAIN}
                                 style={styles.fab}
-                                label={(this.state.smoking) ? 'Apto fumadores' : 'Libre de humo'}
-                                icon={(this.state.smoking) ? 'smoking' : 'smoking-off'}
+                                label={(this.props.shop.libreHumo === 0) ? 'Apto fumadores' : 'Libre de humo'}
+                                icon={(this.props.shop.libreHumo === 0) ? 'smoking' : 'smoking-off'}
                             />
-                            {(this.state.wifi) ?
+                            {(this.props.shop.wifi === 1) ?
                                 <FAB
                                     color={colors.APP_MAIN}
                                     style={styles.fab}
                                     label={'Wifi'}
-                                    visible={this.state.wifi}
                                     icon="wifi"
                                 />
                                 :
@@ -155,16 +123,22 @@ class ShopCard extends Component {
                             }
                         </View>
                     </Card.Actions>
-                            <Divider />
-                            <Card.Title titleStyle={styles.leftText} title="Dirección:" right={Adress} rightStyle={styles.rightSide} />
-                            <Divider />
-                            <Card.Title titleStyle={styles.leftText} title="Teléfono:" right={PhoneNumber} rightStyle={styles.rightSide} />
-                            <Divider />
-                            <Card.Title titleStyle={{ justifyContent: 'center', marginTop: 5, marginBottom: 5 }} title="Horarios:" right={Schedule} rightStyle={styles.rightSide} />
-                            <Divider />
-                            <Card.Title titleStyle={styles.leftText} title="Mail:" right={Mail} rightStyle={styles.rightSide} />
-                            </ScrollView>
-                        </Card>
+                    <Divider />
+                    <Card.Title titleStyle={styles.leftText} title="Dirección:" right={Adress} rightStyle={styles.rightSide} />
+                    <Divider />
+                    <Card.Title titleStyle={styles.leftText} title="Teléfono:" right={PhoneNumber} rightStyle={styles.rightSide} />
+                    <Divider />
+                    <Card.Title titleStyle={styles.leftText} title="Horarios:" right={ScheduleFab} rightStyle={styles.rightSide} />
+                    <Divider />
+                    <Card.Title titleStyle={styles.leftText} title="Mail:" right={Mail} rightStyle={styles.rightSide} />
+                </ScrollView>
+
+                <Portal>
+                    <Modal contentContainerStyle={styles.modalView} visible={this.state.visibleModalSchedule} onDismiss={this._hideModalSchedule}>
+                        <Schedule hideModalFromChild={this._hideModalSchedule} data={this.props.shop.horarios[0]} />
+                    </Modal>
+                </Portal>
+            </Card>
         )
     }
 }
@@ -179,6 +153,22 @@ const styles = StyleSheet.create({
         marginBottom: sizes.hp('3%'),
         borderWidth: 2,
         borderColor: colors.APP_MAIN
+    },
+    modalView: {
+        marginTop: sizes.hp('5%'),
+        margin: sizes.hp('2%'),
+        backgroundColor: "#ffffff",
+        borderRadius: 20,
+        padding: 20,
+        alignItems: "center",
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 1,
+            height: 2
+        },
+        shadowOpacity: 0.5,
+        shadowRadius: 3.84,
+        elevation: 10,
     },
     rightText: {
         fontSize: 16,
@@ -212,4 +202,16 @@ const styles = StyleSheet.create({
     },
 });
 
-export default ShopCard;
+const mapStateToProps = state => {
+    return {
+        shop: state.authState.shop,
+    }
+}
+
+const mapDispatchToProps = dispatch => {
+    return {
+        //updateShopFavourite: (cuit, favourite) => dispatch(ShopActions.updateShopFavourite(cuit, favourite))
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(ShopCard);

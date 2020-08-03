@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import { StyleSheet, Text, View, KeyboardAvoidingView, ImageBackground, } from 'react-native';
 import { appStyles, colors, sizes } from '../../../index.styles';
 import { Button, Dialog, Modal, Portal, Menu, } from 'react-native-paper';
 import { Tabs, Tab, RadioButton } from 'material-bread';
 
-export default class ProfileShopFeaturesScreen extends Component {
+class ProfileShopFeaturesScreen extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -36,14 +37,14 @@ export default class ProfileShopFeaturesScreen extends Component {
                         radioButtonColor={colors.APP_MAIN}
                         rippleColor={colors.APP_MAIN}
                         labelStyle={styles.options}
-                        checked={this.state.checkedPets}
+                        checked={this.props.shop.mascotas === 1}
                         onPress={() => this.setState({ checkedPets: true })}
                         label="Sí"
                     />
                     <RadioButton
                         radioButtonColor={colors.APP_MAIN}
                         rippleColor={colors.APP_MAIN}
-                        checked={!this.state.checkedPets}
+                        checked={this.props.shop.mascotas === 0}
                         onPress={() => this.setState({ checkedPets: false })}
                         label="No"
                     />
@@ -204,3 +205,17 @@ const styles = StyleSheet.create({
         marginRight: sizes.wp('6%')
     },
 });
+
+const mapStateToProps = state => {
+    return {
+        shop: state.authState.shop,
+    }
+}
+
+const mapDispatchToProps = dispatch => {
+    return {
+        //updateShopFavourite: (cuit, favourite) => dispatch(ShopActions.updateShopFavourite(cuit, favourite))
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(ProfileShopFeaturesScreen);

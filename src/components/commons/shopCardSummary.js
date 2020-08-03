@@ -192,7 +192,7 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = state => {
     return {
-        user: state.authState,
+        user: state.authState.client,
     }
 }
 

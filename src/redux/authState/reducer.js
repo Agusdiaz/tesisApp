@@ -1,26 +1,39 @@
 const initialState = {
-    name: undefined,
-    lastName: undefined,
-    mail: undefined,
-    token: undefined,
+    client: {
+        name: undefined,
+        lastName: undefined,
+        mail: undefined,
+        token: undefined,
+    },
+    shop: {
+        cuit: undefined,
+        nombre: undefined,
+        direccion: undefined,
+        telefono: undefined,
+        mail: undefined,
+        mascotas: undefined,
+        bebes: undefined,
+        juegos: undefined,
+        aireLibre: undefined,
+        libreHumo: undefined,
+        wifi: undefined,
+        demora: undefined,
+        abierto: undefined,
+        horarios: [],
+        token: undefined,
+    }
 }
-
-/*
-const initialState = {
-    client: undefined,
-    shop: undefine,
-    token: undefined,
-}
-*/
 
 export default (state = initialState, { type, payload }) => {
     switch (type) {
-        case 'LOGIN_USER':
-            return { ...state, ...payload }
+        case 'LOGIN_CLIENT':
+            return { ...state, client: { ...payload } }
+        case 'LOGIN_SHOP':
+            return { ...state, shop: { ...payload } }
         case 'LOGOUT':
             return initialState
         case 'UPDATE_CLIENT':
-            return {...state, name:payload.name, lastName: payload.lastName}
+            return { ...state, client: { name: payload.name, lastName: payload.lastName } }
         default:
             return state
     }

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { StyleSheet, Text, View, KeyboardAvoidingView, ImageBackground, Image } from 'react-native';
 import { appStyles, colors, sizes } from '../../../index.styles';
-import { Button, Dialog, Modal, Portal, Menu, } from 'react-native-paper';
+import { Button, Dialog, Modal, Portal, Menu, ActivityIndicator } from 'react-native-paper';
 import { Tabs, Tab, } from 'material-bread';
 import ShopCard from '../../commons/shopCard'
 import MenuShop from '../../commons/menu'
@@ -122,13 +122,25 @@ export default class ProfileShopScreen extends Component {
                                         <Dialog.Title style={{ alignSelf: 'center' }}>¿Desea cerrar sesión?</Dialog.Title>
                                         <Dialog.Actions>
                                             <Button style={{ marginRight: sizes.wp('3%') }} color={colors.APP_RED} onPress={this._hideDialogSessionOut}>Cancelar</Button>
-                                            <Button color={colors.APP_GREEN} onPress={() => console.log("Ok")}>Ok</Button>
+                                            <Button color={colors.APP_GREEN} onPress={() => {
+                                                this._hideDialogSessionOut()
+                                                Actions.logsign()
+                                            }}>Ok</Button>
                                         </Dialog.Actions>
                                     </Dialog>
+
+                                    <Modal dismissable={false}
+                                        visible={this.state.loading}
+                                        style={styles.modalActivityIndicator} >
+                                        <ActivityIndicator
+                                            animating={this.state.loading}
+                                            size={60}
+                                            color={colors.APP_MAIN}
+                                        />
+                                    </Modal>
                                 </Portal>
                             </View>
                 }
-
             </View>
         )
     }
