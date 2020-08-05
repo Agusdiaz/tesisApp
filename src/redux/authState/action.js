@@ -47,9 +47,24 @@ const updateClientData = (name, lastName) => {
     }
 }
 
+const updateShopFeatures = (mascotas, bebes, juegos, aireLibre, libreHumo, wifi) => {
+    return {
+        type: 'UPDATE_SHOP_FEATURES',
+        payload: {
+            mascotas: mascotas,
+            bebes: bebes,
+            juegos: juegos,
+            aireLibre: aireLibre,
+            libreHumo: libreHumo,
+            wifi: wifi
+        },
+    }
+}
+
 export default {
     setLoginClientData,
     setLoginShopData,
     logout,
     updateClientData,
+    updateShopFeatures,
 }

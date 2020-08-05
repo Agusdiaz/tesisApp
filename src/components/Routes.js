@@ -15,6 +15,7 @@ import SearchShopBySale from './screens/shopView/searchShopBySale'
 import FavouritesShops from './screens/shopView/favouritesShops'
 import SignUpShopFeatures from './screens/signup/signUpShopFeatures'
 import SignUpShopSchedule from './screens/signup/signUpShopSchedule'
+import OrdersShop from './screens/orderView/ordersShop'
 
 export default class Routes extends Component {
     render() {
@@ -36,6 +37,7 @@ export default class Routes extends Component {
                     <Scene key="favouritesshops" component={FavouritesShops} title="FavouritesShops" />
                     <Scene key="signupshopfeatures" component={SignUpShopFeatures} title="SignUpShopFeatures" />
                     <Scene key="signupshopschedule" component={SignUpShopSchedule} title="SignUpShopSchedule" />
+                    <Scene key="ordersshop" component={OrdersShop} title="OrdersShop" />
                 </Scene>
             </Router>
         )

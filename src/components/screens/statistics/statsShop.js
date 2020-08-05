@@ -4,6 +4,8 @@ import { appStyles, colors, sizes } from '../../../index.styles';
 import { Banner } from 'react-native-paper';
 import { Tabs, Tab, Icon } from 'material-bread';
 import PieChartGraph from './pieChart'
+import BarChartGraph from './barChart'
+import LineChartGraph from './lineChart'
 import { Actions } from 'react-native-router-flux';
 
 export default class StatsShopScreen extends React.Component {
@@ -69,6 +71,7 @@ export default class StatsShopScreen extends React.Component {
                                 <Text style={{ fontSize: 22, textAlign: 'center' }}>¿Cuántos pedidos recibes por mes en los últimos seis meses?</Text>
                             </Banner>
 
+                            <BarChartGraph/>
                             
                         </View>
 
@@ -87,10 +90,11 @@ export default class StatsShopScreen extends React.Component {
                                 ]}>
                                 <Text style={{ fontSize: 22, textAlign: 'center' }}>¿Cuáles son tus horarios más populares?</Text>
                             </Banner>
+
+                            <LineChartGraph/>
+
                         </View>
-
                 }
-
             </View>
         )
     }

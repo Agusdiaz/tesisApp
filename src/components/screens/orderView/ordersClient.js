@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { StyleSheet, Text, Image, View, FlatList } from 'react-native';
-import { Button } from 'react-native-paper';
 import { appStyles, colors, sizes } from '../../../index.styles';
+import { Searchbar } from 'react-native-paper';
 import { Surface } from 'react-native-paper';
 import OrderCardClient from '../../commons/orderCardClient';
 import ArrowButton from '../../commons/arrowButton'
+import moment from 'moment'
 import { getAllOrdersByClient } from '../../../api/orders'
 
 class OrdersClientScreen extends Component {
@@ -16,7 +17,9 @@ class OrdersClientScreen extends Component {
             areOrders: true,
             refreshing: false,
             orders: [],
-        }
+            searchQuery: '',
+        };
+        this.arrayholder = [];
     }
 
     componentDidMount() {
@@ -27,14 +30,31 @@ class OrdersClientScreen extends Component {
         const data = await getAllOrdersByClient(this.props.user.mail, this.props.user.token)
         if (data.status === 500 || data.status === 204)
             this.setState({ areOrders: false })
-        else
+        else{
             this.setState({ areOrders: true, orders: data.body })
+            this.arrayholder = data.body
+    }
     }
 
     onRefresh = () => {
         this.setState({ orders: [], refreshing: true });
+        this.arrayholder = []
         this.getOrders()
         setTimeout(() => { this.setState({ refreshing: false }) }, 1500);
+    }
+
+    _onChangeSearch(query) {
+        const newData = this.arrayholder.filter(function (item) {
+            const dateFilter = item.fecha ? (moment(item.fecha).format("YYYY/MM/DD hh:mm")).toUpperCase() : ''.toUpperCase();
+            const shopFilter = item.nombre ? item.nombre.toUpperCase() : ''.toUpperCase();
+            const textData = (query.toString()).toUpperCase();
+            return (dateFilter.indexOf(textData) > -1 || shopFilter.indexOf(textData) > -1);
+        });
+        this.setState({
+            orders: newData,
+            searchQuery: query,
+            areOrders: (newData.length > 0) ? true : false
+        });
     }
 
     renderSeparator = () => {
@@ -69,7 +89,16 @@ class OrdersClientScreen extends Component {
 
                 <ArrowButton rute='navBarClientProfile' />
 
-                <Surface style={[styles.surface, { top: (this.state.areOrders) ? sizes.hp('12.8%') : sizes.hp('-20%') }]}>
+                <Searchbar
+                    style={styles.searchInput}
+                    placeholder="Buscar por local o fecha"
+                    theme={{ colors: { primary: colors.APP_MAIN } }}
+                    iconColor={colors.APP_MAIN}
+                    onChangeText={text => this._onChangeSearch(text)}
+                    value={this.state.searchQuery}
+                />
+
+                <Surface style={styles.surface}>
                     <Text style={{ fontSize: 20, color: colors.APP_BACKGR, fontWeight: 'bold', textAlign: 'center' }}>ESTE ES TU HISTORIAL DE PEDIDOS</Text>
                 </Surface>
 
@@ -89,8 +118,16 @@ class OrdersClientScreen extends Component {
 }
 
 const styles = StyleSheet.create({
+    searchInput: {
+        position: 'absolute',
+        top: sizes.hp('5.5%'),
+        width: sizes.wp('78%'),
+        left: sizes.wp('20%'),
+        fontSize: sizes.TEXT_INPUT,
+    },
     surface: {
         width: sizes.wp('100%'),
+        top: sizes.hp('12.8%'),
         padding: 15,
         alignItems: 'center',
         backgroundColor: colors.APP_MAIN,
@@ -113,7 +150,7 @@ const styles = StyleSheet.create({
     },
     list: {
         top: sizes.hp('13%'),
-        marginBottom: sizes.hp('14%'),
+        marginBottom: sizes.hp('14.5%'),
         width: '100%',
     },
 })

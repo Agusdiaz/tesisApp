@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { StyleSheet, View, Text, TouchableOpacity, ImageBackground, FlatList, Image } from 'react-native';
+import { StyleSheet, View, Text, TouchableOpacity, ImageBackground, FlatList, Image} from 'react-native';
 import { Surface, ToggleButton, } from 'react-native-paper';
 import { appStyles, colors, sizes } from '../../../index.styles';
 import ShopCardSummary from '../../commons/shopCardSummary'
@@ -105,7 +105,6 @@ class AnimatedHeader extends React.Component {
 
         return (
             <View style={appStyles.container}>
-
                 <Animated.View style={[styles.headerWrapper, { transform: [{ translateY }] }]}>
                     <TouchableOpacity style={styles.touchable} onPress={() => Actions.makeorder()}>
                         <ImageBackground source={require('../../../icons/tabla.jpg')} style={styles.imageContainer} imageStyle={styles.imageInside} resizeMode={'stretch'}>

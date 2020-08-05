@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
 import { StyleSheet, Text, View, Image, ScrollView } from 'react-native';
 import { colors, sizes, orderStage } from '../../index.styles';
-import { DataTable, DataTableHeader, DataTableCell, DataTablePagination, DataTableRow } from 'material-bread'
+import { DataTable, DataTableHeader, DataTableCell, DataTableRow } from 'material-bread'
 import { Card, FAB, Button, Divider, IconButton, Title } from 'react-native-paper';
 import TextTicker from 'react-native-text-ticker'
 import moment from 'moment'
-import { cos } from 'react-native-reanimated';
 
 class OrderDetailsClient extends Component {
     constructor(props) {
@@ -19,7 +18,7 @@ class OrderDetailsClient extends Component {
     }
 
     render() {
-      
+
         const Close = props => <IconButton
             icon='close'
             color={colors.APP_MAIN}
@@ -36,6 +35,8 @@ class OrderDetailsClient extends Component {
                 {(this.props.data.etapa === orderStage.PENDING) ? 'En Proceso' : (this.props.data.etapa === orderStage.READY) ?
                     'Listo' : 'Entregado'} </Button>
 
+        const takeAway = props => <Text style={styles.rightText}> {(this.props.data.takeAway === 1) ? 'Para llevar' : 'Para comer aquí'} </Text>
+
         const orderNumber = props => <Text style={styles.rightText}> {this.props.data.numero} </Text>
 
         const name = props => <TextTicker style={{ fontSize: 16 }}
@@ -45,7 +46,7 @@ class OrderDetailsClient extends Component {
             repeatSpacer={50}
             marqueeDelay={1000}>{this.props.data.nombre}</TextTicker>
 
-            const address = props => <TextTicker style={{ fontSize: 16 }}
+        const address = props => <TextTicker style={{ fontSize: 16 }}
             duration={6000}
             loop
             animationType='bounce'
@@ -61,15 +62,17 @@ class OrderDetailsClient extends Component {
         return (
 
             <Card style={styles.orderCard}>
-                <Card.Title style={{ margin: -10, marginTop: sizes.hp('-4') }} left={Close} leftStyle={styles.close} right={stageOrder} rightStyle={styles.stageOrder} />
+                <Card.Title style={{ margin: -10, marginTop: sizes.hp('-4') }} left={stageOrder} leftStyle={styles.stageOrder} right={Close} rightStyle={styles.close} />
                 <Divider />
-                <Card.Title style={styles.cardTitle} titleStyle={styles.leftText} title="Número:" right={orderNumber} />
+                <Card.Title style={styles.cardTitle} titleStyle={styles.leftText} title="Modalidad:" right={takeAway}/>
+                <Divider style={styles.divider} />
+                <Card.Title style={styles.cardTitle} titleStyle={styles.leftText} title="Número del Pedido:" right={orderNumber} />
                 <Divider />
                 <Card.Title style={styles.cardTitle} titleStyle={styles.leftText} title="Local:" right={name} rightStyle={{ width: sizes.wp('54%'), right: sizes.wp('3%'), alignItems: 'flex-end', }} />
                 <Divider style={styles.divider} />
                 <Card.Title style={styles.cardTitle} titleStyle={styles.leftText} title="Dirección:" right={address} rightStyle={{ width: sizes.wp('54%'), right: sizes.wp('3%'), alignItems: 'flex-end', }} />
                 <Divider style={styles.divider} />
-                <Card.Title style={styles.cardTitle} titleStyle={styles.leftText} title="Fecha:" right={date} />
+                <Card.Title style={styles.cardTitle} titleStyle={styles.leftText} title="Fecha:" right={date} hs />
                 <Divider style={styles.divider} />
                 <Card.Content style={{ alignSelf: 'center', width: sizes.wp('90%'), }}>
                     <DataTable style={{ width: sizes.wp('50%') }}>
@@ -83,7 +86,7 @@ class OrderDetailsClient extends Component {
                             <DataTableCell text={'Precio Unit'} type={'header'} style={{ maxWidth: '5%', left: sizes.wp('-10%') }} textStyle={{ textAlign: 'center' }} />
                             <DataTableCell text={'Precio Total'} type={'header'} style={{ maxWidth: '5%', left: sizes.wp('-16%') }} textStyle={{ textAlign: 'center' }} />
                         </DataTableRow>
-                        <ScrollView style={{ height: sizes.hp('28.5%') }}>
+                        <ScrollView style={{ height: sizes.hp('29.5%') }}>
                             {this.props.data.productos[0]
                                 .map(row => (
                                     <DataTableRow key={row.id}>
@@ -109,7 +112,7 @@ class OrderDetailsClient extends Component {
 
 const styles = StyleSheet.create({
     orderCard: {
-        height: sizes.hp('80%'),
+        height: sizes.hp('87%'),
         width: sizes.wp('90%'),
         padding: 10,
         elevation: 0,
@@ -118,10 +121,13 @@ const styles = StyleSheet.create({
         left: sizes.wp('-2%')
     },
     stageOrder: {
-        right: sizes.wp('7%')
+        right: sizes.wp('0%')
     },
     cardTitle: {
         margin: -9
+    },
+    takeAwayText: {
+
     },
     divider: {
 

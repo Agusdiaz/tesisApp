@@ -20,6 +20,7 @@ class ShopCard extends Component {
     _hideModalSchedule = () => this.setState({ visibleModalSchedule: false });
 
     render() {
+
         const PeopleButton = props => <Button
             style={{ borderRadius: 20, borderColor: colors.APP_MAIN, borderWidth: 1, width: sizes.wp('80%'), alignSelf: 'center', }}
             labelStyle={{ fontSize: 12, color: colors.APP_MAIN, }}

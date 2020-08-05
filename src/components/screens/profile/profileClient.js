@@ -182,6 +182,7 @@ class ProfileClientScreen extends Component {
                         <Dialog.Actions>
                             <Button style={{ marginRight: sizes.wp('3%') }} color={colors.APP_RED} onPress={this._hideDialogSessionOut}>Cancelar</Button>
                             <Button color={colors.APP_GREEN} onPress={() => {
+                                this.props.logout()
                                 this._hideDialogSessionOut()
                                 Actions.logsign()}}>Ok</Button>
                         </Dialog.Actions>
@@ -387,7 +388,8 @@ function mapStateToProps(state) {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        updateClientData: (name, lastName) => dispatch(ClientActions.updateClientData(name, lastName))
+        updateClientData: (name, lastName) => dispatch(ClientActions.updateClientData(name, lastName)),
+        logout: () => dispatch(ClientActions.logout())
     }
 };
 

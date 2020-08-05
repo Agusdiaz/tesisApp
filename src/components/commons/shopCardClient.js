@@ -11,7 +11,7 @@ import Schedule from './schedule'
 class ShopCardClient extends Component {
     constructor() {
         super();
-        this.state = { //PONER METODO PARA SABER EL ESTADO
+        this.state = {
             photo: 'https://picsum.photos/500',
             delay: 'Poca',
             visibleModalSchedule: false,

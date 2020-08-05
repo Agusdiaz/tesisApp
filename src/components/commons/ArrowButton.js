@@ -19,6 +19,9 @@ class ArrowButton extends Component {
 			return Actions.navbarclient({ page: 2 })
 		if (this.props.rute === 'navBarClientProfile')
 			return Actions.navbarclient({ page: 3 })
+		if (this.props.rute === 'navBarShopProfile')
+			//return Actions.navbarshop({ page: 3 })
+			return Actions.pop()
 		return null
 	}
 

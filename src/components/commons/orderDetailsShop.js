@@ -4,15 +4,12 @@ import { colors, sizes, orderStage } from '../../index.styles';
 import { DataTable, DataTableHeader, DataTableCell, DataTablePagination, DataTableRow } from 'material-bread'
 import { Card, FAB, Button, Divider, IconButton, Title } from 'react-native-paper';
 import TextTicker from 'react-native-text-ticker'
+import moment from 'moment'
 
 class OrderDetailsShop extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            orderNumber: 7856,
-            mail: 'juan@mail.com',
-            isTakeAway: true,
-            date: '24/03/2020 a la(s) 20:20hs',
             items: [
                 {
                     id: 1,
@@ -30,7 +27,6 @@ class OrderDetailsShop extends Component {
                     amount: 2,
                     unitPrice: 100,
                 },],
-            total: '$1500',
         }
     }
 
@@ -39,7 +35,7 @@ class OrderDetailsShop extends Component {
     }
 
     render() {
-
+       
         const Close = props => <IconButton
             icon='close'
             color={colors.APP_MAIN}
@@ -47,34 +43,42 @@ class OrderDetailsShop extends Component {
             onPress={this.hideModal}
         />
 
-        const ConditionOrder = props =>
-            <Button mode='outlined' style={styles.takeAwayButton} color={colors.APP_MAIN}>
-                     {(this.state.isTakeAway) ? 'Para Llevar' : 'Para Comer Aquí'}   
-                    </Button>
+        const stageOrder = props =>
+            <Button style={{ borderRadius: 20, width: sizes.wp('30%') }}
+                mode="contained"
+                dark
+                color={(this.props.data.etapa === orderStage.PENDING) ? colors.APP_PENDING : (this.props.data.etapa === orderStage.READY) ? colors.APP_GREEN : colors.APP_DELIVERED}
+                labelStyle={{ fontSize: 11, color: '#FFF' }} contentStyle={{ width: sizes.wp('50%'), alignSelf: 'center' }} >
+                {(this.props.data.etapa === orderStage.PENDING) ? 'En Proceso' : (this.props.data.etapa === orderStage.READY) ?
+                    'Listo' : 'Entregado'} </Button>
 
-        const OrderNumber = props => <Text style={styles.rightText}> {this.state.orderNumber} </Text>
+        const takeAway = props => <Text style={styles.rightText}> {(this.props.data.takeAway === 1) ? 'Para llevar' : 'Para comer aquí'}</Text>
 
-        const Mail = props => <TextTicker style={{ fontSize: 16 }}
+        const orderNumber = props => <Text style={styles.rightText}> {this.props.data.numero}</Text>
+
+        const mail = props => <TextTicker style={{ fontSize: 16 }}
             duration={6000}
             loop
             animationType='bounce'
             repeatSpacer={50}
-            marqueeDelay={1000}>{this.state.mail}</TextTicker>
+            marqueeDelay={1000}>{this.props.data.cliente}</TextTicker>
 
-        const Total = props => <Text style={styles.rightText}> {this.state.total} </Text>
+        const total = props => <Text style={styles.rightText}> ${this.props.data.total}</Text>
 
-        const Date = props => <Text style={styles.rightText}> {this.state.date} </Text>
+        const date = props => <Text style={styles.rightText}> {moment(this.props.data.fecha).format("YYYY/MM/DD hh:mm")} hs</Text>
 
         return (
 
             <Card style={styles.orderCard}>
-                <Card.Title style={{ margin: -10, marginTop: sizes.hp('-2') }} left={Close} leftStyle={styles.close} right={ConditionOrder} rightStyle={styles.stageOrder} />
+                <Card.Title style={{ margin: -10, marginTop: sizes.hp('-4') }} left={stageOrder} leftStyle={styles.stageOrder} right={Close} rightStyle={styles.close} />
                 <Divider />
-                <Card.Title style={styles.cardTitle} titleStyle={styles.leftText} title="Número del Pedido:" right={OrderNumber} />
+                <Card.Title style={styles.cardTitle} titleStyle={styles.leftText} title="Modalidad:" right={takeAway} />
                 <Divider />
-                <Card.Title style={styles.cardTitle} titleStyle={styles.leftText} title="Mail del Cliente:" right={Mail} rightStyle={{ width: sizes.wp('47%'), right: sizes.wp('3%'), alignItems: 'flex-end',}} />
+                <Card.Title style={styles.cardTitle} titleStyle={styles.leftText} title="Número del Pedido:" right={orderNumber} />
+                <Divider />
+                <Card.Title style={styles.cardTitle} titleStyle={styles.leftText} title="Mail del Cliente:" right={mail} rightStyle={{ width: sizes.wp('47%'), right: sizes.wp('3%'), alignItems: 'flex-end',}} />
                 <Divider style={styles.divider} />
-                <Card.Title style={styles.cardTitle} titleStyle={styles.leftText} title="Fecha:" right={Date} />
+                <Card.Title style={styles.cardTitle} titleStyle={styles.leftText} title="Fecha:" right={date} />
                 <Divider style={styles.divider} />
                 <Card.Content style={{ alignSelf: 'center', width: sizes.wp('90%'), }}>
                     <DataTable style={{width: sizes.wp('50%')}}>
@@ -88,7 +92,7 @@ class OrderDetailsShop extends Component {
                             <DataTableCell text={'Agregar'} type={'header'} style={{ maxWidth: '5%', left: sizes.wp('-7.5%') }} textStyle={{ textAlign: 'center' }} />
                             <DataTableCell text={'Quitar'} type={'header'} style={{ maxWidth: '5%', left: sizes.wp('-13%') }} textStyle={{ textAlign: 'center' }} />
                         </DataTableRow>
-                        <ScrollView style={{ height: sizes.hp('37%') }}>
+                        <ScrollView style={{ height: sizes.hp('41%') }}>
                             {this.state.items
                                 .map(row => (
                                     <DataTableRow key={row.id}>
@@ -103,7 +107,7 @@ class OrderDetailsShop extends Component {
                     </DataTable>
                 </Card.Content>
                 <Divider style={styles.divider} />
-                <Card.Title style={styles.cardTitle} titleStyle={styles.leftText} title="Total:" right={Total} />
+                <Card.Title style={styles.cardTitle} titleStyle={styles.leftText} title="Total:" right={total} />
                 <Divider style={styles.divider} />
             </Card>
         )
@@ -112,7 +116,7 @@ class OrderDetailsShop extends Component {
 
 const styles = StyleSheet.create({
     orderCard: {
-        height: sizes.hp('80%'),
+        height: sizes.hp('87%'),
         width: sizes.wp('90%'),
         padding: 10,
         elevation: 0
@@ -121,13 +125,12 @@ const styles = StyleSheet.create({
         left: sizes.wp('-2%')
     },
     stageOrder: {
-        right: sizes.wp('7%')
+        right: sizes.wp('0%')
     },
     cardTitle: {
         margin: -9
     },
     divider: {
-
     },
     rightText: {
         fontSize: 16,
@@ -135,15 +138,6 @@ const styles = StyleSheet.create({
     },
     leftText: {
         fontSize: 18,
-    },
-    takeAwayButton: {
-        alignSelf: 'center', 
-        borderColor: colors.APP_MAIN,
-        borderWidth: 2,
-        borderRadius: 20, 
-        width: sizes.wp('45%'),
-        marginBottom: sizes.wp('1%'),
-        marginRight: sizes.wp('-1%'),
     },
 });
 

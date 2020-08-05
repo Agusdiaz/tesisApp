@@ -27,32 +27,29 @@ class LoginScreen extends Component {
 
     async _login() {
         this.setState({ loading: true })
+        setTimeout(() => { this.setState({ loading: false, }) }, 5000);
         const data = await login(this.state.email, this.state.password)
-        if (data.status === 500 || data.status === 404 || data.status === 401) {
+        if (data.status === 500 || data.status === 404) {
             this.setState({ loading: false, email: '', password: '', messageError: data.body })
+            this._showDialog()
+        } else if (data.status === 401) {
+            this.setState({ loading: false, password: '', messageError: data.body })
             this._showDialog()
         } else {
             this.setState({ loading: false, email: '', password: '' })
-            if(data.body.cuit === undefined){
+            if (data.body.cuit === undefined) {
                 this.props.setLoginClientData(data.body.mail, data.body.nombre, data.body.apellido, data.body.token)
                 Actions.navbarclient()
-            } else if(data.body.nuevo === 0){
-                this.props.setLoginShopData(data.body.cuit, data.body.nombre, data.body.direccion, data.body.telefono, data.body.mail, 
-                    data.body.mascotas, data.body.bebes, data.body.juegos, data.body.aireLibre, data.body.libreHumo, data.body.wifi, 
-                    data.body.demora, data.body.abierto, data.body.horarios, data.body.token)                
+            } else if (data.body.nuevo === 0) {
+                this.props.setLoginShopData(data.body.cuit, data.body.nombre, data.body.direccion, data.body.telefono, data.body.mail,
+                    data.body.mascotas, data.body.bebes, data.body.juegos, data.body.aireLibre, data.body.libreHumo, data.body.wifi,
+                    data.body.demora, data.body.abierto, data.body.horarios, data.body.token)
                 Actions.navbarshop()
             }
-            else{ //GUARDAR INFO?
+            else { //GUARDAR INFO?
                 Actions.signupshopfeatures()
-            }            
+            }
         }
-        /*setTimeout(() => {
-            this.setState({
-              loading: false,
-            email: '',
-            password: ''
-            });
-          }, 4000);*/
     }
 
     render() {
@@ -152,7 +149,7 @@ const styles = StyleSheet.create({
 
 function mapStateToProps(state) {
     return {
-        user: state.authState.client
+        user: state.authState
     };
 }
 

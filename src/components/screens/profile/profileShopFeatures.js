@@ -2,25 +2,44 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { StyleSheet, Text, View, KeyboardAvoidingView, ImageBackground, } from 'react-native';
 import { appStyles, colors, sizes } from '../../../index.styles';
+import ShopActions from '../../../redux/authState/action'
 import { Button, Dialog, Modal, Portal, Menu, } from 'react-native-paper';
 import { Tabs, Tab, RadioButton } from 'material-bread';
+import { updateShopFeatures } from '../../../api/shops'
 
 class ProfileShopFeaturesScreen extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            checkedPets: true,
-            checkedKids: true,
-            checkedGames: true,
-            checkedOutside: true,
-            checkedSmoking: true,
-            checkedWifi: true,
-            visibleDialog: false,
+            checkedPets: this.props.shop.mascotas,
+            checkedKids: this.props.shop.bebes,
+            checkedGames: this.props.shop.juegos,
+            checkedOutside: this.props.shop.aireLibre,
+            checkedSmoking: this.props.shop.libreHumo,
+            checkedWifi: this.props.shop.wifi,
+            visibleDialog: null,
         }
     }
 
     _showDialog = () => this.setState({ visibleDialog: true });
     _hideDialog = () => this.setState({ visibleDialog: false });
+
+    async editFeatures() {
+        this.props.updateLoading(true)
+        const data = await updateShopFeatures(this.state.checkedPets, this.state.checkedKids, this.state.checkedGames, this.state.checkedOutside,
+            this.state.checkedSmoking, this.state.checkedWifi, this.props.shop.cuit, this.props.shop.token)
+        if (data.status === 500 || data.status === 404) {
+            this.props.updateLoading(false)
+            this.props.showDialogResponse(data.body)
+        }
+        else {
+            this.props.updateLoading(false)
+            this.props.updateShopFeatures(this.state.checkedPets, this.state.checkedKids, this.state.checkedGames, this.state.checkedOutside,
+                this.state.checkedSmoking, this.state.checkedWifi)
+            this.props.showDialogResponse(data.body)
+        }
+
+    }
 
     hideModal = () => {
         this.props.hideModalFromChild();
@@ -37,15 +56,15 @@ class ProfileShopFeaturesScreen extends Component {
                         radioButtonColor={colors.APP_MAIN}
                         rippleColor={colors.APP_MAIN}
                         labelStyle={styles.options}
-                        checked={this.props.shop.mascotas === 1}
-                        onPress={() => this.setState({ checkedPets: true })}
+                        checked={this.state.checkedPets == 1}
+                        onPress={() => this.setState({ checkedPets: 1 })}
                         label="Sí"
                     />
                     <RadioButton
                         radioButtonColor={colors.APP_MAIN}
                         rippleColor={colors.APP_MAIN}
-                        checked={this.props.shop.mascotas === 0}
-                        onPress={() => this.setState({ checkedPets: false })}
+                        checked={this.state.checkedPets == 0}
+                        onPress={() => this.setState({ checkedPets: 0 })}
                         label="No"
                     />
                 </View>
@@ -56,15 +75,15 @@ class ProfileShopFeaturesScreen extends Component {
                         radioButtonColor={colors.APP_MAIN}
                         rippleColor={colors.APP_MAIN}
                         labelStyle={styles.options}
-                        checked={this.state.checkedKids}
-                        onPress={() => this.setState({ checkedKids: true })}
+                        checked={this.state.checkedKids == 1}
+                        onPress={() => this.setState({ checkedKids: 1 })}
                         label="Sí"
                     />
                     <RadioButton
                         radioButtonColor={colors.APP_MAIN}
                         rippleColor={colors.APP_MAIN}
-                        checked={!this.state.checkedKids}
-                        onPress={() => this.setState({ checkedKids: false })}
+                        checked={this.state.checkedKids == 0}
+                        onPress={() => this.setState({ checkedKids: 0 })}
                         label="No"
                     />
                 </View>
@@ -75,15 +94,15 @@ class ProfileShopFeaturesScreen extends Component {
                         radioButtonColor={colors.APP_MAIN}
                         rippleColor={colors.APP_MAIN}
                         labelStyle={styles.options}
-                        checked={this.state.checkedGames}
-                        onPress={() => this.setState({ checkedGames: true })}
+                        checked={this.state.checkedGames == 1}
+                        onPress={() => this.setState({ checkedGames: 1 })}
                         label="Sí"
                     />
                     <RadioButton
                         radioButtonColor={colors.APP_MAIN}
                         rippleColor={colors.APP_MAIN}
-                        checked={!this.state.checkedGames}
-                        onPress={() => this.setState({ checkedGames: false })}
+                        checked={this.state.checkedGames == 0}
+                        onPress={() => this.setState({ checkedGames: 0 })}
                         label="No"
                     />
                 </View>
@@ -94,15 +113,15 @@ class ProfileShopFeaturesScreen extends Component {
                         radioButtonColor={colors.APP_MAIN}
                         rippleColor={colors.APP_MAIN}
                         labelStyle={styles.options}
-                        checked={this.state.checkedOutside}
-                        onPress={() => this.setState({ checkedOutside: true })}
+                        checked={this.state.checkedOutside == 1}
+                        onPress={() => this.setState({ checkedOutside: 1 })}
                         label="Sí"
                     />
                     <RadioButton
                         radioButtonColor={colors.APP_MAIN}
                         rippleColor={colors.APP_MAIN}
-                        checked={!this.state.checkedOutside}
-                        onPress={() => this.setState({ checkedOutside: false })}
+                        checked={this.state.checkedOutside == 0}
+                        onPress={() => this.setState({ checkedOutside: 0 })}
                         label="No"
                     />
                 </View>
@@ -113,15 +132,15 @@ class ProfileShopFeaturesScreen extends Component {
                         radioButtonColor={colors.APP_MAIN}
                         rippleColor={colors.APP_MAIN}
                         labelStyle={styles.options}
-                        checked={this.state.checkedSmoking}
-                        onPress={() => this.setState({ checkedSmoking: true })}
+                        checked={this.state.checkedSmoking == 1}
+                        onPress={() => this.setState({ checkedSmoking: 1 })}
                         label="Sí"
                     />
                     <RadioButton
                         radioButtonColor={colors.APP_MAIN}
                         rippleColor={colors.APP_MAIN}
-                        checked={!this.state.checkedSmoking}
-                        onPress={() => this.setState({ checkedSmoking: false })}
+                        checked={this.state.checkedSmoking == 0}
+                        onPress={() => this.setState({ checkedSmoking: 0 })}
                         label="No"
                     />
                 </View>
@@ -132,15 +151,15 @@ class ProfileShopFeaturesScreen extends Component {
                         radioButtonColor={colors.APP_MAIN}
                         rippleColor={colors.APP_MAIN}
                         labelStyle={styles.options}
-                        checked={this.state.checkedWifi}
-                        onPress={() => this.setState({ checkedWifi: true })}
+                        checked={this.state.checkedWifi == 1}
+                        onPress={() => this.setState({ checkedWifi: 1 })}
                         label="Sí"
                     />
                     <RadioButton
                         radioButtonColor={colors.APP_MAIN}
                         rippleColor={colors.APP_MAIN}
-                        checked={!this.state.checkedWifi}
-                        onPress={() => this.setState({ checkedWifi: false })}
+                        checked={this.state.checkedWifi == 0}
+                        onPress={() => this.setState({ checkedWifi: 0 })}
                         label="No"
                     />
                 </View>
@@ -173,6 +192,7 @@ class ProfileShopFeaturesScreen extends Component {
                         <Dialog.Actions>
                             <Button style={{ marginRight: sizes.wp('3%') }} color={colors.APP_RED} onPress={this._hideDialog}>Cancelar</Button>
                             <Button color={colors.APP_GREEN} onPress={() => {
+                                this.editFeatures()
                                 this._hideDialog()
                                 this.hideModal()
                             }}>Sí</Button>
@@ -214,7 +234,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        //updateShopFavourite: (cuit, favourite) => dispatch(ShopActions.updateShopFavourite(cuit, favourite))
+        updateShopFeatures: (mascotas, bebes, juegos, aireLibre, libreHumo, wifi) => dispatch(ShopActions.updateShopFeatures(mascotas, bebes, juegos, aireLibre, libreHumo, wifi))
     }
 }
 

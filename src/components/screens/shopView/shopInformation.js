@@ -46,7 +46,6 @@ class ShopInformationScreen extends Component {
                     handleChange={index => this.setState({ selectedTab: index })}
                     backgroundColor={colors.APP_BACKGR}
                     underlineColor={colors.APP_MAIN}
-
                     actionItems={[
                         <Tab key={1} icon='info' label='Información' activeTextColor={colors.APP_MAIN} inActiveTextColor={colors.APP_INACTIVE}
                             iconStyles={{ color: (this.state.selectedTab == 0) ? colors.APP_MAIN : colors.APP_INACTIVE }} />,

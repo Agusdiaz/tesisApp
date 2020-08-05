@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import { StyleSheet, Text, View, Image, ScrollView } from 'react-native';
-import { colors, sizes, productCondition } from '../../index.styles';
+import { colors, sizes } from '../../index.styles';
 import { DataTable, DataTableHeader, DataTableCell, DataTableRow } from 'material-bread'
 import { Card, FAB, Button, Divider, IconButton, } from 'react-native-paper';
 
-export default class ScheduleDetails extends Component {
+class ScheduleDetails extends Component {
 
     constructor() {
         super();
@@ -20,9 +21,16 @@ export default class ScheduleDetails extends Component {
             onPress={() => this.props.hideModalFromChild()}
         />
 
+        const openClose = props => (this.props.shop.abierto === 1) ? <Button style={{ borderRadius: 20, width: 105, alignItems: 'center' }} mode="contained" color={colors.APP_GREEN} labelStyle={{ fontSize: 9, color: colors.APP_BACKGR }} >
+            Abierto </Button> : <Button style={{ borderRadius: 20, width: 105, alignItems: 'center' }} mode="contained" color={colors.APP_RED} labelStyle={{ fontSize: 9, color: colors.APP_BACKGR }}>Cerrado </Button>
+
         return (
             <Card style={styles.scheduleCard}>
+                {(this.props.shop.abierto !== undefined) ?
+                <Card.Title style={{ margin: -10, marginTop: sizes.hp('-3') }} left={openClose} leftStyle={{}} right={Close} rigthStyle={styles.close} />
+                :
                 <Card.Title style={{ margin: -10, marginTop: sizes.hp('-3') }} right={Close} rigthStyle={styles.close} />
+                }
                 <Divider />
                 <Card.Title title='Estos son los horarios:' titleStyle={styles.title} />
                 <DataTable style={{ marginTop: sizes.wp('1%'), width: sizes.wp('50%') }}>
@@ -95,3 +103,12 @@ const styles = StyleSheet.create({
         marginTop: sizes.hp('2%')
     },
 });
+
+const mapStateToProps = state => {
+    return {
+        shop: state.authState.shop,
+    }
+}
+
+
+export default connect(mapStateToProps)(ScheduleDetails);

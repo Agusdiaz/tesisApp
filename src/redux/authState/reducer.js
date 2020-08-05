@@ -33,7 +33,10 @@ export default (state = initialState, { type, payload }) => {
         case 'LOGOUT':
             return initialState
         case 'UPDATE_CLIENT':
-            return { ...state, client: { name: payload.name, lastName: payload.lastName } }
+            return { ...state, client: { ...state.client, name: payload.name, lastName: payload.lastName } }
+        case 'UPDATE_SHOP_FEATURES':
+            return { ...state, shop: { ...state.shop, mascotas: payload.mascotas, bebes: payload.bebes, juegos: payload.juegos, 
+                aireLibre: payload.aireLibre, libreHumo: payload.libreHumo, wifi: payload.wifi } }
         default:
             return state
     }

@@ -21,7 +21,13 @@ class SalesMenu extends Component {
     }
 
     async getPromos() {
-        const data = await getAllShopPromos(this.props.data.cuit, this.props.user.token)
+        console.log(this.props.user.mail)
+        let data
+        if(this.props.user.mail !== undefined){
+            data = await getAllShopPromos(this.props.data.cuit, this.props.user.token)
+        }else{ 
+            data = await getAllShopPromos(this.props.shop.cuit, this.props.shop.token)
+        }
         if (data.status === 500 || data.status === 204)
             this.setState({ areSales: false })
         else this.setState({ areSales: true, sales: data.body })
@@ -42,7 +48,8 @@ class SalesMenu extends Component {
             return (
                 <View style={styles.viewImage}>
                     <Image source={require('../../icons/noSales.png')} style={styles.image} />
-                    <Text style={styles.infoImage}>Este local no tiene promociones</Text>
+                    <Text style={styles.infoImage}>{(this.props.user.mail !== undefined) ? 'Este local no tiene promociones'
+                    : 'Tu local no tiene promociones '}</Text>
                 </View>
             );
         }
@@ -94,7 +101,8 @@ const styles = StyleSheet.create({
 
 function mapStateToProps(state) {
     return {
-        user: state.authState.client
+        user: state.authState.client,
+        shop: state.authState.shop
     };
 }
 

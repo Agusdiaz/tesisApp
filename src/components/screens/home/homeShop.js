@@ -1,33 +1,31 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, Text, VirtualizedList, RefreshControl, ActivityIndicator, Image } from 'react-native';
+import { connect } from 'react-redux';
+import { StyleSheet, View, Text, FlatList, ActivityIndicator, Image } from 'react-native';
 import { appStyles, colors, sizes } from '../../../index.styles';
+import { Searchbar } from 'react-native-paper';
 import OrderCardShop from '../../commons/orderCardShop'
 import { Surface, ToggleButton } from 'react-native-paper';
-
-const getItem = (data, index) => {
-    return {
-        id: Math.random().toString(12).substring(0),
-        title: `Item ${index + 1}`
-    }
-}
-
-const getItemCount = (data) => {
-    return 10;
-}
+import moment from 'moment'
+import { getPendingOrdersByShopInOrder, getPendingOrdersByShopMoreProducts } from '../../../api/orders'
 
 class HomeShopScreen extends Component {
 
     constructor(props) {
         super(props);
         this.state = {
-            refreshing: false, //cuando funcione bien -> true
+            areOrders: true,
+            refreshing: false,
+            orders: [],
             valueButtons: 'time',
             sortText: 'Orden de llegada',
-            areOrders: true,
-            amountOrders: 10,
-            data: [],
-        }
-        this.GetData();
+            searchQuery: '',
+        };
+        this.arrayholder = [];
+        this.onRefresh = this.onRefresh.bind(this);
+    }
+
+    componentDidMount() {
+        this.getOrdersByArrival()
     }
 
     handleButtons = (values, callback) => {
@@ -37,26 +35,49 @@ class HomeShopScreen extends Component {
         }
     }
 
-
-    async componentDidMount(){
-        await this.GetData()
+    async getOrdersByArrival() {
+        const data = await getPendingOrdersByShopInOrder(this.props.shop.cuit, this.props.shop.token)
+        if (data.status === 500 || data.status === 204)
+            this.setState({ areOrders: false })
+        else {
+            this.setState({ areOrders: true, orders: data.body })
+            this.arrayholder = data.body
+        }
     }
 
+    async getOrdersByMoreProducts() {
+        const data = await getPendingOrdersByShopMoreProducts(this.props.shop.cuit, this.props.shop.token)
+        if (data.status === 500 || data.status === 204)
+            this.setState({ areOrders: false })
+        else {
+            this.setState({ areOrders: true, orders: data.body })
+            this.arrayholder = data.body
+        }
+    }
 
-    GetData = () => {
-        /*
-      //Service to get the data from the server to render
-      return fetch('http://localhost:8080/getAllShopsAZ')
-        .then(response => response.json())
-        .then(responseJson => {
-            console.log(responseJson)
-            this.setState({ data: responseJson })
-        })
-        .catch(error => {
-          console.error(error);
+    onRefresh() {
+        this.setState({ orders: [], refreshing: true });
+        this.arrayholder = []
+        if (this.state.valueButtons === 'time')
+            this.getOrdersByArrival()
+        else
+            this.getOrdersByMoreProducts()
+        setTimeout(() => { this.setState({ refreshing: false }) }, 1500);
+    }
+
+    _onChangeSearch(query) {
+        const newData = this.arrayholder.filter(function (item) {
+            const dateFilter = item.fecha ? (moment(item.fecha).format("YYYY/MM/DD hh:mm")).toUpperCase() : ''.toUpperCase();
+            const clientFilter = item.cliente ? item.cliente.toUpperCase() : ''.toUpperCase();
+            const textData = (query.toString()).toUpperCase();
+            return (dateFilter.indexOf(textData) > -1 || clientFilter.indexOf(textData) > -1);
         });
-        */
-    };
+        this.setState({
+            orders: newData,
+            searchQuery: query,
+            areOrders: (newData.length > 0) ? true : false
+        });
+    }
 
     renderSeparator = () => {
         return (
@@ -68,31 +89,39 @@ class HomeShopScreen extends Component {
         );
     }
 
-    onRefresh() {
-        //Clear old data of the list
-        this.setState({ dataSource: [] });
-        //Call the Service to get the latest data
-        this.GetData();
-    }
-
-    render() {
-        //console.log(this.state.data)
-        if (this.state.refreshing) {
+    _renderItem(item) {
+        if (this.state.areOrders) {
             return (
-                //loading view while data is loading
-                <View style={{ flex: 1, marginTop: 70 }}>
-                    <ActivityIndicator />
+                <OrderCardShop data={item} refreshParent={this.onRefresh} />
+            );
+        } else {
+            return (
+                <View style={styles.viewImage}>
+                    <Image source={require('../../../icons/noOrderShop.png')} style={styles.image} />
+                    <Text style={styles.infoImage}>Actualmente no tenés pedidos que entregar</Text>
                 </View>
             );
         }
+    }
+
+    render() {
         return (
             <View style={appStyles.container}>
 
                 <Surface style={styles.surface}>
-                    <Text style={{ fontSize: 20, color: colors.APP_BACKGR, fontWeight: 'bold' }}>TENÉS {this.state.amountOrders} PEDIDOS PENDIENTES</Text>
+                    <Text style={{ fontSize: 20, color: colors.APP_BACKGR, fontWeight: 'bold' }}>TENÉS {this.state.orders.length} PEDIDOS PENDIENTES</Text>
                 </Surface>
 
-                <View style={{ flexDirection: 'row', justifyContent: 'center', width: sizes.wp('100%') }}>
+                <Searchbar
+                    style={styles.searchInput}
+                    placeholder="Buscar por cliente o fecha"
+                    theme={{ colors: { primary: colors.APP_MAIN } }}
+                    iconColor={colors.APP_MAIN}
+                    onChangeText={text => this._onChangeSearch(text)}
+                    value={this.state.searchQuery}
+                />
+
+                <View style={{ flexDirection: 'row', justifyContent: 'center', width: sizes.wp('100%'), top: sizes.hp('6%') }}>
                     <Text numberOfLines={2} style={{ width: '70%', fontSize: 15, textAlign: 'left', left: sizes.wp('1%'), bottom: sizes.hp('-1.5%') }}>
                         Ordenar por: {this.state.sortText}
                     </Text>
@@ -105,42 +134,33 @@ class HomeShopScreen extends Component {
                             });
                         })}
                         value={this.state.valueButtons}>
-                        <ToggleButton style={styles.toggleButton} icon="timelapse" value="time"
+                        <ToggleButton style={styles.toggleButton} icon="timelapse" value="time" onPress={() => this.getOrdersByArrival()}
                             color={(this.state.valueButtons === 'time') ? colors.APP_MAIN : colors.APP_INACTIVE} />
-                        <ToggleButton style={styles.toggleButton} icon="sort-numeric" value="products" //icon="shopping"
+                        <ToggleButton style={styles.toggleButton} icon="sort-numeric" value="products" onPress={() => this.getOrdersByMoreProducts()} //icon="shopping"
                             color={(this.state.valueButtons === 'products') ? colors.APP_MAIN : colors.APP_INACTIVE} />
                     </ToggleButton.Group>
                 </View>
 
-                {(this.state.areOrders) ?
-
-                    <VirtualizedList
-                        style={styles.list}
-                        ItemSeparatorComponent={this.renderSeparator}
-                        refreshControl={<RefreshControl refreshing={this.state.refreshing} onRefresh={this.onRefresh.bind(this)} />}
-                        data={this.state.dataSource}
-                        initialNumToRender={0}
-                        renderItem={({ item }) => <OrderCardShop />}
-                        keyExtractor={item => item.id}
-                        getItemCount={getItemCount}
-                        getItem={getItem} />
-
-                    :
-
-                    <View style={styles.viewImage}>
-                        <Image source={require('../../../icons/noOrderShop.png')} style={styles.image} />
-                        <Text style={styles.infoImage}>Actualmente no tenés pedidos que entregar</Text>
-                    </View>
-                }
+                <FlatList
+                    style={styles.list}
+                    refreshing={this.state.refreshing}
+                    onRefresh={() => this.onRefresh()}
+                    data={(this.state.areOrders) ? this.state.orders : [1]}
+                    ItemSeparatorComponent={this.renderSeparator}
+                    initialNumToRender={0}
+                    renderItem={({ item }) => this._renderItem(item)}
+                    keyExtractor={(item, i) => i.toString()} />
 
             </View>
-        );
+        )
     }
 }
 
 const styles = StyleSheet.create({
     list: {
+        top: sizes.hp('6%'),
         width: '100%',
+        //marginBottom: sizes.hp('5%'),
     },
     surface: {
         marginTop: sizes.hp('5%'),
@@ -152,6 +172,13 @@ const styles = StyleSheet.create({
     toggleButton: {
         right: sizes.wp('1%'),
         marginLeft: sizes.wp('2%'),
+    },
+    searchInput: {
+        position: 'absolute',
+        top: sizes.hp('12.5%'),
+        width: sizes.wp('100%'),
+        left: sizes.wp('0%'),
+        fontSize: sizes.TEXT_INPUT,
     },
     viewImage: {
         justifyContent: 'center',
@@ -173,4 +200,10 @@ const styles = StyleSheet.create({
     },
 })
 
-export default HomeShopScreen;
+function mapStateToProps(state) {
+    return {
+        shop: state.authState.shop,
+    };
+}
+
+export default connect(mapStateToProps)(HomeShopScreen);

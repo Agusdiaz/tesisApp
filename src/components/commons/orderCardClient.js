@@ -24,13 +24,13 @@ class OrderCardClient extends Component {
         }
     }
 
-    componentDidMount(){
+    componentDidMount() {
         this._isMounted = true;
     }
 
     componentWillUnmount() {
         this._isMounted = false;
-      }
+    }
 
     _showDialogTake = () => (this._isMounted) ? this.setState({ visibleDialogTake: true }) : null;
     _hideDialogTake = () => (this._isMounted) ? this.setState({ visibleDialogTake: false }) : null;
@@ -45,25 +45,25 @@ class OrderCardClient extends Component {
     _hideDialogResponse = () => (this._isMounted) ? this.setState({ visibleDialogResponse: false }) : null;
 
     async deliveredOrder() {
-        if(this._isMounted){
-        this.setState({ loading: true })
-        const data = await setOrderDeliveredByClient(this.props.data.numero, this.props.user.token)
-        this._hideDialogTake()
-        this.setState({ actionMessage: data.body, loading: false })
-        if (data.status === 200)
-            this.props.refreshParent()
-        this._showDialogResponse()
+        if (this._isMounted) {
+            this.setState({ loading: true })
+            const data = await setOrderDeliveredByClient(this.props.data.numero, this.props.user.token)
+            this._hideDialogTake()
+            this.setState({ actionMessage: data.body, loading: false })
+            if (data.status === 200)
+                this.props.refreshParent()
+            this._showDialogResponse()
         }
     }
 
     async shareOrder() {
-        if(this._isMounted){
-        this.setState({ loading: true })
-        const data = await shareOrder(this.state.mailShare, this.props.data.numero, this.props.user.token)
-        if (data.status === 500) this.setState({ actionMessage: 'Error al compartir pedido', loading: false })
-        else if (data.status === 200) this._hideDialogShare()
-        this.setState({ actionMessage: data.body, loading: false })
-        this._showDialogResponse()
+        if (this._isMounted) {
+            this.setState({ loading: true })
+            const data = await shareOrder(this.state.mailShare, this.props.data.numero, this.props.user.token)
+            if (data.status === 500) this.setState({ actionMessage: 'Error al compartir pedido', loading: false })
+            else if (data.status === 200) this._hideDialogShare()
+            this.setState({ actionMessage: data.body, loading: false })
+            this._showDialogResponse()
         }
     }
 
@@ -75,11 +75,11 @@ class OrderCardClient extends Component {
                 En proceso </Button> : <Button style={{ borderRadius: 20, width: sizes.wp('30%'), marginRight: sizes.wp('3%') }} mode="contained" color={colors.APP_DELIVERED} labelStyle={{ fontSize: 11, color: '#FFF' }} contentStyle={{ width: sizes.wp('50%'), alignSelf: 'center' }} >
                     Entregado </Button>
 
-        const total = props => <Text style={styles.rightText}> ${this.props.data.total} </Text>
+        const total = props => <Text style={styles.rightText}> ${this.props.data.total}</Text>
 
-        const time = props => <Text style={styles.rightText}> {this.props.data.tiempo} min </Text>
+        const time = props => <Text style={styles.rightText}> {this.props.data.tiempo} min</Text>
 
-        const date = props => <Text style={styles.rightText}> {moment(this.props.data.fecha).format("YYYY/MM/DD hh:mm")}</Text>
+        const date = props => <Text style={styles.rightText}> {moment(this.props.data.fecha).format("YYYY/MM/DD hh:mm")} hs</Text>
 
         return (
 
@@ -189,8 +189,7 @@ class OrderCardClient extends Component {
                         </Dialog>
 
                         <Modal dismissable={false}
-                            visible={this.state.loading}
-                            style={styles.modalActivityIndicator} >
+                            visible={this.state.loading} >
                             <ActivityIndicator
                                 animating={this.state.loading}
                                 size={60}
@@ -208,6 +207,7 @@ class OrderCardClient extends Component {
 
 const styles = StyleSheet.create({
     modalView: {
+        height: sizes.hp('92%'),
         marginTop: sizes.hp('5%'),
         margin: sizes.hp('2%'),
         backgroundColor: "#ffffff",

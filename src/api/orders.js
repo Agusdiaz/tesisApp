@@ -64,3 +64,67 @@ export const setOrderDeliveredByClient = async (num, token) => {
         .then(obj => {return obj});
     return response
 }
+
+export const getPendingOrdersByShopInOrder = async (cuit, token) => {
+    let requestBody = {};
+    requestBody.cuit = cuit
+    const response = await fetch(`${APIURL}getPendingOrdersInOrderByShop`, {
+        method: 'POST',
+        body: JSON.stringify(requestBody),
+        headers: new Headers({
+            'Content-Type': 'application/json'
+        })
+    }).then(r => (r.status === 204) ? r : r.json()
+        .then(data =>
+            ({ status: r.status, body: data })))
+        .then(obj => { return obj });
+    return response
+}
+
+export const getPendingOrdersByShopMoreProducts = async (cuit, token) => {
+    let requestBody = {};
+    requestBody.cuit = cuit
+    const response = await fetch(`${APIURL}getPendingOrdersMoreProductsByShop`, {
+        method: 'POST',
+        body: JSON.stringify(requestBody),
+        headers: new Headers({
+            'Content-Type': 'application/json'
+        })
+    }).then(r => (r.status === 204) ? r : r.json()
+        .then(data =>
+            ({ status: r.status, body: data })))
+        .then(obj => { return obj });
+    return response
+}
+
+export const getDeliveredOrdersByShop = async (cuit, token) => {
+    let requestBody = {};
+    requestBody.cuit = cuit
+    const response = await fetch(`${APIURL}getDeliveredOrdersByShop`, {
+        method: 'POST',
+        body: JSON.stringify(requestBody),
+        headers: new Headers({
+            'Content-Type': 'application/json'
+        })
+    }).then(r => (r.status === 204) ? r : r.json()
+        .then(data =>
+            ({ status: r.status, body: data })))
+        .then(obj => { return obj });
+    return response
+}
+
+export const setOrderReadyByShop = async (num, token) => {
+    let requestBody = {};
+    requestBody.numero = num
+    const response = await fetch(`${APIURL}setOrderReadyByShop`, {
+        method: 'POST',
+        body: JSON.stringify(requestBody),
+        headers: new Headers({
+            'Content-Type': 'application/json'
+        })
+    }).then(r => (r.status === 204) ? r : r.json()
+        .then(data =>
+            ({ status: r.status, body: data })))
+        .then(obj => { return obj });
+    return response
+}

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { StyleSheet, View, FlatList, Image, Text, ActivityIndicator } from 'react-native';
+import { StyleSheet, View, FlatList, Image, Text} from 'react-native';
 import { appStyles, colors, sizes } from '../../../index.styles'
 import { Searchbar } from 'react-native-paper';
 import ArrowButton from '../../commons/arrowButton'
@@ -13,7 +13,6 @@ class SearchShopByAddressScreen extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            isLoading: false,
             searchQuery: '',
             areStores: true,
             shops: [],
@@ -57,7 +56,7 @@ class SearchShopByAddressScreen extends Component {
         this.setState({
             shops: newData,
             searchQuery: query,
-            areStores: (newData.length > 0) ? true : false
+            areStores: (newData.length > 0) ? true : false,
         });
     }
 
@@ -100,8 +99,6 @@ class SearchShopByAddressScreen extends Component {
                     value={this.state.searchQuery}
                 />
 
-                {(!this.state.isLoading) ?
-
                     <FlatList
                         style={styles.list}
                         refreshing={this.state.refreshing}
@@ -112,12 +109,6 @@ class SearchShopByAddressScreen extends Component {
                         renderItem={({ item }) => this._renderItem(item)}
                         keyExtractor={(item, i) => i.toString()}
                     />
-                    :
-                    <View style={{ marginTop: sizes.hp('-70%') }}>
-                        <ActivityIndicator />
-                    </View>
-                }
-
             </View>
         );
     }
