@@ -39,6 +39,12 @@ const productCondition = {
     VEGETARIAN: 'vegetariano',
 }
 
+const productType = {
+    SALTY: 'salado',
+    SWEET: 'dulce',
+    DRINK: 'bebida'
+}
+
 const appStyles = StyleSheet.create({
     container: {
         flex: 1,
@@ -49,4 +55,4 @@ const appStyles = StyleSheet.create({
     },
 })
 
-export { colors, appStyles, sizes, orderStage, productCondition };
+export { colors, appStyles, sizes, orderStage, productCondition, productType };

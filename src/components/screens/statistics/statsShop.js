@@ -27,11 +27,15 @@ export default class StatsShopScreen extends React.Component {
                     style={styles.appBar}
                     selectedIndex={this.state.selectedTab}
                     handleChange={index => this.setState({ selectedTab: index })}
-                    backgroundColor={colors.APP_MAIN}
+                    backgroundColor={colors.APP_BACKGR}
+                    underlineColor={colors.APP_MAIN}
                     actionItems={[
-                        <Tab key={1} icon='pie-chart-outlined' label='Productos' />, //pie-chart
-                        <Tab key={2} icon='insert-chart' label='Pedidos' />,
-                        <Tab key={3} icon='access-time' label='Horarios' />,
+                        <Tab key={1} icon='pie-chart-outlined' label='Productos' activeTextColor={colors.APP_MAIN} inActiveTextColor={colors.APP_INACTIVE}
+                        iconStyles={{ color: (this.state.selectedTab == 0) ? colors.APP_MAIN : colors.APP_INACTIVE }}/>, //pie-chart
+                        <Tab key={2} icon='insert-chart' label='Pedidos' activeTextColor={colors.APP_MAIN} inActiveTextColor={colors.APP_INACTIVE}
+                        iconStyles={{ color: (this.state.selectedTab == 1) ? colors.APP_MAIN : colors.APP_INACTIVE }}/>,
+                        <Tab key={3} icon='access-time' label='Horarios' activeTextColor={colors.APP_MAIN} inActiveTextColor={colors.APP_INACTIVE}
+                        iconStyles={{ color: (this.state.selectedTab == 2) ? colors.APP_MAIN : colors.APP_INACTIVE }}/>,
                     ]}
                 />
 
@@ -106,6 +110,8 @@ const styles = StyleSheet.create({
         left: 0,
         right: 0,
         top: sizes.hp('5%'),
+        borderTopWidth: 2,
+        borderColor: colors.APP_MAIN,
     },
     banner: {
         justifyContent: 'center',

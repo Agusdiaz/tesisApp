@@ -13,8 +13,7 @@ class ShopInformationScreen extends Component {
     constructor() {
         super();
         this.state = {
-            areSales: true,
-            areProducts: true,
+            areProducts: true, //COMO PASARLO DEL HIJO
             selectedTab: 0,
         };
     }
@@ -58,27 +57,13 @@ class ShopInformationScreen extends Component {
 
                 {(this.state.selectedTab === 0) ?
 
-                    <ShopCardClient data={this.props.data}/> //callbackFromParent={this.setIsOpen}
+                    <ShopCardClient data={this.props.data} /> //callbackFromParent={this.setIsOpen}
 
-                : (this.state.selectedTab === 1) ?
-                        (this.state.areProducts) ?
-                            <Menu rute='client' />
-                            :
-                            <View style={styles.viewImage}>
-                                <Image source={require('../../../icons/noProducts.png')} style={styles.image} />
-                                <Text style={styles.infoImage}>Actualmente hay productos cargados en el menú</Text>
-                            </View>
-                :
-                        (this.state.areSales) ?
-                            <Sales data={this.props.data}/>
-                            :
-                            <View style={styles.viewImage}>
-                                <Image source={require('../../../icons/noSales.png')} style={styles.image} />
-                                <Text style={styles.infoImage}>Actualmente no hay promociones vigentes</Text>
-                            </View>
-
+                    : (this.state.selectedTab === 1) ?
+                        <Menu rute={'client'} data={this.props.data} />
+                        :
+                        <Sales data={this.props.data} />
                 }
-
             </View>
         );
     }

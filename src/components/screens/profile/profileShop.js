@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { StyleSheet, Text, View, KeyboardAvoidingView, ImageBackground, Image } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import { appStyles, colors, sizes } from '../../../index.styles';
-import { Button, Dialog, Modal, Portal, Menu, ActivityIndicator } from 'react-native-paper';
+import { Button, Dialog, Modal, Portal, ActivityIndicator } from 'react-native-paper';
 import { Tabs, Tab, } from 'material-bread';
 import ShopCard from '../../commons/shopCard'
 import MenuShop from '../../commons/menu'
@@ -14,12 +14,10 @@ import ShopActions from '../../../redux/authState/action'
 
 class ProfileShopScreen extends Component {
 
-    constructor(props) {
-        super(props);
+    constructor() {
+        super();
         this.state = {
             selectedTab: 0,
-            areSales: true,
-            areProducts: true,
             loading: false,
             actionMessage: '',
             visibleDialogResponse: false,
@@ -77,27 +75,11 @@ class ProfileShopScreen extends Component {
                     <View style={{ top: sizes.hp('7%') }}>
                         <ShopCard />
                     </View>
-
                     : (this.state.selectedTab === 1) ?
-                        (this.state.areProducts) ?
                             <MenuShop rute='shop' />
-                            :
-                            <View style={styles.viewImage}>
-                                <Image source={require('../../../icons/noProducts.png')} style={styles.image} />
-                                <Text style={styles.infoImage}>Actualmente no tenés productos cargados en tu menú</Text>
-                            </View>
-
                         : (this.state.selectedTab === 2) ?
-                            (this.state.areSales) ?
                                 <SalesMenu />
-                                :
-                                <View style={styles.viewImage}>
-                                    <Image source={require('../../../icons/noSales.png')} style={styles.image} />
-                                    <Text style={styles.infoImage}>Actualmente no tenés promociones vigentes</Text>
-                                </View>
-
                             :
-
                             <View>
 
                                 <Button

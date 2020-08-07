@@ -21,8 +21,7 @@ class SalesMenu extends Component {
     }
 
     async getPromos() {
-        console.log(this.props.user.mail)
-        let data
+        var data
         if(this.props.user.mail !== undefined){
             data = await getAllShopPromos(this.props.data.cuit, this.props.user.token)
         }else{ 

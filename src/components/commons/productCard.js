@@ -1,40 +1,65 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import { StyleSheet, Text, View, Image } from 'react-native';
-import { colors, sizes } from '../../index.styles';
-//import { Card, CardHeader, Avatar, IconButton } from 'material-bread'
-import { Card, FAB, Modal, Portal, Button, Dialog } from 'react-native-paper';
+import { colors, sizes, productCondition } from '../../index.styles';
+import { Card, FAB, Modal, Portal, Button, Dialog, ActivityIndicator } from 'react-native-paper';
 import TextTicker from 'react-native-text-ticker';
 import ProductDetails from '../commons/productDetails'
+import { updateProductStatus } from '../../api/menus'
 import { Actions } from 'react-native-router-flux';
 
 class ProductCard extends Component {
+
+    _isMounted = false;
+
     constructor(props) {
         super(props);
         this.state = {
-            condition: 'Vegetariano',
-            name: 'Nombre del Producto',
+            loading: false,
             photo: 'https://picsum.photos/400',
-            price: '$700',
-            available: true,
             visibleModalDetails: false,
             visibleDialogDisabled: false,
-            visibleDialogEnabled: false,
+            visibleDialogResponse: false,
+            statusMessage: '',
+            actionMessage: '',
+            loading: false,
+            status: '',
         }
     }
 
-    _showModalDetails = () => this.setState({ visibleModalDetails: true });
-    _hideModalDetails = () => this.setState({ visibleModalDetails: false });
+    componentDidMount() {
+        this._isMounted = true;
+    }
 
-    _showDialogDisabled = () => this.setState({ visibleDialogDisabled: true });
-    _hideDialogDisabled = () => this.setState({ visibleDialogDisabled: false });
+    componentWillUnmount() {
+        this._isMounted = false;
+    }
 
-    _showDialogEnabled = () => this.setState({ visibleDialogEnabled: true });
-    _hideDialogEnabled = () => this.setState({ visibleDialogEnabled: false });
+    async updateStatus() {
+        if (this._isMounted) {
+            this.setState({ loading: true })
+            const data = await updateProductStatus(this.state.status, this.props.data.id, this.props.shop.token)
+            this._hideDialogDisabled()
+            this.setState({ actionMessage: data.body, loading: false })
+            if (data.status === 200){
+                this.props.refreshParent()
+            }
+            this._showDialogResponse()
+        }
+    }
 
+    _showModalDetails = () => (this._isMounted) ? this.setState({ visibleModalDetails: true }) : null;
+    _hideModalDetails = () => (this._isMounted) ? this.setState({ visibleModalDetails: false }) : null;
+
+    _showDialogDisabled = (text) => (this._isMounted) ? this.setState({ visibleDialogDisabled: true, statusMessage: text }) : null;
+    _hideDialogDisabled = () => (this._isMounted) ? this.setState({ visibleDialogDisabled: false, statusMessage: '' }) : null;
+
+    _showDialogResponse = () => (this._isMounted) ? this.setState({ visibleDialogResponse: true }) : null;
+    _hideDialogResponse = () => (this._isMounted) ? this.setState({ visibleDialogResponse: false }) : null;
 
     render() {
 
-        const Pic = props => <Image source={{ uri: this.state.photo }} resizeMode='cover' style={styles.image} />
+        const pic = props => <Image source={{ uri: this.state.photo }} resizeMode='cover' style={styles.image} />
 
         const NamePrice = props => <View>
             <TextTicker style={styles.title}
@@ -42,32 +67,32 @@ class ProductCard extends Component {
                 loop
                 animationType='bounce'
                 repeatSpacer={50}
-                marqueeDelay={1000}>{this.state.name}</TextTicker>
-            <Text style={styles.subtitle}>{this.state.price}</Text>
+                marqueeDelay={1000}>{this.props.data.nombre}</TextTicker>
+            <Text style={styles.subtitle}>${this.props.data.precio}</Text>
         </View>
 
         return (
             <View>
 
-                <Card style={{ height: (this.state.condition == '') ? sizes.hp('15%') : sizes.hp('19%'), }}>
+                <Card style={{ height: (this.props.data.condicion === null) ? sizes.hp('15%') : sizes.hp('19%'), }}>
                     <Card.Actions style={{ alignSelf: 'flex-end', margin: -2 }} >
-                        {(this.state.condition != '') ?
+                        {(this.props.data.condicion !== null) ?
                             <Button style={{}}
                                 mode="contained"
                                 dark
-                                color={(this.state.condition == 'Vegano') ? colors.VEGAN : (this.state.condition == 'Celíaco') ? colors.CELIAC : colors.VEGETARIAN} >
-                                {this.state.condition}
+                                color={(this.props.data.condicion == productCondition.VEGAN) ? colors.VEGAN : (this.props.data.condicion === productCondition.CELIAC) ?
+                                    colors.CELIAC : colors.VEGETARIAN} > {this.props.data.condicion}
                             </Button>
                             :
                             null}
 
                     </Card.Actions>
-                    <Card.Title left={Pic} leftStyle={{ marginLeft: sizes.wp('-1%'), marginTop: (this.state.condition == '') ? sizes.hp('3.9%') : sizes.hp('0.5%'), }}
+                    <Card.Title left={pic} leftStyle={{ marginLeft: sizes.wp('-1%'), marginTop: (this.props.data.condicion === null) ? sizes.hp('3.9%') : sizes.hp('0.5%'), }}
                         right={NamePrice} rightStyle={styles.rightSide} />
                     <Card.Actions style={styles.actionStyles}>
                         <FAB
                             style={{
-                                backgroundColor: '#FFFFFF', borderColor: colors.APP_MAIN, borderWidth: 2, marginLeft: (this.props.rute == 'shop' || this.props.rute == 'disabled')
+                                backgroundColor: '#FFFFFF', borderColor: colors.APP_MAIN, borderWidth: 2, marginLeft: (this.props.rute === 'shop' || this.props.rute === 'disabled')
                                     ? sizes.wp('-23%') : sizes.wp('22%')
                             }}
                             color={colors.APP_MAIN}
@@ -76,24 +101,26 @@ class ProductCard extends Component {
                             onPress={this._showModalDetails}
                         />
 
-                        {(this.props.rute == 'shop') ?
+                        {(this.props.rute === 'shop') ?
                             <FAB
                                 style={{ backgroundColor: '#FFFFFF', borderColor: colors.APP_MAIN, borderWidth: 2, marginLeft: sizes.wp('34%') }}
                                 color={colors.APP_MAIN}
                                 icon="cart-remove"
                                 small
-                                onPress={this._showDialogDisabled} />
+                                onPress={() => { this.setState({ status: 0})
+                                    this._showDialogDisabled('¿Esta seguro que desea deshabilitar este producto?')}} />
                             :
                             null
                         }
 
-                        {(this.props.rute == 'disabled') ?
+                        {(this.props.rute === 'disabled') ?
                             <FAB
                                 style={{ backgroundColor: '#FFFFFF', borderColor: colors.APP_MAIN, borderWidth: 2, marginLeft: sizes.wp('34%') }}
                                 color={colors.APP_MAIN}
                                 icon="cart-plus"
                                 small
-                                onPress={this._showDialogEnabled} />
+                                onPress={() => {this.setState({ status: 1}) 
+                                    this._showDialogDisabled('¿Esta seguro que desea habilitar este producto?')}} />
                             :
                             null
                         }
@@ -103,28 +130,36 @@ class ProductCard extends Component {
 
                 <Portal>
                     <Modal contentContainerStyle={styles.modalView} visible={this.state.visibleModalDetails} onDismiss={this._hideModalDetails}>
-                        <ProductDetails hideModalFromChild={this._hideModalDetails} />
+                        <ProductDetails hideModalFromChild={this._hideModalDetails} data={this.props.data} />
                     </Modal>
 
                     <Dialog
                         visible={this.state.visibleDialogDisabled}
                         onDismiss={this._hideDialogDisabled}>
-                        <Dialog.Title style={{ alignSelf: 'center' }}>¿Esta seguro que desea deshabilitar este producto?</Dialog.Title>
+                        <Dialog.Title style={{ alignSelf: 'center', textAlign: 'center' }}>{this.state.statusMessage}</Dialog.Title>
                         <Dialog.Actions>
                             <Button style={{ marginRight: sizes.wp('3%') }} color={colors.APP_RED} onPress={this._hideDialogDisabled}>Cancelar</Button>
-                            <Button color={colors.APP_GREEN} onPress={() => console.log("Ok")}>Sí</Button>
+                            <Button color={colors.APP_GREEN} onPress={() => this.updateStatus()}>Sí</Button>
                         </Dialog.Actions>
                     </Dialog>
 
                     <Dialog
-                        visible={this.state.visibleDialogEnabled}
-                        onDismiss={this._hideDialogEnabled}>
-                        <Dialog.Title style={{ alignSelf: 'center' }}>¿Esta seguro que desea habilitar este producto?</Dialog.Title>
-                        <Dialog.Actions>
-                            <Button style={{ marginRight: sizes.wp('3%') }} color={colors.APP_RED} onPress={this._hideDialogEnabled}>Cancelar</Button>
-                            <Button color={colors.APP_GREEN} onPress={() => console.log("Ok")}>Sí</Button>
-                        </Dialog.Actions>
-                    </Dialog>
+                            visible={this.state.visibleDialogResponse}
+                            onDismiss={this._hideDialogResponse}>
+                            <Dialog.Title style={{ alignSelf: 'center', textAlign: 'center' }}>{this.state.actionMessage}</Dialog.Title>
+                            <Dialog.Actions>
+                                <Button style={{ marginRight: sizes.wp('3%') }} color={'#000000'} onPress={this._hideDialogResponse}>Ok</Button>
+                            </Dialog.Actions>
+                        </Dialog>
+
+                    <Modal dismissable={false}
+                            visible={this.state.loading} >
+                            <ActivityIndicator
+                                animating={this.state.loading}
+                                size={60}
+                                color={colors.APP_MAIN}
+                            />
+                        </Modal>
                 </Portal>
             </View>
         )
@@ -175,4 +210,10 @@ const styles = StyleSheet.create({
     },
 });
 
-export default ProductCard;
+function mapStateToProps(state) {
+    return {
+        shop: state.authState.shop
+    };
+}
+
+export default connect(mapStateToProps)(ProductCard);

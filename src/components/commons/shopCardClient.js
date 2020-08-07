@@ -162,7 +162,7 @@ class ShopCardClient extends Component {
                     <Divider />
                     <Card.Title titleStyle={styles.leftText} title="Teléfono:" right={PhoneNumber} rightStyle={styles.rightSide} />
                     <Divider />
-                    <Card.Title style={{ justifyContent: 'center', marginTop: 5, marginBottom: 5 }} titleStyle={styles.leftText} title="Horarios:" right={ScheduleFab} rightStyle={styles.rightSide} />
+                    <Card.Title titleStyle={styles.leftText} title="Horarios:" title="Horarios:" right={ScheduleFab} rightStyle={styles.rightSide} />
                 </ScrollView>
 
                 <Portal>
