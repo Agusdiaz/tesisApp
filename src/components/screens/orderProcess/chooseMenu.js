@@ -5,6 +5,7 @@ import { appStyles, colors, sizes } from '../../../index.styles';
 import { Tabs, Tab, } from 'material-bread';
 import MenuProcess from '../orderProcess/menuProcess'
 import SalesProcess from '../orderProcess/salesProcess'
+import { Actions } from 'react-native-router-flux';
 
 class ChooseMenuScreen extends Component {
     constructor() {
@@ -44,12 +45,11 @@ class ChooseMenuScreen extends Component {
                 {(this.state.selectedTab === 0) ?
                     <MenuProcess onScroll={this.props.onScroll} />
                     :
-                    
                     <SalesProcess onScroll={this.props.onScroll} />
                             
                 }
 
-                <TouchableHighlight activeOpacity={0.6}  onPress={() => {}}>
+                <TouchableHighlight activeOpacity={0.6}  onPress={() => {Actions.cartorder()}}>
                 <Image source={require('../../../icons/cartShop.png')} style={styles.imageFab} />
                 </TouchableHighlight>
 

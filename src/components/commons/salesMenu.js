@@ -23,7 +23,7 @@ class SalesMenu extends Component {
     async getPromos() {
         var data
         if(this.props.user.mail !== undefined){
-            data = await getAllShopPromos(this.props.data.cuit, this.props.user.token)
+            data = await getAllShopPromos(this.props.selected.cuit, this.props.user.token)
         }else{ 
             data = await getAllShopPromos(this.props.shop.cuit, this.props.shop.token)
         }
@@ -101,7 +101,8 @@ const styles = StyleSheet.create({
 function mapStateToProps(state) {
     return {
         user: state.authState.client,
-        shop: state.authState.shop
+        selected: state.shops.selected,
+        shop: state.authState.shop,
     };
 }
 

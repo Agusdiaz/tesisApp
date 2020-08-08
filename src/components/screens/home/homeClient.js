@@ -244,7 +244,7 @@ function mapStateToProps(state) {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        setShopsData: (shops) => dispatch(ShopActions.setShopsData(shops))
+        setShopsData: (shops) => dispatch(ShopActions.setShopsData(shops)),
     }
 };
 

@@ -18,7 +18,17 @@ const updateShopFavourite = (cuit, favourite) => {
     }
 }
 
+const setSelected = (selected) => {
+    return {
+        type: 'SET_SELECTED',
+        payload: {
+            selected: selected,
+        },
+    }
+}
+
 export default {
     setShopsData,
     updateShopFavourite,
+    setSelected,
 }

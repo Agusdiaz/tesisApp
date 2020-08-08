@@ -142,7 +142,8 @@ class ShopCardSummary extends Component {
                                 icon="cart-outline"
                                 mode="contained"
                                 color={colors.APP_MAIN}
-                                onPress={this.nextStepParent}>
+                                onPress={() => {this.props.setSelected(this.props.data)
+                                    this.nextStepParent()}}>
                                 Pedir Aca
                         </Button>
                             :
@@ -151,7 +152,8 @@ class ShopCardSummary extends Component {
                                 icon="plus"
                                 mode="contained"
                                 color={colors.APP_MAIN}
-                                onPress={() => Actions.shopinformation({data: this.props.data})}>
+                                onPress={() => { this.props.setSelected(this.props.data)
+                                    Actions.shopinformation()}}>
                                 Detalles
                         </Button>
                         }
@@ -198,7 +200,8 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        updateShopFavourite: (cuit, favourite) => dispatch(ShopActions.updateShopFavourite(cuit, favourite))
+        updateShopFavourite: (cuit, favourite) => dispatch(ShopActions.updateShopFavourite(cuit, favourite)),
+        setSelected: (selected) => dispatch(ShopActions.setSelected(selected)),
     }
 }
 

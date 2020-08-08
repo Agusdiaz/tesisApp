@@ -12,7 +12,7 @@ class Menu extends Component {
         this.state = {
             valueButtons: productType.SALTY,
             refreshing: false,
-            menuSalty: [1,1,1,1,1,1],
+            menuSalty: [],
             menuSweet: [],
             menuDrinks: [],
             areSalty: true,
@@ -31,7 +31,7 @@ class Menu extends Component {
     }
 
     async getMenu() {
-        var cuit = (this.props.rute === 'shop') ? this.props.shop.cuit : this.props.data.cuit
+        var cuit = (this.props.rute === 'shop') ? this.props.shop.cuit : this.props.selected.cuit
         var token = (this.props.rute === 'shop') ? this.props.shop.token : this.props.user.token
         const data = await getMenu(cuit, token)
         if (data.status === 500 || data.status === 204)
@@ -261,6 +261,7 @@ function mapStateToProps(state) {
     return {
         user: state.authState.client,
         shop: state.authState.shop,
+        selected: state.shops.selected
     };
 }
 

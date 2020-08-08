@@ -22,15 +22,15 @@ class ShopCardClient extends Component {
     _hideModalSchedule = () => this.setState({ visibleModalSchedule: false });
 
     async setFavourite() {
-        const data = await setShopAsFavourite(this.props.user.mail, this.props.data.cuit, this.props.user.token)
+        const data = await setShopAsFavourite(this.props.user.mail, this.props.shop.cuit, this.props.user.token)
         if (data.status === 200)
-            this.props.updateShopFavourite(this.props.data.cuit, true)
+            this.props.updateShopFavourite(this.props.shop.cuit, true)
     }
 
     async removeFavourite() {
-        const data = await deleteShopAsFavourite(this.props.user.mail, this.props.data.cuit, this.props.user.token)
+        const data = await deleteShopAsFavourite(this.props.user.mail, this.props.shop.cuit, this.props.user.token)
         if (data.status === 200) {
-            this.props.updateShopFavourite(this.props.data.cuit, false)
+            this.props.updateShopFavourite(this.props.shop.cuit, false)
         }
     }
 
@@ -48,15 +48,15 @@ class ShopCardClient extends Component {
             loop
             animationType='bounce'
             repeatSpacer={50}
-            marqueeDelay={1000}>{this.props.data.direccion}</TextTicker>
+            marqueeDelay={1000}>{this.props.shop.direccion}</TextTicker>
 
         const PhoneNumber = props => <View>
-            <Text style={{ fontSize: 16, right: sizes.wp('13%') }}>{this.props.data.telefono}</Text>
+            <Text style={{ fontSize: 16, right: sizes.wp('13%') }}>{this.props.shop.telefono}</Text>
             <FAB style={styles.fabPhone}
                 color={colors.APP_BACKGR}
                 small
                 icon="phone"
-                onPress={() => { Linking.openURL(`tel:${this.props.data.telefono}`) }}
+                onPress={() => { Linking.openURL(`tel:${this.props.shop.telefono}`) }}
             />
         </View>
 
@@ -68,7 +68,7 @@ class ShopCardClient extends Component {
             onPress={() => this._showModalSchedule()}
         />
 
-        const OpenClose = props => (this.props.data.abierto == 1) ? <Button style={{ borderRadius: 20, width: 105, alignItems: 'center' }} mode="contained" color={colors.APP_GREEN} labelStyle={{ fontSize: 9, color: colors.APP_BACKGR }} >
+        const OpenClose = props => (this.props.shop.abierto == 1) ? <Button style={{ borderRadius: 20, width: 105, alignItems: 'center' }} mode="contained" color={colors.APP_GREEN} labelStyle={{ fontSize: 9, color: colors.APP_BACKGR }} >
             Abierto </Button> : <Button style={{ borderRadius: 20, width: 105, alignItems: 'center' }} mode="contained" color={colors.APP_RED} labelStyle={{ fontSize: 9, color: colors.APP_BACKGR }}>Cerrado </Button>
 
         const TitleStar = props => <View style={{ flexDirection: 'row', left: 7, }}>
@@ -79,14 +79,14 @@ class ShopCardClient extends Component {
                     loop
                     animationType='bounce'
                     repeatSpacer={50}
-                    marqueeDelay={1000}>{this.props.data.nombre}</TextTicker>
+                    marqueeDelay={1000}>{this.props.shop.nombre}</TextTicker>
             </View>
 
             <IconButton {...props}
-                icon={(this.props.data.favorito) ? "star" : "star-outline"}
+                icon={(this.props.shop.favorito) ? "star" : "star-outline"}
                 color={colors.STAR}
                 size={30}
-                onPress={() => { (this.props.data.favorito) ? this.removeFavourite() : this.setFavourite() }} />
+                onPress={() => { (this.props.shop.favorito) ? this.removeFavourite() : this.setFavourite() }} />
         </View>
 
         return (
@@ -99,7 +99,7 @@ class ShopCardClient extends Component {
                     <Divider />
                     <Card.Actions style={{ alignContent: 'center' }}>
                         <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center', width: sizes.wp('89.5%') }}>
-                            {(this.props.data.mascotas == 1) ?
+                            {(this.props.shop.mascotas == 1) ?
                                 <FAB
                                     color={colors.APP_MAIN}
                                     style={styles.fab}
@@ -109,7 +109,7 @@ class ShopCardClient extends Component {
                                 :
                                 null
                             }
-                            {(this.props.data.bebes == 1) ?
+                            {(this.props.shop.bebes == 1) ?
                                 <FAB
                                     color={colors.APP_MAIN}
                                     style={styles.fab}
@@ -119,7 +119,7 @@ class ShopCardClient extends Component {
                                 :
                                 null
                             }
-                            {(this.props.data.juegos == 1) ?
+                            {(this.props.shop.juegos == 1) ?
                                 <FAB
                                     color={colors.APP_MAIN}
                                     style={styles.fab}
@@ -129,7 +129,7 @@ class ShopCardClient extends Component {
                                 :
                                 null
                             }
-                            {(this.props.data.aireLibre == 1) ?
+                            {(this.props.shop.aireLibre == 1) ?
                                 <FAB
                                     color={colors.APP_MAIN}
                                     style={styles.fab}
@@ -142,10 +142,10 @@ class ShopCardClient extends Component {
                             <FAB
                                 color={colors.APP_MAIN}
                                 style={styles.fab}
-                                label={(this.props.data.libreHumo == 0) ? 'Apto fumadores' : 'Libre de humo'}
-                                icon={(this.props.data.libreHumo == 0) ? 'smoking' : 'smoking-off'}
+                                label={(this.props.shop.libreHumo == 0) ? 'Apto fumadores' : 'Libre de humo'}
+                                icon={(this.props.shop.libreHumo == 0) ? 'smoking' : 'smoking-off'}
                             />
-                            {(this.props.data.wifi == 1) ?
+                            {(this.props.shop.wifi == 1) ?
                                 <FAB
                                     color={colors.APP_MAIN}
                                     style={styles.fab}
@@ -167,7 +167,7 @@ class ShopCardClient extends Component {
 
                 <Portal>
                     <Modal contentContainerStyle={styles.modalView} visible={this.state.visibleModalSchedule} onDismiss={this._hideModalSchedule}>
-                        <Schedule hideModalFromChild={this._hideModalSchedule} data={this.props.data.horarios[0]} />
+                        <Schedule hideModalFromChild={this._hideModalSchedule} data={this.props.shop.horarios[0]} />
                     </Modal>
                 </Portal>
             </Card>
@@ -254,6 +254,7 @@ const styles = StyleSheet.create({
 const mapStateToProps = state => {
     return {
         user: state.authState.client,
+        shop: state.shops.selected
     }
 }
 

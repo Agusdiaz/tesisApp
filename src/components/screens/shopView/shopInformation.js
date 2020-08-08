@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import { StyleSheet, Text, View, Image } from 'react-native';
 import { Button } from 'react-native-paper';
 import { appStyles, colors, sizes } from '../../../index.styles';
@@ -33,7 +34,7 @@ class ShopInformationScreen extends Component {
                 }]}
                     icon="cart-outline"
                     mode="contained"
-                    disabled={(this.props.data.abierto == 0) ? true : (!this.state.areProducts) ? true : false}
+                    disabled={(this.props.shop.abierto == 0) ? true : (!this.state.areProducts) ? true : false}
                     color={colors.APP_MAIN}
                     onPress={() => Actions.makeorder({ pos: 1 })}>
                     Hace tu pedido aca
@@ -57,12 +58,12 @@ class ShopInformationScreen extends Component {
 
                 {(this.state.selectedTab === 0) ?
 
-                    <ShopCardClient data={this.props.data} /> //callbackFromParent={this.setIsOpen}
+                    <ShopCardClient /> //callbackFromParent={this.setIsOpen}
 
                     : (this.state.selectedTab === 1) ?
-                        <Menu rute={'client'} data={this.props.data} />
+                        <Menu rute={'client'} />
                         :
-                        <Sales data={this.props.data} />
+                        <Sales />
                 }
             </View>
         );
@@ -105,4 +106,11 @@ const styles = StyleSheet.create({
     },
 });
 
-export default ShopInformationScreen;
+const mapStateToProps = state => {
+    return {
+        user: state.authState.client,
+        shop: state.shops.selected
+    }
+}
+
+export default connect(mapStateToProps)(ShopInformationScreen);
