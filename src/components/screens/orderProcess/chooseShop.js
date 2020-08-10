@@ -28,18 +28,31 @@ class ChooseShopScreen extends Component {
         this.getOpenShops()
     }
 
+    UNSAFE_componentWillReceiveProps(nextProps) {
+        let newShops = []
+        newShops = nextProps.shops.allShops.filter(function (item) {
+            return item.abierto === 1
+        });
+        this.setState({ shops: newShops })
+        this.arrayholder = newShops
+        this._onChangeSearch(this.state.searchQuery)
+        /* if (newShops.length === 0)
+            this.setState({ areStores: false })
+        else this.setState({ areStores: true }) */
+    }
+
     async getOpenShops() {
+        let newShops = []
         const data = await getAllShopsOpenClose(this.props.user.mail, this.props.user.token)
         if (data.status === 200) {
             this.props.setShopsData(data.body)
-            this.props.shops.allShops.map(obj => {
-                if (obj.abierto === 1) {
-                    this.state.shops.push(obj)
-                    this.arrayholder.push(obj)
-                }
-            })
+            newShops = this.props.shops.allShops.filter(function (item) {
+                return item.abierto === 1
+            });
+            this.setState({ shops: newShops})
+            this.arrayholder = newShops
         }
-        if (this.state.shops.length === 0)
+        if (newShops.length === 0)
             this.setState({ areStores: false })
         else this.setState({ areStores: true })
     }

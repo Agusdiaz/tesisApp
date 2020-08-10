@@ -27,19 +27,21 @@ export default class Routes extends Component {
                     <Scene key="login" component={LogIn} title="LogIn" />
                     <Scene key="signupclient" component={SignUpClient} title="SignUpClient" />
                     <Scene key="signupshop" component={SignUpShop} title="SignUpShop" />
+                    <Scene key="signupshopfeatures" component={SignUpShopFeatures} title="SignUpShopFeatures" />
+                    <Scene key="signupshopschedule" component={SignUpShopSchedule} title="SignUpShopSchedule" />
+
                     <Scene key="navbarclient" component={NavBarClient} title="NavBarClient"  />
                     <Scene key="makeorder" component={MakeOrder} title="MakeOrder" />
-                    <Scene key="navbarshop" component={NavBarShop} title="NavBarShop" />
-                    <Scene key="shopinformation" component={ShopInformation} title="ShopInformation" />
+                    <Scene key="cartorder" component={CartOrder} title="CartOrder" />
                     <Scene key="ordersclient" component={OrdersClients} title="OrdersClients" />
+                    <Scene key="favouritesshops" component={FavouritesShops} title="FavouritesShops" />
                     <Scene key="searchshopname" component={SearchShopByName} title="SearchShopByName" />
                     <Scene key="searchshopaddress" component={SearchShopByAddress} title="SearchShopByAddress" />
                     <Scene key="searchshopsale" component={SearchShopBySale} title="SearchShopBySale" />
-                    <Scene key="favouritesshops" component={FavouritesShops} title="FavouritesShops" />
-                    <Scene key="signupshopfeatures" component={SignUpShopFeatures} title="SignUpShopFeatures" />
-                    <Scene key="signupshopschedule" component={SignUpShopSchedule} title="SignUpShopSchedule" />
+                    <Scene key="shopinformation" component={ShopInformation} title="ShopInformation" />
+
+                    <Scene key="navbarshop" component={NavBarShop} title="NavBarShop" />
                     <Scene key="ordersshop" component={OrdersShop} title="OrdersShop" />
-                    <Scene key="cartorder" component={CartOrder} title="CartOrder" />
                 </Scene>
             </Router>
         )

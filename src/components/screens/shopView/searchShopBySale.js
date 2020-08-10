@@ -16,6 +16,7 @@ class SearchShopBySaleScreen extends Component {
             searchQuery: '',
             areStores: true,
             shops: [],
+            shops2: [],
             refreshing: false,
         };
         this.arrayholder = [];
@@ -23,30 +24,42 @@ class SearchShopBySaleScreen extends Component {
 
     componentDidMount() {
         this.getShopsWithPromo()
+    }
 
+    UNSAFE_componentWillReceiveProps(nextProps) {
+        let shopsPromo = []
+        shopsPromo = nextProps.shops.allShops.filter(item => {
+            return this.state.shops2.some(item2 => {
+                return item.cuit === item2.cuit
+            })
+        })
+        this.setState({ shops: shopsPromo })
+        this.arrayholder = shopsPromo
+        const query = this.state.searchQuery
+        this._onChangeSearch(query)
     }
 
     async getShopsWithPromo() {
+        let shopsPromo = []
         const dataPromos = await getAllShopsWithPromo(this.props.user.mail, this.props.user.token)
         const dataShops = await getAllShopsOpenClose(this.props.user.mail, this.props.user.token)
         if (dataPromos.status === 200 && dataShops.status === 200) {
             this.props.setShopsData(dataShops.body)
-            var shopsPromo = []
             shopsPromo = this.props.shops.allShops.filter(function (item) {
                 return dataPromos.body.some(function (item2) {
                     return item.cuit === item2.cuit
                 })
             });
-            this.setState({ shops: shopsPromo })
+            this.setState({ shops: shopsPromo, shops2: shopsPromo })
             this.arrayholder = shopsPromo
         }
-        if (this.state.shops.length === 0)
+        if (shopsPromo.length === 0)
             this.setState({ areStores: false })
         else this.setState({ areStores: true })
     }
 
     onRefresh = () => {
-        this.setState({ shops: [], refreshing: true, searchQuery: '' })
+        this.setState({ shops: [], refreshing: true, searchQuery: '', shops2: [] })
         this.arrayholder = []
         this.getShopsWithPromo()
         setTimeout(() => { this.setState({ refreshing: false }) }, 1500);

@@ -29,8 +29,22 @@ class AnimatedHeader extends React.Component {
     }
 
     componentDidMount() {
+        //console.log('aca')
         this.getShopsOpenClose()
     }
+
+    /* static getDerivedStateFromProps(nextProps, prevState) {
+        //console.log('deriv')
+        console.log('prev   ', props)
+        console.log('next   ', nextProps)
+        if (nextProps !== prevState) {
+            return {
+                valueButtons: 'open',
+                sortText: 'Abierto/Cerrado',
+            };
+        }
+        return null;
+    } */
 
     async getShopsOpenClose() {
         //console.log('OP')
@@ -96,7 +110,6 @@ class AnimatedHeader extends React.Component {
     }
 
     render() {
-
         let translateY = this.state.animatedValue.interpolate({
             inputRange: [0, HEADER_EXPANDED_HEIGHT],
             outputRange: [0, HEADER_COLLAPSED_HEIGHT],
@@ -137,7 +150,7 @@ class AnimatedHeader extends React.Component {
                     </View>
 
                     <AnimatedFlatList
-                        style={styles.list}
+                        style={[styles.list, {height: (this.props.shops.allShops.length === 2) ? sizes.hp('62.5%') : sizes.hp('70%')}]}
                         refreshing={this.state.refreshing}
                         onRefresh={this.onRefresh}
                         data={(this.state.areStores) ? this.props.shops.allShops : [1]}
@@ -162,14 +175,6 @@ class AnimatedHeader extends React.Component {
 
 const styles = StyleSheet.create({
     imageContainer: {
-        /*
-        marginTop: 10,
-        resizeMode: 'contain',
-        position:'relative',
-        flex: 1,
-        top:-100,
-        left: -100, 
-        flexGrow:1, */
         height: 170,
         width: 400,
         alignItems: 'center',
@@ -208,7 +213,7 @@ const styles = StyleSheet.create({
     list: {
         marginTop: sizes.hp('0%'),
         //marginBottom: sizes.hp('0.5%'),
-        height: sizes.hp('70%'), //sizes.hp('69%'),
+        //height: sizes.hp('70%'), //sizes.hp('69%'),
         width: '100%',
     },
     headerWrapper: {

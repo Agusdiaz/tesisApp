@@ -25,16 +25,27 @@ class SearchShopByNameScreen extends Component {
         this.getShopsOpenClose()
     }
 
+    UNSAFE_componentWillReceiveProps(nextProps) {
+        let newShops = []
+        newShops = nextProps.shops.allShops
+        this.setState({ shops: newShops })
+        this.arrayholder = newShops
+        this._onChangeSearch(this.state.searchQuery)
+       /*  if (newShops.length === 0)
+            this.setState({ areStores: false })
+        else this.setState({ areStores: true }) */
+    }
+
     async getShopsOpenClose() {
+        let newShops = []
         const data = await getAllShopsOpenClose(this.props.user.mail, this.props.user.token)
         if (data.status === 200) {
             this.props.setShopsData(data.body)
-            this.props.shops.allShops.map(obj => {
-                this.state.shops.push(obj)
-                this.arrayholder.push(obj)
-            })
+            newShops = this.props.shops.allShops
+            this.setState({ shops: newShops})
+            this.arrayholder = newShops
         }
-        if (this.state.shops.length === 0)
+        if (newShops.length === 0)
             this.setState({ areStores: false })
         else this.setState({ areStores: true })
     }

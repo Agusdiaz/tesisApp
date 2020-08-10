@@ -135,7 +135,8 @@ const styles = StyleSheet.create({
     viewImage: {
         justifyContent: 'center',
         margin: 20,
-        alignItems: 'center'
+        alignItems: 'center',
+        marginTop: sizes.hp('6%')
     },
     image: {
         width: 170,

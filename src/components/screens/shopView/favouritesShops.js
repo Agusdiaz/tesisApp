@@ -29,18 +29,18 @@ class FavouritesShopsScreen extends Component {
         newShops = nextProps.shops.allShops.filter(function (item) {
             return item.favorito
         });
-        this.setState({shops: newShops})
+        this.setState({ shops: newShops })
         if (newShops.length === 0)
             this.setState({ areFavourites: false })
         else this.setState({ areFavourites: true })
-  }
+    }
 
     getFavouritesShops() {
         let newShops = []
         newShops = this.props.shops.allShops.filter(function (item) {
             return item.favorito
         });
-        this.setState({shops: newShops})
+        this.setState({ shops: newShops })
         if (newShops.length === 0)
             this.setState({ areFavourites: false })
         else this.setState({ areFavourites: true })
