@@ -1,6 +1,7 @@
 import React from 'react'
 import { Grid, LineChart, XAxis, YAxis } from 'react-native-svg-charts'
-import { StyleSheet, View } from 'react-native'
+import { StyleSheet, View, Text } from 'react-native'
+import { HelperText, TouchableRipple, IconButton } from 'react-native-paper';
 import { appStyles, colors, sizes } from '../../../index.styles';
 
 export default class LineChartGraph extends React.PureComponent {
@@ -20,6 +21,16 @@ export default class LineChartGraph extends React.PureComponent {
         // and then displace the other axis with just as many pixels. Simple but manual.
 
         return (
+            <View style={{ height: sizes.hp('90%')}}>
+            <IconButton
+                    icon="close"
+                    style={{right: sizes.wp('-70%')}}
+                    color={colors.APP_MAIN}
+                    size={30}
+                    onPress={this.props.hideModalFromChild}
+                />
+
+                <Text style={styles.textTitle}>¿Cuántos pedidos recibes por mes en los últimos seis meses?</Text>
             <View style={styles.lineChart}>
                 <YAxis
                     data={data}
@@ -45,16 +56,23 @@ export default class LineChartGraph extends React.PureComponent {
                     />
                 </View>
             </View>
+            </View>
         )
     }
 }
 
 const styles = StyleSheet.create({
+    textTitle: {
+        color: colors.APP_MAIN,
+        fontSize: 20,
+        fontWeight: 'bold',
+        textAlign: 'center'
+    },
     lineChart: {
         height: sizes.hp('35%'), 
         width: sizes.wp('80%'), 
         marginTop: sizes.hp('-45%'), 
-        top: sizes.hp('30%'),
+        top: sizes.hp('50%'),
         flexDirection: 'row'
     },
 })

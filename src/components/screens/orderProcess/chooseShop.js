@@ -141,7 +141,7 @@ const styles = StyleSheet.create({
     },
     list: {
         top: sizes.hp('9%'),
-        marginBottom: sizes.hp('0%'),
+        marginBottom: sizes.hp('7%'),
         width: sizes.wp('100%'),
         //height: sizes.hp('80%'),
     },

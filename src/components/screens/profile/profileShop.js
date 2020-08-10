@@ -5,12 +5,13 @@ import { appStyles, colors, sizes } from '../../../index.styles';
 import { Button, Dialog, Modal, Portal, ActivityIndicator } from 'react-native-paper';
 import { Tabs, Tab, } from 'material-bread';
 import ShopCard from '../../commons/shopCard'
-import MenuShop from '../../commons/menu'
-import EditFeatures from '../profile/profileShopFeatures'
-import EditSchedule from '../profile/profileShopSchedule'
+import EditFeatures from './profileShopFeatures'
+import EditSchedule from './profileShopSchedule'
 import { Actions } from 'react-native-router-flux';
-import SalesMenu from '../../commons/salesMenu';
 import ShopActions from '../../../redux/authState/action'
+import PieChart from '../statistics/pieChart'
+import LineChart from '../statistics/lineChart'
+import BarChart from '../statistics/barChart'
 
 class ProfileShopScreen extends Component {
 
@@ -24,12 +25,14 @@ class ProfileShopScreen extends Component {
             visibleDialogSessionOut: false,
             visibleModalEditFeatures: false,
             visibleModalEditSchedule: false,
+            visibleModalStats: false,
+            stats: 0,
         }
         this.updateIsLoading = this.updateIsLoading.bind(this)
         this._showDialogResponse = this._showDialogResponse.bind(this)
     }
 
-    updateIsLoading(value){
+    updateIsLoading(value) {
         this.setState({ loading: value })
     }
 
@@ -42,8 +45,11 @@ class ProfileShopScreen extends Component {
     _showModalEditSchedule = () => this.setState({ visibleModalEditSchedule: true });
     _hideModalEditSchedule = () => this.setState({ visibleModalEditSchedule: false });
 
-    _showDialogResponse(message){
-        this.setState({ visibleDialogResponse: true, actionMessage: message})
+    _showModalStats = (value) => this.setState({ visibleModalStats: true, stats: value });
+    _hideModalStats = () => this.setState({ visibleModalStats: false });
+
+    _showDialogResponse(message) {
+        this.setState({ visibleDialogResponse: true, actionMessage: message })
     }
     _hideDialogResponse = () => this.setState({ visibleDialogResponse: false, actionMessage: '' });
 
@@ -61,13 +67,11 @@ class ProfileShopScreen extends Component {
                     scrollEnabled
                     actionItems={[
                         <Tab key={1} icon='info' label='Tu Información' activeTextColor={colors.APP_MAIN} inActiveTextColor={colors.APP_INACTIVE}
-                        iconStyles={{ color: (this.state.selectedTab == 0) ? colors.APP_MAIN : colors.APP_INACTIVE }}/>,
-                        <Tab key={2} icon='restaurant-menu' label='Tu Menú' activeTextColor={colors.APP_MAIN} inActiveTextColor={colors.APP_INACTIVE}
-                        iconStyles={{ color: (this.state.selectedTab == 1) ? colors.APP_MAIN : colors.APP_INACTIVE }}/>,
-                        <Tab key={3} icon='new-releases' label='Tus Promociones' activeTextColor={colors.APP_MAIN} inActiveTextColor={colors.APP_INACTIVE}
-                        iconStyles={{ color: (this.state.selectedTab == 2) ? colors.APP_MAIN : colors.APP_INACTIVE }}/>, //attach-money
-                        <Tab key={4} icon='settings' label='Ajustes' activeTextColor={colors.APP_MAIN} inActiveTextColor={colors.APP_INACTIVE}
-                        iconStyles={{ color: (this.state.selectedTab == 3) ? colors.APP_MAIN : colors.APP_INACTIVE }}/>,
+                            iconStyles={{ color: (this.state.selectedTab == 0) ? colors.APP_MAIN : colors.APP_INACTIVE }} />,
+                        <Tab key={2} icon='insert-chart' label='Estadísticas' activeTextColor={colors.APP_MAIN} inActiveTextColor={colors.APP_INACTIVE}
+                            iconStyles={{ color: (this.state.selectedTab == 1) ? colors.APP_MAIN : colors.APP_INACTIVE }} />,
+                        <Tab key={3} icon='settings' label='Ajustes' activeTextColor={colors.APP_MAIN} inActiveTextColor={colors.APP_INACTIVE}
+                            iconStyles={{ color: (this.state.selectedTab == 2) ? colors.APP_MAIN : colors.APP_INACTIVE }} />,
                     ]}
                 />
 
@@ -76,94 +80,128 @@ class ProfileShopScreen extends Component {
                         <ShopCard />
                     </View>
                     : (this.state.selectedTab === 1) ?
-                            <MenuShop rute='shop' />
-                        : (this.state.selectedTab === 2) ?
-                                <SalesMenu />
-                            :
-                            <View>
-
-                                <Button
-                                    style={styles.buttonStyle}
-                                    icon="room-service-outline"
-                                    mode="contained"
-                                    color={colors.APP_MAIN}
-                                    onPress={() => Actions.ordersshop()}>
-                                    Historial de Pedidos
+                        <View>
+                            <Button
+                                style={styles.buttonStyle}
+                                mode="contained"
+                                color={colors.APP_MAIN}
+                                onPress={() => this._showModalStats(0)}>
+                                Productos más pedidos
                                 </Button>
 
-                                <Button
-                                    style={styles.buttonStyle}
-                                    icon="palette-swatch"
-                                    mode="contained"
-                                    color={colors.APP_MAIN}
-                                    onPress={this._showModalEditFeatures}>
-                                    Editar Características
+                            <Button
+                                style={styles.buttonStyle}
+                                mode="contained"
+                                color={colors.APP_MAIN}
+                                onPress={() => this._showModalStats(1)}>
+                                Horarios más populares
                                 </Button>
 
-                                <Button
-                                    style={styles.buttonStyle}
-                                    icon="clock-outline"
-                                    mode="contained"
-                                    color={colors.APP_MAIN}
-                                    onPress={this._showModalEditSchedule}>
-                                    Editar Horarios
+                            <Button
+                                style={styles.buttonStyle}
+                                mode="contained"
+                                color={colors.APP_MAIN}
+                                onPress={() => this._showModalStats(2)}>
+                                Pedidos por mes
+                                </Button>
+                        </View>
+                        :
+                        <View>
+
+                            <Button
+                                style={styles.buttonStyle}
+                                icon="room-service-outline"
+                                mode="contained"
+                                color={colors.APP_MAIN}
+                                onPress={() => Actions.ordersshop()}>
+                                Historial de Pedidos
                                 </Button>
 
-                                <Button
-                                    style={styles.buttonStyle}
-                                    icon="logout-variant"
-                                    mode="contained"
-                                    color={colors.APP_MAIN}
-                                    onPress={this._showDialogSessionOut}>
-                                    Cerrar Sesión
+                            <Button
+                                style={styles.buttonStyle}
+                                icon="palette-swatch"
+                                mode="contained"
+                                color={colors.APP_MAIN}
+                                onPress={this._showModalEditFeatures}>
+                                Editar Características
                                 </Button>
 
-                                <Portal>
-                                    <Modal contentContainerStyle={styles.modalView} visible={this.state.visibleModalEditFeatures} onDismiss={this._hideModalEditFeatures}>
-                                        <EditFeatures hideModalFromChild={this._hideModalEditFeatures} updateLoading={this.updateIsLoading} showDialogResponse={this._showDialogResponse}/>
-                                    </Modal>
+                            <Button
+                                style={styles.buttonStyle}
+                                icon="clock-outline"
+                                mode="contained"
+                                color={colors.APP_MAIN}
+                                onPress={this._showModalEditSchedule}>
+                                Editar Horarios
+                                </Button>
 
-                                    <Modal contentContainerStyle={styles.modalView} visible={this.state.visibleModalEditSchedule} onDismiss={this._hideModalEditSchedule}>
-                                        <EditSchedule hideModalFromChild={this._hideModalEditSchedule} />
-                                    </Modal>
-
-                                    <Dialog
-                                        style={{ top: sizes.hp('-3%') }}
-                                        visible={this.state.visibleDialogSessionOut}
-                                        onDismiss={this._hideDialogSessionOut}>
-                                        <Dialog.Title style={{ alignSelf: 'center' }}>¿Desea cerrar sesión?</Dialog.Title>
-                                        <Dialog.Actions>
-                                            <Button style={{ marginRight: sizes.wp('3%') }} color={colors.APP_RED} onPress={this._hideDialogSessionOut}>Cancelar</Button>
-                                            <Button color={colors.APP_GREEN} onPress={() => {
-                                                this.props.logout()
-                                                this._hideDialogSessionOut()
-                                                Actions.logsign()
-                                            }}>Ok</Button>
-                                        </Dialog.Actions>
-                                    </Dialog>
-
-                                    <Dialog
-                                        style={{ width: sizes.wp('70%'), alignSelf: 'center' }}
-                                        visible={this.state.visibleDialogResponse}
-                                        onDismiss={this._hideDialogResponse}>
-                                        <Dialog.Title style={{ alignSelf: 'center', textAlign: 'center' }}>{this.state.actionMessage}</Dialog.Title>
-                                        <Dialog.Actions>
-                                            <Button style={{ marginRight: sizes.wp('3%') }} color={'#000000'} onPress={this._hideDialogResponse}>Ok</Button>
-                                        </Dialog.Actions>
-                                    </Dialog>
-
-                                    <Modal dismissable={false}
-                                        visible={this.state.loading}
-                                        style={styles.modalActivityIndicator} >
-                                        <ActivityIndicator
-                                            animating={this.state.loading}
-                                            size={60}
-                                            color={colors.APP_MAIN}
-                                        />
-                                    </Modal>
-                                </Portal>
-                            </View>
+                            <Button
+                                style={styles.buttonStyle}
+                                icon="logout-variant"
+                                mode="contained"
+                                color={colors.APP_MAIN}
+                                onPress={this._showDialogSessionOut}>
+                                Cerrar Sesión
+                                </Button>
+                        </View>
                 }
+
+                <Portal>
+
+                    <Modal contentContainerStyle={[styles.modalView,{marginTop: sizes.hp('3%')}]} visible={this.state.visibleModalStats} onDismiss={this._hideModalStats}>
+                        {(this.state.stats === 0) ?
+                            <PieChart hideModalFromChild={this._hideModalStats} />
+                            :
+                            (this.state.stats === 1) ?
+                            <BarChart hideModalFromChild={this._hideModalStats}/>
+                            :
+                            <LineChart hideModalFromChild={this._hideModalStats}/>
+                        }
+                    </Modal>
+
+                    <Modal contentContainerStyle={styles.modalView} visible={this.state.visibleModalEditFeatures} onDismiss={this._hideModalEditFeatures}>
+                        <EditFeatures hideModalFromChild={this._hideModalEditFeatures} updateLoading={this.updateIsLoading} showDialogResponse={this._showDialogResponse} />
+                    </Modal>
+
+                    <Modal contentContainerStyle={styles.modalView} visible={this.state.visibleModalEditSchedule} onDismiss={this._hideModalEditSchedule}>
+                        <EditSchedule hideModalFromChild={this._hideModalEditSchedule} />
+                    </Modal>
+
+                    <Dialog
+                        style={{ top: sizes.hp('-3%') }}
+                        visible={this.state.visibleDialogSessionOut}
+                        onDismiss={this._hideDialogSessionOut}>
+                        <Dialog.Title style={{ alignSelf: 'center' }}>¿Desea cerrar sesión?</Dialog.Title>
+                        <Dialog.Actions>
+                            <Button style={{ marginRight: sizes.wp('3%') }} color={colors.APP_RED} onPress={this._hideDialogSessionOut}>Cancelar</Button>
+                            <Button color={colors.APP_GREEN} onPress={() => {
+                                this.props.logout()
+                                this._hideDialogSessionOut()
+                                Actions.logsign()
+                            }}>Ok</Button>
+                        </Dialog.Actions>
+                    </Dialog>
+
+                    <Dialog
+                        style={{ width: sizes.wp('70%'), alignSelf: 'center' }}
+                        visible={this.state.visibleDialogResponse}
+                        onDismiss={this._hideDialogResponse}>
+                        <Dialog.Title style={{ alignSelf: 'center', textAlign: 'center' }}>{this.state.actionMessage}</Dialog.Title>
+                        <Dialog.Actions>
+                            <Button style={{ marginRight: sizes.wp('3%') }} color={'#000000'} onPress={this._hideDialogResponse}>Ok</Button>
+                        </Dialog.Actions>
+                    </Dialog>
+
+                    <Modal dismissable={false}
+                        visible={this.state.loading}
+                        style={styles.modalActivityIndicator} >
+                        <ActivityIndicator
+                            animating={this.state.loading}
+                            size={60}
+                            color={colors.APP_MAIN}
+                        />
+                    </Modal>
+                </Portal>
             </View>
         )
     }

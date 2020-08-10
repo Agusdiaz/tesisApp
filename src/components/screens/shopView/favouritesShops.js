@@ -7,7 +7,7 @@ import ShopCard from '../../commons/shopCardSummary'
 import { Actions } from 'react-native-router-flux';
 import ArrowButton from '../../commons/arrowButton'
 import ShopActions from '../../../redux/shops/action'
-import { getAllShopsAZ } from '../../../api/shops'
+import { getAllShopsOpenClose } from '../../../api/shops'
 
 class FavouritesShopsScreen extends Component {
 
@@ -24,32 +24,30 @@ class FavouritesShopsScreen extends Component {
         this.getFavouritesShops()
     }
 
-    /*componentDidUpdate(oldProps) {
-        var oldLength = 0
-        var newLength = 0
-        oldProps.shops.allShops.map(obj => {if(obj.favorito) oldLength++})
-        this.props.shops.allShops.map(obj => {if(obj.favorito) newLength++})
-        if(oldLength !== newLength){
-            console.log('force')
-            //this.setState({ shops: [] })
-            this.forceUpdate()
-        }
-      }*/
+    UNSAFE_componentWillReceiveProps(nextProps) {
+        let newShops = []
+        newShops = nextProps.shops.allShops.filter(function (item) {
+            return item.favorito
+        });
+        this.setState({shops: newShops})
+        if (newShops.length === 0)
+            this.setState({ areFavourites: false })
+        else this.setState({ areFavourites: true })
+  }
 
     getFavouritesShops() {
-        this.props.shops.allShops.map(obj => {
-            if (obj.favorito) {
-                this.state.shops.push(obj)
-            }
-        })
-        if (this.state.shops.length === 0)
+        let newShops = []
+        newShops = this.props.shops.allShops.filter(function (item) {
+            return item.favorito
+        });
+        this.setState({shops: newShops})
+        if (newShops.length === 0)
             this.setState({ areFavourites: false })
         else this.setState({ areFavourites: true })
     }
 
     async getShopsAZ() {
-        //console.log('AZ')
-        const data = await getAllShopsAZ(this.props.user.mail, this.props.user.token)
+        const data = await getAllShopsOpenClose(this.props.user.mail, this.props.user.token)
         if (data.status === 200)
             this.props.setShopsData(data.body)
         this.getFavouritesShops()

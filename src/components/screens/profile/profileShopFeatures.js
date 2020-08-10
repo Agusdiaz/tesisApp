@@ -48,7 +48,7 @@ class ProfileShopFeaturesScreen extends Component {
     render() {
         return (
             <View>
-                <Text style={styles.titleText}> Edita las carecterísticas de tu local </Text>
+                <Text style={styles.titleText}> Editá las carecterísticas de tu local </Text>
 
                 <Text style={styles.questionText}> ¿Tu local admite la presencia de animales? </Text>
                 <View style={styles.viewRadioButtons}>

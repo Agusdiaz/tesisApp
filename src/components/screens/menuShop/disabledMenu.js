@@ -7,12 +7,11 @@ import ProductCard from '../../commons/productCard'
 import IngredientCard from '../../commons/ingredientCard'
 import { getMenuDisabled } from '../../../api/menus'
 
-class DisabledProducts extends Component {
+class DisabledMenu extends Component {
     constructor(props) {
         super(props);
         this.state = {
             valueButtons: 'products',
-            areDisabled: true,
             refreshing: false,
             products: [],
             ingredients: [],
@@ -119,7 +118,7 @@ class DisabledProducts extends Component {
         return (
             <View style={appStyles.container}>
 
-                <Surface style={[styles.surface, { top: (this.state.areDisabled) ? sizes.hp('5%') : sizes.hp('-20.7%') }]}>
+                <Surface style={styles.surface}>
                     <Text style={{ fontSize: 20, color: colors.APP_BACKGR, fontWeight: 'bold', textAlign: 'center' }}>ESTOS SON TUS PRODUCTOS/INGREDIENTES DESHABILITADOS</Text>
                 </Surface>
 
@@ -181,6 +180,7 @@ class DisabledProducts extends Component {
 const styles = StyleSheet.create({
     surface: {
         width: sizes.wp('100%'),
+        top: sizes.hp('5%'),
         padding: 15,
         alignItems: 'center',
         backgroundColor: colors.APP_MAIN,
@@ -227,4 +227,4 @@ function mapStateToProps(state) {
     };
 }
 
-export default connect(mapStateToProps)(DisabledProducts)
+export default connect(mapStateToProps)(DisabledMenu)

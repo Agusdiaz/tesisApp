@@ -24,8 +24,6 @@ const customStyles = {
     stepIndicatorFinishedColor: colors.APP_MAIN,
     stepIndicatorUnFinishedColor: '#FFFFFF',
     stepIndicatorCurrentColor: '#FFFFFF',
-    //stepIndicatorLabelFontSize: 15,
-    //currentStepIndicatorLabelFontSize: 13,
     stepIndicatorLabelCurrentColor: colors.APP_MAIN,
     stepIndicatorLabelFinishedColor: '#FFFFFF',
     stepIndicatorLabelUnFinishedColor: colors.APP_INACTIVE,
@@ -78,17 +76,6 @@ export default class HorizontalStepIndicator extends Component {
         return (
             <View style={appStyles.container}>
                 <Animated.View style={[styles.headerWrapper, { transform: [{ translateY }] }]}>
-                    <Portal>
-                        <Dialog
-                            visible={this.state.visibleDialogOut}
-                            onDismiss={this._hideDialogOut}>
-                            <Dialog.Title style={{ alignSelf: 'center' }}>Perderás todo tu progreso, ¿desea continuar?</Dialog.Title>
-                            <Dialog.Actions>
-                                <Button style={{ marginRight: sizes.wp('3%') }} color={colors.APP_RED} onPress={this._hideDialogOut}>Cancelar</Button>
-                                <Button color={colors.APP_GREEN} onPress={() => { this._hideDialogOut(), Actions.navbarclient({ page: 0 }) }}>Sí</Button>
-                            </Dialog.Actions>
-                        </Dialog>
-                    </Portal>
 
                     <View style={{ flexDirection: 'row', top: sizes.hp('8%'), left: sizes.wp('-5%'), justifyContent: 'center' }}>
 
@@ -115,7 +102,7 @@ export default class HorizontalStepIndicator extends Component {
                             null
                         }
 
-                        <View style={[styles.stepIndicator]}>
+                        <View style={styles.stepIndicator}>
                             <StepIndicator
                                 stepCount={4}
                                 direction="horizontal"
@@ -161,6 +148,19 @@ export default class HorizontalStepIndicator extends Component {
                     }
 
                 </Animated.View>
+
+                <Portal>
+                        <Dialog
+                            visible={this.state.visibleDialogOut}
+                            onDismiss={this._hideDialogOut}>
+                            <Dialog.Title style={{ alignSelf: 'center' }}>Perderás todo tu progreso, ¿desea continuar?</Dialog.Title>
+                            <Dialog.Actions>
+                                <Button style={{ marginRight: sizes.wp('3%') }} color={colors.APP_RED} onPress={this._hideDialogOut}>Cancelar</Button>
+                                <Button color={colors.APP_GREEN} onPress={() => { this._hideDialogOut(), Actions.navbarclient({ page: 0 }) }}>Sí</Button>
+                            </Dialog.Actions>
+                        </Dialog>
+                    </Portal>
+
             </View>
         )
     }

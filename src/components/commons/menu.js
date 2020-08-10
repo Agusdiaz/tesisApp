@@ -126,12 +126,7 @@ class Menu extends Component {
     render() {
 
         return (
-            <View style={{ width: sizes.wp('100%'), height: sizes.hp('100%'), top: sizes.hp('19%') }}>
-                {/* <KeyboardAvoidingView
-                    style={{ width: sizes.wp('100%'), height: sizes.hp('100%') }}
-                    behavior={Platform.OS === 'ios' ? 'position' : undefined}
-                    keyboardVerticalOffset={Platform.OS === 'ios' ? -247 : 0}
-                > */}
+            <View style={{ width: sizes.wp('100%'), height: sizes.hp('100%'), top: (this.props.rute === 'client') ? sizes.hp('17%') : sizes.hp('11%'), flex: 1 }}>
 
                     <View style={{ flexDirection: 'row', justifyContent: 'center', width: sizes.wp('100%'), height: sizes.hp('4%'), marginTop: 7 }}>
                         <Button

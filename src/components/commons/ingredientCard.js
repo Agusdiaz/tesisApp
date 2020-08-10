@@ -84,7 +84,7 @@ class IngredientCard extends Component {
                     
                     <Card.Actions >
 
-                        {(this.props.rute === 'shop') ?
+                        {(this.props.rute === 'enable') ?
                             <FAB
                                 style={[styles.fabDisabled, {bottom: (this.props.data.detalle) ? sizes.hp('11%') : sizes.hp('2.5')}]}
                                 color={colors.APP_MAIN}

@@ -185,7 +185,7 @@ const styles = StyleSheet.create({
         elevation: 10,
         borderRadius: 15,
         borderWidth: 2,
-        borderColor: colors.APP_MAIN
+        borderColor: colors.APP_MAIN,
     },
     modalView: {
         marginTop: sizes.hp('5%'),

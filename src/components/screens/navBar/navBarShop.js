@@ -3,23 +3,22 @@ import { BottomNavigation, Text, } from 'react-native-paper';
 import { appStyles, colors } from '../../../index.styles'
 import HomeShop from '../home/homeShop'
 import ProfileShop from '../profile/profileShop'
-import StatsShop from '../statistics/statsShop'
-import DisabledProductsShop from '../disabled/disabledProductsShop'
-
+import DisabledProductsShop from '../menuShop/disabledMenu'
+import MenuShop from '../menuShop/selectMenu'
 
 const HomeRoute = () => <HomeShop/>;
-const StatisticsRoute = () => <StatsShop/>;
+const MenuRoute = () => <MenuShop/>;
 const DisabledProductsRoute = () => <DisabledProductsShop/>
-const MenuRoute = () => <ProfileShop/>;
+const ProfileRoute = () => <ProfileShop/>;
 
 export default class NavigationBarScreen extends React.Component {
   state = {
     index: 0,
     routes: [
       { key: 'orders', title: 'Pedidos', icon: 'receipt', badge: null, color: colors.APP_BACKGR },
-      { key: 'disabledProducts', title: 'Deshabilitados', icon: 'cart-remove', color: colors.APP_BACKGR },
-      { key: 'statistics', title: 'Estadísticas', icon: 'chart-bar', color: colors.APP_BACKGR },
-      { key: 'profile', title: 'Perfil', icon: 'chef-hat', color: colors.APP_BACKGR }, //icon:'book'
+      { key: 'menu', title: 'Menú', icon: 'food-fork-drink', color: colors.APP_BACKGR },
+      { key: 'disabledProducts', title: 'Deshabilitados', icon: 'close-outline', color: colors.APP_BACKGR },
+      { key: 'profile', title: 'Perfil', icon: 'chef-hat', color: colors.APP_BACKGR },
     ],
   };
 
@@ -41,9 +40,9 @@ export default class NavigationBarScreen extends React.Component {
 
   _renderScene = BottomNavigation.SceneMap({
     orders: HomeRoute, 
-    statistics: StatisticsRoute,
+    menu: MenuRoute,
     disabledProducts: DisabledProductsRoute,
-    profile: MenuRoute,
+    profile: ProfileRoute,
   });
 
   render() {

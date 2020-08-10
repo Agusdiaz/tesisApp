@@ -6,7 +6,7 @@ import { Searchbar } from 'react-native-paper';
 import ArrowButton from '../../commons/arrowButton'
 import ShopCardSummary from '../../commons/shopCardSummary'
 import ShopActions from '../../../redux/shops/action'
-import { getAllShopsAZ } from '../../../api/shops'
+import { getAllShopsOpenClose } from '../../../api/shops'
 
 class SearchShopByAddressScreen extends Component {
 
@@ -22,12 +22,12 @@ class SearchShopByAddressScreen extends Component {
     }
 
     componentDidMount() {
-        this.getShopsAZ()
+        this.getShopsOpenClose()
 
     }
 
-    async getShopsAZ() {
-        const data = await getAllShopsAZ(this.props.user.mail, this.props.user.token)
+    async getShopsOpenClose() {
+        const data = await getAllShopsOpenClose(this.props.user.mail, this.props.user.token)
         if (data.status === 200) {
             this.props.setShopsData(data.body)
             this.props.shops.allShops.map(obj => {
@@ -43,7 +43,7 @@ class SearchShopByAddressScreen extends Component {
     onRefresh = () => {
         this.setState({ shops: [], refreshing: true, searchQuery: '' })
         this.arrayholder = []
-        this.getShopsAZ()
+        this.getShopsOpenClose()
         setTimeout(() => { this.setState({ refreshing: false }) }, 1500);
     }
 

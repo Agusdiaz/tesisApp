@@ -10,7 +10,8 @@ export default (state = initialState, { type, payload }) => {
         case 'UPDATE_FAVOURITE':
             return {
                 ...state, allShops: state.allShops.map(obj => 
-                    (obj.cuit === payload.cuit) ? { ...obj, favorito: payload.favourite } : obj)
+                    (obj.cuit === payload.cuit) ? { ...obj, favorito: payload.favourite } : obj),
+                    selected: {...state.selected, favorito: payload.favourite }
             }
         case 'SET_SELECTED':
             return {...state, ...payload}
