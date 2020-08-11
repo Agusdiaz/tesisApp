@@ -171,7 +171,7 @@ class OrderCardShop extends Component {
 
 const styles = StyleSheet.create({
     modalView: {
-        height: sizes.hp('92%'),
+        height: sizes.hp('90%'),
         marginTop: sizes.hp('5%'),
         margin: sizes.hp('2%'),
         backgroundColor: "#ffffff",

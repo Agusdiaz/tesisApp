@@ -2,14 +2,20 @@ import React, { Component } from 'react';
 import { StyleSheet, Text, View, Image, ScrollView } from 'react-native';
 import { colors, sizes, orderStage } from '../../index.styles';
 import { DataTable, DataTableHeader, DataTableCell, DataTableRow } from 'material-bread'
-import { Card, FAB, Button, Divider, IconButton, Title } from 'react-native-paper';
+import { Card, FAB, Button, Divider, IconButton, Title, Portal, Modal } from 'react-native-paper';
 import TextTicker from 'react-native-text-ticker'
+import ProductDetails from '../commons/productDetails'
+import SaleCard from '../commons/salesCard'
 import moment from 'moment'
 
 class OrderDetailsClient extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            productDetails: [],
+            promoDetails: [],
+            visibleModalProduct: false,
+            visibleModalPromo: false,
         }
     }
 
@@ -17,8 +23,13 @@ class OrderDetailsClient extends Component {
         this.props.hideModalFromChild();
     }
 
-    render() {
+    _showModalProduct = () => this.setState({ visibleModalProduct: true });
+    _hideModalProduct = () => this.setState({ visibleModalProduct: false });
 
+    _showModalPromo = () => this.setState({ visibleModalPromo: true });
+    _hideModalPromo = () => this.setState({ visibleModalPromo: false });
+
+    render() {
         const Close = props => <IconButton
             icon='close'
             color={colors.APP_MAIN}
@@ -57,14 +68,14 @@ class OrderDetailsClient extends Component {
 
         const total = props => <Text style={styles.rightText}> ${this.props.data.total} </Text>
 
-        const date = props => <Text style={styles.rightText}>{moment(this.props.data.fecha).format("YYYY/MM/DD hh:mm")}</Text>
+        const date = props => <Text style={styles.rightText}>{moment(this.props.data.fecha).format("YYYY/MM/DD hh:mm")+' hs'}</Text>
 
         return (
 
             <Card style={styles.orderCard}>
                 <Card.Title style={{ margin: -10, marginTop: sizes.hp('-4') }} left={stageOrder} leftStyle={styles.stageOrder} right={Close} rightStyle={styles.close} />
                 <Divider />
-                <Card.Title style={styles.cardTitle} titleStyle={styles.leftText} title="Modalidad:" right={takeAway}/>
+                <Card.Title style={styles.cardTitle} titleStyle={styles.leftText} title="Modalidad:" right={takeAway} />
                 <Divider style={styles.divider} />
                 <Card.Title style={styles.cardTitle} titleStyle={styles.leftText} title="Número del Pedido:" right={orderNumber} />
                 <Divider />
@@ -72,30 +83,63 @@ class OrderDetailsClient extends Component {
                 <Divider style={styles.divider} />
                 <Card.Title style={styles.cardTitle} titleStyle={styles.leftText} title="Dirección:" right={address} rightStyle={{ width: sizes.wp('54%'), right: sizes.wp('3%'), alignItems: 'flex-end', }} />
                 <Divider style={styles.divider} />
-                <Card.Title style={styles.cardTitle} titleStyle={styles.leftText} title="Fecha:" right={date} hs />
+                <Card.Title style={styles.cardTitle} titleStyle={styles.leftText} title="Fecha:" right={date}/>
                 <Divider style={styles.divider} />
                 <Card.Content style={{ alignSelf: 'center', width: sizes.wp('90%'), }}>
-                    <DataTable style={{ width: sizes.wp('50%') }}>
+                    <DataTable style={{ width: sizes.wp('110%') }}>
                         <DataTableHeader
                             title={'¿Qué es lo que pediste?'}
                             style={{ right: sizes.wp('-12.5%') }}
                         />
-                        <DataTableRow style={{}}>
-                            <DataTableCell text={'Productos'} type={'header'} borderRight textStyle={{ textAlign: 'center' }} style={{ maxWidth: '30%' }} />
-                            <DataTableCell text={'Cantidad'} type={'header'} style={{ maxWidth: '5%', left: sizes.wp('-2%') }} textStyle={{ textAlign: 'center' }} />
-                            <DataTableCell text={'Precio Unit'} type={'header'} style={{ maxWidth: '5%', left: sizes.wp('-10%') }} textStyle={{ textAlign: 'center' }} />
-                            <DataTableCell text={'Precio Total'} type={'header'} style={{ maxWidth: '5%', left: sizes.wp('-16%') }} textStyle={{ textAlign: 'center' }} />
-                        </DataTableRow>
                         <ScrollView style={{ height: sizes.hp('29.5%') }}>
-                            {this.props.data.productos[0]
-                                .map(row => (
-                                    <DataTableRow key={row.id}>
-                                        <DataTableCell text={row.nombre} borderRight style={{ maxWidth: '30%' }} />
-                                        <DataTableCell text={(row.cantidad).toString()} style={{ maxWidth: '5%', left: sizes.wp('-2%') }} textStyle={{ textAlign: 'center' }} />
-                                        <DataTableCell text={'$' + (row.precio).toString()} style={{ maxWidth: '5%', left: sizes.wp('-10%') }} textStyle={{ textAlign: 'center' }} />
-                                        <DataTableCell text={'$' + (row.cantidad * row.precio).toString()} style={{ maxWidth: '5%', left: sizes.wp('-16%') }} textStyle={{ textAlign: 'center' }} />
+                            {(this.props.data.productos[0] !== null) ?
+                                <View>
+                                    <DataTableRow style={{}}>
+                                        <DataTableCell text={'PRODUCTOS'} type={'header'} borderRight textStyle={{ textAlign: 'center', fontWeight: 'bold' }} style={{ maxWidth: '30%' }} />
+                                        <DataTableCell text={'Cantidad'} type={'header'} style={{ maxWidth: '5%', left: sizes.wp('-2%') }} textStyle={{ textAlign: 'center', fontWeight: 'bold' }} />
+                                        <DataTableCell text={'Precio Unit'} type={'header'} style={{ maxWidth: '6%', left: sizes.wp('-8%') }} textStyle={{ textAlign: 'center', fontWeight: 'bold' }} />
+                                        <DataTableCell text={'Precio Total'} type={'header'} style={{ maxWidth: '23%', left: sizes.wp('-12%') }} textStyle={{ textAlign: 'center', fontWeight: 'bold' }} />
+                                        <DataTableCell text={'Detalles'} type={'header'} style={{ maxWidth: '4%', left: sizes.wp('-18%') }} textStyle={{ textAlign: 'center', fontWeight: 'bold' }} />
                                     </DataTableRow>
-                                ))}
+                                    {this.props.data.productos[0]
+                                        .map(row => (
+                                            <DataTableRow key={row.id}>
+                                                <DataTableCell text={row.nombre} borderRight style={{ maxWidth: '30%' }} />
+                                                <DataTableCell text={(row.cantidad).toString()} style={{ maxWidth: '5%', left: sizes.wp('-2%') }} textStyle={{ textAlign: 'center' }} />
+                                                <DataTableCell text={'$' + (row.precio).toString()} style={{ maxWidth: '6%', left: sizes.wp('-8%') }} textStyle={{ textAlign: 'center' }} />
+                                                <DataTableCell text={'$' + (row.cantidad * row.precio).toString()} style={{ maxWidth: '23%', left: sizes.wp('-12%') }} textStyle={{ textAlign: 'center' }} />
+                                                <DataTableCell text={'VER'} style={{ maxWidth: '4%', left: sizes.wp('-18%') }} textStyle={{ color: colors.APP_MAIN, fontWeight: 'bold', textAlign: 'center' }} onPress={() => {
+                                                    this.setState({ productDetails: row })
+                                                    this._showModalProduct()
+                                                }} />
+                                            </DataTableRow>
+                                        ))}
+                                </View>
+                                : null}
+                            {(this.props.data.promociones[0] !== null) ?
+                                <View>
+                                    <DataTableRow style={{}}>
+                                        <DataTableCell text={'PROMOS'} type={'header'} borderRight textStyle={{ textAlign: 'center', fontWeight: 'bold' }} style={{ maxWidth: '30%' }} />
+                                        <DataTableCell text={'Cantidad'} type={'header'} style={{ maxWidth: '5%', left: sizes.wp('-2%') }} textStyle={{ textAlign: 'center', fontWeight: 'bold' }} />
+                                        <DataTableCell text={'Precio Unit'} type={'header'} style={{ maxWidth: '6%', left: sizes.wp('-8%') }} textStyle={{ textAlign: 'center', fontWeight: 'bold' }} />
+                                        <DataTableCell text={'Precio Total'} type={'header'} style={{ maxWidth: '23%', left: sizes.wp('-12%') }} textStyle={{ textAlign: 'center', fontWeight: 'bold' }} />
+                                        <DataTableCell text={'Detalles'} type={'header'} style={{ maxWidth: '4%', left: sizes.wp('-18%') }} textStyle={{ textAlign: 'center', fontWeight: 'bold' }} />
+                                    </DataTableRow>
+                                    {this.props.data.promociones[0]
+                                        .map(row => (
+                                            <DataTableRow key={row.id}>
+                                                <DataTableCell text={row.nombre} borderRight style={{ maxWidth: '30%' }} />
+                                                <DataTableCell text={(row.cantidad).toString()} style={{ maxWidth: '5%', left: sizes.wp('-2%') }} textStyle={{ textAlign: 'center' }} />
+                                                <DataTableCell text={'$' + (row.precio).toString()} style={{ maxWidth: '6%', left: sizes.wp('-8%') }} textStyle={{ textAlign: 'center' }} />
+                                                <DataTableCell text={'$' + (row.cantidad * row.precio).toString()} style={{ maxWidth: '23%', left: sizes.wp('-12%') }} textStyle={{ textAlign: 'center' }} />
+                                                <DataTableCell text={'VER'} style={{ maxWidth: '4%', left: sizes.wp('-18%') }} textStyle={{ color: colors.APP_MAIN, fontWeight: 'bold', textAlign: 'center' }} onPress={() => {
+                                                    this.setState({ promoDetails: row })
+                                                    this._showModalPromo()
+                                                }}/>
+                                            </DataTableRow>
+                                        ))}
+                                </View>
+                                : null}
                         </ScrollView>
 
                     </DataTable>
@@ -105,6 +149,16 @@ class OrderDetailsClient extends Component {
                 <Divider style={styles.divider} />
                 <Card.Title style={styles.cardTitle} titleStyle={styles.leftText} title="Total:" right={total} />
                 <Divider style={styles.divider} />
+
+                <Portal>
+                    <Modal contentContainerStyle={styles.modalView} visible={this.state.visibleModalProduct} onDismiss={this._hideModalProduct}>
+                        <ProductDetails hideModalFromChild={this._hideModalProduct} data={this.state.productDetails} />
+                    </Modal>
+
+                    <Modal contentContainerStyle={{alignItems: "center"}} visible={this.state.visibleModalPromo} onDismiss={this._hideModalPromo}>
+                        <SaleCard hideModalFromChild={this._hideModalPromo} data={this.state.promoDetails} rute={'order'}/>
+                    </Modal>
+                </Portal>
             </Card>
         )
     }
@@ -116,6 +170,22 @@ const styles = StyleSheet.create({
         width: sizes.wp('90%'),
         padding: 10,
         elevation: 0,
+    },
+    modalView: {
+        marginTop: sizes.hp('5%'),
+        margin: sizes.hp('2%'),
+        backgroundColor: "#ffffff",
+        borderRadius: 20,
+        padding: 20,
+        alignItems: "center",
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 1,
+            height: 2
+        },
+        shadowOpacity: 0.5,
+        shadowRadius: 3.84,
+        elevation: 10,
     },
     close: {
         left: sizes.wp('-2%')

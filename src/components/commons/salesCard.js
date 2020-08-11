@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { StyleSheet, Text, View, ScrollView, ImageBackground } from 'react-native';
 import { colors, sizes } from '../../index.styles';
-import { Card, FAB, Modal, Portal, Button, Dialog, Divider } from 'react-native-paper';
+import { Card, FAB, Modal, Portal, Button, Dialog, Divider, IconButton } from 'react-native-paper';
 import { DataTable, DataTableHeader, DataTableCell, DataTableRow } from 'material-bread'
 import TextTicker from 'react-native-text-ticker';
 import ProductDetails from '../commons/productDetails'
@@ -25,9 +25,9 @@ class SalesCard extends Component {
     _hideModalSchedule = () => this.setState({ visibleModalSchedule: false });
 
     render() {
-        //console.log(this.props.data.horarios)
 
-        const NamePriceButton = props => <View style={{ width: sizes.wp('50%'), alignItems: 'center' }}>
+        const NamePriceButton = props => <View style={{ width: sizes.wp('50%'), alignItems: 'center', 
+        right: (this.props.rute === 'order') ? sizes.wp('-10%') : null}}>
             <TextTicker style={styles.title}
                 duration={5000}
                 loop
@@ -35,6 +35,8 @@ class SalesCard extends Component {
                 repeatSpacer={50}
                 marqueeDelay={1000}>{this.props.data.nombre}</TextTicker>
             <Text style={styles.subtitle}>${this.props.data.precio}</Text>
+
+            {(this.props.rute !== 'order') ? 
             <Button
                 style={styles.buttonAvailable}
                 labelStyle={{ fontSize: 10, textAlign: 'center' }}
@@ -46,11 +48,19 @@ class SalesCard extends Component {
             >
                 {(this.props.data.valida === 1) ? 'Válida' : 'No válida'}
             </Button>
+            : 
+            <IconButton
+            style={{right: sizes.wp('-35%'), top: sizes.hp('-7%')}}
+            icon='close'
+            color={colors.APP_MAIN}
+            size={30}
+            onPress={() => this.props.hideModalFromChild()}
+        />}
         </View>
 
         return (
             <View>
-                <Card style={styles.salesCard}>
+                <Card style={[styles.salesCard, {width: (this.props.rute !== 'order') ? sizes.wp('100%') : sizes.wp('90%')}]}>
                     <ImageBackground source={require('../../icons/promo.jpg')} style={styles.imageOutside} imageStyle={styles.imageInside} >
                         <Card.Title right={NamePriceButton} rightStyle={styles.rightSide} />
                     </ImageBackground>
@@ -74,10 +84,10 @@ class SalesCard extends Component {
                                         <DataTableRow key={row.id}>
                                             <DataTableCell text={row.nombre} borderRight textStyle={{ textAlign: 'center' }} style={{ maxWidth: '35%' }} />
                                             <DataTableCell text={row.cantidad.toString()} textStyle={{ textAlign: 'center' }} style={{ maxWidth: '35%' }} />
-                                            <DataTableCell text={'VER'} textStyle={{ color: colors.APP_MAIN, fontWeight: 'bold' }} onPress={() => {
+                                            <DataTableCell text={'VER'} style={{ left: sizes.wp('8%') }} textStyle={{ color: colors.APP_MAIN, fontWeight: 'bold' }} onPress={() => {
                                                 this.setState({ productDetails: row })
                                                 this._showModalDetails()
-                                            }} style={{ left: sizes.wp('8%') }} />
+                                            }} />
                                         </DataTableRow>
                                     ))}
                             </ScrollView>
@@ -91,9 +101,11 @@ class SalesCard extends Component {
                         <ProductDetails hideModalFromChild={this._hideModalDetails} data={this.state.productDetails} />
                     </Modal>
 
-                    <Modal contentContainerStyle={styles.modalView} visible={this.state.visibleModalSchedule} onDismiss={this._hideModalSchedule}>
-                        <Schedule hideModalFromChild={this._hideModalSchedule} data={this.props.data.horarios[0]} />
-                    </Modal>
+                    {(this.props.rute !== 'order') ?
+                        <Modal contentContainerStyle={styles.modalView} visible={this.state.visibleModalSchedule} onDismiss={this._hideModalSchedule}>
+                            <Schedule hideModalFromChild={this._hideModalSchedule} data={this.props.data.horarios[0]} />
+                        </Modal>
+                        : null}
                 </Portal>
             </View>
         )
@@ -102,7 +114,6 @@ class SalesCard extends Component {
 
 const styles = StyleSheet.create({
     salesCard: {
-        width: sizes.wp('100%'),
         marginTop: sizes.hp('1%'),
         elevation: 10,
         borderRadius: 15,
