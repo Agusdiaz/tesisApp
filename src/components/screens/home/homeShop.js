@@ -67,7 +67,7 @@ class HomeShopScreen extends Component {
 
     _onChangeSearch(query) {
         const newData = this.arrayholder.filter(function (item) {
-            const dateFilter = item.fecha ? (moment(item.fecha).format("YYYY/MM/DD hh:mm")).toUpperCase() : ''.toUpperCase();
+            const dateFilter = item.fecha ? (moment(item.fecha).format("YYYY/MM/DD HH:mm")).toUpperCase() : ''.toUpperCase();
             const clientFilter = item.cliente ? item.cliente.toUpperCase() : ''.toUpperCase();
             const textData = (query.toString()).toUpperCase();
             return (dateFilter.indexOf(textData) > -1 || clientFilter.indexOf(textData) > -1);

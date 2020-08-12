@@ -70,7 +70,7 @@ class OrderCardShop extends Component {
 
         const time = props => <Text style={styles.rightText}> {this.props.data.tiempo} min</Text>
 
-        const date = props => <Text style={styles.rightText}>{moment(this.props.data.fecha).format("YYYY/MM/DD hh:mm")} hs</Text>
+        const date = props => <Text style={styles.rightText}>{moment(this.props.data.fecha).format("YYYY/MM/DD HH:mm")} hs</Text>
 
         return (
 

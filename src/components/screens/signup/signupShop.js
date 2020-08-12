@@ -1,39 +1,79 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, Text, KeyboardAvoidingView, Platform, Alert,} from 'react-native';
-import { TextInput, Button, Snackbar, Dialog } from 'react-native-paper';
+import { StyleSheet, View, Text, KeyboardAvoidingView, Platform, } from 'react-native';
+import { TextInput, Button, Snackbar, Dialog, ActivityIndicator, Modal, HelperText, Paragraph } from 'react-native-paper';
 import { appStyles, colors, sizes } from '../../../index.styles';
 import ArrowButton from '../../commons/arrowButton'
+import { insertShop } from '../../../api/user'
 
-class SignUpShopScreen extends Component {
+//VER HELPER TEXT, VALIDACION TELEFONO, ARREGLAR SNACKBAR, 
+export default class SignUpShopScreen extends Component {
 
 	constructor(props) {
 		super(props);
 		this.state = {
 			cuit: '',
+			name: '',
+			address: '',
+			phone: '',
 			legalName: '',
 			email: '',
 			password: '',
 			visibleSnackBar: true,
-			visibleDialog: false,
+			visibleDialogCreate: false,
+			visibleDialogError: false,
+			loading: false,
+			messageError: '',
+			emailError: false,
+			passwordError: false,
 		}
 	}
 
-	signup = () => {
-		if (this.state.cuit == '' || this.state.legalName == '' || this.state.email == '' || this.state.password == '')
-			Alert.alert('Atención','Campos Incompletos')
-		else
-			this._showDialog()
+	async signup(){
+		this.setState({ loading: true })
+		const data = await insertShop(this.state.email, this.state.firstName, this.state.lastName, this.state.password)
+		if (data.status === 500) {
+			this.setState({ loading: false, email: '', password: '', messageError: data.body })
+			this._showDialogError()
+		}else if(data.status === 401){
+			this.setState({ loading: false, email: '', password: '', messageError: 'Error: ' + data.body })
+			this._showDialogError()
+		}else {
+			this.setState({ loading: false, cuit: '', name: '', address: '', phone: '', legalName: '', email: '', password: '', messageError: data.body})
+			this._showDialogError()
+		}
 	}
 
-	_showDialog = () => this.setState({ visibleDialog: true });
+	validateMail = (text) => {
+		if(text === '')
+			this.setState({ email: text, emailError: false })
+		else{
+			let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+		if (reg.test(text) === false) //INCORRECTO
+			this.setState({ email: text, emailError: true })
+		else //CORRECTO
+			this.setState({ email: text, emailError: false })
+		}
+	}
 
-	_hideDialog = () => this.setState({ visibleDialog: false });
+	validatePassword = (text) => {
+		if(text === '')
+			this.setState({ password: text, passwordError: false })
+		else{
+			if (text.length > 5)
+			this.setState({ password: text, passwordError: false })
+		else
+			this.setState({ password: text, passwordError: true })			
+		}
+	}
+
+	_showDialogCreate = () => this.setState({ visibleDialogCreate: true });
+	_hideDialogCreate = () => this.setState({ visibleDialogCreate: false });
 
 	_onDismissSnackBar = () => this.setState({ visibleSnackBar: false })
 
 	render() {
 		return (
-			<KeyboardAvoidingView style={appStyles.container} behavior={Platform.OS == "ios" ? "padding" : "height"} keyboardVerticalOffset={Platform.OS === "ios" ? -220 : -170}>
+			<KeyboardAvoidingView style={[appStyles.container]} behavior={Platform.OS == "ios" ? "padding" : "height"} keyboardVerticalOffset={Platform.OS === "ios" ? -90 : -170}>
 				<ArrowButton rute={'logsign'} />
 
 				<Snackbar
@@ -68,6 +108,26 @@ class SignUpShopScreen extends Component {
 				<TextInput
 					style={styles.inputView}
 					mode='outlined'
+					label='Nombre del Local'
+					placeholder='Nombre del Local'
+					theme={{ colors: { text: colors.TEXT_INPUT, primary: colors.APP_MAIN } }}
+					onChangeText={(text) => this.setState({ name: text })}
+					value={this.state.name}
+				/>
+
+				<TextInput
+					style={styles.inputView}
+					mode='outlined'
+					label='Dirección'
+					placeholder='Calle 123'
+					theme={{ colors: { text: colors.TEXT_INPUT, primary: colors.APP_MAIN } }}
+					onChangeText={(text) => this.setState({ name: text })}
+					value={this.state.address}
+				/>
+
+				<TextInput
+					style={styles.inputView}
+					mode='outlined'
 					label='Nombre Razón Social'
 					placeholder='Nombre Razón Social'
 					theme={{ colors: { text: colors.TEXT_INPUT, primary: colors.APP_MAIN } }}
@@ -78,10 +138,25 @@ class SignUpShopScreen extends Component {
 				<TextInput
 					style={styles.inputView}
 					mode='outlined'
-					label='Email'
-					placeholder='ejemplo@mail.com'
+					label='Teléfono'
+					placeholder='Teléfono'
 					theme={{ colors: { text: colors.TEXT_INPUT, primary: colors.APP_MAIN } }}
-					onChangeText={(text) => this.setState({ email: text })}
+					onChangeText={(phone) => this.validatePhone({ phone })}
+					value={this.state.phone}
+				/>
+
+				<HelperText type="error" visible={this.state.emailError} style={{ marginBottom: -12 }}>
+					El mail ingresado es inválido
+      			</HelperText>
+
+				<TextInput
+					style={styles.inputView}
+					mode='outlined'
+					label='Mail'
+					placeholder='ejemplo@mail.com'
+					error={this.state.emailError}
+					theme={{ colors: { text: colors.TEXT_INPUT, primary: colors.APP_MAIN } }}
+					onChangeText={(text) => this.validateMail(text)}
 					value={this.state.email}
 				/>
 
@@ -90,30 +165,68 @@ class SignUpShopScreen extends Component {
 					mode='outlined'
 					label='Contraseña'
 					placeholder='Contraseña'
+					error={this.state.passwordError}
 					theme={{ colors: { text: colors.TEXT_INPUT, primary: colors.APP_MAIN } }}
-					onChangeText={(text) => this.setState({ password: text })}
+					onChangeText={(text) => this.validatePassword(text)}
 					value={this.state.password}
 				/>
 
+				<HelperText type="error" visible={this.state.passwordError} style={{ marginTop: -80 }}>
+					La contraseña debe tener 6 dígitos mínimo
+      			</HelperText>
+
 				<Button
-					style={{ top: sizes.hp('-7%') }}
+					style={{ top: sizes.hp('-2%') }}
 					icon="account-plus"
 					mode="contained"
 					color={colors.APP_MAIN}
-					//disabled="true"
-					onPress={() => this.signup()}>
+					disabled={this.state.cuit === '' || this.state.name === '' || this.state.address === '' || this.state.phone === '' || this.state.legalName === '' 
+					|| this.state.email === '' || this.state.password === '' || this.state.emailError || this.state.passwordError}
+					onPress={this._showDialogCreate}>
 					Registrarse
  				</Button>
 
 				 <Dialog
-					visible={this.state.visibleDialog}
-					onDismiss={this._hideDialog}>
+					visible={this.state.visibleDialogCreate}
+					onDismiss={this._hideDialogCreate}>
 					<Dialog.Title style={{ alignSelf: 'center' }}>¿Desea crear cuenta?</Dialog.Title>
 					<Dialog.Actions>
-						<Button style={{ marginRight: sizes.wp('3%') }} color={colors.APP_RED} onPress={this._hideDialog}>Cancelar</Button>
-						<Button color={colors.APP_GREEN} onPress={() => console.log("Ok")}>Ok</Button>
+						<Button style={{ marginRight: sizes.wp('3%') }} color={colors.APP_RED} onPress={this._hideDialogCreate}>Cancelar</Button>
+						<Button color={colors.APP_GREEN} onPress={() => {this.signup()
+						this._hideDialogCreate}}>Ok</Button>
 					</Dialog.Actions>
 				</Dialog>
+
+				<Dialog
+					visible={this.state.visibleDialogCreate}
+					onDismiss={this._hideDialogCreate}>
+					<Dialog.Title style={{ alignSelf: 'center' }}>¿Desea crear cuenta?</Dialog.Title>
+					<Dialog.Actions>
+						<Button style={{ marginRight: sizes.wp('3%') }} color={colors.APP_RED} onPress={this._hideDialogCreate}>Cancelar</Button>
+						<Button color={colors.APP_GREEN} onPress={() => {this.signup()
+						this._hideDialogCreate()}}>Ok</Button>
+					</Dialog.Actions>
+				</Dialog>
+
+				<Dialog
+					style={{ width: sizes.wp('70%'), alignSelf: 'center' }}
+					visible={this.state.visibleDialogError}
+					onDismiss={this._hideDialogError}>
+					<Dialog.Content style={{ alignItems: 'center' }}><Paragraph style={{ textAlign: 'center', fontWeight: 'bold' }}>{this.state.messageError}</Paragraph></Dialog.Content>
+					<Dialog.Actions>
+						<Button style={{ marginRight: sizes.wp('3%') }} color={'#000000'} onPress={this._hideDialogError}>Ok</Button>
+					</Dialog.Actions>
+				</Dialog>
+
+				<Modal dismissable={false}
+					visible={this.state.loading}
+					style={styles.modalActivityIndicator} >
+					<ActivityIndicator
+						animating={this.state.loading}
+						size={60}
+						color={colors.APP_MAIN}
+					/>
+				</Modal>
 
 			</KeyboardAvoidingView>
 		);
@@ -126,24 +239,28 @@ const styles = StyleSheet.create({
 		fontSize: 30,
 		fontWeight: "bold",
 		textAlign: "center",
-		top: sizes.hp('-10%'),
-		padding: 40,
+		alignSelf: 'center',
+		top: sizes.hp('1%'),
+		padding: 12,
+		height: sizes.hp('12%'),
+		marginBottom: sizes.hp('12%'),
 	},
 	inputView: {
 		top: sizes.hp('-10%'),
 		width: "80%",
-		height: 50,
-		marginBottom: 20,
+		height: 40,
+		marginBottom: 15,
 		justifyContent: "center",
 		padding: 5,
+		//position: 'absolute',
 	},
 	snackbar: {
 		alignSelf: 'center',
-		marginBottom: sizes.hp('2%'),
+		top: sizes.hp('-50%'),
 		width: sizes.wp('90%'),
 		padding: 5,
 		backgroundColor: colors.APP_MAIN,
+		//position: 'relative'
+		flex: 2
 	},
 })
-
-export default SignUpShopScreen;

@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, Text, KeyboardAvoidingView, Platform, TouchableOpacity, Alert } from 'react-native';
-import { TextInput, Button, Dialog, Modal, ActivityIndicator, Paragraph } from 'react-native-paper';
+import { connect } from 'react-redux';
+import { StyleSheet, View, Text, KeyboardAvoidingView, Platform, TouchableOpacity } from 'react-native';
+import { TextInput, Button, Dialog, Modal, ActivityIndicator, Paragraph, HelperText } from 'react-native-paper';
 import { appStyles, colors, sizes } from '../../../index.styles';
 import ArrowButton from '../../commons/arrowButton'
+import LoginActions from '../../../redux/authState/action'
 import { Actions } from 'react-native-router-flux';
-import { } from '../../../api/user'
+import { insertClient } from '../../../api/user'
 
 class SignUpClientScreen extends Component {
 
@@ -19,15 +21,45 @@ class SignUpClientScreen extends Component {
 			visibleDialogCreate: false,
 			visibleDialogError: false,
 			messageError: '',
+			emailError: false,
+			passwordError: false,
 		}
 	}
 
-	validateData(){
+	async signup() {
 		this.setState({ loading: true })
+		const data = await insertClient(this.state.email, this.state.firstName, this.state.lastName, this.state.password)
+		if (data.status === 500 || data.status === 401) {
+			this.setState({ loading: false, email: '', password: '', messageError: data.body })
+			this._showDialogError()
+		} else {
+			this.setState({ loading: false, email: '', firstName: '', lastName: '', password: '' })
+			this.props.setLoginClientData(data.body.mail, data.body.nombre, data.body.apellido, data.body.token)
+			Actions.navbarclient()
+		}
 	}
 
-	signup(){
+	validateMail = (text) => {
+		if(text === '')
+			this.setState({ email: text, emailError: false })
+		else{
+			let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+		if (reg.test(text) === false) //INCORRECTO
+			this.setState({ email: text, emailError: true })
+		else //CORRECTO
+			this.setState({ email: text, emailError: false })
+		}
+	}
 
+	validatePassword = (text) => {
+		if(text === '')
+			this.setState({ password: text, passwordError: false })
+		else{
+			if (text.length > 5)
+			this.setState({ password: text, passwordError: false })
+		else
+			this.setState({ password: text, passwordError: true })			
+		}
 	}
 
 	_showDialogCreate = () => this.setState({ visibleDialogCreate: true });
@@ -63,13 +95,18 @@ class SignUpClientScreen extends Component {
 					value={this.state.lastName}
 				/>
 
+				<HelperText type="error" visible={this.state.emailError} style={{ marginBottom: -12 }}>
+					El mail ingresado es inválido
+      			</HelperText>
+
 				<TextInput
 					style={styles.inputView}
 					mode='outlined'
-					label='Email'
-					placeholder="ejemplo@email.com"
+					label='Mail'
+					placeholder="ejemplo@mail.com"
+					error={this.state.emailError}
 					theme={{ colors: { text: colors.TEXT_INPUT, primary: colors.APP_MAIN } }}
-					onChangeText={(email) => this.setState({ email })}
+					onChangeText={(email) => this.validateMail(email)}
 					value={this.state.email}
 				/>
 
@@ -79,22 +116,28 @@ class SignUpClientScreen extends Component {
 					label='Contraseña'
 					secureTextEntry={true}
 					placeholder="Contraseña"
+					error={this.state.passwordError}
 					theme={{ colors: { text: colors.TEXT_INPUT, primary: colors.APP_MAIN } }}
-					onChangeText={(password) => this.setState({ password })}
+					onChangeText={(password) => this.validatePassword(password)}
 					value={this.state.password}
 				/>
 
+				<HelperText type="error" visible={this.state.passwordError} style={{ marginTop: -25 }}>
+					La contraseña debe tener 6 dígitos mínimo
+      			</HelperText>
+
 				<Button
-					style={{ marginTop: 15 }}
+					style={{ top: sizes.hp('4.5%') }}
 					icon="account-plus"
 					mode="contained"
 					color={colors.APP_MAIN}
-					disabled={this.state.firstName == '' || this.state.lastName == '' || this.state.email == '' || this.state.password == ''}
+					disabled={this.state.firstName === '' || this.state.lastName === '' || this.state.email === '' || this.state.password === '' ||
+						this.state.emailError || this.state.passwordError}
 					onPress={this._showDialogCreate}>
 					Registrarse
  				</Button>
 
-				 <TouchableOpacity style={{bottom: sizes.hp('-4%')}} onPress={() => Actions.signupshop()}>
+				<TouchableOpacity style={{ top: sizes.hp('8%') }} onPress={() => Actions.signupshop()}>
 					<Text style={{ color: colors.APP_MAIN, fontSize: 12.8 }}>¿Querés registrar tu local? Hace click acá</Text>
 				</TouchableOpacity>
 
@@ -104,30 +147,31 @@ class SignUpClientScreen extends Component {
 					<Dialog.Title style={{ alignSelf: 'center' }}>¿Desea crear cuenta?</Dialog.Title>
 					<Dialog.Actions>
 						<Button style={{ marginRight: sizes.wp('3%') }} color={colors.APP_RED} onPress={this._hideDialogCreate}>Cancelar</Button>
-						<Button color={colors.APP_GREEN} onPress={() => this.validateData()}>Ok</Button>
+						<Button color={colors.APP_GREEN} onPress={() => {this.signup()
+						this._hideDialogCreate()}}>Ok</Button>
 					</Dialog.Actions>
 				</Dialog>
 
 				<Dialog
-                    style={{ width: sizes.wp('70%'), alignSelf: 'center' }}
-                    visible={this.state.visibleDialogError}
-                    onDismiss={this._hideDialogError}>
-                    <Dialog.Title style={{ alignSelf: 'center' }}>Error</Dialog.Title>
-                    <Dialog.Content style={{ alignItems: 'center' }}><Paragraph style={{ textAlign: 'center', fontWeight: 'bold' }}>{this.state.messageError}</Paragraph></Dialog.Content>
-                    <Dialog.Actions>
-                        <Button style={{ marginRight: sizes.wp('3%') }} color={'#000000'} onPress={this._hideDialogError}>Ok</Button>
-                    </Dialog.Actions>
-                </Dialog>
+					style={{ width: sizes.wp('70%'), alignSelf: 'center' }}
+					visible={this.state.visibleDialogError}
+					onDismiss={this._hideDialogError}>
+					<Dialog.Title style={{ alignSelf: 'center' }}>Error</Dialog.Title>
+					<Dialog.Content style={{ alignItems: 'center' }}><Paragraph style={{ textAlign: 'center', fontWeight: 'bold' }}>{this.state.messageError}</Paragraph></Dialog.Content>
+					<Dialog.Actions>
+						<Button style={{ marginRight: sizes.wp('3%') }} color={'#000000'} onPress={this._hideDialogError}>Ok</Button>
+					</Dialog.Actions>
+				</Dialog>
 
-                <Modal dismissable={false}
-                    visible={this.state.loading}
-                    style={styles.modalActivityIndicator} >
-                    <ActivityIndicator
-                        animating={this.state.loading}
-                        size={60}
-                        color={colors.APP_MAIN}
-                    />
-                </Modal>
+				<Modal dismissable={false}
+					visible={this.state.loading}
+					style={styles.modalActivityIndicator} >
+					<ActivityIndicator
+						animating={this.state.loading}
+						size={60}
+						color={colors.APP_MAIN}
+					/>
+				</Modal>
 
 			</KeyboardAvoidingView>
 		);
@@ -153,4 +197,17 @@ const styles = StyleSheet.create({
 	},
 })
 
-export default SignUpClientScreen;
+function mapStateToProps(state) {
+    return {
+    };
+}
+
+const mapDispatchToProps = (dispatch) => {
+	return {
+		setLoginClientData: (mail, name, lastName, token) => dispatch(LoginActions.setLoginClientData(mail, name, lastName, token)),
+	}
+};
+
+export default connect(
+	mapStateToProps, mapDispatchToProps
+)(SignUpClientScreen);

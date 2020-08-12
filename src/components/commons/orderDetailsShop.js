@@ -60,7 +60,7 @@ class OrderDetailsShop extends Component {
 
         const total = props => <Text style={styles.rightText}> ${this.props.data.total}</Text>
 
-        const date = props => <Text style={styles.rightText}> {moment(this.props.data.fecha).format("YYYY/MM/DD hh:mm")} hs</Text>
+        const date = props => <Text style={styles.rightText}> {moment(this.props.data.fecha).format("YYYY/MM/DD HH:mm")} hs</Text>
 
         return (
 
@@ -94,7 +94,8 @@ class OrderDetailsShop extends Component {
                                     {this.props.data.productos[0]
                                         .map(row => (
                                             <DataTableRow key={row.id}>
-                                                <DataTableCell text={row.nombre} borderRight style={{ maxWidth: '30%' }} />
+                                                <DataTableCell text={(row.modificado) ? <Text><Text style={{color: colors.APP_MAIN, fontWeight: 'bold'}}>(*) </Text>{row.nombre}</Text>
+                                                : row.nombre} borderRight style={{ maxWidth: '30%' }} />
                                                 <DataTableCell text={(row.cantidad).toString()} style={{ maxWidth: '5%', left: sizes.wp('-2%') }} textStyle={{ textAlign: 'center' }} />
                                                 <DataTableCell text={'$' + (row.precio).toString()} style={{ maxWidth: '6%', left: sizes.wp('-8%') }} textStyle={{ textAlign: 'center' }} />
                                                 <DataTableCell text={'$' + (row.cantidad * row.precio).toString()} style={{ maxWidth: '23%', left: sizes.wp('-12%') }} textStyle={{ textAlign: 'center' }} />
@@ -118,7 +119,8 @@ class OrderDetailsShop extends Component {
                                     {this.props.data.promociones[0]
                                         .map(row => (
                                             <DataTableRow key={row.id}>
-                                                <DataTableCell text={row.nombre} borderRight style={{ maxWidth: '30%' }} />
+                                                <DataTableCell text={(row.modificado) ? <Text><Text style={{color: colors.APP_MAIN, fontWeight: 'bold'}}>(*) </Text>{row.nombre}</Text>
+                                                : row.nombre} borderRight style={{ maxWidth: '30%' }} />
                                                 <DataTableCell text={(row.cantidad).toString()} style={{ maxWidth: '5%', left: sizes.wp('-2%') }} textStyle={{ textAlign: 'center' }} />
                                                 <DataTableCell text={'$' + (row.precio).toString()} style={{ maxWidth: '6%', left: sizes.wp('-8%') }} textStyle={{ textAlign: 'center' }} />
                                                 <DataTableCell text={'$' + (row.cantidad * row.precio).toString()} style={{ maxWidth: '23%', left: sizes.wp('-12%') }} textStyle={{ textAlign: 'center' }} />
@@ -130,6 +132,8 @@ class OrderDetailsShop extends Component {
                                         ))}
                                 </View>
                                 : null}
+                                <Divider style={styles.divider} />
+                                <Text style={{color: colors.APP_MAIN, fontWeight: 'bold', marginTop: sizes.hp('5%')}}>(*) productos modificados por el cliente</Text>
                         </ScrollView>
                     </DataTable>
                 </Card.Content>

@@ -47,3 +47,42 @@ export const updateClient = async (mail, name, lastName, token) => {
         .then(obj => {return obj});
     return response
 }
+
+export const insertClient = async (mail, name, lastName, password) => {
+    let requestBody = {};
+    requestBody.mail = mail
+    requestBody.nombre = name
+    requestBody.apellido = lastName
+    requestBody.contraseña = password
+    const response = await fetch(`${APIURL}insertClient`, {
+        method: 'POST',
+        body: JSON.stringify(requestBody),
+        headers: new Headers({
+            'Content-Type': 'application/json'
+        })
+    }).then(r => r.json()
+        .then(data => ({ status: r.status, body: data })))
+        .then(obj => {return obj});
+    return response
+}
+
+export const insertShop = async (cuit, name, address, phone, legalName, mail, password) => {
+    let requestBody = {};
+    requestBody.cuit = cuit
+    requestBody.nombre = name
+    requestBody.direccion = address
+    requestBody.telefono = phone
+    requestBody.razonSocial = legalName
+    requestBody.mail = mail
+    requestBody.contraseña = password
+    const response = await fetch(`${APIURL}insertShop`, {
+        method: 'POST',
+        body: JSON.stringify(requestBody),
+        headers: new Headers({
+            'Content-Type': 'application/json'
+        })
+    }).then(r => r.json()
+        .then(data => ({ status: r.status, body: data })))
+        .then(obj => {return obj});
+    return response
+}
