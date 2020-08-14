@@ -29,25 +29,21 @@ class ScheduleDetails extends Component {
                 {(this.props.shop.abierto !== undefined) ?
                 <Card.Title style={{ margin: -10, marginTop: sizes.hp('-3') }} left={openClose} leftStyle={{}} right={Close} rigthStyle={styles.close} />
                 :
-                <Card.Title style={{ margin: -10, marginTop: sizes.hp('-3') }} right={Close} rigthStyle={styles.close} />
+                <Card.Title style={{ margin: -10, marginTop: sizes.hp('-3')}} right={Close} rigthStyle={styles.close} />
                 }
                 <Divider />
                 <Card.Title title='Estos son los horarios:' titleStyle={styles.title} />
-                <DataTable style={{ marginTop: sizes.wp('1%'), width: sizes.wp('50%') }}>
+                <DataTable style={{ marginTop: sizes.wp('1%'), width: sizes.wp('80%')}}>
                         <DataTableRow >
-                            <DataTableCell text={'Día'} type={'header'} borderRight textStyle={{ textAlign: 'center', left: '30%' }} style={{ right:'16.5%'}} />
-                            <DataTableCell text={'Horas'} type={'header'} textStyle={{ textAlign: 'center' }} style={{right:'14%' }} />
+                            <DataTableCell text={'DÍA'} type={'header'} borderRight textStyle={{ textAlign: 'center', fontWeight: 'bold' }} style={{ maxWidth: '40%' }} />
+                            <DataTableCell text={'HORAS'} type={'header'} textStyle={{ textAlign: 'center', fontWeight: 'bold' }} style={{ maxWidth: '40%'}} minWidth={150} />
                         </DataTableRow>
 
                         <ScrollView style={{ height: sizes.hp('31%') }}>
                                 {this.props.data.map(row => 
                                             < DataTableRow key = { row.id } style={{}} >
-                                                <DataTableCell text={row.dia} borderRight style={{right:'16.5%'}} textStyle={{textAlign: 'center', left: '30%'}}/>
-                                                {(row.horas.length > 0) ?
-                                                <DataTableCell text={row.horas} textStyle={{ textAlign: 'center',}} style={{right:'14%'}} />
-                                                :
-                                                <DataTableCell text={'----------------'} textStyle={{ textAlign: 'center', }} style={{right:'14%' }} />
-                                                }
+                                                <DataTableCell text={row.dia} borderRight textStyle={{textAlign: 'center'}} style={{ maxWidth: '40%' }}/>
+                                                <DataTableCell text={(row.horas.length > 0) ? row.horas : '----------------'} textStyle={{ textAlign: 'center'}} style={{ maxWidth: '40%', alignSelf: 'center'}} minWidth={150} />
                                         </DataTableRow>
                                         )
                                     }
@@ -95,12 +91,6 @@ const styles = StyleSheet.create({
         marginTop: 10,
         fontSize: 16,
         textAlign: 'center',
-    },
-    cell: {
-        //borderWidth: 1,
-        width: sizes.wp('80%'),
-        right: sizes.wp('-3%'),
-        marginTop: sizes.hp('2%')
     },
 });
 

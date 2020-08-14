@@ -1,4 +1,3 @@
-
 const setShopsData = (shops) => {
     return {
         type: 'SET_SHOPS',

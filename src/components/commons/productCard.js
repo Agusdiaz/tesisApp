@@ -4,7 +4,8 @@ import { StyleSheet, Text, View, Image } from 'react-native';
 import { colors, sizes, productCondition } from '../../index.styles';
 import { Card, FAB, Modal, Portal, Button, Dialog, ActivityIndicator } from 'react-native-paper';
 import TextTicker from 'react-native-text-ticker';
-import ProductDetails from '../commons/productDetails'
+import ProductDetails from './productDetails'
+import ProductDetailsOrder from './productDetailsOrder'
 import { updateProductStatus } from '../../api/menus'
 import { Actions } from 'react-native-router-flux';
 
@@ -18,6 +19,7 @@ class ProductCard extends Component {
             loading: false,
             photo: 'https://picsum.photos/400',
             visibleModalDetails: false,
+            visibleModalOrder: false,
             visibleDialogDisabled: false,
             visibleDialogResponse: false,
             statusMessage: '',
@@ -41,7 +43,7 @@ class ProductCard extends Component {
             const data = await updateProductStatus(this.state.status, this.props.data.id, this.props.shop.token)
             this._hideDialogDisabled()
             this.setState({ actionMessage: data.body, loading: false })
-            if (data.status === 200){
+            if (data.status === 200) {
                 this.props.refreshParent()
             }
             this._showDialogResponse()
@@ -51,6 +53,9 @@ class ProductCard extends Component {
     _showModalDetails = () => (this._isMounted) ? this.setState({ visibleModalDetails: true }) : null;
     _hideModalDetails = () => (this._isMounted) ? this.setState({ visibleModalDetails: false }) : null;
 
+    _showModalOrder = () => (this._isMounted) ? this.setState({ visibleModalOrder: true }) : null;
+    _hideModalOrder = () => (this._isMounted) ? this.setState({ visibleModalOrder: false }) : null;
+
     _showDialogDisabled = (text) => (this._isMounted) ? this.setState({ visibleDialogDisabled: true, statusMessage: text }) : null;
     _hideDialogDisabled = () => (this._isMounted) ? this.setState({ visibleDialogDisabled: false, statusMessage: '' }) : null;
 
@@ -58,7 +63,6 @@ class ProductCard extends Component {
     _hideDialogResponse = () => (this._isMounted) ? this.setState({ visibleDialogResponse: false }) : null;
 
     render() {
-
         const pic = props => <Image source={{ uri: this.state.photo }} resizeMode='cover' style={styles.image} />
 
         const NamePrice = props => <View>
@@ -73,7 +77,6 @@ class ProductCard extends Component {
 
         return (
             <View>
-
                 <Card style={{ height: (this.props.data.condicion === null) ? sizes.hp('15%') : sizes.hp('19%'), }}>
                     <Card.Actions style={{ alignSelf: 'flex-end', margin: -2 }} >
                         {(this.props.data.condicion !== null) ?
@@ -98,7 +101,11 @@ class ProductCard extends Component {
                             color={colors.APP_MAIN}
                             icon="eye"
                             small
-                            onPress={this._showModalDetails}
+                            onPress={() => {
+                                (this.props.rute === 'order') ?
+                                    this._showModalOrder()
+                                    : this._showModalDetails()
+                            }}
                         />
 
                         {(this.props.rute === 'shop') ?
@@ -107,8 +114,10 @@ class ProductCard extends Component {
                                 color={colors.APP_MAIN}
                                 icon="cart-remove"
                                 small
-                                onPress={() => { this.setState({ status: 0})
-                                    this._showDialogDisabled('¿Esta seguro que desea deshabilitar este producto?')}} />
+                                onPress={() => {
+                                    this.setState({ status: 0 })
+                                    this._showDialogDisabled('¿Esta seguro que desea deshabilitar este producto?')
+                                }} />
                             :
                             null
                         }
@@ -119,8 +128,10 @@ class ProductCard extends Component {
                                 color={colors.APP_MAIN}
                                 icon="cart-plus"
                                 small
-                                onPress={() => {this.setState({ status: 1}) 
-                                    this._showDialogDisabled('¿Esta seguro que desea habilitar este producto?')}} />
+                                onPress={() => {
+                                    this.setState({ status: 1 })
+                                    this._showDialogDisabled('¿Esta seguro que desea habilitar este producto?')
+                                }} />
                             :
                             null
                         }
@@ -129,9 +140,15 @@ class ProductCard extends Component {
                 </Card>
 
                 <Portal>
+               
                     <Modal contentContainerStyle={styles.modalView} visible={this.state.visibleModalDetails} onDismiss={this._hideModalDetails}>
                         <ProductDetails hideModalFromChild={this._hideModalDetails} data={this.props.data} />
                     </Modal>
+
+                    <Modal contentContainerStyle={[styles.modalView, {height: sizes.hp('88%')}]} visible={this.state.visibleModalOrder} onDismiss={this._hideModalOrder}>
+                        <ProductDetailsOrder hideModalFromChild={this._hideModalOrder} data={this.props.data} />
+                    </Modal>
+
 
                     <Dialog
                         visible={this.state.visibleDialogDisabled}
@@ -144,22 +161,22 @@ class ProductCard extends Component {
                     </Dialog>
 
                     <Dialog
-                            visible={this.state.visibleDialogResponse}
-                            onDismiss={this._hideDialogResponse}>
-                            <Dialog.Title style={{ alignSelf: 'center', textAlign: 'center' }}>{this.state.actionMessage}</Dialog.Title>
-                            <Dialog.Actions>
-                                <Button style={{ marginRight: sizes.wp('3%') }} color={'#000000'} onPress={this._hideDialogResponse}>Ok</Button>
-                            </Dialog.Actions>
-                        </Dialog>
+                        visible={this.state.visibleDialogResponse}
+                        onDismiss={this._hideDialogResponse}>
+                        <Dialog.Title style={{ alignSelf: 'center', textAlign: 'center' }}>{this.state.actionMessage}</Dialog.Title>
+                        <Dialog.Actions>
+                            <Button style={{ marginRight: sizes.wp('3%') }} color={'#000000'} onPress={this._hideDialogResponse}>Ok</Button>
+                        </Dialog.Actions>
+                    </Dialog>
 
                     <Modal dismissable={false}
-                            visible={this.state.loading} >
-                            <ActivityIndicator
-                                animating={this.state.loading}
-                                size={60}
-                                color={colors.APP_MAIN}
-                            />
-                        </Modal>
+                        visible={this.state.loading} >
+                        <ActivityIndicator
+                            animating={this.state.loading}
+                            size={60}
+                            color={colors.APP_MAIN}
+                        />
+                    </Modal>
                 </Portal>
             </View>
         )

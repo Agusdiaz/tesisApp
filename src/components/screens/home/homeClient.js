@@ -4,7 +4,6 @@ import { StyleSheet, View, Text, TouchableOpacity, ImageBackground, FlatList, Im
 import { Surface, ToggleButton, } from 'react-native-paper';
 import { appStyles, colors, sizes } from '../../../index.styles';
 import ShopCardSummary from '../../commons/shopCardSummary'
-import ProductCard from '../../commons/productCardOrder'
 import { Actions } from 'react-native-router-flux';
 import Animated from 'react-native-reanimated';
 import ShopActions from '../../../redux/shops/action'

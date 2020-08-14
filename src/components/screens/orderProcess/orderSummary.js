@@ -29,6 +29,7 @@ class OrderSummary extends Component {
                     amount: 2,
                     unitPrice: 100,
                 },],
+            promociones: [],
             isTakeAway: false,
             tips: 0,
             total: 1500,
@@ -120,29 +121,57 @@ class OrderSummary extends Component {
                     <Card.Title style={styles.cardTitle} titleStyle={styles.leftText} title="Fecha:" right={date} />
                     <Divider style={styles.divider} />
                     <Card.Content style={{ alignItems: 'center', width: sizes.wp('97%'), marginLeft: sizes.wp('-6%') }}>
-                        <DataTable style={{ width: sizes.wp('80%') }}>
+                        <DataTable style={{ width: sizes.wp('100%') }}>
                             <DataTableHeader
                                 title={'¿Qué es lo que pediste?'}
-                                style={{ right: sizes.wp('-15%') }}
+                                style={{ right: sizes.wp('-17%') }}
                             />
-                            <DataTableRow style={{}}>
-                                <DataTableCell text={'Productos'} type={'header'} borderRight textStyle={{ textAlign: 'center' }} style={{ maxWidth: '30%' }} />
-                                <DataTableCell text={'Cantidad'} type={'header'} style={{ maxWidth: '5%', left: sizes.wp('-2%') }} textStyle={{ textAlign: 'center' }} />
-                                <DataTableCell text={'Precio Unit'} type={'header'} style={{ maxWidth: '5%', left: sizes.wp('-10%') }} textStyle={{ textAlign: 'center' }} />
-                                <DataTableCell text={'Precio Total'} type={'header'} style={{ maxWidth: '5%', left: sizes.wp('-16%') }} textStyle={{ textAlign: 'center' }} />
-                            </DataTableRow>
-                            <ScrollView style={{ height: sizes.hp('25%') }}>
-                                {this.state.items
-                                    .map(row => (
-                                        <DataTableRow key={row.id}>
-                                            <DataTableCell text={row.name} borderRight style={{ maxWidth: '30%' }} />
-                                            <DataTableCell text={(row.amount).toString()} style={{ maxWidth: '5%', left: sizes.wp('-2%') }} textStyle={{ textAlign: 'center' }} />
-                                            <DataTableCell text={'$' + (row.unitPrice).toString()} style={{ maxWidth: '5%', left: sizes.wp('-10%') }} textStyle={{ textAlign: 'center' }} />
-                                            <DataTableCell text={'$' + (row.amount * row.unitPrice).toString()} style={{ maxWidth: '5%', left: sizes.wp('-16%') }} textStyle={{ textAlign: 'center' }} />
+                            <ScrollView style={{ height: sizes.hp('31%') }}>
+                                {(this.state.promociones !== null) ?
+                                    <View>
+                                        <DataTableRow style={{}}>
+                                            <DataTableCell text={'PRODUCTOS'} type={'header'} borderRight textStyle={{ textAlign: 'center', fontWeight: 'bold' }} style={{ maxWidth: '30%' }} />
+                                            <DataTableCell text={'Cantidad'} type={'header'} textStyle={{ textAlign: 'center', fontWeight: 'bold' }} style={{ maxWidth: '3%' }} minWidth={90} />
+                                            <DataTableCell text={'Precio Unit'} type={'header'} textStyle={{ textAlign: 'center', fontWeight: 'bold' }} style={{ maxWidth: '3%' }} minWidth={100} />
+                                            <DataTableCell text={'Precio Total'} type={'header'} textStyle={{ textAlign: 'center', fontWeight: 'bold' }} style={{ maxWidth: '3%' }} minWidth={105} />
                                         </DataTableRow>
-                                    ))}
-                            </ScrollView>
 
+                                        {this.state.items
+                                            .map(row => (
+                                                <DataTableRow key={row.id}>
+                                                    <DataTableCell text={(row.modificado) ? <Text><Text style={{ color: colors.APP_MAIN, fontWeight: 'bold' }}>(*) </Text>{row.name}</Text>
+                                                        : row.name} borderRight style={{ maxWidth: '30%' }} textStyle={{ textAlign: 'center' }} />
+                                                    <DataTableCell text={(row.amount).toString()} textStyle={{ textAlign: 'center' }} style={{ maxWidth: '3%', alignSelf: 'center' }} minWidth={90} />
+                                                    <DataTableCell text={'$' + (row.unitPrice).toString()} textStyle={{ textAlign: 'center' }} style={{ maxWidth: '3%', alignSelf: 'center' }} minWidth={100} />
+                                                    <DataTableCell text={'$' + (row.amount * row.unitPrice).toString()} textStyle={{ textAlign: 'center' }} style={{ maxWidth: '3%', alignSelf: 'center' }} minWidth={105} />
+                                                </DataTableRow>
+                                            ))}
+                                    </View>
+                                    : null}
+
+                                {(this.state.promociones.length > 0) ?
+                                    <View>
+                                        <DataTableRow style={{}}>
+                                            <DataTableCell text={'PROMOS'} type={'header'} borderRight textStyle={{ textAlign: 'center', fontWeight: 'bold' }} style={{ maxWidth: '30%' }} />
+                                            <DataTableCell text={'Cantidad'} type={'header'} textStyle={{ textAlign: 'center', fontWeight: 'bold' }} style={{ maxWidth: '3%' }} minWidth={90} />
+                                            <DataTableCell text={'Precio Unit'} type={'header'} textStyle={{ textAlign: 'center', fontWeight: 'bold' }} style={{ maxWidth: '3%' }} minWidth={100} />
+                                            <DataTableCell text={'Precio Total'} type={'header'} textStyle={{ textAlign: 'center', fontWeight: 'bold' }} style={{ maxWidth: '3%' }} minWidth={105} />
+                                        </DataTableRow>
+                                        {this.state.promociones
+                                            .map(row => (
+                                                <DataTableRow key={row.id}>
+                                                    <DataTableCell text={(row.modificado) ? <Text><Text style={{ color: colors.APP_MAIN, fontWeight: 'bold' }}>(*) </Text>{row.name}</Text>
+                                                        : row.name} borderRight style={{ maxWidth: '30%' }} textStyle={{ textAlign: 'center' }} />
+                                                    <DataTableCell text={(row.cantidad).toString()} textStyle={{ textAlign: 'center', }} style={{ maxWidth: '3%', alignSelf: 'center' }} minWidth={90} />
+                                                    <DataTableCell text={'$' + (row.precio).toString()} textStyle={{ textAlign: 'center' }} style={{ maxWidth: '3%', alignSelf: 'center' }} minWidth={100} />
+                                                    <DataTableCell text={'$' + (row.cantidad * row.precio).toString()} textStyle={{ textAlign: 'center' }} style={{ maxWidth: '3%', alignSelf: 'center' }} minWidth={105} />
+                                                </DataTableRow>
+                                            ))}
+                                    </View>
+                                    : null}
+                                    <Divider style={styles.divider} />
+                                    <Text style={{color: colors.APP_MAIN, fontWeight: 'bold', marginTop: sizes.hp('3%'), left: 10}}>(*) modificaste este producto</Text>
+                            </ScrollView>
                         </DataTable>
                     </Card.Content>
                     <Divider style={styles.divider} />
@@ -164,8 +193,8 @@ class OrderSummary extends Component {
                     <Dialog
                         visible={this.state.visibleDialogContinue}
                         onDismiss={this._hideDialogContinue}>
-                        <Dialog.Title style={{ alignSelf: 'center', fontWeight: 'bold' }}>El total es ${this.state.total+this.state.tips}</Dialog.Title>
-                        <Dialog.Content style={{ alignSelf: 'center' }}><Paragraph style={{fontSize: 16.5}}>¿Desea modificar su pedido?</Paragraph></Dialog.Content>
+                        <Dialog.Title style={{ alignSelf: 'center', fontWeight: 'bold' }}>El total es ${this.state.total + this.state.tips}</Dialog.Title>
+                        <Dialog.Content style={{ alignSelf: 'center' }}><Paragraph style={{ fontSize: 16.5 }}>¿Desea modificar su pedido?</Paragraph></Dialog.Content>
                         <Dialog.Actions>
                             <Button style={{ marginRight: sizes.wp('3%') }} color={colors.APP_RED} onPress={this._hideDialogContinue}>Modificar</Button>
                             <Button color={colors.APP_GREEN} onPress={() => { this._hideDialogContinue(), this.nextStepParent() }}>Continuar</Button>
@@ -190,7 +219,7 @@ class OrderSummary extends Component {
                         <Dialog.Actions style={{ marginTop: sizes.hp('-2%') }}>
                             <Button style={{ marginRight: sizes.wp('3%') }} color={colors.APP_RED} onPress={this._hideDialogTip}>Cancelar</Button>
                             <Button color={colors.APP_GREEN} onPress={() => {
-                                    this._hideDialogTip()
+                                this._hideDialogTip()
                             }}>Agregar</Button>
                         </Dialog.Actions>
                     </Dialog>

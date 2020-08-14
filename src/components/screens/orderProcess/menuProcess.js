@@ -4,7 +4,7 @@ import { StyleSheet, Text, View, FlatList, Image } from 'react-native';
 import { colors, sizes, productType } from '../../../index.styles'
 import { Button, Searchbar } from 'react-native-paper';
 import Animated from 'react-native-reanimated';
-import ProductCard from '../../commons/productCardOrder'
+import ProductCard from '../../commons/productCard'
 import { getMenu } from '../../../api/menus'
 
 const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
@@ -111,7 +111,7 @@ class MenuProcess extends Component {
         if ((this.state.valueButtons === productType.SALTY && this.state.areSalty) || (this.state.valueButtons === productType.SWEET && this.state.areSweet) ||
             (this.state.valueButtons === productType.DRINK && this.state.areDrinks)) {
             return (
-                <ProductCard data={item} /> //VER SI UNIFICAR
+                <ProductCard data={item} rute={'order'}/>
             );
         } else {
             return (

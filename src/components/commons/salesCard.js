@@ -73,18 +73,18 @@ class SalesCard extends Component {
                                 style={{ right: sizes.wp('-15%') }}
                             />
                             <DataTableRow >
-                                <DataTableCell text={'Producto'} type={'header'} borderRight textStyle={{ textAlign: 'center' }} style={{ maxWidth: '35%' }} />
-                                <DataTableCell text={'Cantidad'} type={'header'} textStyle={{ textAlign: 'center' }} style={{ maxWidth: '35%' }} />
-                                <DataTableCell text={'Detalles'} type={'header'} textStyle={{ textAlign: 'center' }} />
+                                <DataTableCell text={'PRODUCTOS'} type={'header'} borderRight textStyle={{ textAlign: 'center', fontWeight: 'bold' }} style={{ maxWidth: '45%' }} />
+                                <DataTableCell text={'Cantidad'} type={'header'} textStyle={{ textAlign: 'center', fontWeight: 'bold' }} style={{ maxWidth: '5%'}} minWidth={100} />
+                                <DataTableCell text={'Detalles'} type={'header'} textStyle={{ textAlign: 'center', fontWeight: 'bold' }} style={{ maxWidth: '5%'}} minWidth={90}/>
                             </DataTableRow>
 
                             <ScrollView style={{ maxHeight: sizes.hp('16.5%') }}>
                                 {this.props.data.productos[0]
                                     .map(row => (
                                         <DataTableRow key={row.id}>
-                                            <DataTableCell text={row.nombre} borderRight textStyle={{ textAlign: 'center' }} style={{ maxWidth: '35%' }} />
-                                            <DataTableCell text={row.cantidad.toString()} textStyle={{ textAlign: 'center' }} style={{ maxWidth: '35%' }} />
-                                            <DataTableCell text={'VER'} style={{ left: sizes.wp('8%') }} textStyle={{ color: colors.APP_MAIN, fontWeight: 'bold' }} onPress={() => {
+                                            <DataTableCell text={row.nombre} borderRight textStyle={{ textAlign: 'center' }} style={{ maxWidth: '45%' }} />
+                                            <DataTableCell text={row.cantidad.toString()} textStyle={{ textAlign: 'center' }} style={{ maxWidth: '5%', alignSelf: 'center'}} minWidth={100} />
+                                            <DataTableCell text={'VER'} textStyle={{ color: colors.APP_MAIN, fontWeight: 'bold', textAlign: 'center' }} style={{ maxWidth: '5%', alignSelf: 'center'}} minWidth={90} onPress={() => {
                                                 this.setState({ productDetails: row })
                                                 this._showModalDetails()
                                             }} />
