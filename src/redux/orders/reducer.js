@@ -1,20 +1,37 @@
 const initialState = {
-    mail: undefined,
-    cuit: undefined,
-    total: undefined,
-    takeAway: undefined,
-    propina: undefined,
+    total: 0,
+    takeAway: false,
+    propina: 0,
+    comentario: undefined,
     promociones: [],
     productos: [],
+    selectedProduct: {}
 }
 
 export default (state = initialState, { type, payload }) => {
     switch (type) {
         case 'SET_PRODUCT':
-            console.log(payload.product)
-            return { ...state, productos: [...state.productos, payload.product]}
+            return { ...state, productos: [...state.productos, payload.product] }
+        case 'UPDATE_PRODUCT_AMOUNT':
+            return {
+                ...state, productos: state.productos.map(obj =>
+                    (obj.idProducto === payload.id) ? { ...obj, cantidad: payload.amount } : obj),
+                selectedProduct: { ...state.selectedProduct, cantidad: payload.amount }
+            }
+        case 'REMOVE_PRODUCT':
+            return { ...state, productos: [...state.productos.filter(obj => obj !== payload.product)] }
+        case 'SET_SELECTED_PRODUCT':
+            return { ...state, ...payload }
         case 'SET_PROMO':
-            return { ...state, promociones: [...state.promociones, payload.promo]}
+            return { ...state, promociones: [...state.promociones, payload.promo] }
+        case 'UPDATE_TOTAL':
+            return { ...state, total: payload.total }
+        case 'UPDATE_TAKEAWAY':
+            return { ...state, takeAway: payload.takeAway }
+        case 'UPDATE_TIPS':
+            return { ...state, propina: payload.tips }
+        case 'DELETE_ORDER':
+            return initialState
         default:
             return state
     }

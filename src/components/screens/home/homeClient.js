@@ -28,25 +28,10 @@ class AnimatedHeader extends React.Component {
     }
 
     componentDidMount() {
-        //console.log('aca')
         this.getShopsOpenClose()
     }
-
-    /* static getDerivedStateFromProps(nextProps, prevState) {
-        //console.log('deriv')
-        console.log('prev   ', props)
-        console.log('next   ', nextProps)
-        if (nextProps !== prevState) {
-            return {
-                valueButtons: 'open',
-                sortText: 'Abierto/Cerrado',
-            };
-        }
-        return null;
-    } */
-
+    
     async getShopsOpenClose() {
-        //console.log('OP')
         const data = await getAllShopsOpenClose(this.props.user.mail, this.props.user.token)
         if (data.status === 500 || data.status === 204) {
             this.setState({ areStores: false })
@@ -57,7 +42,6 @@ class AnimatedHeader extends React.Component {
     }
 
     async getShopsAZ() {
-        //console.log('AZ')
         const data = await getAllShopsAZ(this.props.user.mail, this.props.user.token)
         if (data.status === 500 || data.status === 204) {
             this.setState({ areStores: false })
@@ -69,10 +53,7 @@ class AnimatedHeader extends React.Component {
 
     onRefresh = () => {
         this.setState({ refreshing: true, shops: [] });
-        if (this.state.valueButtons === 'open')
-            this.getShopsOpenClose()
-        else
-            this.getShopsAZ()
+        this.getShopsOpenClose()
         setTimeout(() => { this.setState({ refreshing: false }) }, 1500);
     }
 
@@ -143,7 +124,7 @@ class AnimatedHeader extends React.Component {
                             value={this.state.valueButtons}>
                             <ToggleButton style={styles.toggleButton} icon="store-24-hour" value="open" onPress={() => this.getShopsOpenClose()}
                                 color={(this.state.valueButtons === 'open') ? colors.APP_MAIN : colors.APP_INACTIVE} />
-                            <ToggleButton style={styles.toggleButton} icon="sort-alphabetical" value="letters" onPress={() => this.getShopsAZ()}
+                            <ToggleButton style={styles.toggleButton} icon="sort-alphabetical" value="letters" onPress={() => this.getShopsOpenClose()}
                                 color={(this.state.valueButtons === 'letters') ? colors.APP_MAIN : colors.APP_INACTIVE} />
                         </ToggleButton.Group>
                     </View>
@@ -152,7 +133,8 @@ class AnimatedHeader extends React.Component {
                         style={[styles.list, {height: (this.props.shops.allShops.length === 2) ? sizes.hp('62.5%') : sizes.hp('70%')}]}
                         refreshing={this.state.refreshing}
                         onRefresh={this.onRefresh}
-                        data={(this.state.areStores) ? this.props.shops.allShops : [1]}
+                        data={(this.state.areStores && this.state.valueButtons === 'letters') ? this.props.shops.allShops.sort((a, b) => a.nombre.localeCompare(b.nombre))
+                        : (this.state.areStores) ? this.props.shops.allShops : [1]}
                         onScroll={Animated.event(
                             [
                                 {

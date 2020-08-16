@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { StyleSheet, View, Text, KeyboardAvoidingView, Platform, } from 'react-native';
-import { TextInput, Button, Snackbar, Dialog, ActivityIndicator, Modal, HelperText, Paragraph } from 'react-native-paper';
+import { TextInput, Button, Dialog, ActivityIndicator, Modal, HelperText, Paragraph } from 'react-native-paper';
 import { appStyles, colors, sizes } from '../../../index.styles';
 import ArrowButton from '../../commons/arrowButton'
 import { insertShop } from '../../../api/user'
@@ -18,11 +18,11 @@ export default class SignUpShopScreen extends Component {
 			legalName: '',
 			email: '',
 			password: '',
-			visibleSnackBar: true,
 			visibleDialogCreate: false,
 			visibleDialogError: false,
 			loading: false,
-			messageError: '',
+			messageError: 'IMPORTANTE: Una vez cargada tu información, la misma será validada. Te enviaremos un mail a esa dirección ' +
+			'notificando el alta del local en nuestro sistema.',
 			emailError: false,
 			passwordError: false,
 		}
@@ -30,9 +30,11 @@ export default class SignUpShopScreen extends Component {
 
 	async signup(){
 		this.setState({ loading: true })
-		const data = await insertShop(this.state.email, this.state.firstName, this.state.lastName, this.state.password)
+		setTimeout(() => { this.setState({ loading: false }) }, 4000);
+		const data = await insertShop(this.state.cuit, this.state.name, this.state.address, this.state.phone, this.state.legalName, 
+			this.state.email, this.state.password)
 		if (data.status === 500) {
-			this.setState({ loading: false, email: '', password: '', messageError: data.body })
+			this.setState({ loading: false, password: '', messageError: data.body })
 			this._showDialogError()
 		}else if(data.status === 401){
 			this.setState({ loading: false, email: '', password: '', messageError: 'Error: ' + data.body })
@@ -65,33 +67,21 @@ export default class SignUpShopScreen extends Component {
 			this.setState({ password: text, passwordError: true })			
 		}
 	}
+	
+	validatePhone = (text) => {
+		this.setState({ phone: text})
+	}
 
 	_showDialogCreate = () => this.setState({ visibleDialogCreate: true });
 	_hideDialogCreate = () => this.setState({ visibleDialogCreate: false });
 
-	_onDismissSnackBar = () => this.setState({ visibleSnackBar: false })
+	_showDialogError = () => this.setState({ visibleDialogError: true });
+	_hideDialogError = () => this.setState({ visibleDialogError: false });
 
 	render() {
 		return (
-			<KeyboardAvoidingView style={[appStyles.container]} behavior={Platform.OS == "ios" ? "padding" : "height"} keyboardVerticalOffset={Platform.OS === "ios" ? -90 : -170}>
+			<KeyboardAvoidingView style={[appStyles.container]} behavior={Platform.OS == "ios" ? "padding" : "height"} keyboardVerticalOffset={Platform.OS === "ios" ? -55 : -170}>
 				<ArrowButton rute={'logsign'} />
-
-				<Snackbar
-					style={styles.snackbar}
-					theme={{ colors: { accent: '#FFFFFF' } }}
-					visible={this.state.visibleSnackBar}
-					onDismiss={this._onDismissSnackBar}
-					duration={30000}
-					action={{
-						label: 'Ok',
-						onPress: () => { this._onDismissSnackBar },
-					}}>
-					<Text style={{ fontSize: 18, textAlign: 'left' }}>
-						IMPORTANTE: Una vez cargada tu información, la misma será validada. Te enviaremos un mail a esa
-						dirección notificando el alta del local en nuestro sistema.
-					</Text>
-
-				</Snackbar>
 
 				<Text style={styles.signupText}> Crea una nueva cuenta para tu local</Text>
 
@@ -121,7 +111,7 @@ export default class SignUpShopScreen extends Component {
 					label='Dirección'
 					placeholder='Calle 123'
 					theme={{ colors: { text: colors.TEXT_INPUT, primary: colors.APP_MAIN } }}
-					onChangeText={(text) => this.setState({ name: text })}
+					onChangeText={(text) => this.setState({ address: text })}
 					value={this.state.address}
 				/>
 
@@ -141,11 +131,11 @@ export default class SignUpShopScreen extends Component {
 					label='Teléfono'
 					placeholder='Teléfono'
 					theme={{ colors: { text: colors.TEXT_INPUT, primary: colors.APP_MAIN } }}
-					onChangeText={(phone) => this.validatePhone({ phone })}
+					onChangeText={(text) => this.setState({ phone: text })}
 					value={this.state.phone}
 				/>
 
-				<HelperText type="error" visible={this.state.emailError} style={{ marginBottom: -12 }}>
+				<HelperText type="error" visible={this.state.emailError} style={{ bottom:sizes.hp('5%')}}>
 					El mail ingresado es inválido
       			</HelperText>
 
@@ -171,8 +161,8 @@ export default class SignUpShopScreen extends Component {
 					value={this.state.password}
 				/>
 
-				<HelperText type="error" visible={this.state.passwordError} style={{ marginTop: -80 }}>
-					La contraseña debe tener 6 dígitos mínimo
+				<HelperText type="error" visible={this.state.passwordError} style={{ bottom:sizes.hp('6%')}}>
+					La contraseña debe tener 6 dígitos como mínimo
       			</HelperText>
 
 				<Button
@@ -192,19 +182,7 @@ export default class SignUpShopScreen extends Component {
 					<Dialog.Title style={{ alignSelf: 'center' }}>¿Desea crear cuenta?</Dialog.Title>
 					<Dialog.Actions>
 						<Button style={{ marginRight: sizes.wp('3%') }} color={colors.APP_RED} onPress={this._hideDialogCreate}>Cancelar</Button>
-						<Button color={colors.APP_GREEN} onPress={() => {this.signup()
-						this._hideDialogCreate}}>Ok</Button>
-					</Dialog.Actions>
-				</Dialog>
-
-				<Dialog
-					visible={this.state.visibleDialogCreate}
-					onDismiss={this._hideDialogCreate}>
-					<Dialog.Title style={{ alignSelf: 'center' }}>¿Desea crear cuenta?</Dialog.Title>
-					<Dialog.Actions>
-						<Button style={{ marginRight: sizes.wp('3%') }} color={colors.APP_RED} onPress={this._hideDialogCreate}>Cancelar</Button>
-						<Button color={colors.APP_GREEN} onPress={() => {this.signup()
-						this._hideDialogCreate()}}>Ok</Button>
+						<Button color={colors.APP_GREEN} onPress={() => {this.signup(), this._hideDialogCreate()}}>Ok</Button>
 					</Dialog.Actions>
 				</Dialog>
 
@@ -240,27 +218,19 @@ const styles = StyleSheet.create({
 		fontWeight: "bold",
 		textAlign: "center",
 		alignSelf: 'center',
-		top: sizes.hp('1%'),
+		top: sizes.hp('6%'),
+		//marginBottom: sizes.hp('10%'),
 		padding: 12,
 		height: sizes.hp('12%'),
 		marginBottom: sizes.hp('12%'),
 	},
 	inputView: {
-		top: sizes.hp('-10%'),
+		top: sizes.hp('-5%'),
 		width: "80%",
 		height: 40,
-		marginBottom: 15,
+		marginBottom: 20,
 		justifyContent: "center",
-		padding: 5,
+		//padding: 5,
 		//position: 'absolute',
-	},
-	snackbar: {
-		alignSelf: 'center',
-		top: sizes.hp('-50%'),
-		width: sizes.wp('90%'),
-		padding: 5,
-		backgroundColor: colors.APP_MAIN,
-		//position: 'relative'
-		flex: 2
 	},
 })

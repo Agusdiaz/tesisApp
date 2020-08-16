@@ -23,8 +23,9 @@ class ShopCardSummary extends Component {
 
     async setFavourite(){
         const data = await setShopAsFavourite(this.props.user.mail, this.props.data.cuit, this.props.user.token)
-        if (data.status === 200 ) 
+        if (data.status === 200 ) {
             this.props.updateShopFavourite(this.props.data.cuit, true)
+        }
     }
 
     async removeFavourite(){

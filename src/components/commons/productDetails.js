@@ -32,7 +32,7 @@ class ProductDetails extends Component {
                     dark
                     color={(this.props.data.condicion === productCondition.VEGAN) ? colors.VEGAN : (this.props.data.condicion === productCondition.CELIAC) ?
                         colors.CELIAC : colors.VEGETARIAN} >
-                   {this.props.data.condicion}
+                    {this.props.data.condicion}
                 </Button>
                 :
                 null
@@ -56,17 +56,21 @@ class ProductDetails extends Component {
                 <Card.Content style={{ alignItems: 'center' }}>
                     <Text style={styles.details} numberOfLines={6}>{this.props.data.detalle}</Text>
 
-                    <DataTable style={{ marginTop: sizes.wp('1%'), width: sizes.wp('120%'), left: -10 }}>
+                    <DataTable style={{ marginTop: sizes.wp('1%'), width: (this.props.rute !== 'order') ? sizes.wp('120%') : sizes.wp('100%'), left: -10 }}>
                         <DataTableHeader
                             title={'¿De qué esta hecho este producto?'}
                             style={{ right: sizes.wp('-3%') }}
                         />
                         <DataTableRow >
-                            <DataTableCell text={'INGREDIENTES '} type={'header'} borderRight textStyle={{ textAlign: 'center', fontWeight: 'bold' }} style={{ maxWidth: '30%'}} />
-                            <DataTableCell text={'Detalle'} type={'header'} textStyle={{ textAlign: 'center', fontWeight: 'bold' }} style={{ maxWidth: '10%'}} minWidth={90} />
-                            <DataTableCell text={'Cantidad'} type={'header'} textStyle={{ textAlign: 'center', fontWeight: 'bold' }} style={{ maxWidth: '3%'}} minWidth={90} />
-                            <DataTableCell text={'Precio'} type={'header'} textStyle={{ textAlign: 'center', fontWeight: 'bold' }} style={{ maxWidth: '3%' }} minWidth={70} />
-                            <DataTableCell text={'Opcional'} type={'header'} textStyle={{ textAlign: 'center', fontWeight: 'bold' }} style={{ maxWidth: '3%' }} minWidth={90} />
+                            <DataTableCell text={'INGREDIENTES '} type={'header'} borderRight textStyle={{ textAlign: 'center', fontWeight: 'bold' }} style={{ maxWidth: '30%' }} />
+                            <DataTableCell text={'Detalle'} type={'header'} textStyle={{ textAlign: 'center', fontWeight: 'bold' }} style={{ maxWidth: '10%' }} minWidth={90} />
+                            <DataTableCell text={'Cantidad'} type={'header'} textStyle={{ textAlign: 'center', fontWeight: 'bold' }} style={{ maxWidth: '3%' }} minWidth={90} />
+                            {(this.props.rute !== 'order') ?
+                                <View style={{flexDirection: 'row'}}>
+                                    <DataTableCell text={'Precio'} type={'header'} textStyle={{ textAlign: 'center', fontWeight: 'bold' }} style={{ maxWidth: '3%' }} minWidth={70} />
+                                    <DataTableCell text={'Opcional'} type={'header'} textStyle={{ textAlign: 'center', fontWeight: 'bold' }} style={{ maxWidth: '3%' }} minWidth={90} />
+                                </View>
+                                : null}
                         </DataTableRow>
 
                         <ScrollView style={{ height: sizes.hp('31%') }}>
@@ -74,12 +78,18 @@ class ProductDetails extends Component {
                                 this.props.data.ingredientes[0]
                                     .map(row =>
                                         < DataTableRow key={row.id} >
-                                            <DataTableCell text={row.nombre} borderRight style={{ maxWidth: '30%' }} textStyle={{textAlign: 'center'}}/>
-                                            <DataTableCell text={(row.detalle) ? row.detalle : '-'} textStyle={{ textAlign: 'center' }} style={{ maxWidth: '10%', alignSelf: 'center'}} minWidth={90} />
-                                            <DataTableCell text={(row.cantidad) ? (row.cantidad).toString() : '-'} textStyle={{ textAlign: 'center' }} style={{ maxWidth: '3%', alignSelf: 'center'}} minWidth={90} />
-                                            <DataTableCell text={(row.precio) ? '$'+(row.precio).toString() : '-'} textStyle={{ textAlign: 'center' }} style={{ maxWidth: '3%', alignSelf: 'center' }} minWidth={70} />
-                                            <DataTableCell text={(row.opcion === 1) ? 'Agregar' : (row.opcion === 0) ? 'Eliminar' : '-'} textStyle={{ textAlign: 'center', color: (row.opcion === 1) ? colors.APP_GREEN : 
-                                        (row.opcion === 0) ? colors.APP_RED : null }} style={{ maxWidth: '3%', alignSelf: 'center' }} minWidth={90} />
+                                            <DataTableCell text={row.nombre} borderRight style={{ maxWidth: '30%' }} textStyle={{ textAlign: 'center' }} />
+                                            <DataTableCell text={(row.detalle) ? row.detalle : '-'} textStyle={{ textAlign: 'center' }} style={{ maxWidth: '10%', alignSelf: 'center' }} minWidth={90} />
+                                            <DataTableCell text={(row.cantidad) ? (row.cantidad).toString() : '-'} textStyle={{ textAlign: 'center' }} style={{ maxWidth: '3%', alignSelf: 'center' }} minWidth={90} />
+                                            {(this.props.rute !== 'order') ?
+                                                <View style={{flexDirection: 'row'}}>
+                                                    <DataTableCell text={(row.precio) ? '$' + (row.precio).toString() : '-'} textStyle={{ textAlign: 'center' }} style={{ maxWidth: '3%', alignSelf: 'center' }} minWidth={70} />
+                                                    <DataTableCell text={(row.opcion === 1) ? 'Agregar' : (row.opcion === 0) ? 'Eliminar' : '-'} textStyle={{
+                                                        textAlign: 'center', color: (row.opcion === 1) ? colors.APP_GREEN :
+                                                            (row.opcion === 0) ? colors.APP_RED : null
+                                                    }} style={{ maxWidth: '3%', alignSelf: 'center' }} minWidth={90} />
+                                                </View>
+                                                : null}
                                         </DataTableRow>
                                     )
                                 :

@@ -46,7 +46,7 @@ class FavouritesShopsScreen extends Component {
         else this.setState({ areFavourites: true })
     }
 
-    async getShopsAZ() {
+    async getShopsOpenClose() {
         const data = await getAllShopsOpenClose(this.props.user.mail, this.props.user.token)
         if (data.status === 200)
             this.props.setShopsData(data.body)
@@ -55,7 +55,7 @@ class FavouritesShopsScreen extends Component {
 
     onRefresh = () => {
         this.setState({ shops: [], refreshing: true })
-        this.getShopsAZ()
+        this.getShopsOpenClose()
         setTimeout(() => { this.setState({ refreshing: false }) }, 1500);
     }
 
@@ -78,7 +78,7 @@ class FavouritesShopsScreen extends Component {
             return (
                 <View style={styles.viewImage}>
                     <Image source={require('../../../icons/noStar.png')} style={styles.image} />
-                    <Text style={styles.infoImage}>Todavía no tenés ningún local favorito</Text>
+                    <Text style={styles.infoImage}>No tenés ningún local como favorito</Text>
                 </View>
             );
         }

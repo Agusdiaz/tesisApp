@@ -1,16 +1,18 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import { StyleSheet, Text, View, Image, ScrollView, Alert } from 'react-native';
 import { colors, sizes, orderStage, appStyles } from '../../../index.styles';
 import { DataTable, DataTableHeader, DataTableCell, DataTablePagination, DataTableRow } from 'material-bread'
 import { Card, FAB, Button, Divider, Portal, Dialog, TextInput, Paragraph } from 'react-native-paper';
+import OrderActions from '../../../redux/orders/action'
 import TextTicker from 'react-native-text-ticker'
+import moment from 'moment'
 
 class OrderSummary extends Component {
     constructor(props) {
         super(props);
         this.state = {
             orderNumber: 7856,
-            shopName: 'Nombre del Local',
             date: '24/03/2020 a la(s) 20:20hs',
             items: [
                 {
@@ -30,17 +32,9 @@ class OrderSummary extends Component {
                     unitPrice: 100,
                 },],
             promociones: [],
-            isTakeAway: false,
-            tips: 0,
-            total: 1500,
             visibleDialogContinue: false,
             visibleDialogTip: false,
         }
-    }
-
-    handleButtons = (value) => {
-        if (value != null)
-            this.setState({ isTakeAway: value })
     }
 
     onChangeTip = (tip) => {
@@ -50,7 +44,7 @@ class OrderSummary extends Component {
             if (numbers.indexOf(tip[i]) > -1) {
                 newText = newText + tip[i]
                 if (i == tip.length - 1)
-                    this.setState({ tips: parseFloat(tip) });
+                    this.props.updateTips(parseFloat(tip))
             }
             else {
                 Alert.alert('Atención', 'Por favor, ingrese solo números');
@@ -78,9 +72,9 @@ class OrderSummary extends Component {
             loop
             animationType='bounce'
             repeatSpacer={50}
-            marqueeDelay={1000}>{this.state.shopName}</TextTicker>
+            marqueeDelay={1000}>{this.props.shop.nombre}</TextTicker>
 
-        const tips = props => <View><Text style={{ fontSize: 16, right: sizes.wp('12%'), }}> ${this.state.tips} </Text>
+        const tips = props => <View><Text style={{ fontSize: 16, right: sizes.wp('12%'), }}> ${this.props.order.propina} </Text>
             <FAB style={styles.fabTips}
                 color={colors.APP_BACKGR}
                 small
@@ -89,9 +83,9 @@ class OrderSummary extends Component {
             />
         </View>
 
-        const total = props => <Text style={styles.rightText}> ${this.state.total} </Text>
+        const total = props => <Text style={styles.rightText}> ${this.props.order.total} </Text>
 
-        const date = props => <Text style={styles.rightText}> {this.state.date} </Text>
+        const date = props => <Text style={styles.rightText}> {moment(new Date()).format("YYYY/MM/DD HH:mm")} hs</Text>
 
         return (
             <View style={[appStyles.container, { top: sizes.hp('7%'), }]} >
@@ -101,16 +95,16 @@ class OrderSummary extends Component {
                             style={styles.takeAwayButtons}
                             dark
                             color={colors.APP_MAIN}
-                            mode={(!this.state.isTakeAway) ? 'contained' : 'text'}
-                            onPress={() => this.handleButtons(false)}>
+                            mode={(!this.props.order.takeAway) ? 'contained' : 'text'}
+                            onPress={() => this.props.updateTakeAway(false)}>
                             Para comer acá
                     </Button>
                         <Button
                             style={styles.takeAwayButtons}
                             dark
                             color={colors.APP_MAIN}
-                            mode={(this.state.isTakeAway) ? 'contained' : 'text'}
-                            onPress={() => this.handleButtons(true)}>
+                            mode={(this.props.order.takeAway) ? 'contained' : 'text'}
+                            onPress={() => this.props.updateTakeAway(true)}>
                             Para llevar
                     </Button>
                     </Card.Actions>
@@ -193,7 +187,7 @@ class OrderSummary extends Component {
                     <Dialog
                         visible={this.state.visibleDialogContinue}
                         onDismiss={this._hideDialogContinue}>
-                        <Dialog.Title style={{ alignSelf: 'center', fontWeight: 'bold' }}>El total es ${this.state.total + this.state.tips}</Dialog.Title>
+                        <Dialog.Title style={{ alignSelf: 'center', fontWeight: 'bold' }}>El total es ${this.props.order.total + this.props.order.propina}</Dialog.Title>
                         <Dialog.Content style={{ alignSelf: 'center' }}><Paragraph style={{ fontSize: 16.5 }}>¿Desea modificar su pedido?</Paragraph></Dialog.Content>
                         <Dialog.Actions>
                             <Button style={{ marginRight: sizes.wp('3%') }} color={colors.APP_RED} onPress={this._hideDialogContinue}>Modificar</Button>
@@ -214,7 +208,7 @@ class OrderSummary extends Component {
                                 placeholder="$"
                                 theme={{ colors: { text: colors.TEXT_INPUT, primary: colors.APP_MAIN } }}
                                 onChangeText={(tip) => this.onChangeTip(tip)}
-                                value={this.state.tips} />
+                                value={this.props.order.propina} />
                         </Dialog.Content>
                         <Dialog.Actions style={{ marginTop: sizes.hp('-2%') }}>
                             <Button style={{ marginRight: sizes.wp('3%') }} color={colors.APP_RED} onPress={this._hideDialogTip}>Cancelar</Button>
@@ -277,4 +271,20 @@ const styles = StyleSheet.create({
     },
 });
 
-export default OrderSummary;
+function mapStateToProps(state) {
+    return {
+        shop: state.shops.selected,
+        order: state.order
+    };
+}
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        setProductOrder: (product) => dispatch(OrderActions.setProductOrder(product)),
+        updateTotal: (total) => dispatch(OrderActions.updateTotal(total)),
+        updateTakeAway: (takeAway) => dispatch(OrderActions.updateTakeAway(takeAway)),
+        updateTips: (tips) => dispatch(OrderActions.updateTips(tips)),
+    }
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(OrderSummary);

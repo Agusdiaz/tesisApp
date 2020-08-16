@@ -152,7 +152,7 @@ class OrderDetailsClient extends Component {
 
                 <Portal>
                     <Modal contentContainerStyle={styles.modalView} visible={this.state.visibleModalProduct} onDismiss={this._hideModalProduct}>
-                        <ProductDetails hideModalFromChild={this._hideModalProduct} data={this.state.productDetails} />
+                        <ProductDetails hideModalFromChild={this._hideModalProduct} data={this.state.productDetails} rute={'order'}/>
                     </Modal>
 
                     <Modal contentContainerStyle={{alignItems: "center"}} visible={this.state.visibleModalPromo} onDismiss={this._hideModalPromo}>

@@ -145,7 +145,7 @@ class ProductCard extends Component {
                         <ProductDetails hideModalFromChild={this._hideModalDetails} data={this.props.data} />
                     </Modal>
 
-                    <Modal contentContainerStyle={[styles.modalView, {height: sizes.hp('88%')}]} visible={this.state.visibleModalOrder} onDismiss={this._hideModalOrder}>
+                    <Modal contentContainerStyle={[styles.modalView, {maxHeight: sizes.hp('92%')}]} visible={this.state.visibleModalOrder} onDismiss={this._hideModalOrder}>
                         <ProductDetailsOrder hideModalFromChild={this._hideModalOrder} data={this.props.data} />
                     </Modal>
 
@@ -185,7 +185,7 @@ class ProductCard extends Component {
 
 const styles = StyleSheet.create({
     modalView: {
-        marginTop: sizes.hp('5%'),
+        marginTop: sizes.hp('0%'),
         margin: sizes.hp('2%'),
         backgroundColor: "#ffffff",
         borderRadius: 20,

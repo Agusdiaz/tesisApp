@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import { View, Text, StyleSheet, ListView } from 'react-native';
 import StepIndicator from 'react-native-step-indicator';
 import { appStyles, colors, sizes } from '../../../index.styles';
@@ -8,6 +9,7 @@ import Animated from 'react-native-reanimated';
 import ChooseShop from '../orderProcess/chooseShop'
 import ChooseMenu from '../orderProcess/chooseMenu'
 import OrderSummary from '../orderProcess/orderSummary'
+import OrderActions from '../../../redux/orders/action'
 
 const labels = ["Elegir local", "Realizar pedido", "Resumen pedido", "Pagar"];
 const customStyles = {
@@ -35,7 +37,7 @@ const customStyles = {
 const HEADER_EXPANDED_HEIGHT = 105
 const HEADER_COLLAPSED_HEIGHT = -105
 
-export default class HorizontalStepIndicator extends Component {
+class HorizontalStepIndicator extends Component {
 
     constructor(props) {
         super(props);
@@ -50,8 +52,13 @@ export default class HorizontalStepIndicator extends Component {
     _hideDialogOut = () => this.setState({ visibleDialogOut: false });
 
     previousStep = () => {
-        this.setState({ currentPosition: this.state.currentPosition - 1 })
-        this.updateScroll()
+        if (this.state.currentPosition === 1){
+            this._showDialogOut()
+        }
+        else{
+            this.setState({ currentPosition: this.state.currentPosition - 1 })
+            this.updateScroll()
+        } 
     }
 
     nextStep = () => {
@@ -64,7 +71,7 @@ export default class HorizontalStepIndicator extends Component {
     }
 
     updateScroll = () => {
-        this.setState({ animatedValue: new Animated.Value(0)})
+        this.setState({ animatedValue: new Animated.Value(0) })
     }
 
     render() {
@@ -85,7 +92,7 @@ export default class HorizontalStepIndicator extends Component {
                                 size={50}
                                 style={{ left: sizes.wp('1%'), top: sizes.hp('-3.3%') }}
                                 color={colors.APP_MAIN}
-                                onPress={this._showDialogOut}
+                                onPress={() => Actions.navbarclient({ page: 0 })}
                             />
                             :
                             null
@@ -137,11 +144,11 @@ export default class HorizontalStepIndicator extends Component {
                                 ],
                                 { useNativeDriver: true }
                             )}
-                            updateScrollFromParent = {this.updateScroll} />
+                                updateScrollFromParent={this.updateScroll} />
 
                             : (this.state.currentPosition == 2) ?
 
-                                <OrderSummary nextStepParent={this.nextStep}/>
+                                <OrderSummary nextStepParent={this.nextStep} />
 
                                 :
                                 <Text>Pagar</Text>
@@ -150,16 +157,17 @@ export default class HorizontalStepIndicator extends Component {
                 </Animated.View>
 
                 <Portal>
-                        <Dialog
-                            visible={this.state.visibleDialogOut}
-                            onDismiss={this._hideDialogOut}>
-                            <Dialog.Title style={{ alignSelf: 'center' }}>Perderás todo tu progreso, ¿desea continuar?</Dialog.Title>
-                            <Dialog.Actions>
-                                <Button style={{ marginRight: sizes.wp('3%') }} color={colors.APP_RED} onPress={this._hideDialogOut}>Cancelar</Button>
-                                <Button color={colors.APP_GREEN} onPress={() => { this._hideDialogOut(), Actions.navbarclient({ page: 0 }) }}>Sí</Button>
-                            </Dialog.Actions>
-                        </Dialog>
-                    </Portal>
+                    <Dialog
+                        visible={this.state.visibleDialogOut}
+                        onDismiss={this._hideDialogOut}>
+                        <Dialog.Title style={{ alignSelf: 'center' }}>Perderás todo tu progreso, ¿desea continuar?</Dialog.Title>
+                        <Dialog.Actions>
+                            <Button style={{ marginRight: sizes.wp('3%') }} color={colors.APP_RED} onPress={this._hideDialogOut}>Cancelar</Button>
+                            <Button color={colors.APP_GREEN} onPress={() => { this._hideDialogOut(), this.setState({ currentPosition: this.state.currentPosition - 1 }), 
+                            this.props.deleteOrder(), this.updateScroll()}}>Sí</Button>
+                        </Dialog.Actions>
+                    </Dialog>
+                </Portal>
 
             </View>
         )
@@ -184,3 +192,17 @@ const styles = StyleSheet.create({
         padding: 5,
     }
 });
+
+function mapStateToProps(state) {
+    return {
+        order: state.order
+    };
+}
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        deleteOrder: () => dispatch(OrderActions.deleteOrder()),
+    }
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(HorizontalStepIndicator);

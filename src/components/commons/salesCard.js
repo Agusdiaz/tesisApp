@@ -98,7 +98,8 @@ class SalesCard extends Component {
 
                 <Portal>
                     <Modal contentContainerStyle={styles.modalView} visible={this.state.visibleModalDetails} onDismiss={this._hideModalDetails}>
-                        <ProductDetails hideModalFromChild={this._hideModalDetails} data={this.state.productDetails} />
+                        <ProductDetails hideModalFromChild={this._hideModalDetails} data={this.state.productDetails} 
+                        rute={(this.props.rute === 'order') ? 'order' : null}/>
                     </Modal>
 
                     {(this.props.rute !== 'order') ?

@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { StyleSheet, Text, View, Image, ScrollView } from 'react-native';
 import { colors, sizes, productCondition } from '../../index.styles';
 import { DataTable, DataTableHeader, DataTableCell, DataTableRow } from 'material-bread'
-import { Card, FAB, Button, Divider, IconButton } from 'react-native-paper';
+import { Card, FAB, Button, Divider, IconButton, Portal, Dialog } from 'react-native-paper';
 import OrderActions from '../../redux/orders/action'
 import TextTicker from 'react-native-text-ticker'
 
@@ -11,50 +11,84 @@ class ProductDetailsOrder extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            originalProd: {...props.data},
+            originalIngr: [],
             photo: 'https://picsum.photos/500',
-            product: {
-                idProducto: props.data.id,
-                cantidad: 1,
-                ingredientes: [] //idIngrediente y cantidad
-            },
             modifing: false,
-            selected: 0
+            selected: 0,
+            visibleDialogResponse: false,
+            actionMessage: '',
         }
     }
 
     componentDidMount() {
-        console.log('abro')
+        if (this.props.data.ingredientes[0]) {
+             this.setState({
+                originalIngr: this.props.data.ingredientes[0].map(x => {
+                    x['check'] = false;
+                    return x;
+                }),
+            }) 
+            /* this.props.data.ingredientes[0].forEach(x => {
+                x['check'] = false
+                this.state.originalIngr.push(x)
+            }) */
+        }
     }
 
-    componentWillUnmount(){
+    /* componentWillUnmount() {
         console.log('cierro')
-        this.setState({originalProd: null, product: null, modifing: null})
+        this.setState({ originalIngr: null, product: null, modifing: null })
         //console.log('stateeeee ', this.state)
-    }
+    } */
 
-    hideModal = () => {
-        this.props.hideModalFromChild();
-    }
+    _showDialogResponse = () => this.setState({ visibleDialogResponse: true })
+    _hideDialogResponse = () => this.setState({ visibleDialogResponse: false })
 
-    removeIngredient(id) {
-        var index = this.state.originalProd.ingredientes[0].findIndex(x => x.id === id)
-        var copy = [...this.state.originalProd.ingredientes]
-        copy.splice(index, 1);
-        this.setState(prevState => ({
-            originalProd: {
-                ...prevState.originalProd,
-                ingredientes: copy
-            }
-        }))
-    }
+    hideModal = () => { this.props.hideModalFromChild() }
 
     addProduct() {
-        if (!this.props.data.ingredientes[0])
-            this.props.setProductOrder(this.state.product)
-        else {
+        console.log(this.props.order.total)
+        var product = {
+            idProducto: this.props.data.id,
+            nombre: this.props.data.nombre,
+            precio: this.props.data.precio,
+            cantidad: 1,
+            modificado: this.state.modifing,
+            condicion: this.props.data.condicion,
+            detalle: this.props.data.detalle,
+            ingredientes: [],
         }
-        this.hideModal()
+        if (!this.props.data.ingredientes[0]) {
+            this.props.setProductOrder(product)
+            this.props.updateTotal(this.props.order.total + this.props.data.precio)
+            this.hideModal()
+            //console.log('********************************************************\n', this.props.order.productos)
+        } else if (this.props.data.selectivo === 1 && this.state.selected === 0) {
+            this.setState({ actionMessage: 'Debes seleccionar al menos 1 ingrediente' })
+            this._showDialogResponse()
+        } else if(this.props.data.selectivo === 1){
+            this.state.originalIngr.map(obj => {
+                if(obj.check){
+                    product.ingredientes.push({idIngrediente: obj.id, nombre: obj.nombre, detalle: obj.detalle, cantidad: obj.cantidad})
+                }
+            })
+            this.props.setProductOrder(product)
+            this.props.updateTotal(this.props.order.total + this.props.data.precio)
+            this.hideModal()
+        } else if(this.props.data.ingredientes[0]){
+            var cant = 0
+            this.state.originalIngr.map(obj => {
+                if(obj.opcion !== 1){
+                    cant = (obj.precio) ? obj.precio * obj.cantidad : 0
+                    product.ingredientes.push({idIngrediente: obj.id, nombre: obj.nombre, detalle: obj.detalle, cantidad: obj.cantidad})
+                }
+            })
+            product.precio = this.props.data.precio + cant
+            this.props.setProductOrder(product)
+            this.props.updateTotal(this.props.order.total + product.precio)
+            this.hideModal()
+        }
+
         /* this.setState(prevState => ({
             product: {            
                 ...prevState.product,
@@ -63,19 +97,57 @@ class ProductDetailsOrder extends Component {
         })) */
     }
 
-    setAmount(action, id) {
-        var index = this.state.originalProd.ingredientes[0].findIndex(x => x.id === id)
-        var copy = [...this.state.originalProd.ingredientes]
-        copy[0][index].cantidad = (action === 0) ? copy[0][index].cantidad - 1 : copy[0][index].cantidad + 1
-        this.setState(prevState => ({
-            originalProd: {
-                ...prevState.originalProd,
-                ingredientes: copy
+    removeIngredient(id) {
+        /* var index = this.state.originalIngr.findIndex(x => x.id === id)
+        var copy = this.state.originalIngr */
+        var copy = this.state.originalIngr
+        const index = copy.findIndex(x => x.id === id)
+        copy.splice(index, 1);
+        this.setState({ originalIngr: copy })
+        /* this.setState(prevState => ({
+            originalIngr: {
+                ...prevState.originalIngr,
+                originalIngr: copy
             }
-        }))
+        })) */
+    }
+
+    setAmount(action, id) {
+        var copy = this.state.originalIngr
+        const i = copy.findIndex(x => x.id === id)
+        if (action === 0 && copy[i].cantidad > 0)
+            copy[i].cantidad = copy[i].cantidad - 1
+        else if (action === 1)
+            copy[i].cantidad = copy[i].cantidad + 1
+        /* this.setState(prevState => ({
+            originalIngr: {
+                ...prevState.originalIngr,
+                originalIngr: copy
+            }
+        })) */
+        this.setState({ originalIngr: copy })
+    }
+
+    onCheckChanged(id) {
+        const data = this.state.originalIngr
+        const index = data.findIndex(x => x.id === id)
+        if (!data[index].check && this.state.selected < this.props.data.tope) {
+            data[index].check = !data[index].check;
+            this.setState({ originalIngr: data, selected: this.state.selected + 1 })
+        }
+        else if (!data[index].check && this.state.selected === this.props.data.tope) {
+            var text = 'Sólo se pueden seleccionar hasta ' + this.props.data.tope + ' ingrediente(s)'
+            this.setState({ actionMessage: text })
+            this._showDialogResponse()
+        }
+        else if (data[index].check) {
+            data[index].check = !data[index].check;
+            this.setState({ originalIngr: data, selected: this.state.selected - 1 })
+        }
     }
 
     render() {
+        //console.log('PROPS  ', this.props.data)
         const Close = props => <IconButton
             icon='close'
             color={colors.APP_MAIN}
@@ -109,46 +181,78 @@ class ProductDetailsOrder extends Component {
             <Card style={styles.productCard}>
                 <Card.Title style={{ margin: -10, marginTop: sizes.hp('-2') }} left={Condition} leftStyle={styles.condition} right={Close} rightStyle={styles.close} />
                 <Divider />
-                <Card.Title right={NamePrice} rightStyle={styles.rightSide} />                
+                <Card.Title right={NamePrice} rightStyle={styles.rightSide} />
                 <Card.Cover source={{ uri: this.state.photo }} resizeMode='cover' style={styles.image} />
                 <Card.Content style={{ alignItems: 'center', }}>
-                    <Text style={styles.details} numberOfLines={6}>{this.props.data.detalle}</Text>
+                    <Text style={styles.details} numberOfLines={4}>{this.props.data.detalle}</Text>
                     {(this.props.data.tope) ?
-                    <Text style={[styles.details, {fontWeight: 'bold'}]}>{this.props.data.tope} ingrediente(s) como máximo</Text> : null}
+                        <Text style={[styles.details, { fontWeight: 'bold' }]}>{this.props.data.tope} ingrediente(s) como máximo</Text> : null}
 
-                    <DataTable style={{ marginTop: sizes.wp('1%'), width: sizes.wp('120%'), left: -10 }}>
+                    <DataTable style={{
+                        marginTop: sizes.wp('-2%'), width: (this.props.data.selectivo === 1) ? sizes.wp('135%')
+                            : sizes.wp('120%'), left: -10
+                    }}>
                         <DataTableHeader
                             title={'¿De qué esta hecho este producto?'}
                             style={{ right: sizes.wp('-3%') }}
                         />
                         {(!this.state.modifing) ?
-                            <View>
-                                <DataTableRow >
-                                    <DataTableCell text={'INGREDIENTES'} type={'header'} borderRight textStyle={{ textAlign: 'center', fontWeight: 'bold' }} style={{ maxWidth: '30%' }} />
-                                    <DataTableCell text={'Detalle'} type={'header'} textStyle={{ textAlign: 'center', fontWeight: 'bold' }} style={{ maxWidth: '10%'}} minWidth={90} />
-                                    <DataTableCell text={'Cantidad'} type={'header'} textStyle={{ textAlign: 'center', fontWeight: 'bold' }} style={{ maxWidth: '3%'}} minWidth={90} />
-                                    <DataTableCell text={'Precio'} type={'header'} textStyle={{ textAlign: 'center', fontWeight: 'bold' }} style={{ maxWidth: '3%' }} minWidth={70} />
-                                    <DataTableCell text={'Opcional'} type={'header'} textStyle={{ textAlign: 'center', fontWeight: 'bold' }} style={{ maxWidth: '3%' }} minWidth={90} />
-                                </DataTableRow>
+                            (this.props.data.selectivo === 0) ?
+                                <View>
+                                    <DataTableRow >
+                                        <DataTableCell text={'INGREDIENTES'} type={'header'} borderRight textStyle={{ textAlign: 'center', fontWeight: 'bold' }} style={{ maxWidth: '30%' }} />
+                                        <DataTableCell text={'Detalle'} type={'header'} textStyle={{ textAlign: 'center', fontWeight: 'bold' }} style={{ maxWidth: '10%' }} minWidth={90} />
+                                        <DataTableCell text={'Cantidad'} type={'header'} textStyle={{ textAlign: 'center', fontWeight: 'bold' }} style={{ maxWidth: '3%' }} minWidth={90} />
+                                        <DataTableCell text={'Precio'} type={'header'} textStyle={{ textAlign: 'center', fontWeight: 'bold' }} style={{ maxWidth: '3%' }} minWidth={70} />
+                                        <DataTableCell text={'Opcional'} type={'header'} textStyle={{ textAlign: 'center', fontWeight: 'bold' }} style={{ maxWidth: '3%' }} minWidth={90} />
+                                    </DataTableRow>
 
-                                <ScrollView style={{ height: (this.props.data.tope) ? sizes.hp('31%') : sizes.hp('33%') }}>
-                                    {(this.props.data.ingredientes[0]) ?
-                                        this.props.data.ingredientes[0]
-                                            .map(row =>
-                                                < DataTableRow key={row.id} >
-                                                    <DataTableCell text={row.nombre} borderRight style={{ maxWidth: '30%' }} textStyle={{ textAlign: 'center' }} />
-                                                    <DataTableCell text={(row.detalle) ? row.detalle : '-'} textStyle={{ textAlign: 'center' }} style={{ maxWidth: '10%', alignSelf: 'center'}} minWidth={90} />
-                                                    <DataTableCell text={(row.cantidad) ? (row.cantidad).toString() : '-'} textStyle={{ textAlign: 'center' }} style={{ maxWidth: '3%', alignSelf: 'center'}} minWidth={90} />
+                                    <ScrollView style={{ height: (this.props.data.tope) ? sizes.hp('31%') : sizes.hp('33%') }}>
+                                        {(this.props.data.ingredientes[0]) ?
+                                            this.props.data.ingredientes[0]
+                                                .map((row, i) =>
+                                                    < DataTableRow key={row.id}>
+                                                        <DataTableCell text={row.nombre} borderRight style={{ maxWidth: '30%' }} textStyle={{ textAlign: 'center' }} />
+                                                        <DataTableCell text={(row.detalle) ? row.detalle : '-'} textStyle={{ textAlign: 'center' }} style={{ maxWidth: '10%', alignSelf: 'center' }} minWidth={90} />
+                                                        <DataTableCell text={(row.cantidad) ? (row.cantidad).toString() : '-'} textStyle={{ textAlign: 'center' }} style={{ maxWidth: '3%', alignSelf: 'center' }} minWidth={90} />
+                                                        <DataTableCell text={(row.precio) ? '$' + (row.precio).toString() : '-'} textStyle={{ textAlign: 'center' }} style={{ maxWidth: '3%', alignSelf: 'center' }} minWidth={70} />
+                                                        <DataTableCell text={(row.opcion === 1) ? <Text style={{ color: colors.APP_GREEN }}>Agregar</Text> : (row.opcion === 0) ?
+                                                            <Text style={{ color: colors.APP_RED }}>Eliminar</Text> : '-'} textStyle={{ textAlign: 'center' }} style={{ maxWidth: '3%', alignSelf: 'center' }} minWidth={90} />
+                                                    </DataTableRow>
+                                                )
+                                            :
+                                            <DataTableCell text={'Este producto no posee ingredientes para mostrar'} style={styles.cell} textStyle={{ fontSize: 17, textAlign: 'center', fontWeight: 'bold', color: colors.APP_RED }} />
+                                        }
+                                    </ScrollView>
+                                </View>
+                                :
+                                <View>
+                                    <DataTableRow checkboxOffset type={'header'} style={{ left: 10 }}>
+                                        <DataTableCell text={'INGREDIENTES'} type={'header'} borderRight textStyle={{ textAlign: 'center', fontWeight: 'bold' }} style={{ maxWidth: '30%', left: -30 }} />
+                                        <DataTableCell text={'Detalle'} type={'header'} textStyle={{ textAlign: 'center', fontWeight: 'bold' }} style={{ maxWidth: '10%' }} minWidth={90} />
+                                        <DataTableCell text={'Cantidad'} type={'header'} textStyle={{ textAlign: 'center', fontWeight: 'bold' }} style={{ maxWidth: '3%' }} minWidth={90} />
+                                        <DataTableCell text={'Precio'} type={'header'} textStyle={{ textAlign: 'center', fontWeight: 'bold' }} style={{ maxWidth: '3%' }} minWidth={70} />
+                                        <DataTableCell text={'Opcional'} type={'header'} textStyle={{ textAlign: 'center', fontWeight: 'bold' }} style={{ maxWidth: '3%' }} minWidth={90} />
+                                    </DataTableRow>
+
+                                    <ScrollView style={{ height: (this.props.data.tope) ? sizes.hp('31%') : sizes.hp('33%') }}>
+                                        {this.state.originalIngr
+                                            .map((row) =>
+                                                < DataTableRow key={row.id}
+                                                    style={{ left: 10 }}
+                                                    showCheckbox
+                                                    selected={row.check}
+                                                    onPressCheckbox={() => { this.onCheckChanged(row.id) }}>
+                                                    <DataTableCell text={row.nombre} borderRight style={{ maxWidth: '30%', left: -30 }} textStyle={{ textAlign: 'center' }} />
+                                                    <DataTableCell text={(row.detalle) ? row.detalle : '-'} textStyle={{ textAlign: 'center' }} style={{ maxWidth: '10%', alignSelf: 'center' }} minWidth={90} />
+                                                    <DataTableCell text={(row.cantidad) ? (row.cantidad).toString() : '-'} textStyle={{ textAlign: 'center' }} style={{ maxWidth: '3%', alignSelf: 'center' }} minWidth={90} />
                                                     <DataTableCell text={(row.precio) ? '$' + (row.precio).toString() : '-'} textStyle={{ textAlign: 'center' }} style={{ maxWidth: '3%', alignSelf: 'center' }} minWidth={70} />
                                                     <DataTableCell text={(row.opcion === 1) ? <Text style={{ color: colors.APP_GREEN }}>Agregar</Text> : (row.opcion === 0) ?
                                                         <Text style={{ color: colors.APP_RED }}>Eliminar</Text> : '-'} textStyle={{ textAlign: 'center' }} style={{ maxWidth: '3%', alignSelf: 'center' }} minWidth={90} />
                                                 </DataTableRow>
-                                            )
-                                        :
-                                        <DataTableCell text={'Este producto no posee ingredientes para mostrar'} style={styles.cell} textStyle={{ fontSize: 17, textAlign: 'center', fontWeight: 'bold', color: colors.APP_RED }} />
-                                    }
-                                </ScrollView>
-                            </View>
+                                            )}
+                                    </ScrollView>
+                                </View>
                             :
                             <View>
                                 <DataTableRow >
@@ -161,16 +265,16 @@ class ProductDetailsOrder extends Component {
                                 </DataTableRow>
 
                                 <ScrollView style={{ height: (this.props.data.tope) ? sizes.hp('31%') : sizes.hp('33%') }}>
-                                    {(this.state.originalProd.ingredientes[0]) ?
-                                        this.state.originalProd.ingredientes[0]
-                                            .map(row =>
+                                    {(this.state.originalIngr.length > 0) ?
+                                        this.state.originalIngr
+                                            .map((row, i) =>
                                                 < DataTableRow key={row.id} >
                                                     <DataTableCell text={row.nombre} borderRight style={{ maxWidth: '30%', }} textStyle={{ textAlign: 'center' }} />
                                                     <DataTableCell text={(row.precio) ? '$' + (row.precio).toString() : '-'} textStyle={{ textAlign: 'center' }} style={{ maxWidth: '3%', alignSelf: 'center' }} minWidth={70} />
-                                                    <DataTableCell text={(row.opcion === 1) ? <Text style={{ color: colors.APP_GREEN }}>{'Agregar'}</Text> : (row.opcion === 0) ?
-                                                        <Text style={{ color: colors.APP_RED }} onPress={this.removeIngredient}>{'Eliminar'}</Text> : '-'} textStyle={{ textAlign: 'center' }} style={{ maxWidth: '3%', alignSelf: 'center' }} minWidth={90} />
+                                                    <DataTableCell text={(row.opcion === 1) ? <Text style={{ color: colors.APP_GREEN }}>Agregar</Text> : (row.opcion === 0) ?
+                                                        <Text style={{ color: colors.APP_RED }} onPress={() => this.removeIngredient(row.id)}>Eliminar</Text> : '-'} textStyle={{ textAlign: 'center' }} style={{ maxWidth: '3%', alignSelf: 'center' }} minWidth={90} />
                                                     <DataTableCell text={<Text style={{ color: (row.opcion === null) ? colors.APP_INACTIVE : colors.APP_RED, fontWeight: 'bold', fontSize: 30 }}>-</Text>} textStyle={{ textAlign: 'center' }} style={{ maxWidth: '4%' }} minWidth={50}
-                                                        onPress={(row.opcion === null) ? null : () => { this.setAmount(0, row.id) }} />
+                                                        onPress={(row.opcion === null) ? null : () => { this.setAmount(0, row.id)}} />
                                                     <DataTableCell text={(row.cantidad) ? (row.cantidad).toString() : '-'} textStyle={{ textAlign: 'center' }} style={{ maxWidth: '3%', alignSelf: 'center' }} minWidth={90} />
                                                     <DataTableCell text={<Text style={{ color: (row.opcion === null) ? colors.APP_INACTIVE : colors.APP_GREEN, fontWeight: 'bold', fontSize: 30 }}>+</Text>} textStyle={{ textAlign: 'center' }} style={{ maxWidth: '4%' }} minWidth={50}
                                                         onPress={(row.opcion === null) ? null : () => { this.setAmount(1, row.id) }} />
@@ -186,14 +290,14 @@ class ProductDetailsOrder extends Component {
                     </DataTable>
                 </Card.Content>
                 <Card.Actions style={{ alignSelf: 'center' }}>
-                    {(this.props.data.ingredientes[0]) ?
+                    {(this.props.data.ingredientes[0] && this.props.data.selectivo === 0) ?
                         <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                             <Button
                                 style={{ width: sizes.wp('33%'), marginRight: sizes.wp('19.7%') }}
                                 mode="contained"
                                 color={colors.APP_MAIN}
                                 disabled={this.state.modifing}
-                                onPress={() => { this.setState({ modifing: true }) }}>
+                                onPress={() => { this.setState({ modifing: true})}}>
                                 Modificar
                             </Button>
 
@@ -215,6 +319,17 @@ class ProductDetailsOrder extends Component {
  				        </Button>
                     }
                 </Card.Actions>
+
+                <Portal>
+                    <Dialog
+                        visible={this.state.visibleDialogResponse}
+                        onDismiss={this._hideDialogResponse}>
+                        <Dialog.Title style={{ alignSelf: 'center', textAlign: 'center' }}>{this.state.actionMessage}</Dialog.Title>
+                        <Dialog.Actions>
+                            <Button style={{ marginRight: sizes.wp('3%') }} color={'#000000'} onPress={this._hideDialogResponse}>Ok</Button>
+                        </Dialog.Actions>
+                    </Dialog>
+                </Portal>
             </Card >
         )
     }
@@ -222,7 +337,7 @@ class ProductDetailsOrder extends Component {
 
 const styles = StyleSheet.create({
     productCard: {
-        height: sizes.hp('86%'),
+        //height: sizes.hp('86%'),
         width: sizes.wp('90%'),
         elevation: 0
     },
@@ -283,6 +398,7 @@ function mapStateToProps(state) {
 const mapDispatchToProps = (dispatch) => {
     return {
         setProductOrder: (product) => dispatch(OrderActions.setProductOrder(product)),
+        updateTotal: (total) => dispatch(OrderActions.updateTotal(total)),
     }
 };
 
