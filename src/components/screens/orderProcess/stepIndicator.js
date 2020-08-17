@@ -42,32 +42,38 @@ class HorizontalStepIndicator extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            currentPosition: (this.props.pos != null) ? this.props.pos : 0,
+            currentPosition: (props.pos !== undefined) ? props.pos : 0,
             visibleDialogOut: false,
             animatedValue: new Animated.Value(0),
         }
     }
 
+    /* static getDerivedStateFromProps(props, state) {
+        console.log(props.pos)
+        if (props.pos !== undefined) {
+          return {
+            currentPosition: props.pos,
+          };
+        }
+        return null;
+      } */
+
     _showDialogOut = () => this.setState({ visibleDialogOut: true });
     _hideDialogOut = () => this.setState({ visibleDialogOut: false });
 
     previousStep = () => {
-        if (this.state.currentPosition === 1){
+        if (this.state.currentPosition === 1)
             this._showDialogOut()
-        }
-        else{
+        else {
             this.setState({ currentPosition: this.state.currentPosition - 1 })
             this.updateScroll()
-        } 
+        }
     }
 
     nextStep = () => {
+        console.log('acaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa')
         this.setState({ currentPosition: this.state.currentPosition + 1 })
         this.updateScroll()
-    }
-
-    onPageChange(position) {
-        this.setState({ currentPosition: position });
     }
 
     updateScroll = () => {
@@ -163,8 +169,10 @@ class HorizontalStepIndicator extends Component {
                         <Dialog.Title style={{ alignSelf: 'center' }}>Perderás todo tu progreso, ¿desea continuar?</Dialog.Title>
                         <Dialog.Actions>
                             <Button style={{ marginRight: sizes.wp('3%') }} color={colors.APP_RED} onPress={this._hideDialogOut}>Cancelar</Button>
-                            <Button color={colors.APP_GREEN} onPress={() => { this._hideDialogOut(), this.setState({ currentPosition: this.state.currentPosition - 1 }), 
-                            this.props.deleteOrder(), this.updateScroll()}}>Sí</Button>
+                            <Button color={colors.APP_GREEN} onPress={() => {
+                                this._hideDialogOut(), this.setState({ currentPosition: this.state.currentPosition - 1 }),
+                                this.props.deleteOrder(), this.updateScroll()
+                            }}>Sí</Button>
                         </Dialog.Actions>
                     </Dialog>
                 </Portal>

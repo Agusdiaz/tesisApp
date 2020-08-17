@@ -12,28 +12,12 @@ class OrderSummary extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            orderNumber: 7856,
-            date: '24/03/2020 a la(s) 20:20hs',
-            items: [
-                {
-                    id: 1,
-                    name: 'Producto 1',
-                    amount: 1,
-                    unitPrice: 600,
-                }, {
-                    id: 2,
-                    name: 'Producto 2',
-                    amount: 1,
-                    unitPrice: 700,
-                }, {
-                    id: 3,
-                    name: 'Producto 3',
-                    amount: 2,
-                    unitPrice: 100,
-                },],
-            promociones: [],
+            tips: '',
+            coments: '',
+            comentError: true,
             visibleDialogContinue: false,
             visibleDialogTip: false,
+            visibleDialogComent: false,
         }
     }
 
@@ -43,18 +27,31 @@ class OrderSummary extends Component {
         for (var i = 0; i < tip.length; i++) {
             if (numbers.indexOf(tip[i]) > -1) {
                 newText = newText + tip[i]
-                if (i == tip.length - 1)
-                    this.props.updateTips(parseFloat(tip))
+                //if (i === tip.length - 1)
+                    this.setState({tips: tip.toString()})
             }
             else {
                 Alert.alert('Atención', 'Por favor, ingrese solo números');
                 break
             }
         }
+        if(tip.length === 0)
+            this.setState({tips: ''})
+    }
+
+    validateComent(text){
+        if (text.trim() === "") {
+            this.setState(() => ({ comentError: true, coments: text}));
+          } else {
+            this.setState(() => ({ comentError: false, coments: text}));
+          }
     }
 
     _showDialogContinue = () => this.setState({ visibleDialogContinue: true });
     _hideDialogContinue = () => this.setState({ visibleDialogContinue: false });
+
+    _showDialogComent = () => this.setState({ visibleDialogComent: true });
+    _hideDialogComent = () => this.setState({ visibleDialogComent: false });
 
     _showDialogTip = () => this.setState({ visibleDialogTip: true });
     _hideDialogTip = () => this.setState({ visibleDialogTip: false });
@@ -64,9 +61,6 @@ class OrderSummary extends Component {
     }
 
     render() {
-
-        const orderNumber = props => <Text style={styles.rightText}> {this.state.orderNumber} </Text>
-
         const Name = props => <TextTicker style={{ fontSize: 16 }}
             duration={6000}
             loop
@@ -108,8 +102,6 @@ class OrderSummary extends Component {
                             Para llevar
                     </Button>
                     </Card.Actions>
-                    <Card.Title style={[styles.cardTitle, { marginTop: sizes.hp('-2%') }]} titleStyle={styles.leftText} title="Número Pedido:" right={orderNumber} />
-                    <Divider style={styles.divider} />
                     <Card.Title style={styles.cardTitle} titleStyle={styles.leftText} title="Local:" right={Name} rightStyle={{ width: sizes.wp('54%'), right: sizes.wp('3%'), alignItems: 'flex-end', }} />
                     <Divider style={styles.divider} />
                     <Card.Title style={styles.cardTitle} titleStyle={styles.leftText} title="Fecha:" right={date} />
@@ -121,7 +113,7 @@ class OrderSummary extends Component {
                                 style={{ right: sizes.wp('-17%') }}
                             />
                             <ScrollView style={{ height: sizes.hp('31%') }}>
-                                {(this.state.promociones !== null) ?
+                                {(this.props.order.productos.length > 0) ?
                                     <View>
                                         <DataTableRow style={{}}>
                                             <DataTableCell text={'PRODUCTOS'} type={'header'} borderRight textStyle={{ textAlign: 'center', fontWeight: 'bold' }} style={{ maxWidth: '30%' }} />
@@ -130,20 +122,19 @@ class OrderSummary extends Component {
                                             <DataTableCell text={'Precio Total'} type={'header'} textStyle={{ textAlign: 'center', fontWeight: 'bold' }} style={{ maxWidth: '3%' }} minWidth={105} />
                                         </DataTableRow>
 
-                                        {this.state.items
+                                        {this.props.order.productos
                                             .map(row => (
-                                                <DataTableRow key={row.id}>
-                                                    <DataTableCell text={(row.modificado) ? <Text><Text style={{ color: colors.APP_MAIN, fontWeight: 'bold' }}>(*) </Text>{row.name}</Text>
-                                                        : row.name} borderRight style={{ maxWidth: '30%' }} textStyle={{ textAlign: 'center' }} />
-                                                    <DataTableCell text={(row.amount).toString()} textStyle={{ textAlign: 'center' }} style={{ maxWidth: '3%', alignSelf: 'center' }} minWidth={90} />
-                                                    <DataTableCell text={'$' + (row.unitPrice).toString()} textStyle={{ textAlign: 'center' }} style={{ maxWidth: '3%', alignSelf: 'center' }} minWidth={100} />
-                                                    <DataTableCell text={'$' + (row.amount * row.unitPrice).toString()} textStyle={{ textAlign: 'center' }} style={{ maxWidth: '3%', alignSelf: 'center' }} minWidth={105} />
+                                                <DataTableRow key={row.idProducto}>
+                                                    <DataTableCell text={(!row.modificado) ? row.nombre : '(*) ' + row.nombre} borderRight textStyle={{ textAlign: 'center', color: (row.modificado) ? colors.APP_MAIN : null }} style={{ maxWidth: '30%' }} />
+                                                    <DataTableCell text={(row.cantidad).toString()} textStyle={{ textAlign: 'center' }} style={{ maxWidth: '3%', alignSelf: 'center' }} minWidth={90} />
+                                                    <DataTableCell text={'$' + (row.precio).toString()} textStyle={{ textAlign: 'center' }} style={{ maxWidth: '3%', alignSelf: 'center' }} minWidth={100} />
+                                                    <DataTableCell text={'$' + (row.cantidad * row.precio).toString()} textStyle={{ textAlign: 'center' }} style={{ maxWidth: '3%', alignSelf: 'center' }} minWidth={105} />
                                                 </DataTableRow>
                                             ))}
                                     </View>
                                     : null}
 
-                                {(this.state.promociones.length > 0) ?
+                                {(this.props.order.promociones.length > 0) ?
                                     <View>
                                         <DataTableRow style={{}}>
                                             <DataTableCell text={'PROMOS'} type={'header'} borderRight textStyle={{ textAlign: 'center', fontWeight: 'bold' }} style={{ maxWidth: '30%' }} />
@@ -151,11 +142,10 @@ class OrderSummary extends Component {
                                             <DataTableCell text={'Precio Unit'} type={'header'} textStyle={{ textAlign: 'center', fontWeight: 'bold' }} style={{ maxWidth: '3%' }} minWidth={100} />
                                             <DataTableCell text={'Precio Total'} type={'header'} textStyle={{ textAlign: 'center', fontWeight: 'bold' }} style={{ maxWidth: '3%' }} minWidth={105} />
                                         </DataTableRow>
-                                        {this.state.promociones
+                                        {this.props.order.promociones
                                             .map(row => (
-                                                <DataTableRow key={row.id}>
-                                                    <DataTableCell text={(row.modificado) ? <Text><Text style={{ color: colors.APP_MAIN, fontWeight: 'bold' }}>(*) </Text>{row.name}</Text>
-                                                        : row.name} borderRight style={{ maxWidth: '30%' }} textStyle={{ textAlign: 'center' }} />
+                                                <DataTableRow key={row.idPromo}>
+                                                    <DataTableCell text={(row.modificado === 0) ? row.nombre : '(*) ' + row.nombre} borderRight textStyle={{ textAlign: 'center', color: (row.modificado === 1) ? colors.APP_MAIN : null }} style={{ maxWidth: '30%' }} />
                                                     <DataTableCell text={(row.cantidad).toString()} textStyle={{ textAlign: 'center', }} style={{ maxWidth: '3%', alignSelf: 'center' }} minWidth={90} />
                                                     <DataTableCell text={'$' + (row.precio).toString()} textStyle={{ textAlign: 'center' }} style={{ maxWidth: '3%', alignSelf: 'center' }} minWidth={100} />
                                                     <DataTableCell text={'$' + (row.cantidad * row.precio).toString()} textStyle={{ textAlign: 'center' }} style={{ maxWidth: '3%', alignSelf: 'center' }} minWidth={105} />
@@ -172,6 +162,17 @@ class OrderSummary extends Component {
                     <Card.Title style={styles.cardTitle} titleStyle={styles.leftText} title="Total:" right={total} />
                     <Divider style={styles.divider} />
                     <Card.Title style={styles.cardTitle} titleStyle={styles.leftText} title="Propina:" right={tips} />
+                    <Divider style={styles.divider} />
+                    <Card.Actions style={{alignSelf: 'center', alignItems: 'center'}}>
+                        <Button
+                            style={{}}
+                            dark
+                            color={colors.APP_MAIN}
+                            mode={'contained'}
+                            onPress={this._showDialogComent} >
+                            Dejá un comentario
+                    </Button>
+                    </Card.Actions>
                 </Card>
 
                 <Button
@@ -205,16 +206,43 @@ class OrderSummary extends Component {
                                 style={styles.inputView}
                                 mode='outlined'
                                 label='Cantidad'
-                                placeholder="$"
+                                placeholder='$'
                                 theme={{ colors: { text: colors.TEXT_INPUT, primary: colors.APP_MAIN } }}
                                 onChangeText={(tip) => this.onChangeTip(tip)}
-                                value={this.props.order.propina} />
+                                value={this.state.tips} />
                         </Dialog.Content>
                         <Dialog.Actions style={{ marginTop: sizes.hp('-2%') }}>
                             <Button style={{ marginRight: sizes.wp('3%') }} color={colors.APP_RED} onPress={this._hideDialogTip}>Cancelar</Button>
-                            <Button color={colors.APP_GREEN} onPress={() => {
+                            <Button color={colors.APP_GREEN} disabled={this.state.tips === ''} onPress={() => {
+                                this.props.updateTips(parseFloat(this.state.tips))
                                 this._hideDialogTip()
                             }}>Agregar</Button>
+                        </Dialog.Actions>
+                    </Dialog>
+
+                    <Dialog
+                        style={{ margin: 5, marginBottom: sizes.hp('5%') }}
+                        visible={this.state.visibleDialogComent}
+                        onDismiss={this._hideDialogComent}>
+                        <Dialog.Title style={{ alignSelf: 'center', textAlign: 'center' }}>Podés dejar un comentario acerca de tu pedido</Dialog.Title>
+                        <Dialog.Content style={{ alignItems: 'center' }}>
+                            <TextInput
+                                style={[styles.inputView, {height: sizes.hp('10%'), margin: -5}]}
+                                mode='outlined'
+                                label='Comentá'
+                                multiline
+                                numberOfLines={5}
+                                placeholder='Comentá'
+                                theme={{ colors: { text: colors.TEXT_INPUT, primary: colors.APP_MAIN } }}
+                                onChangeText={(text) => this.validateComent(text)}
+                                value={this.state.coments} />
+                        </Dialog.Content>
+                        <Dialog.Actions style={{ marginTop: sizes.hp('-2%') }}>
+                            <Button style={{ marginRight: sizes.wp('3%') }} color={colors.APP_RED} onPress={this._hideDialogComent}>Cancelar</Button>
+                            <Button color={colors.APP_GREEN} disabled={this.state.comentError} onPress={() => {
+                                this.props.setComents(this.state.coments)
+                                this._hideDialogComent()
+                            }}>Aceptar</Button>
                         </Dialog.Actions>
                     </Dialog>
                 </Portal>
@@ -240,6 +268,7 @@ const styles = StyleSheet.create({
         right: sizes.wp('2.7%')
     },
     cardTitle: {
+        marginTop: -11,
         margin: -9
     },
     divider: {
@@ -284,6 +313,7 @@ const mapDispatchToProps = (dispatch) => {
         updateTotal: (total) => dispatch(OrderActions.updateTotal(total)),
         updateTakeAway: (takeAway) => dispatch(OrderActions.updateTakeAway(takeAway)),
         updateTips: (tips) => dispatch(OrderActions.updateTips(tips)),
+        setComents: (coment) => dispatch(OrderActions.setComents(coment)),
     }
 };
 

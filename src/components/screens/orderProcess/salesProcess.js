@@ -27,7 +27,11 @@ class SalesProcess extends Component {
         const data = await getAllShopPromos(this.props.shop.cuit, this.props.user.token)
         if (data.status === 500 || data.status === 204)
             this.setState({ areSales: false })
-        else this.setState({ areSales: true, sales: data.body })
+        else{
+            var promos = []
+            promos = data.body.filter(obj => {return obj.valida === 1})
+            this.setState({ areSales: (promos.length > 0) ? true : false, sales: promos })
+        } 
     }
 
     onRefresh() {
@@ -39,7 +43,7 @@ class SalesProcess extends Component {
     _renderItem(item) {
         if (this.state.areSales) {
             return (
-                <SalesCard data={item} />
+                <SalesCard data={item} rute={'cart'}/>
             );
         } else {
             return (

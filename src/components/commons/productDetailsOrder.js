@@ -47,7 +47,6 @@ class ProductDetailsOrder extends Component {
     hideModal = () => { this.props.hideModalFromChild() }
 
     addProduct() {
-        console.log(this.props.order.total)
         var product = {
             idProducto: this.props.data.id,
             nombre: this.props.data.nombre,
@@ -67,6 +66,7 @@ class ProductDetailsOrder extends Component {
             this.setState({ actionMessage: 'Debes seleccionar al menos 1 ingrediente' })
             this._showDialogResponse()
         } else if(this.props.data.selectivo === 1){
+            product.modificado = true
             this.state.originalIngr.map(obj => {
                 if(obj.check){
                     product.ingredientes.push({idIngrediente: obj.id, nombre: obj.nombre, detalle: obj.detalle, cantidad: obj.cantidad})
@@ -216,8 +216,8 @@ class ProductDetailsOrder extends Component {
                                                         <DataTableCell text={(row.detalle) ? row.detalle : '-'} textStyle={{ textAlign: 'center' }} style={{ maxWidth: '10%', alignSelf: 'center' }} minWidth={90} />
                                                         <DataTableCell text={(row.cantidad) ? (row.cantidad).toString() : '-'} textStyle={{ textAlign: 'center' }} style={{ maxWidth: '3%', alignSelf: 'center' }} minWidth={90} />
                                                         <DataTableCell text={(row.precio) ? '$' + (row.precio).toString() : '-'} textStyle={{ textAlign: 'center' }} style={{ maxWidth: '3%', alignSelf: 'center' }} minWidth={70} />
-                                                        <DataTableCell text={(row.opcion === 1) ? <Text style={{ color: colors.APP_GREEN }}>Agregar</Text> : (row.opcion === 0) ?
-                                                            <Text style={{ color: colors.APP_RED }}>Eliminar</Text> : '-'} textStyle={{ textAlign: 'center' }} style={{ maxWidth: '3%', alignSelf: 'center' }} minWidth={90} />
+                                                        <DataTableCell text={(row.opcion === 1) ? 'Agregar' : (row.opcion === 0) ? 'Eliminar' : '-'} textStyle={{ textAlign: 'center', color: (row.opcion === 1) ? colors.APP_GREEN :
+                                                            (row.opcion === 0) ? colors.APP_RED : null }} style={{ maxWidth: '3%', alignSelf: 'center' }} minWidth={90} />
                                                     </DataTableRow>
                                                 )
                                             :
@@ -247,8 +247,8 @@ class ProductDetailsOrder extends Component {
                                                     <DataTableCell text={(row.detalle) ? row.detalle : '-'} textStyle={{ textAlign: 'center' }} style={{ maxWidth: '10%', alignSelf: 'center' }} minWidth={90} />
                                                     <DataTableCell text={(row.cantidad) ? (row.cantidad).toString() : '-'} textStyle={{ textAlign: 'center' }} style={{ maxWidth: '3%', alignSelf: 'center' }} minWidth={90} />
                                                     <DataTableCell text={(row.precio) ? '$' + (row.precio).toString() : '-'} textStyle={{ textAlign: 'center' }} style={{ maxWidth: '3%', alignSelf: 'center' }} minWidth={70} />
-                                                    <DataTableCell text={(row.opcion === 1) ? <Text style={{ color: colors.APP_GREEN }}>Agregar</Text> : (row.opcion === 0) ?
-                                                        <Text style={{ color: colors.APP_RED }}>Eliminar</Text> : '-'} textStyle={{ textAlign: 'center' }} style={{ maxWidth: '3%', alignSelf: 'center' }} minWidth={90} />
+                                                    <DataTableCell text={(row.opcion === 1) ? 'Agregar' : (row.opcion === 0) ? 'Eliminar' : '-'} textStyle={{ textAlign: 'center', color: (row.opcion === 1) ? colors.APP_GREEN :
+                                                        (row.opcion === 0) ? colors.APP_RED : null }} style={{ maxWidth: '3%', alignSelf: 'center' }} minWidth={90} />
                                                 </DataTableRow>
                                             )}
                                     </ScrollView>
@@ -271,12 +271,14 @@ class ProductDetailsOrder extends Component {
                                                 < DataTableRow key={row.id} >
                                                     <DataTableCell text={row.nombre} borderRight style={{ maxWidth: '30%', }} textStyle={{ textAlign: 'center' }} />
                                                     <DataTableCell text={(row.precio) ? '$' + (row.precio).toString() : '-'} textStyle={{ textAlign: 'center' }} style={{ maxWidth: '3%', alignSelf: 'center' }} minWidth={70} />
-                                                    <DataTableCell text={(row.opcion === 1) ? <Text style={{ color: colors.APP_GREEN }}>Agregar</Text> : (row.opcion === 0) ?
-                                                        <Text style={{ color: colors.APP_RED }} onPress={() => this.removeIngredient(row.id)}>Eliminar</Text> : '-'} textStyle={{ textAlign: 'center' }} style={{ maxWidth: '3%', alignSelf: 'center' }} minWidth={90} />
-                                                    <DataTableCell text={<Text style={{ color: (row.opcion === null) ? colors.APP_INACTIVE : colors.APP_RED, fontWeight: 'bold', fontSize: 30 }}>-</Text>} textStyle={{ textAlign: 'center' }} style={{ maxWidth: '4%' }} minWidth={50}
+                                                    {(row.opcion !== 0) ?
+                                                    <DataTableCell text={(row.opcion === 1) ? 'Agregar' : '-'} textStyle={{ textAlign: 'center', color: (row.opcion === 1) ? colors.APP_GREEN : null}} style={{ maxWidth: '3%', alignSelf: 'center' }} minWidth={90} />
+                                                    :
+                                                    <DataTableCell text={'Eliminar'} textStyle={{ textAlign: 'center', color: colors.APP_RED}} style={{ maxWidth: '3%', alignSelf: 'center' }} minWidth={90} onPress={() => this.removeIngredient(row.id)}/> }
+                                                    <DataTableCell text={'-'} textStyle={{ textAlign: 'center', color: (row.opcion === null) ? colors.APP_INACTIVE : colors.APP_RED, fontWeight: 'bold', fontSize: 30 }} style={{ maxWidth: '4%' }} minWidth={50}
                                                         onPress={(row.opcion === null) ? null : () => { this.setAmount(0, row.id)}} />
                                                     <DataTableCell text={(row.cantidad) ? (row.cantidad).toString() : '-'} textStyle={{ textAlign: 'center' }} style={{ maxWidth: '3%', alignSelf: 'center' }} minWidth={90} />
-                                                    <DataTableCell text={<Text style={{ color: (row.opcion === null) ? colors.APP_INACTIVE : colors.APP_GREEN, fontWeight: 'bold', fontSize: 30 }}>+</Text>} textStyle={{ textAlign: 'center' }} style={{ maxWidth: '4%' }} minWidth={50}
+                                                    <DataTableCell text={'+'} textStyle={{ textAlign: 'center', color: (row.opcion === null) ? colors.APP_INACTIVE : colors.APP_GREEN, fontWeight: 'bold', fontSize: 30 }} style={{ maxWidth: '4%' }} minWidth={50}
                                                         onPress={(row.opcion === null) ? null : () => { this.setAmount(1, row.id) }} />
                                                 </DataTableRow>
                                             )

@@ -73,6 +73,15 @@ const updateTips = (tips) => {
     }
 }
 
+const setComents = (coment) => {
+    return {
+        type: 'SET_COMENTS',
+        payload: {
+            coment: coment
+        },
+    }
+}
+
 const deleteOrder = () => configureStore.dispatch({ type: 'DELETE_ORDER' })
 
 export default {
@@ -85,4 +94,5 @@ export default {
     updateTakeAway,
     updateTips,
     deleteOrder,
+    setComents,
 }

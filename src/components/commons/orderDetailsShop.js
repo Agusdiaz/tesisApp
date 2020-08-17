@@ -94,8 +94,7 @@ class OrderDetailsShop extends Component {
                                     {this.props.data.productos[0]
                                         .map(row => (
                                             <DataTableRow key={row.id}>
-                                                <DataTableCell text={(row.modificado) ? <Text><Text style={{color: colors.APP_MAIN, fontWeight: 'bold'}}>(*) </Text>{row.nombre}</Text>
-                                                : row.nombre} borderRight textStyle={{ textAlign: 'center' }} style={{ maxWidth: '30%' }} />
+                                                <DataTableCell text={(row.modificado===0)? row.nombre : '(*) '+row.nombre} borderRight textStyle={{ textAlign: 'center', color: (row.modificado===1) ? colors.APP_MAIN : null }} style={{ maxWidth: '30%' }} />
                                                 <DataTableCell text={(row.cantidad).toString()} textStyle={{ textAlign: 'center' }} style={{ maxWidth: '3%', alignSelf: 'center'}} minWidth={90}/>
                                                 <DataTableCell text={'$' + (row.precio).toString()} textStyle={{ textAlign: 'center' }} style={{ maxWidth: '3%', alignSelf: 'center'}} minWidth={100}/>
                                                 <DataTableCell text={'$' + (row.cantidad * row.precio).toString()} textStyle={{ textAlign: 'center' }} style={{ maxWidth: '3%', alignSelf: 'center'}} minWidth={105}/>
@@ -119,8 +118,7 @@ class OrderDetailsShop extends Component {
                                     {this.props.data.promociones[0]
                                         .map(row => (
                                             <DataTableRow key={row.id}>
-                                                <DataTableCell text={(row.modificado) ? <Text><Text style={{color: colors.APP_MAIN, fontWeight: 'bold'}}>(*) </Text>{row.nombre}</Text>
-                                                : row.nombre} borderRight textStyle={{ textAlign: 'center' }} style={{ maxWidth: '30%' }} />
+                                                <DataTableCell text={(row.modificado===0)? row.nombre : '(*) '+row.nombre} borderRight textStyle={{ textAlign: 'center', color: (row.modificado===1) ? colors.APP_MAIN : null }} style={{ maxWidth: '30%' }} />
                                                 <DataTableCell text={(row.cantidad).toString()} textStyle={{ textAlign: 'center',}} style={{ maxWidth: '3%', alignSelf: 'center'}} minWidth={90}/>
                                                 <DataTableCell text={'$' + (row.precio).toString()} textStyle={{ textAlign: 'center' }} style={{ maxWidth: '3%', alignSelf: 'center'}} minWidth={100}/>
                                                 <DataTableCell text={'$' + (row.cantidad * row.precio).toString()} textStyle={{ textAlign: 'center' }} style={{ maxWidth: '3%', alignSelf: 'center'}} minWidth={105}/>

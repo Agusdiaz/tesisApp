@@ -5,6 +5,7 @@ import { Card, FAB, Modal, Portal, Button, Dialog, Divider, IconButton } from 'r
 import { DataTable, DataTableHeader, DataTableCell, DataTableRow } from 'material-bread'
 import TextTicker from 'react-native-text-ticker';
 import ProductDetails from '../commons/productDetails'
+import ProductDetailsOrder from './productDetailsOrder'
 import { Actions } from 'react-native-router-flux';
 import Schedule from './schedule'
 
@@ -13,6 +14,7 @@ class SalesCard extends Component {
         super(props);
         this.state = {
             visibleModalDetails: false,
+            visibleModalOrder: false,
             visibleModalSchedule: false,
             productDetails: [],
         }
@@ -21,12 +23,14 @@ class SalesCard extends Component {
     _showModalDetails = () => this.setState({ visibleModalDetails: true });
     _hideModalDetails = () => this.setState({ visibleModalDetails: false });
 
+    _showModalOrder = () => this.setState({ visibleModalOrder: true })
+    _hideModalOrder = () => this.setState({ visibleModalOrder: false })
+
     _showModalSchedule = () => this.setState({ visibleModalSchedule: true });
     _hideModalSchedule = () => this.setState({ visibleModalSchedule: false });
 
     render() {
-
-        const NamePriceButton = props => <View style={{ width: sizes.wp('50%'), alignItems: 'center', 
+        const NamePriceButton = props => <View style={{ width: sizes.wp('50%'), alignItems: 'center', height: sizes.wp('14%'),
         right: (this.props.rute === 'order') ? sizes.wp('-10%') : null}}>
             <TextTicker style={styles.title}
                 duration={5000}
@@ -36,7 +40,7 @@ class SalesCard extends Component {
                 marqueeDelay={1000}>{this.props.data.nombre}</TextTicker>
             <Text style={styles.subtitle}>${this.props.data.precio}</Text>
 
-            {(this.props.rute !== 'order') ? 
+            {(this.props.rute !== 'order' && this.props.rute !== 'cart') ? 
             <Button
                 style={styles.buttonAvailable}
                 labelStyle={{ fontSize: 10, textAlign: 'center' }}
@@ -47,6 +51,18 @@ class SalesCard extends Component {
                 color={(this.props.data.valida === 1) ? colors.APP_GREEN : colors.APP_RED}
             >
                 {(this.props.data.valida === 1) ? 'Válida' : 'No válida'}
+            </Button>
+            : (this.props.rute === 'cart') ?
+            <Button
+                style={styles.buttonAvailable}
+                labelStyle={{ fontSize: 10, textAlign: 'center' }}
+                compact
+                mode='contained'
+                dark
+                onPress={() => {}}
+                color={colors.APP_MAIN}
+            >
+                Agregar
             </Button>
             : 
             <IconButton
@@ -85,9 +101,12 @@ class SalesCard extends Component {
                                             <DataTableCell text={row.nombre} borderRight textStyle={{ textAlign: 'center' }} style={{ maxWidth: '45%' }} />
                                             <DataTableCell text={row.cantidad.toString()} textStyle={{ textAlign: 'center' }} style={{ maxWidth: '5%', alignSelf: 'center'}} minWidth={100} />
                                             <DataTableCell text={'VER'} textStyle={{ color: colors.APP_MAIN, fontWeight: 'bold', textAlign: 'center' }} style={{ maxWidth: '5%', alignSelf: 'center'}} minWidth={90} onPress={() => {
-                                                this.setState({ productDetails: row })
-                                                this._showModalDetails()
-                                            }} />
+                                                this.setState({ productDetails: row }),
+                                                    (this.props.rute === 'cart') ?
+                                                    this._showModalOrder()
+                                                        : 
+                                                        this._showModalDetails() 
+                                                }} />
                                         </DataTableRow>
                                     ))}
                             </ScrollView>
@@ -100,6 +119,10 @@ class SalesCard extends Component {
                     <Modal contentContainerStyle={styles.modalView} visible={this.state.visibleModalDetails} onDismiss={this._hideModalDetails}>
                         <ProductDetails hideModalFromChild={this._hideModalDetails} data={this.state.productDetails} 
                         rute={(this.props.rute === 'order') ? 'order' : null}/>
+                    </Modal>
+
+                    <Modal contentContainerStyle={[styles.modalView, {maxHeight: sizes.hp('92%')}]} visible={this.state.visibleModalOrder} onDismiss={this._hideModalOrder}>
+                        <ProductDetailsOrder hideModalFromChild={this._hideModalOrder} data={this.state.productDetails} />
                     </Modal>
 
                     {(this.props.rute !== 'order') ?

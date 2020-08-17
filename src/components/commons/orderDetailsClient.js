@@ -68,7 +68,7 @@ class OrderDetailsClient extends Component {
 
         const total = props => <Text style={styles.rightText}> ${this.props.data.total} </Text>
 
-        const date = props => <Text style={styles.rightText}>{moment(this.props.data.fecha).format("YYYY/MM/DD HH:mm")+' hs'}</Text>
+        const date = props => <Text style={styles.rightText}>{moment(this.props.data.fecha).format("YYYY/MM/DD HH:mm") + ' hs'}</Text>
 
         return (
 
@@ -83,7 +83,7 @@ class OrderDetailsClient extends Component {
                 <Divider style={styles.divider} />
                 <Card.Title style={styles.cardTitle} titleStyle={styles.leftText} title="Dirección:" right={address} rightStyle={{ width: sizes.wp('54%'), right: sizes.wp('3%'), alignItems: 'flex-end', }} />
                 <Divider style={styles.divider} />
-                <Card.Title style={styles.cardTitle} titleStyle={styles.leftText} title="Fecha:" right={date}/>
+                <Card.Title style={styles.cardTitle} titleStyle={styles.leftText} title="Fecha:" right={date} />
                 <Divider style={styles.divider} />
                 <Card.Content style={{ alignSelf: 'center', width: sizes.wp('90%'), }}>
                     <DataTable style={{ width: sizes.wp('130%') }}>
@@ -96,19 +96,19 @@ class OrderDetailsClient extends Component {
                                 <View>
                                     <DataTableRow style={{}}>
                                         <DataTableCell text={'PRODUCTOS'} type={'header'} borderRight textStyle={{ textAlign: 'center', fontWeight: 'bold' }} style={{ maxWidth: '30%' }} />
-                                        <DataTableCell text={'Cantidad'} type={'header'} textStyle={{ textAlign: 'center', fontWeight: 'bold' }} style={{ maxWidth: '3%'}} minWidth={90}/>
-                                        <DataTableCell text={'Precio Unit'} type={'header'} textStyle={{ textAlign: 'center', fontWeight: 'bold' }} style={{ maxWidth: '3%'}} minWidth={100}/>
-                                        <DataTableCell text={'Precio Total'} type={'header'} textStyle={{ textAlign: 'center', fontWeight: 'bold' }} style={{ maxWidth: '3%'}} minWidth={105}/>
-                                        <DataTableCell text={'Detalles'} type={'header'} textStyle={{ textAlign: 'center', fontWeight: 'bold' }} style={{ maxWidth: '3%'}} minWidth={90}/>
+                                        <DataTableCell text={'Cantidad'} type={'header'} textStyle={{ textAlign: 'center', fontWeight: 'bold' }} style={{ maxWidth: '3%' }} minWidth={90} />
+                                        <DataTableCell text={'Precio Unit'} type={'header'} textStyle={{ textAlign: 'center', fontWeight: 'bold' }} style={{ maxWidth: '3%' }} minWidth={100} />
+                                        <DataTableCell text={'Precio Total'} type={'header'} textStyle={{ textAlign: 'center', fontWeight: 'bold' }} style={{ maxWidth: '3%' }} minWidth={105} />
+                                        <DataTableCell text={'Detalles'} type={'header'} textStyle={{ textAlign: 'center', fontWeight: 'bold' }} style={{ maxWidth: '3%' }} minWidth={90} />
                                     </DataTableRow>
                                     {this.props.data.productos[0]
                                         .map(row => (
                                             <DataTableRow key={row.id}>
-                                                <DataTableCell text={row.nombre} borderRight textStyle={{ textAlign: 'center' }} style={{ maxWidth: '30%' }} />
-                                                <DataTableCell text={(row.cantidad).toString()} textStyle={{ textAlign: 'center' }} style={{ maxWidth: '3%', alignSelf: 'center'}} minWidth={90}/>
-                                                <DataTableCell text={'$' + (row.precio).toString()} textStyle={{ textAlign: 'center' }} style={{ maxWidth: '3%', alignSelf: 'center'}} minWidth={100}/>
-                                                <DataTableCell text={'$' + (row.cantidad * row.precio).toString()} textStyle={{ textAlign: 'center' }} style={{ maxWidth: '3%', alignSelf: 'center'}} minWidth={105}/>
-                                                <DataTableCell text={'VER'} textStyle={{ color: colors.APP_MAIN, fontWeight: 'bold', textAlign: 'center' }} style={{ maxWidth: '3%', alignSelf: 'center'}} minWidth={90} onPress={() => {
+                                                <DataTableCell text={(row.modificado === 0) ? row.nombre : '(*) ' + row.nombre} borderRight textStyle={{ textAlign: 'center', color: (row.modificado === 1) ? colors.APP_MAIN : null }} style={{ maxWidth: '30%' }} />
+                                                <DataTableCell text={(row.cantidad).toString()} textStyle={{ textAlign: 'center' }} style={{ maxWidth: '3%', alignSelf: 'center' }} minWidth={90} />
+                                                <DataTableCell text={'$' + (row.precio).toString()} textStyle={{ textAlign: 'center' }} style={{ maxWidth: '3%', alignSelf: 'center' }} minWidth={100} />
+                                                <DataTableCell text={'$' + (row.cantidad * row.precio).toString()} textStyle={{ textAlign: 'center' }} style={{ maxWidth: '3%', alignSelf: 'center' }} minWidth={105} />
+                                                <DataTableCell text={'VER'} textStyle={{ color: colors.APP_MAIN, fontWeight: 'bold', textAlign: 'center' }} style={{ maxWidth: '3%', alignSelf: 'center' }} minWidth={90} onPress={() => {
                                                     this.setState({ productDetails: row })
                                                     this._showModalProduct()
                                                 }} />
@@ -120,26 +120,28 @@ class OrderDetailsClient extends Component {
                                 <View>
                                     <DataTableRow style={{}}>
                                         <DataTableCell text={'PROMOS'} type={'header'} borderRight textStyle={{ textAlign: 'center', fontWeight: 'bold' }} style={{ maxWidth: '30%' }} />
-                                        <DataTableCell text={'Cantidad'} type={'header'} textStyle={{ textAlign: 'center', fontWeight: 'bold' }} style={{ maxWidth: '3%'}} minWidth={90}/>
-                                        <DataTableCell text={'Precio Unit'} type={'header'} textStyle={{ textAlign: 'center', fontWeight: 'bold' }} style={{ maxWidth: '3%'}} minWidth={100}/>
-                                        <DataTableCell text={'Precio Total'} type={'header'} textStyle={{ textAlign: 'center', fontWeight: 'bold' }} style={{ maxWidth: '3%'}} minWidth={105}/>
-                                        <DataTableCell text={'Detalles'} type={'header'} textStyle={{ textAlign: 'center', fontWeight: 'bold' }} style={{ maxWidth: '3%'}} minWidth={90}/>
+                                        <DataTableCell text={'Cantidad'} type={'header'} textStyle={{ textAlign: 'center', fontWeight: 'bold' }} style={{ maxWidth: '3%' }} minWidth={90} />
+                                        <DataTableCell text={'Precio Unit'} type={'header'} textStyle={{ textAlign: 'center', fontWeight: 'bold' }} style={{ maxWidth: '3%' }} minWidth={100} />
+                                        <DataTableCell text={'Precio Total'} type={'header'} textStyle={{ textAlign: 'center', fontWeight: 'bold' }} style={{ maxWidth: '3%' }} minWidth={105} />
+                                        <DataTableCell text={'Detalles'} type={'header'} textStyle={{ textAlign: 'center', fontWeight: 'bold' }} style={{ maxWidth: '3%' }} minWidth={90} />
                                     </DataTableRow>
                                     {this.props.data.promociones[0]
                                         .map(row => (
                                             <DataTableRow key={row.id}>
-                                                <DataTableCell text={row.nombre} borderRight textStyle={{ textAlign: 'center' }} style={{ maxWidth: '30%' }} />
-                                                <DataTableCell text={(row.cantidad).toString()} textStyle={{ textAlign: 'center',}} style={{ maxWidth: '3%', alignSelf: 'center'}} minWidth={90}/>
-                                                <DataTableCell text={'$' + (row.precio).toString()} textStyle={{ textAlign: 'center' }} style={{ maxWidth: '3%', alignSelf: 'center'}} minWidth={100}/>
-                                                <DataTableCell text={'$' + (row.cantidad * row.precio).toString()} textStyle={{ textAlign: 'center' }} style={{ maxWidth: '3%', alignSelf: 'center'}} minWidth={105}/>
-                                                <DataTableCell text={'VER'} textStyle={{ color: colors.APP_MAIN, fontWeight: 'bold', textAlign: 'center' }} style={{ maxWidth: '3%', alignSelf: 'center'}} minWidth={90} onPress={() => {
+                                                <DataTableCell text={(row.modificado === 0) ? row.nombre : '(*) ' + row.nombre} borderRight textStyle={{ textAlign: 'center', color: (row.modificado === 1) ? colors.APP_MAIN : null }} style={{ maxWidth: '30%' }} />
+                                                <DataTableCell text={(row.cantidad).toString()} textStyle={{ textAlign: 'center', }} style={{ maxWidth: '3%', alignSelf: 'center' }} minWidth={90} />
+                                                <DataTableCell text={'$' + (row.precio).toString()} textStyle={{ textAlign: 'center' }} style={{ maxWidth: '3%', alignSelf: 'center' }} minWidth={100} />
+                                                <DataTableCell text={'$' + (row.cantidad * row.precio).toString()} textStyle={{ textAlign: 'center' }} style={{ maxWidth: '3%', alignSelf: 'center' }} minWidth={105} />
+                                                <DataTableCell text={'VER'} textStyle={{ color: colors.APP_MAIN, fontWeight: 'bold', textAlign: 'center' }} style={{ maxWidth: '3%', alignSelf: 'center' }} minWidth={90} onPress={() => {
                                                     this.setState({ promoDetails: row })
                                                     this._showModalPromo()
-                                                }}/>
+                                                }} />
                                             </DataTableRow>
                                         ))}
                                 </View>
                                 : null}
+                            <Divider style={styles.divider} />
+                            <Text style={{ color: colors.APP_MAIN, fontWeight: 'bold', marginTop: sizes.hp('5%') }}>(*) modificaste este producto</Text>
                         </ScrollView>
 
                     </DataTable>
@@ -152,11 +154,11 @@ class OrderDetailsClient extends Component {
 
                 <Portal>
                     <Modal contentContainerStyle={styles.modalView} visible={this.state.visibleModalProduct} onDismiss={this._hideModalProduct}>
-                        <ProductDetails hideModalFromChild={this._hideModalProduct} data={this.state.productDetails} rute={'order'}/>
+                        <ProductDetails hideModalFromChild={this._hideModalProduct} data={this.state.productDetails} rute={'order'} />
                     </Modal>
 
-                    <Modal contentContainerStyle={{alignItems: "center"}} visible={this.state.visibleModalPromo} onDismiss={this._hideModalPromo}>
-                        <SaleCard hideModalFromChild={this._hideModalPromo} data={this.state.promoDetails} rute={'order'}/>
+                    <Modal contentContainerStyle={{ alignItems: "center" }} visible={this.state.visibleModalPromo} onDismiss={this._hideModalPromo}>
+                        <SaleCard hideModalFromChild={this._hideModalPromo} data={this.state.promoDetails} rute={'order'} />
                     </Modal>
                 </Portal>
             </Card>

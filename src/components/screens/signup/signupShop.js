@@ -4,8 +4,7 @@ import { TextInput, Button, Dialog, ActivityIndicator, Modal, HelperText, Paragr
 import { appStyles, colors, sizes } from '../../../index.styles';
 import ArrowButton from '../../commons/arrowButton'
 import { insertShop } from '../../../api/user'
-
-//VER HELPER TEXT, VALIDACION TELEFONO, ARREGLAR SNACKBAR, 
+ 
 export default class SignUpShopScreen extends Component {
 
 	constructor(props) {

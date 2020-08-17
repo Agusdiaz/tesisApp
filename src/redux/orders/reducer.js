@@ -5,7 +5,8 @@ const initialState = {
     comentario: undefined,
     promociones: [],
     productos: [],
-    selectedProduct: {}
+    selectedProduct: {},
+    comentario: undefined,
 }
 
 export default (state = initialState, { type, payload }) => {
@@ -30,6 +31,8 @@ export default (state = initialState, { type, payload }) => {
             return { ...state, takeAway: payload.takeAway }
         case 'UPDATE_TIPS':
             return { ...state, propina: payload.tips }
+        case 'SET_COMENTS':
+            return { ...state, comentario: payload.coment }
         case 'DELETE_ORDER':
             return initialState
         default:
