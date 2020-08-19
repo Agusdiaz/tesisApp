@@ -107,7 +107,7 @@ const styles = StyleSheet.create({
     list: {
         top: sizes.hp('5%'),
         width: sizes.wp('100%'),
-        marginBottom: sizes.hp('31.4%'),
+        marginBottom: sizes.hp('18%')
         //height: sizes.hp('64%')
     },
     viewImage: {

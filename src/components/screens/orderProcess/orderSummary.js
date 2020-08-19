@@ -6,6 +6,7 @@ import { DataTable, DataTableHeader, DataTableCell, DataTablePagination, DataTab
 import { Card, FAB, Button, Divider, Portal, Dialog, TextInput, Paragraph } from 'react-native-paper';
 import OrderActions from '../../../redux/orders/action'
 import TextTicker from 'react-native-text-ticker'
+import { Actions } from 'react-native-router-flux';
 import moment from 'moment'
 
 class OrderSummary extends Component {
@@ -145,7 +146,7 @@ class OrderSummary extends Component {
                                         {this.props.order.promociones
                                             .map(row => (
                                                 <DataTableRow key={row.idPromo}>
-                                                    <DataTableCell text={(row.modificado === 0) ? row.nombre : '(*) ' + row.nombre} borderRight textStyle={{ textAlign: 'center', color: (row.modificado === 1) ? colors.APP_MAIN : null }} style={{ maxWidth: '30%' }} />
+                                                    <DataTableCell text={(!row.modificado) ? row.nombre : '(*) ' + row.nombre} borderRight textStyle={{ textAlign: 'center', color: (row.modificado) ? colors.APP_MAIN : null }} style={{ maxWidth: '30%' }} />
                                                     <DataTableCell text={(row.cantidad).toString()} textStyle={{ textAlign: 'center', }} style={{ maxWidth: '3%', alignSelf: 'center' }} minWidth={90} />
                                                     <DataTableCell text={'$' + (row.precio).toString()} textStyle={{ textAlign: 'center' }} style={{ maxWidth: '3%', alignSelf: 'center' }} minWidth={100} />
                                                     <DataTableCell text={'$' + (row.cantidad * row.precio).toString()} textStyle={{ textAlign: 'center' }} style={{ maxWidth: '3%', alignSelf: 'center' }} minWidth={105} />
@@ -192,7 +193,10 @@ class OrderSummary extends Component {
                         <Dialog.Content style={{ alignSelf: 'center' }}><Paragraph style={{ fontSize: 16.5 }}>¿Desea modificar su pedido?</Paragraph></Dialog.Content>
                         <Dialog.Actions>
                             <Button style={{ marginRight: sizes.wp('3%') }} color={colors.APP_RED} onPress={this._hideDialogContinue}>Modificar</Button>
-                            <Button color={colors.APP_GREEN} onPress={() => { this._hideDialogContinue(), this.nextStepParent() }}>Continuar</Button>
+                            <Button color={colors.APP_GREEN} onPress={() => { this._hideDialogContinue(),
+                                Actions.navbarclient()
+                                this.props.deleteOrder()
+                                this.nextStepParent() }}>Continuar</Button>
                         </Dialog.Actions>
                     </Dialog>
 
@@ -314,6 +318,7 @@ const mapDispatchToProps = (dispatch) => {
         updateTakeAway: (takeAway) => dispatch(OrderActions.updateTakeAway(takeAway)),
         updateTips: (tips) => dispatch(OrderActions.updateTips(tips)),
         setComents: (coment) => dispatch(OrderActions.setComents(coment)),
+        deleteOrder: () => dispatch(OrderActions.deleteOrder()),
     }
 };
 

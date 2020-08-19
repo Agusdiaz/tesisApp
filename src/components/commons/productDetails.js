@@ -65,8 +65,8 @@ class ProductDetails extends Component {
                             <DataTableCell text={'INGREDIENTES '} type={'header'} borderRight textStyle={{ textAlign: 'center', fontWeight: 'bold' }} style={{ maxWidth: '30%' }} />
                             <DataTableCell text={'Detalle'} type={'header'} textStyle={{ textAlign: 'center', fontWeight: 'bold' }} style={{ maxWidth: '10%' }} minWidth={90} />
                             <DataTableCell text={'Cantidad'} type={'header'} textStyle={{ textAlign: 'center', fontWeight: 'bold' }} style={{ maxWidth: '3%' }} minWidth={90} />
-                            {(this.props.rute !== 'order') ?
-                                <View style={{flexDirection: 'row'}}>
+                            {(this.props.rute !== 'order' && this.props.rute !== 'promoOrder') ?
+                                <View style={{ flexDirection: 'row' }}>
                                     <DataTableCell text={'Precio'} type={'header'} textStyle={{ textAlign: 'center', fontWeight: 'bold' }} style={{ maxWidth: '3%' }} minWidth={70} />
                                     <DataTableCell text={'Opcional'} type={'header'} textStyle={{ textAlign: 'center', fontWeight: 'bold' }} style={{ maxWidth: '3%' }} minWidth={90} />
                                 </View>
@@ -74,15 +74,15 @@ class ProductDetails extends Component {
                         </DataTableRow>
 
                         <ScrollView style={{ height: sizes.hp('31%') }}>
-                            {(this.props.data.ingredientes[0]) ?
+                            {(this.props.data.ingredientes[0] && this.props.rute !== 'promoOrder') ?
                                 this.props.data.ingredientes[0]
                                     .map(row =>
-                                        < DataTableRow key={row.id} >
+                                        < DataTableRow key={(row.idIngrediente) ? row.idIngrediente : row.id} >
                                             <DataTableCell text={row.nombre} borderRight style={{ maxWidth: '30%' }} textStyle={{ textAlign: 'center' }} />
                                             <DataTableCell text={(row.detalle) ? row.detalle : '-'} textStyle={{ textAlign: 'center' }} style={{ maxWidth: '10%', alignSelf: 'center' }} minWidth={90} />
                                             <DataTableCell text={(row.cantidad) ? (row.cantidad).toString() : '-'} textStyle={{ textAlign: 'center' }} style={{ maxWidth: '3%', alignSelf: 'center' }} minWidth={90} />
-                                            {(this.props.rute !== 'order') ?
-                                                <View style={{flexDirection: 'row'}}>
+                                            {(this.props.rute !== 'order' && this.props.rute !== 'promoOrder') ?
+                                                <View style={{ flexDirection: 'row' }}>
                                                     <DataTableCell text={(row.precio) ? '$' + (row.precio).toString() : '-'} textStyle={{ textAlign: 'center' }} style={{ maxWidth: '3%', alignSelf: 'center' }} minWidth={70} />
                                                     <DataTableCell text={(row.opcion === 1) ? 'Agregar' : (row.opcion === 0) ? 'Eliminar' : '-'} textStyle={{
                                                         textAlign: 'center', color: (row.opcion === 1) ? colors.APP_GREEN :
@@ -92,8 +92,28 @@ class ProductDetails extends Component {
                                                 : null}
                                         </DataTableRow>
                                     )
-                                :
-                                <DataTableCell text={'Este producto no posee ingredientes para mostrar'} style={styles.cell} textStyle={{ fontSize: 17, textAlign: 'center', fontWeight: 'bold', color: colors.APP_RED }} />
+                                : (this.props.rute !== 'promoOrder') ?
+                                    <DataTableCell text={'Este producto no posee ingredientes para mostrar'} style={styles.cell} textStyle={{ fontSize: 17, textAlign: 'center', fontWeight: 'bold', color: colors.APP_RED }} />
+                                    : (this.props.data.ingredientes.length > 0) ?
+                                        this.props.data.ingredientes
+                                            .map(row =>
+                                                < DataTableRow key={row.idIngrediente} >
+                                                    <DataTableCell text={row.nombre} borderRight style={{ maxWidth: '30%' }} textStyle={{ textAlign: 'center' }} />
+                                                    <DataTableCell text={(row.detalle) ? row.detalle : '-'} textStyle={{ textAlign: 'center' }} style={{ maxWidth: '10%', alignSelf: 'center' }} minWidth={90} />
+                                                    <DataTableCell text={(row.cantidad) ? (row.cantidad).toString() : '-'} textStyle={{ textAlign: 'center' }} style={{ maxWidth: '3%', alignSelf: 'center' }} minWidth={90} />
+                                                    {(this.props.rute !== 'order' && this.props.rute !== 'promoOrder') ?
+                                                        <View style={{ flexDirection: 'row' }}>
+                                                            <DataTableCell text={(row.precio) ? '$' + (row.precio).toString() : '-'} textStyle={{ textAlign: 'center' }} style={{ maxWidth: '3%', alignSelf: 'center' }} minWidth={70} />
+                                                            <DataTableCell text={(row.opcion === 1) ? 'Agregar' : (row.opcion === 0) ? 'Eliminar' : '-'} textStyle={{
+                                                                textAlign: 'center', color: (row.opcion === 1) ? colors.APP_GREEN :
+                                                                    (row.opcion === 0) ? colors.APP_RED : null
+                                                            }} style={{ maxWidth: '3%', alignSelf: 'center' }} minWidth={90} />
+                                                        </View>
+                                                        : null}
+                                                </DataTableRow>
+                                            )
+                                        :
+                                        <DataTableCell text={'Este producto no posee ingredientes para mostrar'} style={styles.cell} textStyle={{ fontSize: 17, textAlign: 'center', fontWeight: 'bold', color: colors.APP_RED }} />
                             }
                         </ScrollView>
                     </DataTable>

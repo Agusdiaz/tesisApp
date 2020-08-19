@@ -7,17 +7,22 @@ import TextTicker from 'react-native-text-ticker'
 import OrderActions from '../../../redux/orders/action'
 import { Actions } from 'react-native-router-flux';
 import ProductDetails from './productDetailsInCart'
+import PromoDetails from './promoDetailsInCart'
 
 class CartOrder extends Component {
     constructor(props) {
         super(props);
         this.state = {
             visibleModalProduct: false,
+            visibleModalPromo: false,
         }
     }
 
     _showModalProduct = () => this.setState({ visibleModalProduct: true })
     _hideModalProduct = () => this.setState({ visibleModalProduct: false })
+
+    _showModalPromo = () => this.setState({ visibleModalPromo: true })
+    _hideModalPromo = () => this.setState({ visibleModalPromo: false })
 
     nextStep = () => {
         Actions.makeorder({ pos: 2 })
@@ -32,18 +37,18 @@ class CartOrder extends Component {
                     animationType='bounce'
                     repeatSpacer={50}
                     marqueeDelay={1000}>{item.nombre}</TextTicker>
-                    <Text style={styles.subtitle}>Cantidad: {item.cantidad}</Text>
-                    <Text style={styles.subtitle}>Precio: ${item.precio * item.cantidad}</Text>
-                    </View>
+                <Text style={styles.subtitle}>Cantidad: {item.cantidad}</Text>
+                <Text style={styles.subtitle}>Precio: ${item.precio * item.cantidad}</Text>
+            </View>
             return (
-                <Card style={{ height: sizes.hp('15%')}}>
+                <Card style={{ height: sizes.hp('15%') }}>
                     <Card.Actions style={styles.actionSide} >
                         {(item.modificado) ?
-                            <Button style={{position: 'absolute', }}
-                                labelStyle={{fontSize: 10}}
+                            <Button style={{ position: 'absolute', }}
+                                labelStyle={{ fontSize: 10 }}
                                 mode="contained"
                                 dark
-                                color={colors.APP_MAIN}> 
+                                color={colors.APP_MAIN}>
                                 Modificado
                             </Button>
                             :
@@ -55,8 +60,15 @@ class CartOrder extends Component {
                             color={colors.APP_MAIN}
                             icon="eye"
                             small
-                            onPress={() => { this.props.setSelectedProduct(item)//this.setState({productDetails : item})
-                                this._showModalProduct()
+                            onPress={() => {
+                                if (item.idProducto !== undefined) {
+                                    this.props.setSelectedProduct(item)
+                                    this._showModalProduct()
+                                }
+                                else {
+                                    this.props.setSelectedPromo(item)
+                                    this._showModalPromo()
+                                }
                             }}
                         />
                     </Card.Actions>
@@ -93,13 +105,13 @@ class CartOrder extends Component {
                     <Card.Content style={styles.cardContent}>
                         <FlatList
                             style={styles.list}
-                            data={(this.props.order.productos.length === 0 && this.props.order.promociones.length === 0) ? [1] : this.props.order.productos}
+                            data={(this.props.order.productos.length === 0 && this.props.order.promociones.length === 0) ? [1] : this.props.order.productos.concat(this.props.order.promociones)}
                             initialNumToRender={0}
                             renderItem={({ item }) => this._renderItem(item)}
                             keyExtractor={(item, i) => i.toString()} />
                     </Card.Content>
                     <Divider style={styles.divider} />
-                    <Card.Title style={{ margin: -9 }} titleStyle={{fontSize: 18}} title="Total:" right={total} />
+                    <Card.Title style={{ margin: -9 }} titleStyle={{ fontSize: 18 }} title="Total:" right={total} />
                     <Divider style={styles.divider} />
                 </Card>
 
@@ -114,9 +126,14 @@ class CartOrder extends Component {
  				</Button>
 
                 <Portal>
-                <Modal contentContainerStyle={styles.modalView} visible={this.state.visibleModalProduct} onDismiss={this._hideModalProduct}>
+                    <Modal contentContainerStyle={styles.modalView} visible={this.state.visibleModalProduct} onDismiss={this._hideModalProduct}>
                         <ProductDetails hideModalFromChild={this._hideModalProduct} />
                     </Modal>
+
+                    <Modal contentContainerStyle={styles.modalView} visible={this.state.visibleModalPromo} onDismiss={this._hideModalPromo}>
+                        <PromoDetails hideModalFromChild={this._hideModalPromo} />
+                    </Modal>
+
                 </Portal>
             </View>
         )
@@ -185,13 +202,13 @@ const styles = StyleSheet.create({
         height: sizes.hp('11%'),
     },
     actionSide: {
-        alignSelf: 'flex-end', 
-        margin: -2, 
-        left: sizes.wp('-6%'), 
-        top: sizes.hp('1.2%'), 
-        height: sizes.hp('13%'), 
-        width: sizes.wp('30%'), 
-        flexDirection:'column',
+        alignSelf: 'flex-end',
+        margin: -2,
+        left: sizes.wp('-6%'),
+        top: sizes.hp('1.2%'),
+        height: sizes.hp('13%'),
+        width: sizes.wp('30%'),
+        flexDirection: 'column',
     },
     title: {
         textAlign: 'center',
@@ -212,8 +229,8 @@ function mapStateToProps(state) {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        setProductOrder: (product) => dispatch(OrderActions.setProductOrder(product)),
         setSelectedProduct: (product) => dispatch(OrderActions.setSelectedProduct(product)),
+        setSelectedPromo: (promo) => dispatch(OrderActions.setSelectedPromo(promo)),
     }
 };
 

@@ -46,6 +46,34 @@ const setPromoOrder = (promo) => {
     }
 }
 
+const updatePromoAmount = (id, amount) => {
+    return {
+        type: 'UPDATE_PROMO_AMOUNT',
+        payload: {
+            id: id,
+            amount: amount,
+        },
+    }
+}
+
+const removePromo = (promo) => {
+    return {
+        type: 'REMOVE_PROMO',
+        payload: {
+            promo: promo,
+        },
+    }
+}
+
+const setSelectedPromo = (promo) => {
+    return {
+        type: 'SET_SELECTED_PROMO',
+        payload: {
+            selectedPromo: promo
+        },
+    }
+}
+
 const updateTotal = (total) => {
     return {
         type: 'UPDATE_TOTAL',
@@ -86,10 +114,13 @@ const deleteOrder = () => configureStore.dispatch({ type: 'DELETE_ORDER' })
 
 export default {
     setProductOrder,
-    setPromoOrder,
     updateProductAmount,
-    setSelectedProduct,
     removeProduct,
+    setSelectedProduct,
+    setSelectedPromo,
+    updatePromoAmount,
+    removePromo,
+    setPromoOrder,
     updateTotal,
     updateTakeAway,
     updateTips,

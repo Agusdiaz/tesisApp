@@ -90,7 +90,7 @@ class ProductDetailsInCart extends Component {
                             <ScrollView style={{ height: sizes.hp('27%') }}>
                                 {(this.props.product.ingredientes.length > 0) ?
                                     this.props.product.ingredientes
-                                        .map((row, i) =>
+                                        .map(row =>
                                             < DataTableRow key={row.idIngrediente}>
                                                 <DataTableCell text={row.nombre} borderRight style={{ maxWidth: '30%' }} textStyle={{ textAlign: 'center' }} />
                                                 <DataTableCell text={(row.detalle) ? row.detalle : '-'} textStyle={{ textAlign: 'center' }} style={{ maxWidth: '10%', alignSelf: 'center' }} minWidth={90} />

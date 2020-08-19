@@ -5,7 +5,7 @@ import { Card, FAB, Modal, Portal, Button, Dialog, Divider, IconButton } from 'r
 import { DataTable, DataTableHeader, DataTableCell, DataTableRow } from 'material-bread'
 import TextTicker from 'react-native-text-ticker';
 import ProductDetails from '../commons/productDetails'
-import ProductDetailsOrder from './productDetailsOrder'
+import PromoDetails from '../screens/orderProcess/promoDetailsOrder'
 import { Actions } from 'react-native-router-flux';
 import Schedule from './schedule'
 
@@ -14,8 +14,8 @@ class SalesCard extends Component {
         super(props);
         this.state = {
             visibleModalDetails: false,
-            visibleModalOrder: false,
             visibleModalSchedule: false,
+            visibleModalPromoDetails: false,
             productDetails: [],
         }
     }
@@ -23,11 +23,11 @@ class SalesCard extends Component {
     _showModalDetails = () => this.setState({ visibleModalDetails: true });
     _hideModalDetails = () => this.setState({ visibleModalDetails: false });
 
-    _showModalOrder = () => this.setState({ visibleModalOrder: true })
-    _hideModalOrder = () => this.setState({ visibleModalOrder: false })
-
     _showModalSchedule = () => this.setState({ visibleModalSchedule: true });
     _hideModalSchedule = () => this.setState({ visibleModalSchedule: false });
+
+    _showModalPromoDetails = () => this.setState({ visibleModalPromoDetails: true });
+    _hideModalPromoDetails = () => this.setState({ visibleModalPromoDetails: false });
 
     render() {
         const NamePriceButton = props => <View style={{ width: sizes.wp('50%'), alignItems: 'center', height: sizes.wp('14%'),
@@ -59,7 +59,7 @@ class SalesCard extends Component {
                 compact
                 mode='contained'
                 dark
-                onPress={() => {}}
+                onPress={this._showModalPromoDetails}
                 color={colors.APP_MAIN}
             >
                 Agregar
@@ -85,7 +85,7 @@ class SalesCard extends Component {
                         <Text style={styles.details} numberOfLines={6}>{this.props.data.detalle}</Text>
                         <DataTable style={{ width: sizes.wp('90%'), left: -10 }}>
                             <DataTableHeader
-                                title={'¿Que inlcuye la promoción?'}
+                                title={'¿Qué inlcuye la promoción?'}
                                 style={{ right: sizes.wp('-15%') }}
                             />
                             <DataTableRow >
@@ -102,9 +102,9 @@ class SalesCard extends Component {
                                             <DataTableCell text={row.cantidad.toString()} textStyle={{ textAlign: 'center' }} style={{ maxWidth: '5%', alignSelf: 'center'}} minWidth={100} />
                                             <DataTableCell text={'VER'} textStyle={{ color: colors.APP_MAIN, fontWeight: 'bold', textAlign: 'center' }} style={{ maxWidth: '5%', alignSelf: 'center'}} minWidth={90} onPress={() => {
                                                 this.setState({ productDetails: row }),
-                                                    (this.props.rute === 'cart') ?
-                                                    this._showModalOrder()
-                                                        : 
+                                                    //(this.props.rute === 'cart') ?
+                                                    /* this._showModalOrder()
+                                                        :  */
                                                         this._showModalDetails() 
                                                 }} />
                                         </DataTableRow>
@@ -121,8 +121,8 @@ class SalesCard extends Component {
                         rute={(this.props.rute === 'order') ? 'order' : null}/>
                     </Modal>
 
-                    <Modal contentContainerStyle={[styles.modalView, {maxHeight: sizes.hp('92%')}]} visible={this.state.visibleModalOrder} onDismiss={this._hideModalOrder}>
-                        <ProductDetailsOrder hideModalFromChild={this._hideModalOrder} data={this.state.productDetails} />
+                    <Modal contentContainerStyle={[styles.modalView, {maxHeight: sizes.hp('92%')}]} visible={this.state.visibleModalPromoDetails} onDismiss={this._hideModalPromoDetails}>
+                        <PromoDetails hideModalFromChild={this._hideModalPromoDetails} data={this.props.data} />
                     </Modal>
 
                     {(this.props.rute !== 'order') ?

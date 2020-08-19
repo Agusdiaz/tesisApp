@@ -5,8 +5,9 @@ const initialState = {
     comentario: undefined,
     promociones: [],
     productos: [],
-    selectedProduct: {},
     comentario: undefined,
+    selectedProduct: {},
+    selectedPromo: {},
 }
 
 export default (state = initialState, { type, payload }) => {
@@ -25,6 +26,16 @@ export default (state = initialState, { type, payload }) => {
             return { ...state, ...payload }
         case 'SET_PROMO':
             return { ...state, promociones: [...state.promociones, payload.promo] }
+        case 'UPDATE_PROMO_AMOUNT':
+            return {
+                ...state, promociones: state.promociones.map(obj =>
+                    (obj.idPromo === payload.id) ? { ...obj, cantidad: payload.amount } : obj),
+                selectedPromo: { ...state.selectedPromo, cantidad: payload.amount }
+            }
+        case 'REMOVE_PROMO':
+            return { ...state, promociones: [...state.promociones.filter(obj => obj !== payload.promo)] }
+        case 'SET_SELECTED_PROMO':
+            return { ...state, ...payload }
         case 'UPDATE_TOTAL':
             return { ...state, total: payload.total }
         case 'UPDATE_TAKEAWAY':
