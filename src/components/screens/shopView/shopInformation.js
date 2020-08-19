@@ -30,7 +30,7 @@ class ShopInformationScreen extends Component {
                 <ArrowButton rute={'navBarClientHome'} />
 
                 <Button style={[styles.buttonOrder, {
-                    top: (this.state.selectedTab === 0) ? sizes.hp('1.2%') : (this.state.selectedTab === 1) ? sizes.hp('6.29%') : sizes.hp('8.25%')
+                    top: (this.state.selectedTab === 0) ? sizes.hp('1.2%') : (this.state.selectedTab === 1) ? sizes.hp('6.29%') : sizes.hp('-41.8%')
                 }]}
                     icon="cart-outline"
                     mode="contained"

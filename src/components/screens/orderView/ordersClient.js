@@ -30,10 +30,14 @@ class OrdersClientScreen extends Component {
         const data = await getAllOrdersByClient(this.props.user.mail, this.props.user.token)
         if (data.status === 500 || data.status === 204)
             this.setState({ areOrders: false })
-        else{
-            this.setState({ areOrders: true, orders: data.body })
-            this.arrayholder = data.body
-    }
+        else {
+            this.setState({ areOrders: true, orders: data.body.sort(function(a,b){
+                return new Date(b.fecha) - new Date(a.fecha);
+              }) })
+            this.arrayholder = data.body.sort(function(a,b){
+                return new Date(b.fecha) - new Date(a.fecha);
+              })
+        }
     }
 
     onRefresh = () => {

@@ -1,11 +1,12 @@
 const initialState = {
+    mail: undefined,
+    cuit: undefined,
     total: 0,
     takeAway: false,
     propina: 0,
-    comentario: undefined,
     promociones: [],
     productos: [],
-    comentario: undefined,
+    comentario: null,
     selectedProduct: {},
     selectedPromo: {},
 }
@@ -44,6 +45,9 @@ export default (state = initialState, { type, payload }) => {
             return { ...state, propina: payload.tips }
         case 'SET_COMENTS':
             return { ...state, comentario: payload.coment }
+        case 'SET_CUITMAIL':
+            console.log('aca')
+            return { ...state, mail: payload.mail, cuit: payload.cuit }
         case 'DELETE_ORDER':
             return initialState
         default:

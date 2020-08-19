@@ -57,7 +57,7 @@ class SalesMenu extends Component {
     render() {
 
         return (
-            <View style={{ width: sizes.wp('100%'), height: sizes.hp('100%'), top: sizes.hp('19%') }}>
+            <View style={{ width: sizes.wp('100%'), height: sizes.hp('77%'), top: (this.props.rute === 'shop') ? sizes.hp('11%') : sizes.hp('21%'), position: 'absolute' }}>
 
                 <FlatList
                     style={styles.list}
@@ -76,7 +76,7 @@ const styles = StyleSheet.create({
     list: {
         top: sizes.hp('1%'),
         width: sizes.wp('100%'),
-        marginBottom: sizes.hp('23%'),
+        //marginBottom: sizes.hp('23%'),
     },
     viewImage: {
         justifyContent: 'center',

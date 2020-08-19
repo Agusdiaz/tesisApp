@@ -2,11 +2,12 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { StyleSheet, Text, View, Image, ScrollView, Alert } from 'react-native';
 import { colors, sizes, orderStage, appStyles } from '../../../index.styles';
-import { DataTable, DataTableHeader, DataTableCell, DataTablePagination, DataTableRow } from 'material-bread'
+import { DataTable, DataTableHeader, DataTableCell, DataTableRow } from 'material-bread'
 import { Card, FAB, Button, Divider, Portal, Dialog, TextInput, Paragraph } from 'react-native-paper';
 import OrderActions from '../../../redux/orders/action'
 import TextTicker from 'react-native-text-ticker'
 import { Actions } from 'react-native-router-flux';
+import {insertOrder} from '../../../api/orders'
 import moment from 'moment'
 
 class OrderSummary extends Component {
@@ -19,6 +20,20 @@ class OrderSummary extends Component {
             visibleDialogContinue: false,
             visibleDialogTip: false,
             visibleDialogComent: false,
+        }
+    }
+
+    async makeOrder(){
+        this.props.setCuitAndMail(this.props.user.mail, this.props.shop.cuit)
+        const data = await insertOrder(this.props.order, this.props.user.token)
+        if(data.status === 500){
+
+        } else if(data.status === 401){
+
+        } else { //PONER DIALOGO
+            Actions.navbarclient()
+            this.props.deleteOrder()
+            //this.nextStepParent()
         }
     }
 
@@ -124,8 +139,8 @@ class OrderSummary extends Component {
                                         </DataTableRow>
 
                                         {this.props.order.productos
-                                            .map(row => (
-                                                <DataTableRow key={row.idProducto}>
+                                            .map((row, i) => (
+                                                <DataTableRow key={i}>
                                                     <DataTableCell text={(!row.modificado) ? row.nombre : '(*) ' + row.nombre} borderRight textStyle={{ textAlign: 'center', color: (row.modificado) ? colors.APP_MAIN : null }} style={{ maxWidth: '30%' }} />
                                                     <DataTableCell text={(row.cantidad).toString()} textStyle={{ textAlign: 'center' }} style={{ maxWidth: '3%', alignSelf: 'center' }} minWidth={90} />
                                                     <DataTableCell text={'$' + (row.precio).toString()} textStyle={{ textAlign: 'center' }} style={{ maxWidth: '3%', alignSelf: 'center' }} minWidth={100} />
@@ -144,8 +159,8 @@ class OrderSummary extends Component {
                                             <DataTableCell text={'Precio Total'} type={'header'} textStyle={{ textAlign: 'center', fontWeight: 'bold' }} style={{ maxWidth: '3%' }} minWidth={105} />
                                         </DataTableRow>
                                         {this.props.order.promociones
-                                            .map(row => (
-                                                <DataTableRow key={row.idPromo}>
+                                            .map((row, i) => (
+                                                <DataTableRow key={i}>
                                                     <DataTableCell text={(!row.modificado) ? row.nombre : '(*) ' + row.nombre} borderRight textStyle={{ textAlign: 'center', color: (row.modificado) ? colors.APP_MAIN : null }} style={{ maxWidth: '30%' }} />
                                                     <DataTableCell text={(row.cantidad).toString()} textStyle={{ textAlign: 'center', }} style={{ maxWidth: '3%', alignSelf: 'center' }} minWidth={90} />
                                                     <DataTableCell text={'$' + (row.precio).toString()} textStyle={{ textAlign: 'center' }} style={{ maxWidth: '3%', alignSelf: 'center' }} minWidth={100} />
@@ -155,7 +170,7 @@ class OrderSummary extends Component {
                                     </View>
                                     : null}
                                     <Divider style={styles.divider} />
-                                    <Text style={{color: colors.APP_MAIN, fontWeight: 'bold', marginTop: sizes.hp('3%'), left: 10}}>(*) modificaste este producto</Text>
+                                    <Text style={{color: colors.APP_MAIN, fontWeight: 'bold', marginTop: sizes.hp('3%'), marginBottom: sizes.hp('1%'),  left: 10}}>(*) modificaste este producto</Text>
                             </ScrollView>
                         </DataTable>
                     </Card.Content>
@@ -193,10 +208,9 @@ class OrderSummary extends Component {
                         <Dialog.Content style={{ alignSelf: 'center' }}><Paragraph style={{ fontSize: 16.5 }}>¿Desea modificar su pedido?</Paragraph></Dialog.Content>
                         <Dialog.Actions>
                             <Button style={{ marginRight: sizes.wp('3%') }} color={colors.APP_RED} onPress={this._hideDialogContinue}>Modificar</Button>
-                            <Button color={colors.APP_GREEN} onPress={() => { this._hideDialogContinue(),
-                                Actions.navbarclient()
-                                this.props.deleteOrder()
-                                this.nextStepParent() }}>Continuar</Button>
+                            <Button color={colors.APP_GREEN} onPress={() => { this._hideDialogContinue()
+                                this.makeOrder()
+                                }}>Continuar</Button>
                         </Dialog.Actions>
                     </Dialog>
 
@@ -306,6 +320,7 @@ const styles = StyleSheet.create({
 
 function mapStateToProps(state) {
     return {
+        user: state.authState.client,
         shop: state.shops.selected,
         order: state.order
     };
@@ -318,6 +333,7 @@ const mapDispatchToProps = (dispatch) => {
         updateTakeAway: (takeAway) => dispatch(OrderActions.updateTakeAway(takeAway)),
         updateTips: (tips) => dispatch(OrderActions.updateTips(tips)),
         setComents: (coment) => dispatch(OrderActions.setComents(coment)),
+        setCuitAndMail: (mail, cuit) => dispatch(OrderActions.setCuitAndMail(mail, cuit)),
         deleteOrder: () => dispatch(OrderActions.deleteOrder()),
     }
 };

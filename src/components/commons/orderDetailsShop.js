@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { StyleSheet, Text, View, Image, ScrollView } from 'react-native';
 import { colors, sizes, orderStage } from '../../index.styles';
 import { DataTable, DataTableHeader, DataTableCell, DataTableRow } from 'material-bread'
-import { Card, FAB, Button, Divider, IconButton, Modal, Portal } from 'react-native-paper';
+import { Card, FAB, Button, Divider, IconButton, Modal, Portal, Dialog } from 'react-native-paper';
 import TextTicker from 'react-native-text-ticker'
 import ProductDetails from './productDetails'
 import SaleCard from './salesCard'
@@ -16,6 +16,7 @@ class OrderDetailsShop extends Component {
             promoDetails: [],
             visibleModalProduct: false,
             visibleModalPromo: false,
+            visibleDialogComent: false,
         }
     }
 
@@ -28,6 +29,10 @@ class OrderDetailsShop extends Component {
 
     _showModalPromo = () => this.setState({ visibleModalPromo: true });
     _hideModalPromo = () => this.setState({ visibleModalPromo: false });
+
+    _showDialogComent = () => this.setState({ visibleDialogComent: true });
+    _hideDialogComent = () => this.setState({ visibleDialogComent: false });
+
 
     render() {
 
@@ -62,6 +67,15 @@ class OrderDetailsShop extends Component {
 
         const date = props => <Text style={styles.rightText}> {moment(this.props.data.fecha).format("YYYY/MM/DD HH:mm")} hs</Text>
 
+        const comment = props =>
+            <FAB style={[styles.fabComment, { backgroundColor: (this.props.data.comentario === null) ? colors.APP_INACTIVE : colors.APP_MAIN }]}
+                color={colors.APP_BACKGR}
+                label={'VER'}
+                disabled={this.props.data.comentario === null}
+                icon="comment-text-outline"
+                onPress={this._showDialogComent}
+            />
+
         return (
 
             <Card style={styles.orderCard}>
@@ -81,24 +95,24 @@ class OrderDetailsShop extends Component {
                             title={'¿De qué se compone el pedido?'}
                             style={{ right: sizes.wp('-4.5%') }}
                         />
-                        <ScrollView style={{ height: sizes.hp('41%') }}>
+                        <ScrollView style={{ height: sizes.hp('40%') }}>
                             {(this.props.data.productos[0] !== null) ?
                                 <View>
                                     <DataTableRow style={{}}>
                                         <DataTableCell text={'PRODUCTOS'} type={'header'} borderRight textStyle={{ textAlign: 'center', fontWeight: 'bold' }} style={{ maxWidth: '30%' }} />
-                                        <DataTableCell text={'Cantidad'} type={'header'} textStyle={{ textAlign: 'center', fontWeight: 'bold' }} style={{ maxWidth: '3%'}} minWidth={90}/>
-                                        <DataTableCell text={'Precio Unit'} type={'header'} textStyle={{ textAlign: 'center', fontWeight: 'bold' }} style={{ maxWidth: '3%'}} minWidth={100}/>
-                                        <DataTableCell text={'Precio Total'} type={'header'} textStyle={{ textAlign: 'center', fontWeight: 'bold' }} style={{ maxWidth: '3%'}} minWidth={105}/>
-                                        <DataTableCell text={'Detalles'} type={'header'} textStyle={{ textAlign: 'center', fontWeight: 'bold' }} style={{ maxWidth: '3%'}} minWidth={90}/>
+                                        <DataTableCell text={'Cantidad'} type={'header'} textStyle={{ textAlign: 'center', fontWeight: 'bold' }} style={{ maxWidth: '3%' }} minWidth={90} />
+                                        <DataTableCell text={'Precio Unit'} type={'header'} textStyle={{ textAlign: 'center', fontWeight: 'bold' }} style={{ maxWidth: '3%' }} minWidth={100} />
+                                        <DataTableCell text={'Precio Total'} type={'header'} textStyle={{ textAlign: 'center', fontWeight: 'bold' }} style={{ maxWidth: '3%' }} minWidth={105} />
+                                        <DataTableCell text={'Detalles'} type={'header'} textStyle={{ textAlign: 'center', fontWeight: 'bold' }} style={{ maxWidth: '3%' }} minWidth={90} />
                                     </DataTableRow>
                                     {this.props.data.productos[0]
                                         .map(row => (
                                             <DataTableRow key={row.id}>
-                                                <DataTableCell text={(row.modificado===0)? row.nombre : '(*) '+row.nombre} borderRight textStyle={{ textAlign: 'center', color: (row.modificado===1) ? colors.APP_MAIN : null }} style={{ maxWidth: '30%' }} />
-                                                <DataTableCell text={(row.cantidad).toString()} textStyle={{ textAlign: 'center' }} style={{ maxWidth: '3%', alignSelf: 'center'}} minWidth={90}/>
-                                                <DataTableCell text={'$' + (row.precio).toString()} textStyle={{ textAlign: 'center' }} style={{ maxWidth: '3%', alignSelf: 'center'}} minWidth={100}/>
-                                                <DataTableCell text={'$' + (row.cantidad * row.precio).toString()} textStyle={{ textAlign: 'center' }} style={{ maxWidth: '3%', alignSelf: 'center'}} minWidth={105}/>
-                                                <DataTableCell text={'VER'} textStyle={{ color: colors.APP_MAIN, fontWeight: 'bold', textAlign: 'center' }} style={{ maxWidth: '3%', alignSelf: 'center'}} minWidth={90} onPress={() => {
+                                                <DataTableCell text={(row.modificado === 0) ? row.nombre : '(*) ' + row.nombre} borderRight textStyle={{ textAlign: 'center', color: (row.modificado === 1) ? colors.APP_MAIN : null }} style={{ maxWidth: '30%' }} />
+                                                <DataTableCell text={(row.cantidad).toString()} textStyle={{ textAlign: 'center' }} style={{ maxWidth: '3%', alignSelf: 'center' }} minWidth={90} />
+                                                <DataTableCell text={'$' + (row.precio).toString()} textStyle={{ textAlign: 'center' }} style={{ maxWidth: '3%', alignSelf: 'center' }} minWidth={100} />
+                                                <DataTableCell text={'$' + (row.cantidad * row.precio).toString()} textStyle={{ textAlign: 'center' }} style={{ maxWidth: '3%', alignSelf: 'center' }} minWidth={105} />
+                                                <DataTableCell text={'VER'} textStyle={{ color: colors.APP_MAIN, fontWeight: 'bold', textAlign: 'center' }} style={{ maxWidth: '3%', alignSelf: 'center' }} minWidth={90} onPress={() => {
                                                     this.setState({ productDetails: row })
                                                     this._showModalProduct()
                                                 }} />
@@ -110,19 +124,19 @@ class OrderDetailsShop extends Component {
                                 <View>
                                     <DataTableRow style={{}}>
                                         <DataTableCell text={'PROMOS'} type={'header'} borderRight textStyle={{ textAlign: 'center', fontWeight: 'bold' }} style={{ maxWidth: '30%' }} />
-                                        <DataTableCell text={'Cantidad'} type={'header'} textStyle={{ textAlign: 'center', fontWeight: 'bold' }} style={{ maxWidth: '3%'}} minWidth={90} />
-                                        <DataTableCell text={'Precio Unit'} type={'header'} textStyle={{ textAlign: 'center', fontWeight: 'bold' }} style={{ maxWidth: '3%'}} minWidth={100}/>
-                                        <DataTableCell text={'Precio Total'} type={'header'} textStyle={{ textAlign: 'center', fontWeight: 'bold' }} style={{ maxWidth: '3%'}} minWidth={105}/>
-                                        <DataTableCell text={'Detalles'} type={'header'} textStyle={{ textAlign: 'center', fontWeight: 'bold' }} style={{ maxWidth: '3%'}} minWidth={90}/>
+                                        <DataTableCell text={'Cantidad'} type={'header'} textStyle={{ textAlign: 'center', fontWeight: 'bold' }} style={{ maxWidth: '3%' }} minWidth={90} />
+                                        <DataTableCell text={'Precio Unit'} type={'header'} textStyle={{ textAlign: 'center', fontWeight: 'bold' }} style={{ maxWidth: '3%' }} minWidth={100} />
+                                        <DataTableCell text={'Precio Total'} type={'header'} textStyle={{ textAlign: 'center', fontWeight: 'bold' }} style={{ maxWidth: '3%' }} minWidth={105} />
+                                        <DataTableCell text={'Detalles'} type={'header'} textStyle={{ textAlign: 'center', fontWeight: 'bold' }} style={{ maxWidth: '3%' }} minWidth={90} />
                                     </DataTableRow>
                                     {this.props.data.promociones[0]
                                         .map(row => (
                                             <DataTableRow key={row.id}>
-                                                <DataTableCell text={(row.modificado===0)? row.nombre : '(*) '+row.nombre} borderRight textStyle={{ textAlign: 'center', color: (row.modificado===1) ? colors.APP_MAIN : null }} style={{ maxWidth: '30%' }} />
-                                                <DataTableCell text={(row.cantidad).toString()} textStyle={{ textAlign: 'center',}} style={{ maxWidth: '3%', alignSelf: 'center'}} minWidth={90}/>
-                                                <DataTableCell text={'$' + (row.precio).toString()} textStyle={{ textAlign: 'center' }} style={{ maxWidth: '3%', alignSelf: 'center'}} minWidth={100}/>
-                                                <DataTableCell text={'$' + (row.cantidad * row.precio).toString()} textStyle={{ textAlign: 'center' }} style={{ maxWidth: '3%', alignSelf: 'center'}} minWidth={105}/>
-                                                <DataTableCell text={'VER'} textStyle={{ color: colors.APP_MAIN, fontWeight: 'bold', textAlign: 'center' }} style={{ maxWidth: '3%', alignSelf: 'center'}} minWidth={90} onPress={() => {
+                                                <DataTableCell text={(row.modificado === 0) ? row.nombre : '(*) ' + row.nombre} borderRight textStyle={{ textAlign: 'center', color: (row.modificado === 1) ? colors.APP_MAIN : null }} style={{ maxWidth: '30%' }} />
+                                                <DataTableCell text={(row.cantidad).toString()} textStyle={{ textAlign: 'center', }} style={{ maxWidth: '3%', alignSelf: 'center' }} minWidth={90} />
+                                                <DataTableCell text={'$' + (row.precio).toString()} textStyle={{ textAlign: 'center' }} style={{ maxWidth: '3%', alignSelf: 'center' }} minWidth={100} />
+                                                <DataTableCell text={'$' + (row.cantidad * row.precio).toString()} textStyle={{ textAlign: 'center' }} style={{ maxWidth: '3%', alignSelf: 'center' }} minWidth={105} />
+                                                <DataTableCell text={'VER'} textStyle={{ color: colors.APP_MAIN, fontWeight: 'bold', textAlign: 'center' }} style={{ maxWidth: '3%', alignSelf: 'center' }} minWidth={90} onPress={() => {
                                                     this.setState({ promoDetails: row })
                                                     this._showModalPromo()
                                                 }} />
@@ -130,23 +144,34 @@ class OrderDetailsShop extends Component {
                                         ))}
                                 </View>
                                 : null}
-                                <Divider style={styles.divider} />
-                                <Text style={{color: colors.APP_MAIN, fontWeight: 'bold', marginTop: sizes.hp('5%')}}>(*) productos modificados por el cliente</Text>
+                            <Divider style={styles.divider} />
+                            <Text style={{ color: colors.APP_MAIN, fontWeight: 'bold', marginBottom: sizes.hp('1%'), marginTop: sizes.hp('5%') }}>(*) productos modificados por el cliente</Text>
                         </ScrollView>
                     </DataTable>
                 </Card.Content>
+                <Divider style={styles.divider} />
+                <Card.Title style={styles.cardTitle} titleStyle={styles.leftText} title="Comentario:" right={comment} />
                 <Divider style={styles.divider} />
                 <Card.Title style={styles.cardTitle} titleStyle={styles.leftText} title="Total:" right={total} />
                 <Divider style={styles.divider} />
 
                 <Portal>
                     <Modal contentContainerStyle={styles.modalView} visible={this.state.visibleModalProduct} onDismiss={this._hideModalProduct}>
-                        <ProductDetails hideModalFromChild={this._hideModalProduct} data={this.state.productDetails} rute={'order'}/>
+                        <ProductDetails hideModalFromChild={this._hideModalProduct} data={this.state.productDetails} rute={'order'} />
                     </Modal>
 
                     <Modal contentContainerStyle={{ alignItems: "center" }} visible={this.state.visibleModalPromo} onDismiss={this._hideModalPromo}>
                         <SaleCard hideModalFromChild={this._hideModalPromo} data={this.state.promoDetails} rute={'order'} />
                     </Modal>
+
+                    <Dialog
+                        visible={this.state.visibleDialogComent}
+                        onDismiss={this._hideDialogComent}>
+                        <Dialog.Title style={{ alignSelf: 'center', textAlign: 'center', fontSize: 14 }} numberOfLines={15}>{this.props.data.comentario}</Dialog.Title>
+                        <Dialog.Actions>
+                            <Button style={{ marginRight: sizes.wp('3%') }} color={'#000000'} onPress={this._hideDialogComent}>Ok</Button>
+                        </Dialog.Actions>
+                    </Dialog>
                 </Portal>
             </Card>
         )
@@ -155,7 +180,7 @@ class OrderDetailsShop extends Component {
 
 const styles = StyleSheet.create({
     orderCard: {
-        height: sizes.hp('87%'),
+        maxHeight: sizes.hp('87%'),
         width: sizes.wp('90%'),
         padding: 10,
         elevation: 0
@@ -183,7 +208,7 @@ const styles = StyleSheet.create({
         right: sizes.wp('0%')
     },
     cardTitle: {
-        margin: -9
+        margin: -10
     },
     divider: {
     },
@@ -193,6 +218,13 @@ const styles = StyleSheet.create({
     },
     leftText: {
         fontSize: 18,
+    },
+    fabComment: {
+        right: sizes.wp('3%'),
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: 85,
+        height: 38
     },
 });
 

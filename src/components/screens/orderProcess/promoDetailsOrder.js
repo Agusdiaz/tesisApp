@@ -5,7 +5,7 @@ import { colors, sizes } from '../../../index.styles';
 import { DataTable, DataTableHeader, DataTableCell, DataTableRow } from 'material-bread'
 import { Card, FAB, Button, Divider, IconButton, Portal, Modal, Dialog } from 'react-native-paper';
 import TextTicker from 'react-native-text-ticker'
-import ProductDetailsOrder from '../../commons/productDetailsOrder'
+import ProductDetailsOrder from './productDetailsOrder'
 import OrderActions from '../../../redux/orders/action'
 
 class PromoDetailsOrder extends Component {

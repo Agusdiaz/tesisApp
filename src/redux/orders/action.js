@@ -110,6 +110,16 @@ const setComents = (coment) => {
     }
 }
 
+const setCuitAndMail = (mail, cuit) => {
+    return {
+        type: 'SET_CUITMAIL',
+        payload: {
+            mail: mail,
+            cuit: cuit,
+        },
+    }
+}
+
 const deleteOrder = () => configureStore.dispatch({ type: 'DELETE_ORDER' })
 
 export default {
@@ -126,4 +136,5 @@ export default {
     updateTips,
     deleteOrder,
     setComents,
+    setCuitAndMail,
 }

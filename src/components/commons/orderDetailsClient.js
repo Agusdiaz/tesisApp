@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { StyleSheet, Text, View, Image, ScrollView } from 'react-native';
 import { colors, sizes, orderStage } from '../../index.styles';
 import { DataTable, DataTableHeader, DataTableCell, DataTableRow } from 'material-bread'
-import { Card, FAB, Button, Divider, IconButton, Title, Portal, Modal } from 'react-native-paper';
+import { Card, FAB, Button, Divider, IconButton, Dialog, Portal, Modal } from 'react-native-paper';
 import TextTicker from 'react-native-text-ticker'
 import ProductDetails from '../commons/productDetails'
 import SaleCard from '../commons/salesCard'
@@ -16,6 +16,7 @@ class OrderDetailsClient extends Component {
             promoDetails: [],
             visibleModalProduct: false,
             visibleModalPromo: false,
+            visibleDialogComent: false,
         }
     }
 
@@ -28,6 +29,9 @@ class OrderDetailsClient extends Component {
 
     _showModalPromo = () => this.setState({ visibleModalPromo: true });
     _hideModalPromo = () => this.setState({ visibleModalPromo: false });
+
+    _showDialogComent = () => this.setState({ visibleDialogComent: true })
+    _hideDialogComent = () => this.setState({ visibleDialogComent: false })
 
     render() {
         const Close = props => <IconButton
@@ -70,8 +74,16 @@ class OrderDetailsClient extends Component {
 
         const date = props => <Text style={styles.rightText}>{moment(this.props.data.fecha).format("YYYY/MM/DD HH:mm") + ' hs'}</Text>
 
-        return (
+        const comment = props =>
+            <FAB style={[styles.fabComment, { backgroundColor: (this.props.data.comentario === null) ? colors.APP_INACTIVE : colors.APP_MAIN }]}
+                color={colors.APP_BACKGR}
+                label={'VER'}
+                disabled={this.props.data.comentario === null}
+                icon="comment-text-outline"
+                onPress={this._showDialogComent}
+            />
 
+        return (
             <Card style={styles.orderCard}>
                 <Card.Title style={{ margin: -10, marginTop: sizes.hp('-4') }} left={stageOrder} leftStyle={styles.stageOrder} right={Close} rightStyle={styles.close} />
                 <Divider />
@@ -141,11 +153,13 @@ class OrderDetailsClient extends Component {
                                 </View>
                                 : null}
                             <Divider style={styles.divider} />
-                            <Text style={{ color: colors.APP_MAIN, fontWeight: 'bold', marginTop: sizes.hp('5%') }}>(*) modificaste este producto</Text>
+                            <Text style={{ color: colors.APP_MAIN, fontWeight: 'bold', marginBottom: sizes.hp('1%'), marginTop: sizes.hp('5%') }}>(*) modificaste este producto</Text>
                         </ScrollView>
 
                     </DataTable>
                 </Card.Content>
+                <Divider style={styles.divider} />
+                <Card.Title style={styles.cardTitle} titleStyle={styles.leftText} title="Comentario:" right={comment} />
                 <Divider style={styles.divider} />
                 <Card.Title style={styles.cardTitle} titleStyle={styles.leftText} title="Propina:" right={propina} />
                 <Divider style={styles.divider} />
@@ -160,6 +174,16 @@ class OrderDetailsClient extends Component {
                     <Modal contentContainerStyle={{ alignItems: "center" }} visible={this.state.visibleModalPromo} onDismiss={this._hideModalPromo}>
                         <SaleCard hideModalFromChild={this._hideModalPromo} data={this.state.promoDetails} rute={'order'} />
                     </Modal>
+
+                    <Dialog
+                        visible={this.state.visibleDialogComent}
+                        onDismiss={this._hideDialogComent}>
+                        <Dialog.Title style={{ alignSelf: 'center', textAlign: 'center', fontSize: 14 }} numberOfLines={15}>{this.props.data.comentario}</Dialog.Title>
+                        <Dialog.Actions>
+                            <Button style={{ marginRight: sizes.wp('3%') }} color={'#000000'} onPress={this._hideDialogComent}>Ok</Button>
+                        </Dialog.Actions>
+                    </Dialog>
+
                 </Portal>
             </Card>
         )
@@ -168,7 +192,7 @@ class OrderDetailsClient extends Component {
 
 const styles = StyleSheet.create({
     orderCard: {
-        height: sizes.hp('87%'),
+        maxHeight: sizes.hp('87%'),
         width: sizes.wp('90%'),
         padding: 10,
         elevation: 0,
@@ -196,20 +220,24 @@ const styles = StyleSheet.create({
         right: sizes.wp('0%')
     },
     cardTitle: {
-        margin: -9
+        margin: -10
     },
-    takeAwayText: {
-
-    },
-    divider: {
-
-    },
+    takeAwayText: {},
+    divider: {},
     rightText: {
         fontSize: 16,
         right: sizes.wp('3%'),
     },
     leftText: {
         fontSize: 18,
+    },
+    fabComment: {
+        right: sizes.wp('3%'),
+        justifyContent: 'center',
+        backgroundColor: colors.APP_MAIN,
+        alignItems: 'center',
+        width: 85,
+        height: 38
     },
 });
 

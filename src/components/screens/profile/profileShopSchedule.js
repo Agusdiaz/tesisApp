@@ -91,7 +91,7 @@ class ProfileShopScheduleScreen extends Component {
 
         return (
             <View>
-                <Text style={styles.titleText}> Edita los horarios de tu local </Text>
+                <Text style={styles.titleText}> Editá los horarios de tu local </Text>
 
                 <View style={{ alignSelf: 'center', top: sizes.hp('-1%'), width: sizes.wp('90%') }}>
 

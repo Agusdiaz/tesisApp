@@ -5,7 +5,7 @@ import { colors, sizes, productCondition } from '../../index.styles';
 import { Card, FAB, Modal, Portal, Button, Dialog, ActivityIndicator } from 'react-native-paper';
 import TextTicker from 'react-native-text-ticker';
 import ProductDetails from './productDetails'
-import ProductDetailsOrder from './productDetailsOrder'
+import ProductDetailsOrder from '../screens/orderProcess/productDetailsOrder'
 import { updateProductStatus } from '../../api/menus'
 import { Actions } from 'react-native-router-flux';
 

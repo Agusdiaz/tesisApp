@@ -50,7 +50,9 @@ class HomeShopScreen extends Component {
         if (data.status === 500 || data.status === 204)
             this.setState({ areOrders: false })
         else {
-            this.setState({ areOrders: true, orders: data.body })
+            this.setState({ areOrders: true, orders: data.body.sort(function(a,b){
+                return new Date(a.cantProductos) - new Date(b.cantProductos);
+              }) })
             this.arrayholder = data.body
         }
     }

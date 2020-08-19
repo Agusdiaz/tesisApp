@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { StyleSheet, Text, View, Image, ScrollView } from 'react-native';
-import { colors, sizes, productCondition } from '../../index.styles';
+import { colors, sizes, productCondition } from '../../../index.styles'
 import { DataTable, DataTableHeader, DataTableCell, DataTableRow } from 'material-bread'
 import { Card, FAB, Button, Divider, IconButton, Portal, Dialog } from 'react-native-paper';
-import OrderActions from '../../redux/orders/action'
+import OrderActions from '../../../redux/orders/action'
 import TextTicker from 'react-native-text-ticker'
 
 class ProductDetailsOrder extends Component {

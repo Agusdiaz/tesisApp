@@ -39,7 +39,7 @@ class SelectMenu extends Component {
                         : (this.state.selectedTab === 1) ?
                                 <IngredientMenu/>
                             : 
-                            <SalesMenu />
+                            <SalesMenu rute='shop' />
                           }
             </View>
         )

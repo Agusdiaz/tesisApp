@@ -108,7 +108,7 @@ class ChooseShopScreen extends Component {
 
     render() {
         return (
-            <View style={[appStyles.container, { top: sizes.hp('1%'), marginTop: sizes.hp('0%') }]}>
+            <View style={[appStyles.container, { top: sizes.hp('1%'), marginTop: sizes.hp('0%')}]}>
 
                 <Searchbar
                     style={styles.searchInput}

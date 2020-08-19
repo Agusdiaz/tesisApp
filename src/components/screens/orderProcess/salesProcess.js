@@ -58,7 +58,7 @@ class SalesProcess extends Component {
     render() {
 
         return (
-            <View style={{ width: sizes.wp('100%'), height: sizes.hp('100%'), top: sizes.hp('8%') }}>
+            <View style={{ width: sizes.wp('100%'), height: sizes.hp('74%'), top: sizes.hp('-5%')}}>
 
                 <AnimatedFlatList
                     style={styles.list}
@@ -105,7 +105,7 @@ const styles = StyleSheet.create({
         top: sizes.hp('1%'),
         width: sizes.wp('100%'),
         //height: sizes.hp('70%'),
-        marginBottom: sizes.hp('14%'),
+        //marginBottom: sizes.hp('14%'),
     },
 });
 

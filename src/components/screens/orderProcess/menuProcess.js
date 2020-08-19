@@ -126,8 +126,9 @@ class MenuProcess extends Component {
     render() {
 
         return (
-            <View style={{ width: sizes.wp('100%'), height: sizes.hp('100%'), top: sizes.hp('19%') }}>
-                <View style={{ flexDirection: 'row', justifyContent: 'center', width: sizes.wp('100%'), height: sizes.hp('4%'), marginTop: sizes.hp('-10%') }}>
+            <View style={{ width: sizes.wp('100%'), height: sizes.hp('74%'), top: sizes.hp('-4%')}}>
+
+                <View style={{ flexDirection: 'row', justifyContent: 'center', width: sizes.wp('100%'), height: sizes.hp('4.5%')}}>
                     <Button
                         style={styles.toggleButton}
                         dark
@@ -163,7 +164,7 @@ class MenuProcess extends Component {
                     iconColor={colors.APP_MAIN}
                     onChangeText={text => this._onChangeSearch(text)}
                     value={this.state.searchQuery}
-                />
+                />                
 
                 {(this.state.valueButtons === productType.SALTY) ?
                     <AnimatedFlatList
@@ -214,16 +215,17 @@ const styles = StyleSheet.create({
     },
     searchInput: {
         position: 'absolute',
-        top: sizes.hp('-5%'),
+        top: sizes.hp('4.7%'),
         width: sizes.wp('100%'),
         left: sizes.wp('0%'),
         fontSize: sizes.TEXT_INPUT,
     },
     list: {
-        top: sizes.hp('7%'),
+        top: sizes.hp('6%'),
         width: sizes.wp('100%'),
-        //height: sizes.hp('70%'),
-        marginBottom: sizes.hp('23%'),
+        //height: sizes.hp('100%'),
+        //borderWidth: 4
+        //marginBottom: sizes.hp('23%'),
     },
     viewImage: {
         justifyContent: 'center',

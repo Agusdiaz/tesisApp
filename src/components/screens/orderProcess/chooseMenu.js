@@ -48,9 +48,9 @@ class ChooseMenuScreen extends Component {
                     <SalesProcess onScroll={this.props.onScroll} />
                             
                 }
-
+                
                 <TouchableHighlight activeOpacity={0.6}  onPress={() => {Actions.cartorder()}}>
-                <Image source={require('../../../icons/cartShop.png')} style={styles.imageFab} />
+                <Image source={require('../../../icons/cartShop.png')} style={styles.imageCart} />
                 </TouchableHighlight>
 
             </View>
@@ -73,14 +73,14 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
         justifyContent: 'flex-start',
     },
-    imageFab:{
+    imageCart:{
         width: sizes.wp('27%'),
         height: sizes.hp('12%'),
         position: 'absolute',
         backgroundColor: '#fff',
         borderRadius: sizes.wp('50%'),
         right: sizes.wp('18.5%'),
-        bottom: sizes.hp('18%'),
+        bottom: sizes.hp('5%'),
         resizeMode: 'stretch',
     }
 });

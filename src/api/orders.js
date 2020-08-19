@@ -128,3 +128,17 @@ export const setOrderReadyByShop = async (num, token) => {
         .then(obj => { return obj });
     return response
 }
+
+export const insertOrder = async (body, token) => {
+    const response = await fetch(`${APIURL}insertClientOrder`, {
+        method: 'POST',
+        body: JSON.stringify(body),
+        headers: new Headers({
+            'Content-Type': 'application/json'
+        })
+    }).then(r => (r.status === 204) ? r : r.json()
+        .then(data =>
+            ({ status: r.status, body: data })))
+        .then(obj => { return obj });
+    return response
+}
