@@ -13,26 +13,26 @@ const setSelectedProduct = (product) => {
     return {
         type: 'SET_SELECTED_PRODUCT',
         payload: {
-            selectedProduct: product
+            selectedProduct: product,
         },
     }
 }
 
-const updateProductAmount = (id, amount) => {
+const updateProductAmount = (product, amount) => {
     return {
         type: 'UPDATE_PRODUCT_AMOUNT',
         payload: {
-            id: id,
+            product: product,
             amount: amount,
         },
     }
 }
 
-const removeProduct = (product) => {
+const removeProduct = (index) => {
     return {
         type: 'REMOVE_PRODUCT',
         payload: {
-            product: product,
+            index: index,
         },
     }
 }
@@ -46,21 +46,21 @@ const setPromoOrder = (promo) => {
     }
 }
 
-const updatePromoAmount = (id, amount) => {
+const updatePromoAmount = (promo, amount) => {
     return {
         type: 'UPDATE_PROMO_AMOUNT',
         payload: {
-            id: id,
+            promo: promo,
             amount: amount,
         },
     }
 }
 
-const removePromo = (promo) => {
+const removePromo = (index) => {
     return {
         type: 'REMOVE_PROMO',
         payload: {
-            promo: promo,
+            index: index,
         },
     }
 }
@@ -120,6 +120,33 @@ const setCuitAndMail = (mail, cuit) => {
     }
 }
 
+const removeDisabledProduct = (id) => {
+    return {
+        type: 'REMOVE_DISABLED_PRODUCT',
+        payload: {
+            id: id,
+        },
+    }
+}
+
+const removeDisabledIngredient = (id) => {
+    return {
+        type: 'REMOVE_DISABLED_INGREDIENT',
+        payload: {
+            id: id,
+        },
+    }
+}
+
+const removeDisabledPromo = (id) => {
+    return {
+        type: 'REMOVE_DISABLED_PROMO',
+        payload: {
+            id: id,
+        },
+    }
+}
+
 const deleteOrder = () => configureStore.dispatch({ type: 'DELETE_ORDER' })
 
 export default {
@@ -137,4 +164,7 @@ export default {
     deleteOrder,
     setComents,
     setCuitAndMail,
+    removeDisabledProduct,
+    removeDisabledIngredient,
+    removeDisabledPromo,
 }

@@ -27,7 +27,7 @@ class LoginScreen extends Component {
 
     async _login() {
         this.setState({ loading: true })
-        setTimeout(() => { this.setState({ loading: false, }) }, 5000);
+        setTimeout(() => { this.setState({ loading: false, }) }, 3500); //5000
         const data = await login(this.state.email, this.state.password)
         if (data.status === 500 || data.status === 404) {
             this.setState({ loading: false, email: '', password: '', messageError: data.body })

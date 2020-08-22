@@ -10,6 +10,9 @@ import { Actions } from 'react-native-router-flux';
 import Schedule from './schedule'
 
 class SalesCard extends Component {
+
+    _isMounted = false;
+
     constructor(props) {
         super(props);
         this.state = {
@@ -20,14 +23,22 @@ class SalesCard extends Component {
         }
     }
 
-    _showModalDetails = () => this.setState({ visibleModalDetails: true });
-    _hideModalDetails = () => this.setState({ visibleModalDetails: false });
+    componentDidMount() {
+        this._isMounted = true;
+    }
 
-    _showModalSchedule = () => this.setState({ visibleModalSchedule: true });
-    _hideModalSchedule = () => this.setState({ visibleModalSchedule: false });
+    componentWillUnmount() {
+        this._isMounted = false;
+    }
 
-    _showModalPromoDetails = () => this.setState({ visibleModalPromoDetails: true });
-    _hideModalPromoDetails = () => this.setState({ visibleModalPromoDetails: false });
+    _showModalDetails = () => (this._isMounted) ? this.setState({ visibleModalDetails: true }) : null;
+    _hideModalDetails = () => (this._isMounted) ? this.setState({ visibleModalDetails: false }) : null;
+
+    _showModalSchedule = () => (this._isMounted) ? this.setState({ visibleModalSchedule: true }) : null;
+    _hideModalSchedule = () => (this._isMounted) ? this.setState({ visibleModalSchedule: false }) : null;
+
+    _showModalPromoDetails = () => (this._isMounted) ? this.setState({ visibleModalPromoDetails: true }) : null;
+    _hideModalPromoDetails = () => (this._isMounted) ? this.setState({ visibleModalPromoDetails: false }) : null;
 
     render() {
         const NamePriceButton = props => <View style={{ width: sizes.wp('50%'), alignItems: 'center', height: sizes.wp('14%'),

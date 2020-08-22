@@ -109,12 +109,11 @@ class PromoDetailsOrder extends Component {
                 })
             }
         })
-        console.log(isSelected === true)
-        if (isSelected) {
+        if (isSelected || isSelected === null) {
             this.props.setPromoOrder(promo)
             this.props.updateTotal(this.props.order.total + this.props.data.precio)
             this.hideModal()
-        } else {
+        } else if(isSelected) {
             this.setState({ actionMessage: 'Es necesario que selecciones ingredientes de algunos productos para poder ordenar esta promoción' })
             this._showDialogResponse()
         }

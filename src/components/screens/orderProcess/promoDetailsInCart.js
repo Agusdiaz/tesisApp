@@ -25,19 +25,19 @@ class PromoDetailsInCart extends Component {
 
     removePromo() {
         this.props.updateTotal(this.props.order.total - (this.props.promo.precio * this.props.promo.cantidad))
-        this.props.removePromo(this.props.promo)
+        this.props.removePromo(this.props.promo.index)
         this.hideModal()
     }
 
     setAmount(action) {
         if (action === 0 && this.props.promo.cantidad > 1) {
             var cant = this.props.promo.cantidad - 1
-            this.props.updatePromoAmount(this.props.promo.idPromo, cant)
+            this.props.updatePromoAmount(this.props.promo, cant)
             this.props.updateTotal(this.props.order.total - this.props.promo.precio)
         }
         else if (action === 1) {
             var cant = this.props.promo.cantidad + 1
-            this.props.updatePromoAmount(this.props.promo.idPromo, cant)
+            this.props.updatePromoAmount(this.props.promo, cant)
             this.props.updateTotal(this.props.order.total + this.props.promo.precio)
         }
     }
@@ -237,7 +237,7 @@ function mapStateToProps(state) {
 const mapDispatchToProps = (dispatch) => {
     return {
         updatePromoAmount: (id, amount) => dispatch(OrderActions.updatePromoAmount(id, amount)),
-        removePromo: (product) => dispatch(OrderActions.removePromo(product)),
+        removePromo: (index) => dispatch(OrderActions.removePromo(index)),
         updateTotal: (total) => dispatch(OrderActions.updateTotal(total)),
     }
 };

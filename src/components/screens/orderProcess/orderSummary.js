@@ -3,11 +3,12 @@ import { connect } from 'react-redux';
 import { StyleSheet, Text, View, Image, ScrollView, Alert } from 'react-native';
 import { colors, sizes, orderStage, appStyles } from '../../../index.styles';
 import { DataTable, DataTableHeader, DataTableCell, DataTableRow } from 'material-bread'
-import { Card, FAB, Button, Divider, Portal, Dialog, TextInput, Paragraph } from 'react-native-paper';
+import { Card, FAB, Button, Divider, Portal, Dialog, TextInput, Paragraph, Modal, ActivityIndicator } from 'react-native-paper';
 import OrderActions from '../../../redux/orders/action'
 import TextTicker from 'react-native-text-ticker'
 import { Actions } from 'react-native-router-flux';
-import {insertOrder} from '../../../api/orders'
+import { insertOrder } from '../../../api/orders'
+import Disabled from './cardDisabled'
 import moment from 'moment'
 
 class OrderSummary extends Component {
@@ -20,17 +21,146 @@ class OrderSummary extends Component {
             visibleDialogContinue: false,
             visibleDialogTip: false,
             visibleDialogComent: false,
+            visibleDialogResponse: false,
+            visibleModalDisabled: false,
+            disabled: null,
+            loading: false,
+            actionMessage: '',
+            status: null,
         }
     }
 
-    async makeOrder(){
-        this.props.setCuitAndMail(this.props.user.mail, this.props.shop.cuit)
+    async makeOrder() {
+        this.setState({ loading: true })
+        setTimeout(() => { this.setState({ loading: false }) }, 1500);
+        this.props.order.cuit = this.props.shop.cuit
+        this.props.order.mail = this.props.user.mail
         const data = await insertOrder(this.props.order, this.props.user.token)
-        if(data.status === 500){
-
-        } else if(data.status === 401){
-
-        } else { //PONER DIALOGO
+        if (data.status === 500) {
+            this.setState({ loading: false, actionMessage: 'Error al crear pedido. Inténtalo nuevamente.' })
+            this._showDialogResponse()
+        } else if (data.status === 405) {
+            this.setState({ loading: false, actionMessage: 'El local ha cerrado. ¿Desea realizar otro pedido?', status: data.status })
+            this._showDialogResponse()
+        } else if (data.status === 401) {
+            this.setState({ loading: false })
+            var disabled = {
+                promociones: [],
+                productos: [],
+                ingredientes: [],
+                total: this.props.order.total,
+            }
+            if (data.body.productos) { //QUE PASA CON PRODUCTOS QUE SON SELECTIVOS O CUANDO SE QUEDAN SIN INGREDIENTES
+                disabled.productos = data.body.productos.map(id => {
+                    return {
+                        id: id,
+                        nombre: null,
+                        cantidad: 0,
+                        total: 0,
+                    }
+                })
+                if (data.body.ingredientes) {
+                    disabled.ingredientes = data.body.ingredientes.map(id => {
+                        return {
+                            id: id,
+                            nombre: null,
+                            cantidad: 0,
+                            total: 0,
+                        }
+                    })
+                }
+                if(this.props.order.promociones.length > 0){
+                    data.body.productos.map(id => {
+                        this.props.order.promociones.map(prom => {
+                            if(prom.productos.findIndex(x => x.idProducto === id) !== -1){
+                                disabled.promociones.push({
+                                    id: prom.idPromo,
+                                    nombre: null,
+                                    cantidad: 0,
+                                    total: 0,
+                                }) 
+                            }
+                        })
+                    })
+                }
+                disabled.productos.map(prod1 => {
+                    this.props.order.productos.map(prod2 => {
+                        var eliminado = false
+                        if (prod1.id === prod2.idProducto) {
+                            eliminado = true
+                            prod1.nombre = prod2.nombre
+                            prod1.cantidad = prod1.cantidad + prod2.cantidad
+                            prod1.total = prod1.total + prod2.cantidad * prod2.precio
+                            disabled.total = disabled.total - prod2.cantidad * prod2.precio
+                        }
+                        if (data.body.ingredientes && !eliminado) {
+                            disabled.ingredientes.map(ing1 => {
+                                prod2.ingredientes.map(ing2 => {
+                                    if (ing1.id === ing2.idIngrediente) {
+                                        ing1.nombre = ing2.nombre
+                                        if(ing2.cantidad !== null && ing2.precio !== null){
+                                            ing1.cantidad = ing1.cantidad + ing2.cantidad
+                                            ing1.total = ing1.total + ing2.cantidad * ing2.precio
+                                            disabled.total = disabled.total - ing2.cantidad * ing2.precio
+                                        } 
+                                    }
+                                })
+                            })
+                        }
+                    })
+                })
+                disabled.productos = disabled.productos.filter(obj => obj.nombre !== null)
+            } else if(data.body.ingredientes){
+                    disabled.ingredientes = data.body.ingredientes.map(id => {
+                        return {
+                            id: id,
+                            nombre: null,
+                            cantidad: 0,
+                            total: 0,
+                        }
+                    })
+                    disabled.ingredientes.map(ing1 => {
+                        this.props.order.productos.map(prod => {
+                            prod.ingredientes.map(ing2 => {
+                                if (ing1.id === ing2.idIngrediente) {
+                                    ing1.nombre = ing2.nombre
+                                    if(ing2.cantidad !== null && ing2.precio !== null){
+                                        ing1.cantidad = ing1.cantidad + ing2.cantidad
+                                        ing1.total = ing1.total + ing2.cantidad * ing2.precio
+                                        disabled.total = disabled.total - ing2.cantidad * ing2.precio
+                                    } 
+                                }
+                            })
+                        })
+                    })
+            }
+            if (data.body.promociones || disabled.promociones.length > 0) { //ELIMINAR INGREDIENTES INVALIDOS
+                if(data.body.promociones){
+                    disabled.promociones = data.body.promociones.map(id => {
+                        return {
+                            id: id,
+                            nombre: null,
+                            cantidad: 0,
+                            total: 0,
+                        }
+                    })
+                }
+                disabled.promociones.map(prom1 => {
+                    this.props.order.promociones.map(prom2 => {
+                        if (prom1.id === prom2.idPromo) {
+                            prom1.nombre = prom2.nombre
+                            prom1.cantidad = prom1.cantidad + prom2.cantidad
+                            prom1.total = prom1.total + prom2.cantidad * prom2.precio
+                            disabled.total = disabled.total - prom2.cantidad * prom2.precio
+                        }
+                    })
+                })
+            }
+            this.setState({ disabled: disabled })
+            this._showModalDisabled()
+        } else {
+            this.setState({ loading: false, actionMessage: '¡Pedido creado exitosamente!' })
+            this._showDialogResponse()
             Actions.navbarclient()
             this.props.deleteOrder()
             //this.nextStepParent()
@@ -44,23 +174,23 @@ class OrderSummary extends Component {
             if (numbers.indexOf(tip[i]) > -1) {
                 newText = newText + tip[i]
                 //if (i === tip.length - 1)
-                    this.setState({tips: tip.toString()})
+                this.setState({ tips: tip.toString() })
             }
             else {
                 Alert.alert('Atención', 'Por favor, ingrese solo números');
                 break
             }
         }
-        if(tip.length === 0)
-            this.setState({tips: ''})
+        if (tip.length === 0)
+            this.setState({ tips: '' })
     }
 
-    validateComent(text){
+    validateComent(text) {
         if (text.trim() === "") {
-            this.setState(() => ({ comentError: true, coments: text}));
-          } else {
-            this.setState(() => ({ comentError: false, coments: text}));
-          }
+            this.setState(() => ({ comentError: true, coments: text }));
+        } else {
+            this.setState(() => ({ comentError: false, coments: text }));
+        }
     }
 
     _showDialogContinue = () => this.setState({ visibleDialogContinue: true });
@@ -71,6 +201,12 @@ class OrderSummary extends Component {
 
     _showDialogTip = () => this.setState({ visibleDialogTip: true });
     _hideDialogTip = () => this.setState({ visibleDialogTip: false });
+
+    _showDialogResponse = () => this.setState({ visibleDialogResponse: true });
+    _hideDialogResponse = () => this.setState({ visibleDialogResponse: false });
+
+    _showModalDisabled = () => this.setState({ visibleModalDisabled: true });
+    _hideModalDisabled = () => this.setState({ visibleModalDisabled: false });
 
     nextStepParent = () => {
         this.props.nextStepParent();
@@ -169,8 +305,8 @@ class OrderSummary extends Component {
                                             ))}
                                     </View>
                                     : null}
-                                    <Divider style={styles.divider} />
-                                    <Text style={{color: colors.APP_MAIN, fontWeight: 'bold', marginTop: sizes.hp('3%'), marginBottom: sizes.hp('1%'),  left: 10}}>(*) modificaste este producto</Text>
+                                <Divider style={styles.divider} />
+                                <Text style={{ color: colors.APP_MAIN, fontWeight: 'bold', marginTop: sizes.hp('3%'), marginBottom: sizes.hp('1%'), left: 10 }}>(*) modificaste este producto</Text>
                             </ScrollView>
                         </DataTable>
                     </Card.Content>
@@ -179,7 +315,7 @@ class OrderSummary extends Component {
                     <Divider style={styles.divider} />
                     <Card.Title style={styles.cardTitle} titleStyle={styles.leftText} title="Propina:" right={tips} />
                     <Divider style={styles.divider} />
-                    <Card.Actions style={{alignSelf: 'center', alignItems: 'center'}}>
+                    <Card.Actions style={{ alignSelf: 'center', alignItems: 'center' }}>
                         <Button
                             style={{}}
                             dark
@@ -195,6 +331,7 @@ class OrderSummary extends Component {
                     style={{ top: sizes.hp('-6%'), right: sizes.wp('-23%'), width: '50%' }}
                     icon="arrow-right-bold-outline"
                     mode="contained"
+                    disabled={this.props.order.productos.length === 0 && this.props.order.promociones.length === 0}
                     color={colors.APP_MAIN}
                     onPress={() => this._showDialogContinue()}>
                     Continuar
@@ -208,9 +345,10 @@ class OrderSummary extends Component {
                         <Dialog.Content style={{ alignSelf: 'center' }}><Paragraph style={{ fontSize: 16.5 }}>¿Desea modificar su pedido?</Paragraph></Dialog.Content>
                         <Dialog.Actions>
                             <Button style={{ marginRight: sizes.wp('3%') }} color={colors.APP_RED} onPress={this._hideDialogContinue}>Modificar</Button>
-                            <Button color={colors.APP_GREEN} onPress={() => { this._hideDialogContinue()
+                            <Button color={colors.APP_GREEN} onPress={() => {
+                                this._hideDialogContinue()
                                 this.makeOrder()
-                                }}>Continuar</Button>
+                            }}>Continuar</Button>
                         </Dialog.Actions>
                     </Dialog>
 
@@ -245,7 +383,7 @@ class OrderSummary extends Component {
                         <Dialog.Title style={{ alignSelf: 'center', textAlign: 'center' }}>Podés dejar un comentario acerca de tu pedido</Dialog.Title>
                         <Dialog.Content style={{ alignItems: 'center' }}>
                             <TextInput
-                                style={[styles.inputView, {height: sizes.hp('10%'), margin: -5}]}
+                                style={[styles.inputView, { height: sizes.hp('10%'), margin: -5 }]}
                                 mode='outlined'
                                 label='Comentá'
                                 multiline
@@ -263,6 +401,45 @@ class OrderSummary extends Component {
                             }}>Aceptar</Button>
                         </Dialog.Actions>
                     </Dialog>
+
+                    <Dialog
+                        visible={this.state.visibleDialogResponse}
+                        onDismiss={this._hideDialogResponse}>
+                        <Dialog.Title style={{ alignSelf: 'center', textAlign: 'center' }}>{this.state.actionMessage}</Dialog.Title>
+                        <Dialog.Actions>
+                            {(this.state.status !== 405) ?
+                                <Button style={{ marginRight: sizes.wp('3%') }} color={'#000000'} onPress={this._hideDialogResponse}>Ok</Button>
+                                :
+                                <View style={{ flexDirection: 'row' }}>
+                                    <Button style={{ marginRight: sizes.wp('3%') }} color={colors.APP_RED} onPress={() => {
+                                        Actions.navbarclient()
+                                        this.props.deleteOrder()
+                                        this._hideDialogResponse()
+                                    }}>No</Button>
+                                    <Button color={colors.APP_GREEN} onPress={() => {
+                                        Actions.makeorder()
+                                        this.props.deleteOrder()
+                                        this._hideDialogResponse()
+                                    }}>Sí</Button>
+                                </View>
+                            }
+                        </Dialog.Actions>
+                    </Dialog>
+
+                    <Modal dismissable={false}
+                        visible={this.state.loading}
+                        style={styles.modalActivityIndicator} >
+                        <ActivityIndicator
+                            animating={this.state.loading}
+                            size={60}
+                            color={colors.APP_MAIN}
+                        />
+                    </Modal>
+
+                    <Modal contentContainerStyle={{}} visible={this.state.visibleModalDisabled} dismissable={false}>
+                        <Disabled hideModalFromChild={this._hideModalDisabled} data={this.state.disabled} />
+                    </Modal>
+
                 </Portal>
             </View>
         )
@@ -276,6 +453,22 @@ const styles = StyleSheet.create({
         padding: 10,
         elevation: 2,
         top: sizes.hp('-8%'),
+    },
+    modalView: {
+        marginTop: sizes.hp('0%'),
+        margin: sizes.hp('2%'),
+        backgroundColor: "#ffffff",
+        borderRadius: 20,
+        padding: 20,
+        alignItems: "center",
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 1,
+            height: 2
+        },
+        shadowOpacity: 0.5,
+        shadowRadius: 3.84,
+        elevation: 10,
     },
     actionsTakeAway: {
         margin: -2

@@ -17,21 +17,21 @@ class ProductDetailsInCart extends Component {
 
     hideModal = () => { this.props.hideModalFromChild() }
 
-    removeProduct() {
+    async removeProduct() {
         this.props.updateTotal(this.props.order.total - (this.props.product.precio * this.props.product.cantidad))
-        this.props.removeProduct(this.props.product)
+        this.props.removeProduct(this.props.product.index)
         this.hideModal()
     }
 
     setAmount(action) {
         if (action === 0 && this.props.product.cantidad > 1){
             var cant = this.props.product.cantidad - 1
-            this.props.updateProductAmount(this.props.product.idProducto, cant)
+            this.props.updateProductAmount(this.props.product, cant)
             this.props.updateTotal(this.props.order.total - this.props.product.precio)
         }
         else if (action === 1){
             var cant = this.props.product.cantidad + 1
-            this.props.updateProductAmount(this.props.product.idProducto, cant)
+            this.props.updateProductAmount(this.props.product, cant)
             this.props.updateTotal(this.props.order.total + this.props.product.precio)
         }
     }
@@ -221,7 +221,7 @@ function mapStateToProps(state) {
 const mapDispatchToProps = (dispatch) => {
     return {
         updateProductAmount: (id, amount) => dispatch(OrderActions.updateProductAmount(id, amount)),
-        removeProduct: (product) => dispatch(OrderActions.removeProduct(product)),
+        removeProduct: (index) => dispatch(OrderActions.removeProduct(index)),
         updateTotal: (total) => dispatch(OrderActions.updateTotal(total)),
     }
 };

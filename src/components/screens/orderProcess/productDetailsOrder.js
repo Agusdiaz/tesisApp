@@ -68,7 +68,7 @@ class ProductDetailsOrder extends Component {
             product.modificado = true
             this.state.originalIngr.map(obj => {
                 if (obj.check) {
-                    product.ingredientes.push({ idIngrediente: obj.id, nombre: obj.nombre, detalle: obj.detalle, cantidad: obj.cantidad })
+                    product.ingredientes.push({ idIngrediente: obj.id, nombre: obj.nombre, detalle: obj.detalle, cantidad: obj.cantidad, precio: obj.precio  })
                 }
             })
             this.props.setProductOrder(product)
@@ -79,7 +79,7 @@ class ProductDetailsOrder extends Component {
             this.state.originalIngr.map(obj => {
                 if (obj.opcion !== 1 || obj.cantidad) {
                     cant = (obj.precio) ? obj.precio * obj.cantidad : 0
-                    product.ingredientes.push({ idIngrediente: obj.id, nombre: obj.nombre, detalle: obj.detalle, cantidad: obj.cantidad })
+                    product.ingredientes.push({ idIngrediente: obj.id, nombre: obj.nombre, detalle: obj.detalle, cantidad: obj.cantidad, precio: obj.precio })
                 }
             })
             product.precio = this.props.data.precio + cant
@@ -102,16 +102,17 @@ class ProductDetailsOrder extends Component {
     setAmount(action, id) {
         var copy = this.state.originalIngr
         const i = copy.findIndex(x => x.id === id)
-        console.log(action === 0 && copy[i].cantidad === 0 && copy[i].opcion === 1)
         if (action === 0){
             copy[i].cantidad = (copy[i].cantidad > 0) ? copy[i].cantidad - 1 : 0
-            if(copy[i].cantidad === 0 && copy[i].opcion === 1){
+            if(copy[i].cantidad === 0 && copy[i].opcion === 1 && this.props.data.tope !== null){
                 var pos = this.state.addedIngredients.findIndex( x => x.id === id)
                 if(pos !== -1) this.state.addedIngredients.splice(pos, 1);
             }
         }
-        else if (action === 1 && (this.state.addedIngredients.length < this.props.data.tope || this.state.addedIngredients.findIndex( x => x.id === id) !== -1) ){
+        else if (action === 1){
+            if(this.props.data.tope !== null && this.state.addedIngredients.length < this.props.data.tope || this.state.addedIngredients.findIndex( x => x.id === id) !== -1){
             if ((copy[i].cantidad === null || copy[i].cantidad === 0) && copy[i].opcion === 1) this.state.addedIngredients.push(copy[i])
+            }
             copy[i].cantidad = copy[i].cantidad + 1
         }
         else if(action === 1 && this.state.addedIngredients.length === this.props.data.tope){
@@ -120,7 +121,6 @@ class ProductDetailsOrder extends Component {
             this._showDialogResponse()
         }
         this.setState({ originalIngr: copy })
-        console.log(this.state.addedIngredients.length)
     }
 
     onCheckChanged(id) {

@@ -28,8 +28,9 @@ class CartOrder extends Component {
         Actions.makeorder({ pos: 2 })
     }
 
-    _renderItem(item) {
+    _renderItem(item, i) {
         if (this.props.order.productos.length > 0 || this.props.order.promociones.length > 0) {
+            item.index = i
             const Info = props => <View>
                 <TextTicker style={styles.title}
                     duration={5000}
@@ -86,7 +87,6 @@ class CartOrder extends Component {
     }
 
     render() {
-
         const total = props => <Text style={styles.rightText}> ${this.props.order.total} </Text>
 
         return (
@@ -107,7 +107,7 @@ class CartOrder extends Component {
                             style={styles.list}
                             data={(this.props.order.productos.length === 0 && this.props.order.promociones.length === 0) ? [1] : this.props.order.productos.concat(this.props.order.promociones)}
                             initialNumToRender={0}
-                            renderItem={({ item }) => this._renderItem(item)}
+                            renderItem={( {item, index }) => this._renderItem(item, index)}
                             keyExtractor={(item, i) => i.toString()} />
                     </Card.Content>
                     <Divider style={styles.divider} />
