@@ -51,7 +51,7 @@ class HomeShopScreen extends Component {
             this.setState({ areOrders: false })
         else {
             this.setState({ areOrders: true, orders: data.body.sort(function(a,b){
-                return new Date(a.cantProductos) - new Date(b.cantProductos);
+                return b.cantProductos - a.cantProductos;
               }) })
             this.arrayholder = data.body
         }
@@ -162,7 +162,7 @@ const styles = StyleSheet.create({
     list: {
         top: sizes.hp('6%'),
         width: '100%',
-        //marginBottom: sizes.hp('5%'),
+        marginBottom: sizes.hp('6%'),
     },
     surface: {
         marginTop: sizes.hp('5%'),

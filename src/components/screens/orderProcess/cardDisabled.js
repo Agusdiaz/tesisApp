@@ -16,6 +16,11 @@ class DisabledCard extends Component {
 
     cleanOrder(){
         this.props.updateTotal(this.props.data.total)
+        if(this.props.data.promociones){
+            this.props.data.promociones.map(prom => {
+                this.props.removeDisabledPromo(prom.id)
+            })
+        }
         if(this.props.data.productos){
             this.props.data.productos.map(prod => {
                 this.props.removeDisabledProduct(prod.id)
@@ -23,19 +28,13 @@ class DisabledCard extends Component {
         }
         if(this.props.data.ingredientes){
             this.props.data.ingredientes.map(ing => {
-                this.props.removeDisabledIngredient(ing.id) //ESTA MAL
-            })
-        }
-        if(this.props.data.promociones){
-            this.props.data.promociones.map(prom => {
-                this.props.removeDisabledPromo(prom.id)
+                this.props.removeDisabledProductIngredient(ing.id)
+                this.props.removeDisabledPromoIngredient(ing.id)
             })
         }
     }
 
     render() {
-        //console.log(this.props.data)
-
         return (
             <View style={[appStyles.container, { top: sizes.hp('7%'), }]} >
                 <Card style={styles.orderCard}>
@@ -164,8 +163,9 @@ const mapDispatchToProps = (dispatch) => {
     return {
         updateTotal: (total) => dispatch(OrderActions.updateTotal(total)),
         removeDisabledProduct: (id) => dispatch(OrderActions.removeDisabledProduct(id)),
-        removeDisabledIngredient: (id) => dispatch(OrderActions.removeDisabledIngredient(id)),
+        removeDisabledProductIngredient: (id) => dispatch(OrderActions.removeDisabledProductIngredient(id)),
         removeDisabledPromo: (id) => dispatch(OrderActions.removeDisabledPromo(id)),
+        removeDisabledPromoIngredient: (id) => dispatch(OrderActions.removeDisabledPromoIngredient(id)),
         deleteOrder: () => dispatch(OrderActions.deleteOrder()),
     }
 };

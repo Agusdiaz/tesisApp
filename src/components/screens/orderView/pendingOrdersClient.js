@@ -30,8 +30,8 @@ class PendingOrdersClientScreen extends Component {
         if (data.status === 500 || data.status === 204)
             this.setState({ arePendings: false })
         else {
-            this.setState({ arePendings: true, orders: data.body })
-            this.arrayholder = data.body
+            this.setState({ arePendings: true, orders: data.body.sort((a, b) => a.etapa.localeCompare(b.etapa)) || b.tiempo - a.tiempo })
+            this.arrayholder = data.body.sort((a, b) => a.etapa.localeCompare(b.etapa) || a.tiempo - b.tiempo )
         }
     }
 

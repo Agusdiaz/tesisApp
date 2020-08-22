@@ -41,7 +41,7 @@ export default (state = initialState, { type, payload }) => {
         case 'SET_SELECTED_PROMO':
             return { ...state, ...payload }
         case 'UPDATE_TOTAL':
-            return { ...state, total: payload.total }
+            return { ...state, total: (payload.total >= 0) ? payload.total : 0 }
         case 'UPDATE_TAKEAWAY':
             return { ...state, takeAway: payload.takeAway }
         case 'UPDATE_TIPS':
@@ -54,13 +54,21 @@ export default (state = initialState, { type, payload }) => {
             return initialState
         case 'REMOVE_DISABLED_PRODUCT':
            return { ...state, productos: [...state.productos.filter(obj => obj.idProducto !== payload.id)]}
-        case 'REMOVE_DISABLED_INGREDIENT':
+        case 'REMOVE_DISABLED_PRODUCT_INGREDIENT':
             return {...state, productos: state.productos.map(obj => 
                 (obj.ingredientes.length > 0) ? { ...obj, ingredientes: obj.ingredientes.filter(x => x.idIngrediente !== payload.id) } : obj) }
         case 'REMOVE_DISABLED_PROMO':
             return { ...state, promociones: [...state.promociones.filter(obj => obj.idPromo !== payload.id)]}
         case 'REMOVE_DISABLED_PROMO_INGREDIENT':
-            return {}
+            return {...state, promociones: state.promociones.map(promo =>
+                (promo.productos.length > 0) ? {...promo, 
+                    productos: promo.productos.map(prod => 
+                     (prod.ingredientes.length > 0) ? { ...prod, ingredientes: prod.ingredientes.filter(x => x.idIngrediente !== payload.id) } : prod  
+                     ) } : promo) }
+                
+                /* promo.productos.map(prod => {
+                    
+                ) } */
         default:
             return state
     }

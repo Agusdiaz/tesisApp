@@ -153,7 +153,7 @@ class OrderDetailsClient extends Component {
                                 </View>
                                 : null}
                             <Divider style={styles.divider} />
-                            <Text style={{ color: colors.APP_MAIN, fontWeight: 'bold', marginBottom: sizes.hp('1%'), marginTop: sizes.hp('5%') }}>(*) modificaste este producto</Text>
+                            <Text style={{ color: colors.APP_MAIN, fontWeight: 'bold', marginBottom: sizes.hp('1%'), marginTop: sizes.hp('2%') }}>(*) modificaste este producto</Text>
                         </ScrollView>
 
                     </DataTable>

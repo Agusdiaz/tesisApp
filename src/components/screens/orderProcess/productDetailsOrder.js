@@ -55,6 +55,7 @@ class ProductDetailsOrder extends Component {
             modificado: this.state.modifing,
             condicion: this.props.data.condicion,
             detalle: this.props.data.detalle,
+            selectivo: this.props.data.selectivo,
             ingredientes: [],
         }
         if (!this.props.data.ingredientes[0]) {

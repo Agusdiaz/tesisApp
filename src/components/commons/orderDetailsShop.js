@@ -145,7 +145,7 @@ class OrderDetailsShop extends Component {
                                 </View>
                                 : null}
                             <Divider style={styles.divider} />
-                            <Text style={{ color: colors.APP_MAIN, fontWeight: 'bold', marginBottom: sizes.hp('1%'), marginTop: sizes.hp('5%') }}>(*) productos modificados por el cliente</Text>
+                            <Text style={{ color: colors.APP_MAIN, fontWeight: 'bold', marginBottom: sizes.hp('1%'), marginTop: sizes.hp('2%') }}>(*) productos modificados por el cliente</Text>
                         </ScrollView>
                     </DataTable>
                 </Card.Content>

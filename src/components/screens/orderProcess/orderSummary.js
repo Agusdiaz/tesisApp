@@ -32,7 +32,7 @@ class OrderSummary extends Component {
 
     async makeOrder() {
         this.setState({ loading: true })
-        setTimeout(() => { this.setState({ loading: false }) }, 1500);
+        //setTimeout(() => { this.setState({ loading: false }) }, 1500);
         this.props.order.cuit = this.props.shop.cuit
         this.props.order.mail = this.props.user.mail
         const data = await insertOrder(this.props.order, this.props.user.token)
@@ -50,7 +50,7 @@ class OrderSummary extends Component {
                 ingredientes: [],
                 total: this.props.order.total,
             }
-            if (data.body.productos) { //QUE PASA CON PRODUCTOS QUE SON SELECTIVOS O CUANDO SE QUEDAN SIN INGREDIENTES
+            if (data.body.productos) {
                 disabled.productos = data.body.productos.map(id => {
                     return {
                         id: id,
@@ -69,20 +69,6 @@ class OrderSummary extends Component {
                         }
                     })
                 }
-                if(this.props.order.promociones.length > 0){
-                    data.body.productos.map(id => {
-                        this.props.order.promociones.map(prom => {
-                            if(prom.productos.findIndex(x => x.idProducto === id) !== -1){
-                                disabled.promociones.push({
-                                    id: prom.idPromo,
-                                    nombre: null,
-                                    cantidad: 0,
-                                    total: 0,
-                                }) 
-                            }
-                        })
-                    })
-                }
                 disabled.productos.map(prod1 => {
                     this.props.order.productos.map(prod2 => {
                         var eliminado = false
@@ -97,12 +83,19 @@ class OrderSummary extends Component {
                             disabled.ingredientes.map(ing1 => {
                                 prod2.ingredientes.map(ing2 => {
                                     if (ing1.id === ing2.idIngrediente) {
-                                        ing1.nombre = ing2.nombre
-                                        if(ing2.cantidad !== null && ing2.precio !== null){
-                                            ing1.cantidad = ing1.cantidad + ing2.cantidad
-                                            ing1.total = ing1.total + ing2.cantidad * ing2.precio
-                                            disabled.total = disabled.total - ing2.cantidad * ing2.precio
-                                        } 
+                                        if (prod2.selectivo === 1 && prod2.ingredientes.length - 1 === 0) {
+                                            prod1.nombre = prod2.nombre
+                                            prod1.cantidad = prod1.cantidad + prod2.cantidad
+                                            prod1.total = prod1.total + prod2.cantidad * prod2.precio
+                                            disabled.total = disabled.total - prod2.cantidad * prod2.precio
+                                        } else {
+                                            ing1.nombre = ing2.nombre
+                                            if (ing2.cantidad !== null && ing2.precio !== null) {
+                                                ing1.cantidad = ing1.cantidad + ing2.cantidad
+                                                ing1.total = ing1.total + ing2.cantidad * ing2.precio
+                                                disabled.total = disabled.total - ing2.cantidad * ing2.precio
+                                            }
+                                        }
                                     }
                                 })
                             })
@@ -110,32 +103,91 @@ class OrderSummary extends Component {
                     })
                 })
                 disabled.productos = disabled.productos.filter(obj => obj.nombre !== null)
-            } else if(data.body.ingredientes){
-                    disabled.ingredientes = data.body.ingredientes.map(id => {
-                        return {
-                            id: id,
-                            nombre: null,
-                            cantidad: 0,
-                            total: 0,
-                        }
-                    })
-                    disabled.ingredientes.map(ing1 => {
+            } else if (data.body.ingredientes) {
+                disabled.ingredientes = data.body.ingredientes.map(id => {
+                    return {
+                        id: id,
+                        nombre: null,
+                        cantidad: 0,
+                        total: 0,
+                    }
+                })
+                disabled.ingredientes.map(ing1 => {
+                    if (this.props.order.productos.length > 0) {
                         this.props.order.productos.map(prod => {
                             prod.ingredientes.map(ing2 => {
                                 if (ing1.id === ing2.idIngrediente) {
+                                    if (prod.selectivo === 1 && prod.ingredientes.length - 1 === 0) {
+                                        var i = disabled.productos.findIndex(x => x.id === prod.idProducto)
+                                        if (i === -1) {
+                                            disabled.productos.push({
+                                                id: prod.idProducto, nombre: prod.nombre, cantidad: prod.cantidad,
+                                                total: prod.cantidad * prod.precio
+                                            })
+                                        } else {
+                                            disabled.productos[i].cantidad = disabled.productos[i].cantidad + prod.cantidad
+                                            disabled.productos[i].total = disabled.productos[i].total + prod.cantidad * prod.precio
+                                        }
+                                        disabled.total = disabled.total - prod.cantidad * prod.precio
+                                    }
                                     ing1.nombre = ing2.nombre
-                                    if(ing2.cantidad !== null && ing2.precio !== null){
+                                    if (ing2.cantidad !== null && ing2.precio !== null) {
                                         ing1.cantidad = ing1.cantidad + ing2.cantidad
                                         ing1.total = ing1.total + ing2.cantidad * ing2.precio
                                         disabled.total = disabled.total - ing2.cantidad * ing2.precio
-                                    } 
+                                    }
                                 }
                             })
                         })
-                    })
+                    } else {
+                        this.props.order.promociones.map(promo => {
+                            promo.productos.map(prod => {
+                                prod.ingredientes.map(ing2 => {
+                                    if (ing1.id === ing2.idIngrediente) {
+                                        if (prod.selectivo === 1 && prod.ingredientes.length - 1 === 0) {
+                                            var i = disabled.productos.findIndex(x => x.id === prod.idProducto)
+                                            if (i === -1) {
+                                                disabled.productos.push({
+                                                    id: prod.idProducto, nombre: prod.nombre, cantidad: prod.cantidad,
+                                                    total: prod.cantidad * prod.precio
+                                                })
+                                            } else {
+                                                disabled.productos[i].cantidad = disabled.productos[i].cantidad + prod.cantidad
+                                                disabled.productos[i].total = disabled.productos[i].total + prod.cantidad * prod.precio
+                                            }
+                                            disabled.total = disabled.total - prod.cantidad * prod.precio
+                                        }
+                                        ing1.nombre = ing2.nombre
+                                        if (ing2.cantidad !== null && ing2.precio !== null) {
+                                            ing1.cantidad = ing1.cantidad + ing2.cantidad
+                                            ing1.total = ing1.total + ing2.cantidad * ing2.precio
+                                            disabled.total = disabled.total - ing2.cantidad * ing2.precio
+                                        }
+                                    }
+                                })
+                            })
+                        })
+                    }
+
+                })
+                disabled.ingredientes = disabled.ingredientes.filter(obj => obj.nombre !== null)
             }
-            if (data.body.promociones || disabled.promociones.length > 0) { //ELIMINAR INGREDIENTES INVALIDOS
-                if(data.body.promociones){
+            if (this.props.order.promociones.length > 0 && disabled.productos.length > 0) {
+                disabled.productos.map(prod => {
+                    this.props.order.promociones.map(prom => {
+                        if (prom.productos.findIndex(x => x.idProducto === prod.id) !== -1) {
+                            disabled.promociones.push({
+                                id: prom.idPromo,
+                                nombre: null,
+                                cantidad: 0,
+                                total: 0,
+                            })
+                        }
+                    })
+                })
+            }
+            if (data.body.promociones || disabled.promociones.length > 0) {
+                if (data.body.promociones) {
                     disabled.promociones = data.body.promociones.map(id => {
                         return {
                             id: id,
@@ -156,8 +208,8 @@ class OrderSummary extends Component {
                     })
                 })
             }
-            this.setState({ disabled: disabled })
-            this._showModalDisabled()
+                this.setState({ disabled: disabled })
+                this._showModalDisabled()
         } else {
             this.setState({ loading: false, actionMessage: '¡Pedido creado exitosamente!' })
             this._showDialogResponse()

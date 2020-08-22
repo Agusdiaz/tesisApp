@@ -58,8 +58,8 @@ class PromoDetailsOrder extends Component {
             detalle: this.props.data.detalle,
             productos: [],
         }
-        var isSelected = null
-        this.state.originalProds.map(prod => {
+        var isSelected = Array.from({length: this.state.originalProds.length}, () => null)
+        this.state.originalProds.map((prod, index) => {
             if (prod.modificado)
                 promo.modificado = true
             if (prod.selectivo === 0) {
@@ -90,12 +90,12 @@ class PromoDetailsOrder extends Component {
                 }
             } else {
                 var i = 0
+                isSelected[index] = false
                 var long = prod.ingredientes[0].length
                 var ingredientes = []
-                isSelected = false
                 prod.ingredientes[0].map(ing => {
                     if (ing.check) {
-                        isSelected = true
+                        isSelected[index] = true
                         ingredientes.push({ idIngrediente: ing.id, nombre: ing.nombre, detalle: ing.detalle, cantidad: ing.cantidad })
                     }
                     i++
@@ -109,13 +109,13 @@ class PromoDetailsOrder extends Component {
                 })
             }
         })
-        if (isSelected || isSelected === null) {
+        if (isSelected.filter(x => x === false).length > 0) {
+            this.setState({ actionMessage: 'Es necesario que selecciones ingredientes de algunos productos para poder ordenar esta promoción' })
+            this._showDialogResponse()            
+        } else {
             this.props.setPromoOrder(promo)
             this.props.updateTotal(this.props.order.total + this.props.data.precio)
             this.hideModal()
-        } else if(isSelected) {
-            this.setState({ actionMessage: 'Es necesario que selecciones ingredientes de algunos productos para poder ordenar esta promoción' })
-            this._showDialogResponse()
         }
     }
 

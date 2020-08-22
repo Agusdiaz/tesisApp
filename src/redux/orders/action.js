@@ -129,9 +129,9 @@ const removeDisabledProduct = (id) => {
     }
 }
 
-const removeDisabledIngredient = (id) => {
+const removeDisabledProductIngredient = (id) => {
     return {
-        type: 'REMOVE_DISABLED_INGREDIENT',
+        type: 'REMOVE_DISABLED_PRODUCT_INGREDIENT',
         payload: {
             id: id,
         },
@@ -141,6 +141,15 @@ const removeDisabledIngredient = (id) => {
 const removeDisabledPromo = (id) => {
     return {
         type: 'REMOVE_DISABLED_PROMO',
+        payload: {
+            id: id,
+        },
+    }
+}
+
+const removeDisabledPromoIngredient = (id) => {
+    return {
+        type: 'REMOVE_DISABLED_PROMO_INGREDIENT',
         payload: {
             id: id,
         },
@@ -165,6 +174,7 @@ export default {
     setComents,
     setCuitAndMail,
     removeDisabledProduct,
-    removeDisabledIngredient,
+    removeDisabledProductIngredient,
     removeDisabledPromo,
+    removeDisabledPromoIngredient,
 }
