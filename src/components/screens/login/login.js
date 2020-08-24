@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-//import { login } from '../../../redux/actions';
 import { StyleSheet, Text, KeyboardAvoidingView, Platform, TouchableOpacity, Image } from 'react-native';
 import LoginActions from '../../../redux/authState/action'
 import { TextInput, Button, ActivityIndicator, Modal, Dialog, Paragraph } from 'react-native-paper';
@@ -47,7 +46,10 @@ class LoginScreen extends Component {
                 Actions.navbarshop()
             }
             else { //GUARDAR INFO?
-                Actions.signupshopfeatures()
+                this.props.setLoginShopData(data.body.cuit, data.body.nombre, data.body.direccion, data.body.telefono, data.body.mail,
+                    data.body.mascotas, data.body.bebes, data.body.juegos, data.body.aireLibre, data.body.libreHumo, data.body.wifi,
+                    data.body.demora, data.body.abierto, data.body.horarios, data.body.token)
+                Actions.signupshopmenu() //features
             }
         }
     }

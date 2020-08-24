@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { StyleSheet, Text, View } from 'react-native';
 import { appStyles, colors, sizes } from '../../../index.styles';
 import { Button, Dialog, Modal, Portal, ActivityIndicator } from 'react-native-paper';
-import { Tabs, Tab, } from 'material-bread';
+import { Tabs, Tab, RadioButton } from 'material-bread';
 import ShopCard from '../../commons/shopCard'
 import EditFeatures from './profileShopFeatures'
 import EditSchedule from './profileShopSchedule'
@@ -27,6 +27,8 @@ class ProfileShopScreen extends Component {
             visibleModalEditSchedule: false,
             visibleModalStats: false,
             stats: 0,
+            checked: 1,
+            visibleDialogSchedule: false,
         }
         this.updateIsLoading = this.updateIsLoading.bind(this)
         this._showDialogResponse = this._showDialogResponse.bind(this)
@@ -44,6 +46,9 @@ class ProfileShopScreen extends Component {
 
     _showModalEditSchedule = () => this.setState({ visibleModalEditSchedule: true });
     _hideModalEditSchedule = () => this.setState({ visibleModalEditSchedule: false });
+
+    _showDialogSchedule = () => this.setState({ visibleDialogSchedule: true });
+    _hideDialogSchedule = () => this.setState({ visibleDialogSchedule: false });
 
     _showModalStats = (value) => this.setState({ visibleModalStats: true, stats: value });
     _hideModalStats = () => this.setState({ visibleModalStats: false });
@@ -131,7 +136,7 @@ class ProfileShopScreen extends Component {
                                 icon="clock-outline"
                                 mode="contained"
                                 color={colors.APP_MAIN}
-                                onPress={this._showModalEditSchedule}>
+                                onPress={this._showDialogSchedule}>
                                 Editar Horarios
                                 </Button>
 
@@ -148,14 +153,14 @@ class ProfileShopScreen extends Component {
 
                 <Portal>
 
-                    <Modal contentContainerStyle={[styles.modalView,{marginTop: sizes.hp('3%')}]} visible={this.state.visibleModalStats} onDismiss={this._hideModalStats}>
+                    <Modal contentContainerStyle={[styles.modalView, { marginTop: sizes.hp('3%') }]} visible={this.state.visibleModalStats} onDismiss={this._hideModalStats}>
                         {(this.state.stats === 0) ?
                             <PieChart hideModalFromChild={this._hideModalStats} />
                             :
                             (this.state.stats === 1) ?
-                            <BarChart hideModalFromChild={this._hideModalStats}/>
-                            :
-                            <LineChart hideModalFromChild={this._hideModalStats}/>
+                                <BarChart hideModalFromChild={this._hideModalStats} />
+                                :
+                                <LineChart hideModalFromChild={this._hideModalStats} />
                         }
                     </Modal>
 
@@ -164,7 +169,7 @@ class ProfileShopScreen extends Component {
                     </Modal>
 
                     <Modal contentContainerStyle={styles.modalView} visible={this.state.visibleModalEditSchedule} onDismiss={this._hideModalEditSchedule}>
-                        <EditSchedule hideModalFromChild={this._hideModalEditSchedule} />
+                        <EditSchedule hideModalFromChild={this._hideModalEditSchedule} day={this.state.checked}/>
                     </Modal>
 
                     <Dialog
@@ -189,6 +194,71 @@ class ProfileShopScreen extends Component {
                         <Dialog.Title style={{ alignSelf: 'center', textAlign: 'center' }}>{this.state.actionMessage}</Dialog.Title>
                         <Dialog.Actions>
                             <Button style={{ marginRight: sizes.wp('3%') }} color={'#000000'} onPress={this._hideDialogResponse}>Ok</Button>
+                        </Dialog.Actions>
+                    </Dialog>
+
+                    <Dialog
+                        style={{ width: sizes.wp('70%'), alignSelf: 'center', alignItems: 'center' }}
+                        visible={this.state.visibleDialogSchedule}
+                        onDismiss={this._hideDialogSchedule}>
+                        <Dialog.Title style={{ alignSelf: 'center', textAlign: 'center' }}>Seleccioná un día</Dialog.Title>
+                        <Dialog.Actions>
+                            <View style={{ flexDirection: 'column', marginTop: sizes.hp('-2%')}}>
+                                <RadioButton
+                                    checked={this.state.checked == 1}
+                                    onPress={() => this.setState({ checked: 1 })}
+                                    radioButtonColor={colors.APP_MAIN}
+                                    rippleColor={colors.APP_MAIN}
+                                    label="Domingo"
+                                />
+                                <RadioButton
+                                    checked={this.state.checked == 2}
+                                    radioButtonColor={colors.APP_MAIN}
+                                    rippleColor={colors.APP_MAIN}
+                                    onPress={() => this.setState({ checked: 2 })}
+                                    label="Lunes"
+                                />
+                                <RadioButton
+                                    checked={this.state.checked == 3}
+                                    onPress={() => this.setState({ checked: 3 })}
+                                    radioButtonColor={colors.APP_MAIN}
+                                    rippleColor={colors.APP_MAIN}
+                                    label="Martes"
+                                />
+                                <RadioButton
+                                    checked={this.state.checked == 4}
+                                    onPress={() => this.setState({ checked: 4 })}
+                                    radioButtonColor={colors.APP_MAIN}
+                                    rippleColor={colors.APP_MAIN}
+                                    label="Miércoles"
+                                />
+                                <RadioButton
+                                    checked={this.state.checked == 5}
+                                    onPress={() => this.setState({ checked: 5 })}
+                                    radioButtonColor={colors.APP_MAIN}
+                                    rippleColor={colors.APP_MAIN}
+                                    label="Jueves"
+                                />
+                                <RadioButton
+                                    checked={this.state.checked == 6}
+                                    onPress={() => this.setState({ checked: 6 })}
+                                    radioButtonColor={colors.APP_MAIN}
+                                    rippleColor={colors.APP_MAIN}
+                                    label="Viernes"
+                                />
+                                <RadioButton
+                                    checked={this.state.checked == 7}
+                                    onPress={() => this.setState({ checked: 7 })}
+                                    radioButtonColor={colors.APP_MAIN}
+                                    rippleColor={colors.APP_MAIN}
+                                    label="Sábado"
+                                />
+
+                                <View style={{ flexDirection: 'row', marginTop: sizes.hp('2%')  }}>
+                                    <Button style={{ marginRight: sizes.wp('15%') }} color={colors.APP_RED} onPress={this._hideDialogSchedule}>Cancelar</Button>
+                                    <Button color={colors.APP_GREEN} onPress={() => { this._hideDialogSchedule(), this._showModalEditSchedule() }}>Ok</Button>
+                                </View>
+                            </View>
                         </Dialog.Actions>
                     </Dialog>
 
@@ -270,6 +340,4 @@ const mapDispatchToProps = (dispatch) => {
     }
 };
 
-export default connect(
-    mapStateToProps, mapDispatchToProps
-)(ProfileShopScreen);
+export default connect( mapStateToProps, mapDispatchToProps )(ProfileShopScreen);

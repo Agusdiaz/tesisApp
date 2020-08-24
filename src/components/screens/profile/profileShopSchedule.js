@@ -1,41 +1,28 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
+import { connect } from 'react-redux';
+import { StyleSheet, View, Text, ScrollView } from 'react-native';
 import { Button, Dialog, IconButton, Portal } from 'react-native-paper';
 import { appStyles, colors, sizes } from '../../../index.styles';
+import { DataTable, DataTableCell, DataTableRow } from 'material-bread'
 import TimePicker from "react-native-24h-timepicker";
-import { RadioButton } from 'material-bread'
+import { updateShopSchedule } from '../../../api/shops'
 
-var TimeOpening = TimePicker;
-var TimeClosing = TimePicker;
+const TimeOpening = TimePicker;
+const TimeClosing = TimePicker;
 
 class ProfileShopScheduleScreen extends Component {
+
+    days = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado']
 
     constructor(props) {
         super(props);
         this.state = {
-            timeSunOpen: '00:00',
-            timeSunClose: '00:00',
-            openSun: false,
-            timeMonOpen: '00:00',
-            timeMonClose: '00:00',
-            openMon: false,
-            timeTueOpen: '00:00',
-            timeTueClose: '00:00',
-            openTue: false,
-            timeWenOpen: '00:00',
-            timeWenClose: '00:00',
-            openWen: false,
-            timeThuOpen: '00:00',
-            timeThuClose: '00:00',
-            openThu: false,
-            timeFriOpen: '00:00',
-            timeFriClose: '00:00',
-            openFri: false,
-            timeSatOpen: '00:00',
-            timeSatClose: '00:00',
-            openSat: false,
-            day: 1,
+            timeOpen: '00:00',
+            timeClose: '00:00',
+            open: false,
             visibleDialog: false,
+            schedule: this.props.shop.horarios[0].filter(x => x.id === this.props.day),
+            newSchedule: []
         }
     }
 
@@ -88,302 +75,20 @@ class ProfileShopScheduleScreen extends Component {
     }
 
     render() {
-
         return (
-            <View>
-                <Text style={styles.titleText}> Editá los horarios de tu local </Text>
+            <View style={{ maxHeight: sizes.hp('80%') }}>
+                <Text style={styles.titleText}> Editá los horarios del {this.days[this.props.day - 1]} </Text>
 
-                <View style={{ alignSelf: 'center', top: sizes.hp('-1%'), width: sizes.wp('90%') }}>
+                <DataTable style={{ marginTop: sizes.wp('1%'), width: sizes.wp('70%'), height: sizes.wp('20%'), }}>
+                    <ScrollView style={{ height: sizes.hp('20%') }}>
+                        < DataTableRow key={this.state.schedule[0].id} style={{}} >
+                            <DataTableCell text={'Tus horarios actualmente'} borderRight textStyle={{ textAlign: 'center' }} style={{ maxWidth: '40%' }} />
+                            <DataTableCell text={(this.state.schedule[0].horas.length > 0) ? this.state.schedule[0].horas : 'CERRADO'} textStyle={{ textAlign: 'center' }} style={{ maxWidth: '40%', alignSelf: 'center' }} minWidth={150} />
+                        </DataTableRow>
+                    </ScrollView>
+                </DataTable>
 
-                    <Text style={styles.textDays}>Domingo: </Text>
-                    <View style={styles.viewRadioButtons}>
-                        <RadioButton
-                            style={{ marginBottom: sizes.hp('-1%') }}
-                            radioButtonColor={colors.APP_MAIN}
-                            rippleColor={colors.APP_MAIN}
-                            labelStyle={styles.options}
-                            checked={!this.state.openSun}
-                            onPress={() => this.setState({ openSun: false })}
-                            label="Cerrado"
-                        />
-                        <RadioButton
-                            radioButtonColor={colors.APP_MAIN}
-                            rippleColor={colors.APP_MAIN}
-                            checked={this.state.openSun}
-                            onPress={() => this.setState({ openSun: true })}
-                            label="Abierto"
-                        />
-                    </View>
-
-                    {(this.state.openSun) ?
-                        <View style={styles.whenOpen}>
-                            <Text>Desde </Text>
-                            <TouchableOpacity
-                                onPress={() => {
-                                    this.setState({ day: 0 })
-                                    this.TimeOpening.open()
-                                }}>
-                                <Text style={styles.textTime}>{this.state.timeSunOpen}</Text>
-                            </TouchableOpacity>
-                            <Text>Hasta </Text>
-                            <TouchableOpacity
-                                onPress={() => {
-                                    this.setState({ day: 0 })
-                                    this.TimeClosing.open()
-                                }}>
-                                <Text style={styles.textTime}>{this.state.timeSunClose}</Text>
-                            </TouchableOpacity>
-                        </View>
-                        : null}
-
-                    <Text style={styles.textDays}>Lunes: </Text>
-                    <View style={styles.viewRadioButtons}>
-                        <RadioButton
-                            style={{ marginBottom: sizes.hp('-1%') }}
-                            radioButtonColor={colors.APP_MAIN}
-                            rippleColor={colors.APP_MAIN}
-                            labelStyle={styles.options}
-                            checked={!this.state.openMon}
-                            onPress={() => this.setState({ openMon: false })}
-                            label="Cerrado"
-                        />
-                        <RadioButton
-                            radioButtonColor={colors.APP_MAIN}
-                            rippleColor={colors.APP_MAIN}
-                            checked={this.state.openMon}
-                            onPress={() => this.setState({ openMon: true })}
-                            label="Abierto"
-                        />
-                    </View>
-
-                    {(this.state.openMon) ?
-                        <View style={styles.whenOpen}>
-                            <Text>Desde </Text>
-                            <TouchableOpacity
-                                onPress={() => {
-                                    this.setState({ day: 1 })
-                                    this.TimeOpening.open()
-                                }}>
-                                <Text style={styles.textTime}>{this.state.timeMonOpen}</Text>
-                            </TouchableOpacity>
-                            <Text>Hasta </Text>
-                            <TouchableOpacity
-                                onPress={() => {
-                                    this.setState({ day: 1 })
-                                    this.TimeClosing.open()
-                                }}>
-                                <Text style={styles.textTime}>{this.state.timeMonClose}</Text>
-                            </TouchableOpacity>
-                        </View>
-                        : null}
-
-                    <Text style={styles.textDays}>Martes: </Text>
-                    <View style={styles.viewRadioButtons}>
-                        <RadioButton
-                            style={{ marginBottom: sizes.hp('-1%') }}
-                            radioButtonColor={colors.APP_MAIN}
-                            rippleColor={colors.APP_MAIN}
-                            labelStyle={styles.options}
-                            checked={!this.state.openTue}
-                            onPress={() => this.setState({ openTue: false })}
-                            label="Cerrado"
-                        />
-                        <RadioButton
-                            radioButtonColor={colors.APP_MAIN}
-                            rippleColor={colors.APP_MAIN}
-                            checked={this.state.openTue}
-                            onPress={() => this.setState({ openTue: true })}
-                            label="Abierto"
-                        />
-                    </View>
-
-                    {(this.state.openTue) ?
-                        <View style={styles.whenOpen}>
-                            <Text>Desde </Text>
-                            <TouchableOpacity
-                                onPress={() => {
-                                    this.setState({ day: 2 })
-                                    this.TimeOpening.open()
-                                }}>
-                                <Text style={styles.textTime}>{this.state.timeTueOpen}</Text>
-                            </TouchableOpacity>
-                            <Text>Hasta </Text>
-                            <TouchableOpacity
-                                onPress={() => {
-                                    this.setState({ day: 2 })
-                                    this.TimeClosing.open()
-                                }}>
-                                <Text style={styles.textTime}>{this.state.timeTueClose}</Text>
-                            </TouchableOpacity>
-                        </View>
-                        : null}
-
-                    <Text style={styles.textDays}>Miércoles: </Text>
-                    <View style={styles.viewRadioButtons}>
-                        <RadioButton
-                            style={{ marginBottom: sizes.hp('-1%') }}
-                            radioButtonColor={colors.APP_MAIN}
-                            rippleColor={colors.APP_MAIN}
-                            labelStyle={styles.options}
-                            checked={!this.state.openWen}
-                            onPress={() => this.setState({ openWen: false })}
-                            label="Cerrado"
-                        />
-                        <RadioButton
-                            radioButtonColor={colors.APP_MAIN}
-                            rippleColor={colors.APP_MAIN}
-                            checked={this.state.openWen}
-                            onPress={() => this.setState({ openWen: true })}
-                            label="Abierto"
-                        />
-                    </View>
-
-                    {(this.state.openWen) ?
-                        <View style={styles.whenOpen}>
-                            <Text>Desde </Text>
-                            <TouchableOpacity
-                                onPress={() => {
-                                    this.setState({ day: 3 })
-                                    this.TimeOpening.open()
-                                }}>
-                                <Text style={styles.textTime}>{this.state.timeWenOpen}</Text>
-                            </TouchableOpacity>
-                            <Text>Hasta </Text>
-                            <TouchableOpacity
-                                onPress={() => {
-                                    this.setState({ day: 3 })
-                                    this.TimeClosing.open()
-                                }}>
-                                <Text style={styles.textTime}>{this.state.timeWenClose}</Text>
-                            </TouchableOpacity>
-                        </View>
-                        : null}
-
-                    <Text style={styles.textDays}>Jueves: </Text>
-                    <View style={styles.viewRadioButtons}>
-                        <RadioButton
-                            style={{ marginBottom: sizes.hp('-1%') }}
-                            radioButtonColor={colors.APP_MAIN}
-                            rippleColor={colors.APP_MAIN}
-                            labelStyle={styles.options}
-                            checked={!this.state.openThu}
-                            onPress={() => this.setState({ openThu: false })}
-                            label="Cerrado"
-                        />
-                        <RadioButton
-                            radioButtonColor={colors.APP_MAIN}
-                            rippleColor={colors.APP_MAIN}
-                            checked={this.state.openThu}
-                            onPress={() => this.setState({ openThu: true })}
-                            label="Abierto"
-                        />
-                    </View>
-
-                    {(this.state.openThu) ?
-                        <View style={styles.whenOpen}>
-                            <Text>Desde </Text>
-                            <TouchableOpacity
-                                onPress={() => {
-                                    this.setState({ day: 4 })
-                                    this.TimeOpening.open()
-                                }}>
-                                <Text style={styles.textTime}>{this.state.timeThuOpen}</Text>
-                            </TouchableOpacity>
-                            <Text>Hasta </Text>
-                            <TouchableOpacity
-                                onPress={() => {
-                                    this.setState({ day: 4 })
-                                    this.TimeClosing.open()
-                                }}>
-                                <Text style={styles.textTime}>{this.state.timeThuClose}</Text>
-                            </TouchableOpacity>
-                        </View>
-                        : null}
-
-                    <Text style={styles.textDays}>Viernes: </Text>
-                    <View style={styles.viewRadioButtons}>
-                        <RadioButton
-                            style={{ marginBottom: sizes.hp('-1%') }}
-                            radioButtonColor={colors.APP_MAIN}
-                            rippleColor={colors.APP_MAIN}
-                            labelStyle={styles.options}
-                            checked={!this.state.openFri}
-                            onPress={() => this.setState({ openFri: false })}
-                            label="Cerrado"
-                        />
-                        <RadioButton
-                            radioButtonColor={colors.APP_MAIN}
-                            rippleColor={colors.APP_MAIN}
-                            checked={this.state.openFri}
-                            onPress={() => this.setState({ openFri: true })}
-                            label="Abierto"
-                        />
-                    </View>
-
-                    {(this.state.openFri) ?
-                        <View style={styles.whenOpen}>
-                            <Text>Desde </Text>
-                            <TouchableOpacity
-                                onPress={() => {
-                                    this.setState({ day: 5 })
-                                    this.TimeOpening.open()
-                                }}>
-                                <Text style={styles.textTime}>{this.state.timeFriOpen}</Text>
-                            </TouchableOpacity>
-                            <Text>Hasta </Text>
-                            <TouchableOpacity
-                                onPress={() => {
-                                    this.setState({ day: 5 })
-                                    this.TimeClosing.open()
-                                }}>
-                                <Text style={styles.textTime}>{this.state.timeFriClose}</Text>
-                            </TouchableOpacity>
-                        </View>
-                        : null}
-
-                    <Text style={styles.textDays}>Sábado: </Text>
-                    <View style={styles.viewRadioButtons}>
-                        <RadioButton
-                            style={{ marginBottom: sizes.hp('-1%') }}
-                            radioButtonColor={colors.APP_MAIN}
-                            rippleColor={colors.APP_MAIN}
-                            labelStyle={styles.options}
-                            checked={!this.state.openSat}
-                            onPress={() => this.setState({ openSat: false })}
-                            label="Cerrado"
-                        />
-                        <RadioButton
-                            radioButtonColor={colors.APP_MAIN}
-                            rippleColor={colors.APP_MAIN}
-                            checked={this.state.openSat}
-                            onPress={() => this.setState({ openSat: true })}
-                            label="Abierto"
-                        />
-                    </View>
-
-                    {(this.state.openSat) ?
-                        <View style={styles.whenOpen}>
-                            <Text>Desde </Text>
-                            <TouchableOpacity
-                                onPress={() => {
-                                    this.setState({ day: 6 })
-                                    this.TimeOpening.open()
-                                }}>
-                                <Text style={styles.textTime}>{this.state.timeSatOpen}</Text>
-                            </TouchableOpacity>
-                            <Text>Hasta </Text>
-                            <TouchableOpacity
-                                onPress={() => {
-                                    this.setState({ day: 6 })
-                                    this.TimeClosing.open()
-                                }}>
-                                <Text style={styles.textTime}>{this.state.timeSatClose}</Text>
-                            </TouchableOpacity>
-                        </View>
-                        : null}
-
-
-                </View>
+                <Text style={styles.subtitleText}> Ingresá tus nuevos horarios </Text>
 
                 <TimeOpening
                     ref={ref => {
@@ -454,26 +159,13 @@ const styles = StyleSheet.create({
         top: sizes.hp('-1.5%'),
         padding: 12,
     },
-    textDays: {
-        fontSize: 16,
+    subtitleText: {
+        color: colors.APP_MAIN,
+        fontSize: 20,
+        fontWeight: "bold",
         textAlign: "center",
-        fontWeight: 'bold',
-        marginBottom: sizes.hp('-0.5%')
-    },
-    textTime: {
-        borderWidth: 1.3,
-        padding: 5,
-        borderColor: colors.APP_MAIN,
-        borderRadius: 6,
-        marginRight: sizes.wp('5%')
-    },
-    viewRadioButtons: {
-        flexDirection: 'column',
-        flexWrap: 'wrap',
-        marginLeft: sizes.wp('2%')
-    },
-    options: {
-        marginRight: sizes.wp('1%')
+        //top: sizes.hp('-1.5%'),
+        //padding: 12,
     },
     whenOpen: {
         flexDirection: 'row',
@@ -486,4 +178,15 @@ const styles = StyleSheet.create({
     }
 })
 
-export default ProfileShopScheduleScreen;
+function mapStateToProps(state) {
+    return {
+        shop: state.authState.shop,
+    };
+}
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+    }
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(ProfileShopScheduleScreen);

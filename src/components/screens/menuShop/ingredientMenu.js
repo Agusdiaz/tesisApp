@@ -71,7 +71,7 @@ class IngredientMenu extends Component {
     render() {
 
         return (
-            <View style={{ width: sizes.wp('100%'), height: sizes.hp('100%'), top: sizes.hp('13%'), flex: 1 }}>
+            <View style={{ width: sizes.wp('100%'), height: sizes.hp('100%'), top: sizes.hp('13%'), flex: 1,}}>
             
                 <Searchbar
                     style={styles.searchInput}
