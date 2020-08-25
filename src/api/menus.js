@@ -81,3 +81,17 @@ export const updateIngredientStatus = async (status, id, token) => {
         .then(obj => { return obj });
     return response
 }
+
+export const createProduct = async (body, token) => {
+    const response = await fetch(`${APIURL}insertProductWithIngredients`, {
+        method: 'POST',
+        body: JSON.stringify(body),
+        headers: new Headers({
+            'Content-Type': 'application/json'
+        })
+    }).then(r => (r.status === 204) ? r : r.json()
+        .then(data =>
+            ({ status: r.status, body: data })))
+        .then(obj => { return obj });
+    return response
+}
