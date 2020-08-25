@@ -238,7 +238,9 @@ class OrderSummary extends Component {
     }
 
     validateComent(text) {
-        if (text.trim() === "") {
+        if(text.length > 300) 
+                Alert.alert('Texto demasiado largo')
+        else if (text.trim() === "") {
             this.setState(() => ({ comentError: true, coments: text }));
         } else {
             this.setState(() => ({ comentError: false, coments: text }));

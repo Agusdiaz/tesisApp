@@ -4,6 +4,7 @@ import { colors, sizes } from '../../../index.styles';
 import { DataTable, DataTableCell, DataTableRow, RadioButton } from 'material-bread'
 import { Card, FAB, Button, Divider, IconButton, TextInput, Modal, Portal, Dialog } from 'react-native-paper';
 import CreateIngredient from './createIngredient'
+import ExistentIngredient from './existentIngredient'
 
 class ListIngredients extends Component {
     constructor(props) {
@@ -13,6 +14,8 @@ class ListIngredients extends Component {
             checkedSelectivo: 0,
             checkedTope: 0,
             visibleModalIngredients: false,
+            visibleModalExistents: false,
+            selectedIngredient: {}
         }
         this.removeIngredient = this.removeIngredient.bind(this);
         this.changeSelectiveAndTop = this.changeSelectiveAndTop.bind(this);
@@ -21,8 +24,20 @@ class ListIngredients extends Component {
     _showModalIngredients = () => this.setState({ visibleModalIngredients: true });
     _hideModalIngredients = () => this.setState({ visibleModalIngredients: false });
 
+    _showModalExistents = () => this.setState({ visibleModalExistents: true });
+    _hideModalExistents = () => this.setState({ visibleModalExistents: false });
+
     hideModal = () => {
         this.props.hideModalFromChild();
+    }
+
+    setSelectedIngredient = (id, name, details) => {
+        this.state.selectedIngredient = {
+            id: id,
+            name: name,
+            details: details
+        }
+        this._showModalIngredients()
     }
 
     removeIngredient(index) {
@@ -121,9 +136,10 @@ class ListIngredients extends Component {
                         </Card.Content>
                         <Divider />
                         <Card.Content style={{ alignItems: 'center', padding: 20, marginBottom: sizes.hp('-2%') }}>
-                            <DataTable style={{ marginTop: sizes.wp('0%'), width: sizes.wp('120%') }}>
+                            <DataTable style={{ marginTop: sizes.wp('0%'), width: sizes.wp('140%') }}>
                                 <DataTableRow >
-                                    <DataTableCell text={'INGREDIENTES '} type={'header'} borderRight textStyle={{ textAlign: 'center', fontWeight: 'bold' }} style={{ maxWidth: '30%' }} />
+                                    <DataTableCell text={''} type={'header'} textStyle={{ textAlign: 'center', fontWeight: 'bold' }} style={{ maxWidth: '2%' }} minWidth={85} />
+                                    <DataTableCell text={'INGREDIENTES'} type={'header'} borderRight textStyle={{ textAlign: 'center', fontWeight: 'bold' }} style={{ maxWidth: '28%' }} />
                                     <DataTableCell text={'Detalle'} type={'header'} textStyle={{ textAlign: 'center', fontWeight: 'bold' }} style={{ maxWidth: '10%' }} minWidth={90} />
                                     <DataTableCell text={'Cantidad'} type={'header'} textStyle={{ textAlign: 'center', fontWeight: 'bold' }} style={{ maxWidth: '3%' }} minWidth={90} />
                                     <DataTableCell text={'Precio'} type={'header'} textStyle={{ textAlign: 'center', fontWeight: 'bold' }} style={{ maxWidth: '3%' }} minWidth={70} />
@@ -133,10 +149,12 @@ class ListIngredients extends Component {
                                 {(this.props.ingredients.length > 0) ?
                                     this.props.ingredients.map((row, i) =>
                                         < DataTableRow key={i} >
-                                            <DataTableCell text={row.nombre} borderRight style={{ maxWidth: '30%' }} textStyle={{ textAlign: 'center' }} />
+                                            <DataTableCell text={'Eliminar'} textStyle={{ textAlign: 'center', fontWeight: 'bold', color: colors.APP_RED, textDecorationLine: 'underline' }} 
+                                            style={{ maxWidth: '2%', alignSelf: 'center' }} minWidth={85} onPress={() => {this.removeIngredient(i)}}/>
+                                            <DataTableCell text={row.nombre} borderRight style={{ maxWidth: '28%' }} textStyle={{ textAlign: 'center' }} />
                                             <DataTableCell text={(row.detalle) ? row.detalle : '-'} textStyle={{ textAlign: 'center' }} style={{ maxWidth: '10%', alignSelf: 'center' }} minWidth={90} />
                                             <DataTableCell text={(row.cantidad) ? (row.cantidad).toString() : '-'} textStyle={{ textAlign: 'center' }} style={{ maxWidth: '3%', alignSelf: 'center' }} minWidth={90} />
-                                            <DataTableCell text={(row.precio) ? '$' + (row.precio).toString() : '-'} textStyle={{ textAlign: 'center' }} style={{ maxWidth: '3%', alignSelf: 'center' }} minWidth={70} />
+                                            <DataTableCell text={(row.precio !== null) ? '$' + (row.precio).toString() : '-'} textStyle={{ textAlign: 'center' }} style={{ maxWidth: '3%', alignSelf: 'center' }} minWidth={70} />
                                             <DataTableCell text={(row.opcion === 1) ? 'Agregar' : (row.opcion === 0) ? 'Eliminar' : '-'} textStyle={{
                                                 textAlign: 'center', color: (row.opcion === 1) ? colors.APP_GREEN :
                                                     (row.opcion === 0) ? colors.APP_RED : null
@@ -152,12 +170,12 @@ class ListIngredients extends Component {
                     </ScrollView>
                 </View>
                 <Divider />
-                <Card.Actions style={{ justifyContent: 'space-between', margin: 5 }}>
+                <Card.Actions style={{ justifyContent: 'space-between', margin: 3 }}>
                     <Button
                         style={{}}
                         mode="contained"
                         color={colors.APP_MAIN}
-                        onPress={() => { }}>
+                        onPress={this._showModalExistents}>
                         Agregar existente
  				</Button>
 
@@ -169,22 +187,17 @@ class ListIngredients extends Component {
                         Crear nuevo
  				</Button>
                 </Card.Actions>
-                <Divider />
-                <Card.Actions style={{ justifyContent: 'center', margin: 5 }}>
-                    <Button
-                        style={{}}
-                        mode="contained"
-                        color={colors.APP_MAIN}
-                        disabled={this.props.ingredients.length === 0}
-                        onPress={this.hideModal}>
-                        Finalizar
- 				</Button>
-                </Card.Actions>
 
                 <Portal>
                     <Modal contentContainerStyle={styles.modalView} visible={this.state.visibleModalIngredients} dismissable={false}>
-                        <CreateIngredient hideModalFromChild={this._hideModalIngredients}
-                            addIngredient={this.props.addIngredient} removeIngredient={this.props.removeIngredient} />
+                        <CreateIngredient hideModalFromChild={this._hideModalIngredients} selected={this.state.selectedIngredient}
+                            addIngredient={this.props.addIngredient} removeIngredient={this.props.removeIngredient}
+                            isIngredientNameRepeated={this.props.isIngredientNameRepeated}/>
+                    </Modal>
+
+                    <Modal contentContainerStyle={styles.modalView} visible={this.state.visibleModalExistents} dismissable={false}>
+                        <ExistentIngredient hideModalFromChild={this._hideModalExistents} setSelected={this.setSelectedIngredient}
+                            ingredientsInProduct={this.props.ingredients} />
                     </Modal>
                 </Portal>
             </Card >
@@ -241,7 +254,6 @@ const styles = StyleSheet.create({
     },
     cell: {
         width: sizes.wp('80%'),
-        right: sizes.wp('-3%'),
         marginTop: sizes.hp('2%'),
         marginBottom: sizes.hp('2%'),
     },

@@ -56,7 +56,7 @@ class IngredientMenu extends Component {
     _renderItem(item) {
         if (this.state.areIngredients) {
             return (
-                <IngredientCard rute={'enable'} data={item} refreshParent={this.onRefresh} />
+                <IngredientCard rute={(this.props.rute === 'initial') ? 'initial' : 'enable'} data={item} refreshParent={this.onRefresh} />
             );
         } else {
             return (

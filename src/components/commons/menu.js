@@ -31,8 +31,8 @@ class Menu extends Component {
     }
 
     async getMenu() {
-        var cuit = (this.props.rute === 'shop') ? this.props.shop.cuit : this.props.selected.cuit
-        var token = (this.props.rute === 'shop') ? this.props.shop.token : this.props.user.token
+        var cuit = (this.props.rute === 'shop' || this.props.rute === 'initial') ? this.props.shop.cuit : this.props.selected.cuit
+        var token = (this.props.rute === 'shop' || this.props.rute === 'initial') ? this.props.shop.token : this.props.user.token
         const data = await getMenu(cuit, token)
         if (data.status === 500 || data.status === 204)
             this.setState({ areSalty: false, areSweet: false, areDrinks: false })
@@ -207,7 +207,6 @@ class Menu extends Component {
                                 keyExtractor={(item, i) => i.toString()}
                             />
                     }
-                {/* </KeyboardAvoidingView> */}
             </View>
         )
     }

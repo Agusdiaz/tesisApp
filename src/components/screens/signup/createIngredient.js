@@ -1,18 +1,23 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, ScrollView, Alert } from 'react-native';
+import { connect } from 'react-redux';
+import { StyleSheet, Text, View, Alert } from 'react-native';
 import { colors, sizes } from '../../../index.styles';
-import { DataTable, DataTableHeader, DataTableCell, DataTableRow, RadioButton } from 'material-bread'
-import { Card, FAB, Button, Divider, IconButton, TextInput } from 'react-native-paper';
+import { RadioButton } from 'material-bread'
+import { Card, Dialog, Button, Divider, TextInput, Portal, } from 'react-native-paper';
+import { validateIngredientName } from '../../../api/menus'
 
 class CreateIngredient extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            name: '',
-            details: '',
+            name: (this.props.selected.name) ? this.props.selected.name : '',
+            details: (this.props.selected.details) ? this.props.selected.details : '',
             amount: '',
+            price: '',
             checkedOption: 0,
             nameError: false,
+            actionMessage: '',
+            visibleDialogResponse: false,
         }
         this.addIngredient = this.addIngredient.bind(this);
     }
@@ -21,31 +26,54 @@ class CreateIngredient extends Component {
         this.props.hideModalFromChild();
     }
 
+    _showDialogResponse = () => this.setState({ visibleDialogResponse: true });
+    _hideDialogResponse = () => this.setState({ visibleDialogResponse: false });
+
+    async validateIngredientName() {
+        const data = await validateIngredientName(this.state.name, this.props.shop.cuit, this.props.shop.token)
+        if (data.status === 500 || data.status === 401) {
+            this.setState({ loading: false, actionMessage: data.body })
+            this._showDialogResponse()
+        } else if(this.props.isIngredientNameRepeated(this.state.name)){
+            this.setState({ loading: false, actionMessage: 'Ya existe un ingrediente con ese nombre' })
+            this._showDialogResponse()
+        } else this.addIngredient()
+    }
+
     addIngredient() {
+        this.hideModal()
         const options = [null, 0, 1]
         var ingredient = {
-            nombre: this.state.name,
-            detalle: (this.state.details.trim() === "") ? null : this.state.details,
             cantidad: (this.state.amount === '') ? null : parseInt(this.state.amount),
-            opcion: options[this.state.checkedOption]
+            opcion: options[this.state.checkedOption],
+            precio: (this.state.price === "") ? null : this.state.price,
+        }
+        if (Object.keys(this.props.selected).length === 0) {
+            ingredient.nombre = this.state.name
+            ingredient.detalle = (this.state.details.trim() === "") ? null : this.state.details
+        } else {
+            ingredient.id = this.props.selected.id
+            ingredient.nombre = this.props.selected.name
+            ingredient.detalle = this.props.selected.details
         }
         this.props.addIngredient(ingredient)
     }
 
-    validateEmptyText(text, place) {
+    validateEmptyText(text) {
         if (text.trim() === "")
             this.setState(() => ({ nameError: true, name: text }))
         else
             this.setState(() => ({ nameError: false, name: text }))
     }
 
-    validateNumber = (number) => {
+    validateNumber = (number, place) => {
         let newText = '';
         let numbers = '0123456789';
         for (var i = 0; i < number.length; i++) {
             if (numbers.indexOf(number[i]) > -1) {
                 newText = newText + number[i]
-                this.setState({ amount: number.toString() })
+                if (place === 0) this.setState({ amount: number.toString() })
+                else this.setState({ price: number.toString() })
             }
             else {
                 Alert.alert('Atención', 'Por favor, ingrese solo números');
@@ -53,8 +81,15 @@ class CreateIngredient extends Component {
             }
         }
         if (number.length === 0) {
-            this.setState({ amount: '' })
+            if (place === 0) this.setState({ amount: '' })
+            else this.setState({ price: '' })
         }
+    }
+
+    validateTextLength(text) {
+        if (text.length > 100)
+            Alert.alert('Texto demasiado largo')
+        else this.setState({ details: text })
     }
 
     render() {
@@ -63,12 +98,13 @@ class CreateIngredient extends Component {
             <Card style={styles.ingredientCard}>
                 <Card.Title title='Creá un ingrediente' style={{ alignSelf: 'center', }} titleStyle={styles.titleText} />
                 <Divider />
-                <Card.Content style={{ alignItems: 'center',}}>
+                <Card.Content style={{ alignItems: 'center', }}>
                     <TextInput
                         style={styles.inputView}
                         mode='outlined'
                         label='Nombre del Ingrediente'
                         placeholder="Nombre"
+                        disabled={Object.keys(this.props.selected).length > 0}
                         error={this.state.nameError}
                         theme={{ colors: { text: colors.TEXT_INPUT, primary: colors.APP_MAIN } }}
                         onChangeText={text => this.validateEmptyText(text)}
@@ -78,21 +114,31 @@ class CreateIngredient extends Component {
                     <TextInput
                         style={[styles.inputView, { height: sizes.hp('10%') }]}
                         mode='outlined'
-                        label='Detalles del Ingrediente'
+                        label='OPCIONAL - Detalles'
                         multiline
+                        disabled={Object.keys(this.props.selected).length > 0}
                         numberOfLines={5}
                         placeholder='Detalles'
                         theme={{ colors: { text: colors.TEXT_INPUT, primary: colors.APP_MAIN } }}
-                        onChangeText={(text) => this.setState({ details: text })}
+                        onChangeText={(text) => this.validateTextLength(text)}
                         value={this.state.details} />
 
                     <TextInput
                         style={styles.inputView}
                         mode='outlined'
-                        label='Cantidad del Ingrediente'
+                        label='OPCIONAL - Cantidad'
                         placeholder='Cantidad'
                         theme={{ colors: { text: colors.TEXT_INPUT, primary: colors.APP_MAIN } }}
-                        onChangeText={(price) => this.validateNumber(price)}
+                        onChangeText={(amount) => this.validateNumber(amount, 0)}
+                        value={this.state.amount} />
+
+                    <TextInput
+                        style={styles.inputView}
+                        mode='outlined'
+                        label='OPCIONAL - Precio'
+                        placeholder='$'
+                        theme={{ colors: { text: colors.TEXT_INPUT, primary: colors.APP_MAIN } }}
+                        onChangeText={(price) => this.validateNumber(price, 1)}
                         value={this.state.price} />
 
                     <Text style={styles.questionText}> Este ingrediente .... </Text>
@@ -140,10 +186,25 @@ class CreateIngredient extends Component {
                         mode="contained"
                         color={colors.APP_MAIN}
                         disabled={this.state.name === ''}
-                        onPress={() => { this.hideModal(), this.addIngredient() }}>
+                        onPress={() => {
+                            if (Object.keys(this.props.selected).length > 0)
+                                this.addIngredient()
+                            else this.validateIngredientName()
+                        }}>
                         Crear
  				</Button>
                 </Card.Actions>
+
+                <Portal>
+                    <Dialog
+                        visible={this.state.visibleDialogResponse}
+                        onDismiss={this._hideDialogResponse}>
+                        <Dialog.Title style={{ alignSelf: 'center', textAlign: 'center' }}>{this.state.actionMessage}</Dialog.Title>
+                        <Dialog.Actions>
+                            <Button style={{ marginRight: sizes.wp('3%') }} color={'#000000'} onPress={this._hideDialogResponse}>Ok</Button>
+                        </Dialog.Actions>
+                    </Dialog>
+                </Portal>
             </Card >
         )
     }
@@ -182,4 +243,15 @@ const styles = StyleSheet.create({
     },
 });
 
-export default CreateIngredient;
+function mapStateToProps(state) {
+    return {
+        shop: state.authState.shop
+    };
+}
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+    }
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(CreateIngredient);

@@ -54,8 +54,7 @@ class CreateProduct extends Component {
             this.setState({ loading: false, actionMessage: 'Error al crear producto. Inténtelo nuevamente' })
             this._showDialogResponse()
         } else if (data.status === 401) {
-            console.log(data.body)
-            this.setState({ loading: false, actionMessage: 'Error: Nombre del producto repetido', name: '' })
+            this.setState({ loading: false, actionMessage: 'Ya existe un producto con ese nombre', name: '' })
             this._showDialogResponse()
         } else {
             this.setState({ loading: false, actionMessage: data.body })
@@ -72,9 +71,15 @@ class CreateProduct extends Component {
 
     removeIngredient = (index) => {
         this.setState(prevState => ({
-            ingredients: [prevState.ingredientes.slice(0, index), prevState.ingredientes.slice(index + 1)]
+            ingredients: [...prevState.ingredients.slice(0, index), ...prevState.ingredients.slice(index + 1)]
         }))
     }
+
+    isIngredientNameRepeated = (name) => {
+        var i = this.state.ingredients.findIndex(x => x.nombre === name)
+        if (i === -1 ) return false
+        else return true
+    }   
 
     changeSelectiveAndTop = (tope, selectivo) => {
         this.setState({ tope: tope, isSelectivo: selectivo })
@@ -113,6 +118,12 @@ class CreateProduct extends Component {
         }
     }
 
+    validateTextLength(text){
+        if(text.length > 100)
+            Alert.alert('Texto demasiado largo')
+        else this.setState({details: text})
+    }
+
     render() {
         return (
             <View style={appStyles.container}>
@@ -138,7 +149,7 @@ class CreateProduct extends Component {
                         numberOfLines={5}
                         placeholder='Detalles'
                         theme={{ colors: { text: colors.TEXT_INPUT, primary: colors.APP_MAIN } }}
-                        onChangeText={(text) => this.setState({ details: text })}
+                        onChangeText={(text) => this.validateTextLength(text)}
                         value={this.state.details} />
 
                     <TextInput
@@ -260,7 +271,8 @@ class CreateProduct extends Component {
 
                     <Modal contentContainerStyle={styles.modalView} visible={this.state.visibleModalIngredients} dismissable={false}>
                         <ListIngredients hideModalFromChild={this._hideModalIngredients} ingredients={this.state.ingredients}
-                            addIngredient={this.addIngredient} removeIngredient={this.removeIngredient} changeState={this.changeSelectiveAndTop} />
+                            addIngredient={this.addIngredient} removeIngredient={this.removeIngredient} isIngredientNameRepeated={this.isIngredientNameRepeated}
+                            changeState={this.changeSelectiveAndTop} />
                     </Modal>
 
                     <Modal dismissable={false}

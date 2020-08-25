@@ -57,56 +57,57 @@ class IngredientCard extends Component {
     _hideDialogResponse = () => (this._isMounted) ? this.setState({ visibleDialogResponse: false }) : null;
 
     render() {
-
-        const pic = props => <Image source={{ uri: this.state.photo }} resizeMode='cover' style={styles.image} />
-
-        const NamePrice = props => <View style={{width: sizes.wp('43%'), alignItems: 'center'}}>
-            <TextTicker style={styles.title}
-                duration={5000}
-                loop
-                animationType='bounce'
-                repeatSpacer={50}
-                marqueeDelay={1000}>{this.props.data.nombre}</TextTicker>
-            <Text style={styles.subtitle}>{(this.props.data.precio) ? '$'+(this.props.data.precio) : null}</Text>
-        </View>
-
         return (
             <View>
-                <Card style={{ maxHeight: sizes.hp('18%')  }}>
-                    <Card.Title left={pic} leftStyle={{ marginLeft: sizes.wp('-1%'), marginTop: sizes.hp('6%') }}
-                        right={NamePrice} rightStyle={styles.rightSide} />
-                    {(this.props.data.detalle) ? 
-                    <Card.Content style={{ alignItems: 'center', marginTop: 2 }}>
-                     <Text style={styles.details} numberOfLines={4}><Text style={{fontWeight: 'bold', fontSize: 17}}>Detalle: </Text>
-                        {this.props.data.detalle}</Text>
-                        </Card.Content>
-                        : null}
-                    
-                    <Card.Actions >
+                <Card style={{ margin: 2, }}>
+                    <Card.Content style={{ maxHeight: sizes.hp('17%')}}>
+                        <View style={{ flexDirection: 'row', margin: -5 }}>
+                            <View style={{ width: sizes.hp('12%'), alignItems: 'center', justifyContent: 'center' }}>
+                                <Image source={{ uri: this.state.photo }} resizeMode='cover' style={styles.image} />
+                            </View>
 
-                        {(this.props.rute === 'enable') ?
-                            <FAB
-                                style={[styles.fabDisabled, {bottom: (this.props.data.detalle) ? sizes.hp('11%') : sizes.hp('2.5')}]}
-                                color={colors.APP_MAIN}
-                                icon="cart-remove"
-                                small
-                                onPress={() => {
-                                    this.setState({ status: 0 })
-                                    this._showDialogDisabled('¿Esta seguro que desea deshabilitar este producto?')
-                                }} />
-                            :
-                            <FAB
-                                style={[styles.fabDisabled, {bottom: (this.props.data.detalle) ? sizes.hp('11%') : sizes.hp('2.5')}]}
-                                color={colors.APP_MAIN}
-                                icon="cart-plus"
-                                small
-                                onPress={() => {
-                                    this.setState({ status: 1 })
-                                    this._showDialogDisabled('¿Esta seguro que desea habilitar este producto?')
-                                }} />
-                            }
+                            <View style={{ width: sizes.hp('25%'), alignItems: 'center', justifyContent: 'center' }}>
+                                <View style={{ width: sizes.wp('49%'), alignItems: 'center' }}>
+                                    <TextTicker style={styles.title}
+                                        duration={5000}
+                                        loop
+                                        animationType='bounce'
+                                        repeatSpacer={50}
+                                        marqueeDelay={1000}>{this.props.data.nombre}</TextTicker>
+                                </View>
+                                {(this.props.data.detalle) ?
+                                    <Text style={styles.details} numberOfLines={5}><Text style={{ fontWeight: 'bold', fontSize: 15 }}>Detalle: </Text>
+                                        {this.props.data.detalle}</Text>
+                                    : null}
 
-                    </Card.Actions>
+                            </View>
+
+                            <View style={{ width: sizes.hp('7%'), alignItems: 'center', justifyContent: 'center'}}>
+                                {(this.props.rute === 'enable') ?
+                                    <FAB
+                                        style={styles.fabDisabled}
+                                        color={colors.APP_MAIN}
+                                        icon="cart-remove"
+                                        small
+                                        onPress={() => {
+                                            this.setState({ status: 0 })
+                                            this._showDialogDisabled('¿Esta seguro que desea deshabilitar este producto?')
+                                        }} />
+                                    : (this.props.rute === 'disabled') ?
+                                        <FAB
+                                            style={styles.fabDisabled}
+                                            color={colors.APP_MAIN}
+                                            icon="cart-plus"
+                                            small
+                                            onPress={() => {
+                                                this.setState({ status: 1 })
+                                                this._showDialogDisabled('¿Esta seguro que desea habilitar este producto?')
+                                            }} />
+                                        : null
+                                }
+                            </View>
+                        </View>
+                    </Card.Content>
                 </Card>
 
                 <Portal>
@@ -145,38 +146,31 @@ class IngredientCard extends Component {
 
 const styles = StyleSheet.create({
     image: {
-        width: sizes.wp('30%'),
-        height: sizes.hp('13%'),
+        width: sizes.wp('25%'),
+        height: sizes.hp('11%'),
         borderRadius: 5
     },
     rightSide: {
-        right: sizes.wp('23%'),
-        justifyContent: 'center',
+        borderWidth: 1,
+        width: sizes.wp('63%'),
+        height: sizes.hp('12%'),
     },
     title: {
         textAlign: 'center',
         fontSize: 18,
-        top: sizes.hp('-0.1%'),
-    },
-    subtitle: {
-        textAlign: 'center',
-        fontSize: 16,
-        right: sizes.wp('-33%'),
-        top: sizes.hp('-2.1%'),
-        width: sizes.wp('15%'),
+        fontWeight: '500',
     },
     details: {
-        width: sizes.wp('43%'),
-        top: sizes.hp('-3.5%'),
-        fontSize: 16,
+        width: sizes.wp('49%'),
+        top: sizes.hp('0.5%'),
+        fontSize: 14,
         textAlign: 'left',
-        left: sizes.wp('7%'),
     },
     fabDisabled: {
-        backgroundColor: '#FFFFFF', 
-        borderColor: colors.APP_MAIN, 
-        borderWidth: 2, 
-        left: sizes.wp('82%'),
+        backgroundColor: '#FFFFFF',
+        borderColor: colors.APP_MAIN,
+        borderWidth: 2,
+        position: 'absolute'
     },
 });
 
