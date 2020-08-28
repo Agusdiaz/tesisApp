@@ -61,10 +61,21 @@ const updateShopFeatures = (mascotas, bebes, juegos, aireLibre, libreHumo, wifi)
     }
 }
 
+const updateShopSchedule = (hours, id) => {
+    return {
+        type: 'UPDATE_SHOP_SCHEDULE',
+        payload: {
+            hours: hours,
+            id: id,
+        },
+    }
+}
+
 export default {
     setLoginClientData,
     setLoginShopData,
     logout,
     updateClientData,
     updateShopFeatures,
+    updateShopSchedule,
 }

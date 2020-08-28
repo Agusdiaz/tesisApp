@@ -112,12 +112,7 @@ class SalesCard extends Component {
                                             <DataTableCell text={row.nombre} borderRight textStyle={{ textAlign: 'center' }} style={{ maxWidth: '45%' }} />
                                             <DataTableCell text={row.cantidad.toString()} textStyle={{ textAlign: 'center' }} style={{ maxWidth: '5%', alignSelf: 'center'}} minWidth={100} />
                                             <DataTableCell text={'VER'} textStyle={{ color: colors.APP_MAIN, fontWeight: 'bold', textAlign: 'center' }} style={{ maxWidth: '5%', alignSelf: 'center'}} minWidth={90} onPress={() => {
-                                                this.setState({ productDetails: row }),
-                                                    //(this.props.rute === 'cart') ?
-                                                    /* this._showModalOrder()
-                                                        :  */
-                                                        this._showModalDetails() 
-                                                }} />
+                                                this.setState({ productDetails: row }), this._showModalDetails() }} />
                                         </DataTableRow>
                                     ))}
                             </ScrollView>

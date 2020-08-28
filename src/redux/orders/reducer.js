@@ -65,10 +65,6 @@ export default (state = initialState, { type, payload }) => {
                     productos: promo.productos.map(prod => 
                      (prod.ingredientes.length > 0) ? { ...prod, ingredientes: prod.ingredientes.filter(x => x.idIngrediente !== payload.id) } : prod  
                      ) } : promo) }
-                
-                /* promo.productos.map(prod => {
-                    
-                ) } */
         default:
             return state
     }

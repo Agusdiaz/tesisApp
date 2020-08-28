@@ -35,10 +35,21 @@ export default (state = initialState, { type, payload }) => {
         case 'UPDATE_CLIENT':
             return { ...state, client: { ...state.client, name: payload.name, lastName: payload.lastName } }
         case 'UPDATE_SHOP_FEATURES':
-            return { ...state, shop: { ...state.shop, mascotas: payload.mascotas, bebes: payload.bebes, juegos: payload.juegos, 
-                aireLibre: payload.aireLibre, libreHumo: payload.libreHumo, wifi: payload.wifi } }
+            return {
+                ...state, shop: {
+                    ...state.shop, mascotas: payload.mascotas, bebes: payload.bebes, juegos: payload.juegos,
+                    aireLibre: payload.aireLibre, libreHumo: payload.libreHumo, wifi: payload.wifi
+                }
+            }
+        case 'UPDATE_SHOP_SCHEDULE':
+            return {
+                ...state, shop: {
+                    ...state.shop, horarios: [...state.shop.horarios.map(obj =>
+                        obj.map(obj2 =>
+                            (obj2.id === payload.id) ? { ...obj2, horas: payload.hours } : obj2))]
+                }
+            }
         default:
             return state
     }
 }
-

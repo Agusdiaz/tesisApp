@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { StyleSheet, Text, View, Image, ScrollView } from 'react-native';
 import { colors, sizes } from '../../index.styles';
-import { DataTable, DataTableHeader, DataTableCell, DataTableRow } from 'material-bread'
+import { DataTable, DataTableCell, DataTableRow } from 'material-bread'
 import { Card, FAB, Button, Divider, IconButton, } from 'react-native-paper';
 
 class ScheduleDetails extends Component {

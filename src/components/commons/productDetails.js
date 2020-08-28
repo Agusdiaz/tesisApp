@@ -74,7 +74,7 @@ class ProductDetails extends Component {
                         </DataTableRow>
 
                         <ScrollView style={{ height: sizes.hp('31%') }}>
-                            {(this.props.data.ingredientes[0] && this.props.rute !== 'promoOrder') ?
+                            {(this.props.data.ingredientes[0].length > 0 && this.props.rute !== 'promoOrder') ?
                                 this.props.data.ingredientes[0]
                                     .map(row =>
                                         < DataTableRow key={(row.idIngrediente) ? row.idIngrediente : row.id} >

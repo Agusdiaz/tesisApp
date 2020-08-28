@@ -102,6 +102,22 @@ export const updateShopSchedule = async (body, token) => {
     return response
 }
 
+export const updateNewField = async (cuit, token) => {
+    let requestBody = {};
+    requestBody.cuit = cuit
+    const response = await fetch(`${APIURL}updateNewField`, {
+        method: 'POST',
+        body: JSON.stringify(requestBody),
+        headers: new Headers({
+            'Content-Type': 'application/json'
+        })
+    }).then(r => r.json()
+        .then(data => 
+            ({ status: r.status, body: data })))
+        .then(obj => {return obj});
+    return response
+}
+
 /*export const getAllOpenShops = async (mail, token) => {
     console.log('entreOP')
     let requestBody = {};

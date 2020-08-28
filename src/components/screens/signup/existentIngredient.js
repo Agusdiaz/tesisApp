@@ -12,7 +12,7 @@ class ExistentIngredient extends Component {
         this.state = {
             refreshing: false,
             ingredients: [],
-            areIngredients: false,
+            areIngredients: true,
             searchQuery: '',
         }
         this.arrayholder = []
@@ -81,7 +81,7 @@ class ExistentIngredient extends Component {
                             marqueeDelay={1000}>{item.nombre}</TextTicker>
                     </View>}
                         right={() => <FAB
-                            style={styles.fabDisabled}
+                            style={styles.fabActions}
                             color={colors.APP_MAIN}
                             icon="plus"
                             small
@@ -190,7 +190,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         textAlign: 'center',
     },
-    fabDisabled: {
+    fabActions: {
         backgroundColor: '#FFFFFF',
         borderColor: colors.APP_MAIN,
         borderWidth: 2,

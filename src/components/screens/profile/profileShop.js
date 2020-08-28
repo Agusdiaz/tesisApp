@@ -23,12 +23,12 @@ class ProfileShopScreen extends Component {
             actionMessage: '',
             visibleDialogResponse: false,
             visibleDialogSessionOut: false,
+            visibleDialogSchedule: false,
             visibleModalEditFeatures: false,
             visibleModalEditSchedule: false,
             visibleModalStats: false,
             stats: 0,
             checked: 1,
-            visibleDialogSchedule: false,
         }
         this.updateIsLoading = this.updateIsLoading.bind(this)
         this._showDialogResponse = this._showDialogResponse.bind(this)
@@ -164,12 +164,13 @@ class ProfileShopScreen extends Component {
                         }
                     </Modal>
 
-                    <Modal contentContainerStyle={styles.modalView} visible={this.state.visibleModalEditFeatures} onDismiss={this._hideModalEditFeatures}>
+                    <Modal contentContainerStyle={styles.modalView} visible={this.state.visibleModalEditFeatures} dismissable={false}>
                         <EditFeatures hideModalFromChild={this._hideModalEditFeatures} updateLoading={this.updateIsLoading} showDialogResponse={this._showDialogResponse} />
                     </Modal>
 
-                    <Modal contentContainerStyle={styles.modalView} visible={this.state.visibleModalEditSchedule} onDismiss={this._hideModalEditSchedule}>
-                        <EditSchedule hideModalFromChild={this._hideModalEditSchedule} day={this.state.checked}/>
+                    <Modal contentContainerStyle={styles.modalView} visible={this.state.visibleModalEditSchedule} dismissable={false}>
+                        <EditSchedule hideModalFromChild={this._hideModalEditSchedule} day={this.state.checked}
+                        updateLoading={this.updateIsLoading} showDialogResponse={this._showDialogResponse}/>
                     </Modal>
 
                     <Dialog

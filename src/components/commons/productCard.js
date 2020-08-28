@@ -149,7 +149,6 @@ class ProductCard extends Component {
                         <ProductDetailsOrder hideModalFromChild={this._hideModalOrder} data={this.props.data} />
                     </Modal>
 
-
                     <Dialog
                         visible={this.state.visibleDialogDisabled}
                         onDismiss={this._hideDialogDisabled}>

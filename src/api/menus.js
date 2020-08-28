@@ -112,3 +112,18 @@ export const validateIngredientName = async (name, cuit, token) => {
         .then(obj => { return obj });
     return response
 }
+
+export const createPromo = async (body, token) => {
+    const response = await fetch(`${APIURL}insertPromoWithProducts`, {
+        method: 'POST',
+        body: JSON.stringify(body),
+        headers: new Headers({
+            'Content-Type': 'application/json'
+        })
+    }).then(r => (r.status === 204) ? r : r.json()
+        .then(data =>
+            ({ status: r.status, body: data })))
+        .then(obj => { return obj });
+    return response
+}
+

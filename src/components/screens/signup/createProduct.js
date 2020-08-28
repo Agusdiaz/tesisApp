@@ -144,7 +144,7 @@ class CreateProduct extends Component {
                     <TextInput
                         style={[styles.inputView, { height: sizes.hp('10%') }]}
                         mode='outlined'
-                        label='Detalles del Producto'
+                        label='OPCIONAL - Detalles'
                         multiline
                         numberOfLines={5}
                         placeholder='Detalles'

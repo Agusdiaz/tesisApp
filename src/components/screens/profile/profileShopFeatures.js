@@ -33,12 +33,12 @@ class ProfileShopFeaturesScreen extends Component {
             this.props.showDialogResponse(data.body)
         }
         else {
+            this.hideModal()
             this.props.updateLoading(false)
             this.props.updateShopFeatures(this.state.checkedPets, this.state.checkedKids, this.state.checkedGames, this.state.checkedOutside,
                 this.state.checkedSmoking, this.state.checkedWifi)
             this.props.showDialogResponse(data.body)
         }
-
     }
 
     hideModal = () => {
@@ -194,7 +194,6 @@ class ProfileShopFeaturesScreen extends Component {
                             <Button color={colors.APP_GREEN} onPress={() => {
                                 this.editFeatures()
                                 this._hideDialog()
-                                this.hideModal()
                             }}>Sí</Button>
                         </Dialog.Actions>
                     </Dialog>

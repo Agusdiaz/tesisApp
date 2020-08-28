@@ -1,30 +1,55 @@
 import React, { Component } from 'react';
 import { StyleSheet, View, Text } from 'react-native';
-import { Button, Dialog, } from 'react-native-paper';
+import { connect } from 'react-redux';
+import { Button, Dialog, Portal, ActivityIndicator, Modal } from 'react-native-paper';
 import { appStyles, colors, sizes } from '../../../index.styles';
 import ArrowButton from '../../commons/arrowButton'
 import { RadioButton, Select } from 'material-bread'
 import { Actions } from 'react-native-router-flux';
+import ShopActions from '../../../redux/authState/action'
+import { updateShopFeatures } from '../../../api/shops'
 
 class SignUpShopFeaturesScreen extends Component {
 
     constructor(props) {
         super(props);
         this.state = {
+            loading: false,
             type: '',
-            checkedPets: true,
-            checkedKids: true,
-            checkedGames: true,
-            checkedOutside: true,
-            checkedSmoking: true,
-            checkedWifi: true,
-            visibleDialog: false,
+            checkedPets: this.props.shop.mascotas,
+            checkedKids: this.props.shop.bebes,
+            checkedGames: this.props.shop.juegos,
+            checkedOutside: this.props.shop.aireLibre,
+            checkedSmoking: this.props.shop.libreHumo,
+            checkedWifi: this.props.shop.wifi,
+            visibleDialogFinish: false,
+            visibleDialogResponse: false,
             selectedType: 'Bar/Cervecería',
+            actionMessage: '',
         }
     }
 
-    _showDialog = () => this.setState({ visibleDialog: true });
-    _hideDialog = () => this.setState({ visibleDialog: false });
+    async updateFeatures() {
+        this._hideDialogFinish()
+        this.setState({ loading: true })
+        const data = await updateShopFeatures(this.state.checkedPets, this.state.checkedKids, this.state.checkedGames, this.state.checkedOutside,
+            this.state.checkedSmoking, this.state.checkedWifi, this.props.shop.cuit, this.props.shop.token)
+        if (data.status === 500 || data.status === 404) {
+            this.setState({ loading: false, actionMessage: data.body })
+            this._showDialogResponse()
+        } else {
+            this.setState({ loading: false })
+            this.props.updateShopFeatures(this.state.checkedPets, this.state.checkedKids, this.state.checkedGames, this.state.checkedOutside,
+                this.state.checkedSmoking, this.state.checkedWifi)
+            Actions.signupshopschedule()
+        }
+    }
+
+    _showDialogFinish = () => this.setState({ visibleDialogFinish: true });
+    _hideDialogFinish = () => this.setState({ visibleDialogFinish: false });
+
+    _showDialogResponse = () => this.setState({ visibleDialogResponse: true });
+    _hideDialogResponse = () => this.setState({ visibleDialogResponse: false });
 
     render() {
         const types = [
@@ -40,7 +65,7 @@ class SignUpShopFeaturesScreen extends Component {
 
                 <Text style={styles.titleText}> ¡Bienvenido! Primero debes seleccionar las carecterísticas de tu local </Text>
 
-                <View style={{ width: '93%', alignSelf: 'center', top: sizes.hp('3%') }}>
+                {/* <View style={{ width: '93%', alignSelf: 'center', top: sizes.hp('3%') }}>
                     <Select
                         buttonStyle={styles.selectList}
                         label={'¿Qué tipo de local sos?'}
@@ -54,140 +79,160 @@ class SignUpShopFeaturesScreen extends Component {
                             focusedLabelColor: '#000',
                         }}
                     />
-                </View>
+                </View> */}
 
                 <Text style={styles.questionText}> ¿Tu local admite la presencia de animales? </Text>
                 <View style={styles.viewRadioButtons}>
-                    <RadioButton
+                <RadioButton
                         radioButtonColor={colors.APP_MAIN}
                         rippleColor={colors.APP_MAIN}
                         labelStyle={styles.options}
-                        checked={this.state.checkedPets}
-                        onPress={() => this.setState({ checkedPets: true })}
+                        checked={this.state.checkedPets == 1}
+                        onPress={() => this.setState({ checkedPets: 1 })}
                         label="Sí"
                     />
                     <RadioButton
                         radioButtonColor={colors.APP_MAIN}
                         rippleColor={colors.APP_MAIN}
-                        checked={!this.state.checkedPets}
-                        onPress={() => this.setState({ checkedPets: false })}
+                        checked={this.state.checkedPets == 0}
+                        onPress={() => this.setState({ checkedPets: 0 })}
                         label="No"
                     />
                 </View>
 
                 <Text style={styles.questionText}> ¿Tu local dispone de entretenimiento para niños? </Text>
                 <View style={styles.viewRadioButtons}>
-                    <RadioButton
+                <RadioButton
                         radioButtonColor={colors.APP_MAIN}
                         rippleColor={colors.APP_MAIN}
                         labelStyle={styles.options}
-                        checked={this.state.checkedKids}
-                        onPress={() => this.setState({ checkedKids: true })}
+                        checked={this.state.checkedKids == 1}
+                        onPress={() => this.setState({ checkedKids: 1 })}
                         label="Sí"
                     />
                     <RadioButton
                         radioButtonColor={colors.APP_MAIN}
                         rippleColor={colors.APP_MAIN}
-                        checked={!this.state.checkedKids}
-                        onPress={() => this.setState({ checkedKids: false })}
+                        checked={this.state.checkedKids == 0}
+                        onPress={() => this.setState({ checkedKids: 0 })}
                         label="No"
                     />
                 </View>
 
                 <Text style={styles.questionText}> ¿Tu local dispone de juegos/arcade para los clientes? </Text>
                 <View style={styles.viewRadioButtons}>
-                    <RadioButton
+                <RadioButton
                         radioButtonColor={colors.APP_MAIN}
                         rippleColor={colors.APP_MAIN}
                         labelStyle={styles.options}
-                        checked={this.state.checkedGames}
-                        onPress={() => this.setState({ checkedGames: true })}
+                        checked={this.state.checkedGames == 1}
+                        onPress={() => this.setState({ checkedGames: 1 })}
                         label="Sí"
                     />
                     <RadioButton
                         radioButtonColor={colors.APP_MAIN}
                         rippleColor={colors.APP_MAIN}
-                        checked={!this.state.checkedGames}
-                        onPress={() => this.setState({ checkedGames: false })}
+                        checked={this.state.checkedGames == 0}
+                        onPress={() => this.setState({ checkedGames: 0 })}
                         label="No"
                     />
                 </View>
 
                 <Text style={styles.questionText}> ¿Tu local dispone de espacio al aire libre? </Text>
                 <View style={styles.viewRadioButtons}>
-                    <RadioButton
+                <RadioButton
                         radioButtonColor={colors.APP_MAIN}
                         rippleColor={colors.APP_MAIN}
                         labelStyle={styles.options}
-                        checked={this.state.checkedOutside}
-                        onPress={() => this.setState({ checkedOutside: true })}
+                        checked={this.state.checkedOutside == 1}
+                        onPress={() => this.setState({ checkedOutside: 1 })}
                         label="Sí"
                     />
                     <RadioButton
                         radioButtonColor={colors.APP_MAIN}
                         rippleColor={colors.APP_MAIN}
-                        checked={!this.state.checkedOutside}
-                        onPress={() => this.setState({ checkedOutside: false })}
+                        checked={this.state.checkedOutside == 0}
+                        onPress={() => this.setState({ checkedOutside: 0 })}
                         label="No"
                     />
                 </View>
 
                 <Text style={styles.questionText}> ¿Tu local es libre de humo? </Text>
                 <View style={styles.viewRadioButtons}>
-                    <RadioButton
+                <RadioButton
                         radioButtonColor={colors.APP_MAIN}
                         rippleColor={colors.APP_MAIN}
                         labelStyle={styles.options}
-                        checked={this.state.checkedSmoking}
-                        onPress={() => this.setState({ checkedSmoking: true })}
+                        checked={this.state.checkedSmoking == 1}
+                        onPress={() => this.setState({ checkedSmoking: 1 })}
                         label="Sí"
                     />
                     <RadioButton
                         radioButtonColor={colors.APP_MAIN}
                         rippleColor={colors.APP_MAIN}
-                        checked={!this.state.checkedSmoking}
-                        onPress={() => this.setState({ checkedSmoking: false })}
+                        checked={this.state.checkedSmoking == 0}
+                        onPress={() => this.setState({ checkedSmoking: 0 })}
                         label="No"
                     />
                 </View>
 
                 <Text style={styles.questionText}> ¿Tu local dispone de wifi para los clientes? </Text>
                 <View style={styles.viewRadioButtons}>
-                    <RadioButton
+                <RadioButton
                         radioButtonColor={colors.APP_MAIN}
                         rippleColor={colors.APP_MAIN}
                         labelStyle={styles.options}
-                        checked={this.state.checkedWifi}
-                        onPress={() => this.setState({ checkedWifi: true })}
+                        checked={this.state.checkedWifi == 1}
+                        onPress={() => this.setState({ checkedWifi: 1 })}
                         label="Sí"
                     />
                     <RadioButton
                         radioButtonColor={colors.APP_MAIN}
                         rippleColor={colors.APP_MAIN}
-                        checked={!this.state.checkedWifi}
-                        onPress={() => this.setState({ checkedWifi: false })}
+                        checked={this.state.checkedWifi == 0}
+                        onPress={() => this.setState({ checkedWifi: 0 })}
                         label="No"
                     />
                 </View>
 
                 <Button
-                    style={{ top: sizes.hp('3%') }}
+                    style={{ top: sizes.hp('5s%') }}
                     icon="arrow-right-bold-outline"
                     mode="contained"
                     color={colors.APP_MAIN}
-                    onPress={this._showDialog}>
+                    onPress={this._showDialogFinish}>
                     Continuar
  				</Button>
 
-                <Dialog
-                    visible={this.state.visibleDialog}
-                    onDismiss={this._hideDialog}>
-                    <Dialog.Title style={{ alignSelf: 'center' }}>¿La información seleccionada es correcta?</Dialog.Title>
-                    <Dialog.Actions>
-                        <Button style={{ marginRight: sizes.wp('3%') }} color={colors.APP_RED} onPress={this._hideDialog}>Modificar</Button>
-                        <Button color={colors.APP_GREEN} onPress={() => Actions.signupshopschedule()}>Es correcta</Button>
-                    </Dialog.Actions>
-                </Dialog>
+                <Portal>
+                    <Dialog
+                        visible={this.state.visibleDialogFinish}
+                        onDismiss={this._hideDialogFinish}>
+                        <Dialog.Title style={{ alignSelf: 'center' }}>¿La información seleccionada es correcta?</Dialog.Title>
+                        <Dialog.Actions>
+                            <Button style={{ marginRight: sizes.wp('3%') }} color={colors.APP_RED} onPress={this._hideDialogFinish}>Modificar</Button>
+                            <Button color={colors.APP_GREEN} onPress={() => this.updateFeatures()}>Es correcta</Button>
+                        </Dialog.Actions>
+                    </Dialog>
+
+                    <Modal dismissable={false}
+                        visible={this.state.loading} >
+                        <ActivityIndicator
+                            animating={this.state.loading}
+                            size={60}
+                            color={colors.APP_MAIN}
+                        />
+                    </Modal>
+
+                    <Dialog
+                        visible={this.state.visibleDialogResponse}
+                        onDismiss={this._hideDialogResponse}>
+                        <Dialog.Title style={{ alignSelf: 'center', textAlign: 'center' }}>{this.state.actionMessage}</Dialog.Title>
+                        <Dialog.Actions>
+                            <Button style={{ marginRight: sizes.wp('3%') }} color={'#000000'} onPress={() => { this._hideDialogResponse() }}>Ok</Button>
+                        </Dialog.Actions>
+                    </Dialog>
+                </Portal>
 
             </View>
         );
@@ -200,8 +245,9 @@ const styles = StyleSheet.create({
         fontSize: 27,
         fontWeight: "bold",
         textAlign: "center",
-        top: sizes.hp('1%'),
-        padding: 12,
+        top: sizes.hp('-3%'),
+        padding: 15,
+        margin: 15
     },
     selectList: {
         alignItems: 'center',
@@ -221,4 +267,16 @@ const styles = StyleSheet.create({
     },
 })
 
-export default SignUpShopFeaturesScreen;
+function mapStateToProps(state) {
+    return {
+        shop: state.authState.shop,
+    };
+}
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        updateShopFeatures: (mascotas, bebes, juegos, aireLibre, libreHumo, wifi) => dispatch(ShopActions.updateShopFeatures(mascotas, bebes, juegos, aireLibre, libreHumo, wifi)),
+    }
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(SignUpShopFeaturesScreen);

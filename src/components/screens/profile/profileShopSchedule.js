@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { StyleSheet, View, Text, ScrollView } from 'react-native';
-import { Button, Dialog, IconButton, Portal } from 'react-native-paper';
+import { StyleSheet, View, Text, ScrollView, TouchableOpacity } from 'react-native';
+import { Button, Dialog, Modal, Portal, ActivityIndicator } from 'react-native-paper';
 import { appStyles, colors, sizes } from '../../../index.styles';
 import { DataTable, DataTableCell, DataTableRow } from 'material-bread'
 import TimePicker from "react-native-24h-timepicker";
+import ShopActions from '../../../redux/authState/action'
 import { updateShopSchedule } from '../../../api/shops'
 
 const TimeOpening = TimePicker;
@@ -17,20 +18,65 @@ class ProfileShopScheduleScreen extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            newSchedule: [],
             timeOpen: '00:00',
             timeClose: '00:00',
-            open: false,
-            visibleDialog: false,
+            visibleDialogFinish: false,
+            nisibleDialogExtends: false,
             schedule: this.props.shop.horarios[0].filter(x => x.id === this.props.day),
-            newSchedule: []
+            loading: false,
         }
     }
 
-    _showDialog = () => this.setState({ visibleDialog: true });
-    _hideDialog = () => this.setState({ visibleDialog: false });
+    async updateSchedule() {
+        this.props.updateLoading(true)
+        var response = {
+            cuit: this.props.shop.cuit,
+            diaSemana: this.props.day,
+            horas: this.state.newSchedule,
+        }
+        const data = await updateShopSchedule(response, this.props.shop.token)
+        if (data.status === 500 || data.status === 404) {
+            this.props.updateLoading(false)
+            this.props.showDialogResponse(data.body)
+        } else {
+            this.hideModal()
+            this.props.updateLoading(false)
+            this.props.showDialogResponse(data.body)
+            var hours = ''
+            this.state.newSchedule.map(obj => {
+                hours += obj.horaAbre + ' - ' + obj.horaCierra + '\n'
+            })
+            this.props.updateShopSchedule(hours, this.props.day, 1)
+        }
+    }
+
+    _showDialogFinish = () => this.setState({ visibleDialogFinish: true });
+    _hideDialogFinish = () => this.setState({ visibleDialogFinish: false });
+
+    _showDialogExtends = () => this.setState({ visibleDialogExtends: true });
+    _hideDialogExtends = () => this.setState({ visibleDialogExtends: false });
 
     hideModal = () => {
         this.props.hideModalFromChild();
+    }
+
+    addHours(ext) {
+        var time = {
+            horaAbre: this.state.timeOpen,
+            horaCierra: this.state.timeClose,
+            horaExtendida: ext,
+        }
+        this.setState(prevState => ({
+            newSchedule: [...prevState.newSchedule, time]
+        }))
+        this.setState({ timeOpen: '00:00', timeClose: '00:00' });
+    }
+
+    removeHours(index) {
+        this.setState(prevState => ({
+            newSchedule: [...prevState.newSchedule.slice(0, index), ...prevState.newSchedule.slice(index + 1)]
+        }))
     }
 
     onCancel() {
@@ -39,56 +85,76 @@ class ProfileShopScheduleScreen extends Component {
     }
 
     onConfirmOpening(hour, minute) {
-        if (this.state.day == 0)
-            this.setState({ timeSunOpen: `${hour}:${minute}` });
-        if (this.state.day == 1)
-            this.setState({ timeMonOpen: `${hour}:${minute}` });
-        if (this.state.day == 2)
-            this.setState({ timeTueOpen: `${hour}:${minute}` });
-        if (this.state.day == 3)
-            this.setState({ timeWenOpen: `${hour}:${minute}` });
-        if (this.state.day == 4)
-            this.setState({ timeThuOpen: `${hour}:${minute}` });
-        if (this.state.day == 5)
-            this.setState({ timeFriOpen: `${hour}:${minute}` });
-        if (this.state.day == 6)
-            this.setState({ timeSatOpen: `${hour}:${minute}` });
+        this.setState({ timeOpen: (hour.length === 1) ? `0${hour}:${minute}` : `${hour}:${minute}` });
         this.TimeOpening.close();
     }
 
     onConfirmClosing(hour, minute) {
-        if (this.state.day == 0)
-            this.setState({ timeSunClose: `${hour}:${minute}` });
-        if (this.state.day == 1)
-            this.setState({ timeMonClose: `${hour}:${minute}` });
-        if (this.state.day == 2)
-            this.setState({ timeTueClose: `${hour}:${minute}` });
-        if (this.state.day == 3)
-            this.setState({ timeWenClose: `${hour}:${minute}` });
-        if (this.state.day == 4)
-            this.setState({ timeThuClose: `${hour}:${minute}` });
-        if (this.state.day == 5)
-            this.setState({ timeFriClose: `${hour}:${minute}` });
-        if (this.state.day == 6)
-            this.setState({ timeSatClose: `${hour}:${minute}` });
+        this.setState({ timeClose: (hour.length === 1) ? `0${hour}:${minute}` : `${hour}:${minute}` }, this._showDialogExtends);
         this.TimeClosing.close();
     }
 
     render() {
         return (
-            <View style={{ maxHeight: sizes.hp('80%') }}>
+            <View style={{ height: sizes.hp('78%'), width: sizes.wp('90%'), margin: 5 }}>
                 <Text style={styles.titleText}> Editá los horarios del {this.days[this.props.day - 1]} </Text>
 
-                <DataTable style={{ marginTop: sizes.wp('1%'), width: sizes.wp('70%'), height: sizes.wp('20%'), }}>
-                    <ScrollView style={{ height: sizes.hp('20%') }}>
-                        < DataTableRow key={this.state.schedule[0].id} style={{}} >
-                            <DataTableCell text={'Tus horarios actualmente'} borderRight textStyle={{ textAlign: 'center' }} style={{ maxWidth: '40%' }} />
-                            <DataTableCell text={(this.state.schedule[0].horas.length > 0) ? this.state.schedule[0].horas : 'CERRADO'} textStyle={{ textAlign: 'center' }} style={{ maxWidth: '40%', alignSelf: 'center' }} minWidth={150} />
-                        </DataTableRow>
-                    </ScrollView>
-                </DataTable>
+                <View style={{ height: sizes.wp('20%') }}>
+                    <DataTable style={{ marginTop: sizes.wp('1%'), width: sizes.wp('70%'), }}>
+                        <ScrollView style={{ height: sizes.hp('20%') }}>
+                            <DataTableRow key={this.state.schedule[0].id} style={{}} >
+                                <DataTableCell text={'Tus horarios actualmente'} borderRight textStyle={{ textAlign: 'center', fontSize: 14 }} style={{ maxWidth: '15%' }} minWidth={150} />
+                                <DataTableCell text={(this.state.schedule[0].horas.length > 0) ? this.state.schedule[0].horas : 'CERRADO'} textStyle={{ textAlign: 'center', fontSize: 14 }} style={{ maxWidth: '40%', alignSelf: 'center' }} minWidth={190} />
+                            </DataTableRow>
+                        </ScrollView>
+                    </DataTable>
+                </View>
 
-                <Text style={styles.subtitleText}> Ingresá tus nuevos horarios </Text>
+                <Text style={styles.subtitleText}> Ingresá tus nuevos horarios: </Text>
+
+                <View style={styles.whenOpen}>
+                    <Text style={styles.text}>Desde: </Text>
+                    <TouchableOpacity
+                        onPress={() => {
+                            this.setState({ day: 5 })
+                            this.TimeOpening.open()
+                        }}>
+                        <View style={styles.borderText}>
+                            <Text style={styles.text}>{this.state.timeOpen}</Text>
+                        </View>
+                    </TouchableOpacity>
+                    <Text style={styles.text}>Hasta: </Text>
+                    <TouchableOpacity
+                        onPress={() => {
+                            this.setState({ day: 5 })
+                            this.TimeClosing.open()
+                        }}>
+
+                        <View style={styles.borderText}>
+                            <Text style={styles.text}>{this.state.timeClose}</Text>
+                        </View>
+
+                    </TouchableOpacity>
+                </View>
+
+                <View style={{ height: sizes.wp('72%') }}>
+                    <DataTable style={{ marginTop: sizes.wp('1%'), width: sizes.wp('70%'), }}>
+                        <DataTableRow style={{}}>
+                            <DataTableCell text={'Tus nuevos horarios'} type={'header'} textStyle={{ textAlign: 'center', fontWeight: 'bold', fontSize: 14 }} />
+                        </DataTableRow>
+                        <ScrollView style={{ height: sizes.hp('85%') }}>
+                            {(this.state.newSchedule.length > 0) ?
+                                this.state.newSchedule.map((row, i) =>
+                                    <DataTableRow key={i} style={{}} >
+                                        <DataTableCell text={'Eliminar'} textStyle={{ textAlign: 'center', fontWeight: 'bold', color: colors.APP_RED, textDecorationLine: 'underline' }}
+                                            style={{ maxWidth: '15%', alignSelf: 'center' }} minWidth={150} onPress={() => { this.removeHours(i) }} />
+                                        <DataTableCell text={row.horaAbre + ' - ' + row.horaCierra} textStyle={{ textAlign: 'center', fontSize: 14 }} style={{ maxWidth: '40%', alignSelf: 'center' }} minWidth={190} />
+                                    </DataTableRow>
+                                )
+                                : <Text style={{ color: colors.APP_MAIN, fontWeight: 'bold', marginTop: sizes.hp('2%'), alignSelf: 'center' }}>Todavía no cargaste nuevos horarios</Text>}
+                        </ScrollView>
+                    </DataTable>
+                </View>
 
                 <TimeOpening
                     ref={ref => {
@@ -110,7 +176,16 @@ class ProfileShopScheduleScreen extends Component {
                     onConfirm={(hour, minute) => this.onConfirmClosing(hour, minute)}
                 />
 
-                <View style={{ flexDirection: "row", marginTop: sizes.wp('1%') }}>
+                <Button
+                    style={{ margin: sizes.hp('1%'), }}
+                    mode="contained"
+                    color={colors.APP_MAIN}
+                    disabled={this.state.schedule[0].horas.length === 0}
+                    onPress={() => { this._showDialogFinish() }}>
+                    Eliminar horarios del día
+                    </Button>
+
+                <View style={{ flexDirection: "row", top: sizes.wp('4%') }}>
                     <Button
                         style={{ margin: sizes.hp('1%'), width: '42%', marginRight: sizes.wp('8%') }}
                         icon="close-outline"
@@ -125,24 +200,50 @@ class ProfileShopScheduleScreen extends Component {
                         icon="check-outline"
                         mode="contained"
                         color={colors.APP_MAIN}
-                        onPress={this._showDialog}>
+                        disabled={this.state.newSchedule.length === 0}
+                        onPress={() => { this._showDialogFinish() }}>
                         Confirmar
                     </Button>
                 </View>
 
                 <Portal>
                     <Dialog
-                        visible={this.state.visibleDialog}
-                        onDismiss={this._hideDialog}>
-                        <Dialog.Title style={{ alignSelf: 'center' }}>¿Desea modificar su información?</Dialog.Title>
+                        visible={this.state.visibleDialogFinish}
+                        onDismiss={this._hideDialogFinish}>
+                        <Dialog.Title style={{ alignSelf: 'center' }}>¿Desea modificar los horarios?</Dialog.Title>
                         <Dialog.Actions>
-                            <Button style={{ marginRight: sizes.wp('3%') }} color={colors.APP_RED} onPress={this._hideDialog}>Cancelar</Button>
+                            <Button style={{ marginRight: sizes.wp('3%') }} color={colors.APP_RED} onPress={this._hideDialogFinish}>Cancelar</Button>
                             <Button color={colors.APP_GREEN} onPress={() => {
-                                this._hideDialog()
-                                this.hideModal()
+                                this._hideDialogFinish()
+                                this.updateSchedule()
                             }}>Sí</Button>
                         </Dialog.Actions>
                     </Dialog>
+
+                    <Dialog
+                        visible={this.state.visibleDialogExtends}
+                        dismissable={false}>
+                        <Dialog.Title style={{ alignSelf: 'center', textAlign: 'center' }}>¿Este horario extiende las 00hs del día siguiente?</Dialog.Title>
+                        <Dialog.Actions>
+                            <Button style={{ marginRight: sizes.wp('10%') }} color={colors.APP_RED} onPress={() => {
+                                this._hideDialogExtends()
+                                this.addHours(0)
+                            }}>No</Button>
+                            <Button color={colors.APP_GREEN} onPress={() => {
+                                this._hideDialogExtends()
+                                this.addHours(1)
+                            }}>Sí</Button>
+                        </Dialog.Actions>
+                    </Dialog>
+
+                    <Modal dismissable={false}
+                        visible={this.state.loading} >
+                        <ActivityIndicator
+                            animating={this.state.loading}
+                            size={60}
+                            color={colors.APP_MAIN}
+                        />
+                    </Modal>
                 </Portal>
 
             </View>
@@ -164,18 +265,29 @@ const styles = StyleSheet.create({
         fontSize: 20,
         fontWeight: "bold",
         textAlign: "center",
-        //top: sizes.hp('-1.5%'),
-        //padding: 12,
+    },
+    text: {
+        fontSize: 20,
+        textAlign: 'center',
+    },
+    borderText: {
+        borderWidth: 1.3,
+        borderColor: colors.APP_MAIN,
+        borderRadius: 6,
+        width: sizes.wp('23%'),
+        height: sizes.hp('5%'),
+        alignItems: 'center',
+        justifyContent: 'center',
     },
     whenOpen: {
+        alignSelf: 'center',
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
-        width: sizes.wp('60%'),
-        top: sizes.hp('-6%'),
-        right: sizes.wp('-30%'),
-        marginBottom: sizes.hp('-3.5%')
-    }
+        height: sizes.hp('9%'),
+        justifyContent: 'space-between',
+        width: sizes.wp('85%'),
+    },
 })
 
 function mapStateToProps(state) {
@@ -186,6 +298,7 @@ function mapStateToProps(state) {
 
 const mapDispatchToProps = (dispatch) => {
     return {
+        updateShopSchedule: (hours, id, action) => dispatch(ShopActions.updateShopSchedule(hours, id, action)),
     }
 };
 
