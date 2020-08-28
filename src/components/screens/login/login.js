@@ -49,7 +49,7 @@ class LoginScreen extends Component {
                 this.props.setLoginShopData(data.body.cuit, data.body.nombre, data.body.direccion, data.body.telefono, data.body.mail,
                     data.body.mascotas, data.body.bebes, data.body.juegos, data.body.aireLibre, data.body.libreHumo, data.body.wifi,
                     data.body.demora, data.body.abierto, data.body.horarios, data.body.token)
-                Actions.signupshopfeatures() //features - schedule - menu
+                Actions.signupshopmenu() //features - schedule - menu
             }
         }
     }

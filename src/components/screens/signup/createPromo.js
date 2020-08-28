@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { StyleSheet, View, Text, Alert, ScrollView } from 'react-native';
-import { appStyles, colors, sizes, productCondition, productType } from '../../../index.styles';
+import { appStyles, colors, sizes } from '../../../index.styles';
 import { Button, Dialog, TextInput, Modal, Portal, ActivityIndicator } from 'react-native-paper'
 import { DataTable, DataTableCell, DataTableRow } from 'material-bread'
 import { Actions } from 'react-native-router-flux';
@@ -100,7 +100,7 @@ class CreatePromo extends Component {
                         label='OPCIONAL - Nombre'
                         placeholder="Nombre"
                         theme={{ colors: { text: colors.TEXT_INPUT, primary: colors.APP_MAIN } }}
-                        onChangeText={text => this.setState({ name: text})}
+                        onChangeText={text => this.setState({ name: text })}
                         value={this.state.name}
                     />
 
@@ -214,6 +214,7 @@ class CreatePromo extends Component {
                             <Button style={{ marginRight: sizes.wp('3%') }} color={'#000000'} onPress={this._hideDialogResponse}>Ok</Button>
                         </Dialog.Actions>
                     </Dialog>
+
                 </Portal>
 
             </View>

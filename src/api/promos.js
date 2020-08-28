@@ -15,3 +15,17 @@ export const getAllShopPromos = async (cuit, token) => {
         .then(obj => {return obj});
     return response
 }
+
+export const updatePromoHours = async (body, token) => {
+    const response = await fetch(`${APIURL}updatePromoHours`, {
+        method: 'POST',
+        body: JSON.stringify(body),
+        headers: new Headers({
+            'Content-Type': 'application/json'
+        })
+    }).then(r => (r.status === 204) ? r : r.json()
+        .then(data => 
+            ({ status: r.status, body: data })))
+        .then(obj => {return obj});
+    return response
+}

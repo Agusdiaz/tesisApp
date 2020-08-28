@@ -2,16 +2,17 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { StyleSheet, View, Text, ScrollView, TouchableOpacity } from 'react-native';
 import { Button, Dialog, Modal, Portal, ActivityIndicator } from 'react-native-paper';
-import { appStyles, colors, sizes } from '../../../index.styles';
+import { appStyles, colors, sizes } from '../../index.styles';
 import { DataTable, DataTableCell, DataTableRow } from 'material-bread'
 import TimePicker from "react-native-24h-timepicker";
-import ShopActions from '../../../redux/authState/action'
-import { updateShopSchedule } from '../../../api/shops'
+import ShopActions from '../../redux/authState/action'
+import { updateShopSchedule } from '../../api/shops'
+import { updatePromoHours } from '../../api/promos'
 
 const TimeOpening = TimePicker;
 const TimeClosing = TimePicker;
 
-class ProfileShopScheduleScreen extends Component {
+class EditDaySchedule extends Component {
 
     days = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado']
 
@@ -22,32 +23,55 @@ class ProfileShopScheduleScreen extends Component {
             timeOpen: '00:00',
             timeClose: '00:00',
             visibleDialogFinish: false,
-            nisibleDialogExtends: false,
-            schedule: this.props.shop.horarios[0].filter(x => x.id === this.props.day),
-            loading: false,
+            visibleDialogExtends: false,
+            schedule: (this.props.rute === 'editPromo') ? this.props.data
+            : this.props.shop.horarios[0].filter(x => x.id === this.props.day),
         }
     }
 
     async updateSchedule() {
-        this.props.updateLoading(true)
-        var response = {
-            cuit: this.props.shop.cuit,
-            diaSemana: this.props.day,
-            horas: this.state.newSchedule,
-        }
-        const data = await updateShopSchedule(response, this.props.shop.token)
-        if (data.status === 500 || data.status === 404) {
-            this.props.updateLoading(false)
-            this.props.showDialogResponse(data.body)
-        } else {
-            this.hideModal()
-            this.props.updateLoading(false)
-            this.props.showDialogResponse(data.body)
-            var hours = ''
-            this.state.newSchedule.map(obj => {
-                hours += obj.horaAbre + ' - ' + obj.horaCierra + '\n'
-            })
-            this.props.updateShopSchedule(hours, this.props.day, 1)
+        if (this.props.rute === 'editShop') {
+            this.props.updateLoading(true)
+            var response = {
+                cuit: this.props.shop.cuit,
+                diaSemana: this.props.day,
+                horas: this.state.newSchedule,
+            }
+            const data = await updateShopSchedule(response, this.props.shop.token)
+            if (data.status === 500 || data.status === 404) {
+                this.props.updateLoading(false)
+                this.props.showDialogResponse(data.body)
+            } else {
+                this.hideModal()
+                this.props.updateLoading(false)
+                this.props.showDialogResponse(data.body)
+                var hours = ''
+                this.state.newSchedule.map(obj => {
+                    hours += obj.horaAbre + ' - ' + obj.horaCierra + '\n'
+                })
+                this.props.updateShopSchedule(hours, this.props.day, 1)
+            }
+        } else if(this.props.rute === 'editPromo'){
+            this.props.updateLoading(true)
+            var response = {
+                idPromo: this.props.id,
+                diaSemana: this.props.day,
+                horas: this.state.newSchedule,
+            }
+            const data = await updatePromoHours(response, this.props.shop.token)
+            if (data.status === 500 || data.status === 404) {
+                this.props.updateLoading(false)
+                this.props.showDialogResponse(data.body)
+            } else {
+                var hours = ''
+                this.state.newSchedule.map(obj => {
+                    hours += obj.horaAbre + ' - ' + obj.horaCierra + '\n'
+                })
+                this.props.updatePropsSchedule(hours)
+                this.hideModal()
+                this.props.updateLoading(false)
+                this.props.showDialogResponse(data.body)
+            }
         }
     }
 
@@ -104,7 +128,8 @@ class ProfileShopScheduleScreen extends Component {
                         <ScrollView style={{ height: sizes.hp('20%') }}>
                             <DataTableRow key={this.state.schedule[0].id} style={{}} >
                                 <DataTableCell text={'Tus horarios actualmente'} borderRight textStyle={{ textAlign: 'center', fontSize: 14 }} style={{ maxWidth: '15%' }} minWidth={150} />
-                                <DataTableCell text={(this.state.schedule[0].horas.length > 0) ? this.state.schedule[0].horas : 'CERRADO'} textStyle={{ textAlign: 'center', fontSize: 14 }} style={{ maxWidth: '40%', alignSelf: 'center' }} minWidth={190} />
+                                <DataTableCell text={(this.state.schedule[0].horas.length > 0) ? this.state.schedule[0].horas : 
+                                    (this.props.rute === 'editShop') ? 'CERRADO' : 'NO VÁLIDA'} textStyle={{ textAlign: 'center', fontSize: 14 }} style={{ maxWidth: '40%', alignSelf: 'center' }} minWidth={190} />
                             </DataTableRow>
                         </ScrollView>
                     </DataTable>
@@ -236,16 +261,7 @@ class ProfileShopScheduleScreen extends Component {
                         </Dialog.Actions>
                     </Dialog>
 
-                    <Modal dismissable={false}
-                        visible={this.state.loading} >
-                        <ActivityIndicator
-                            animating={this.state.loading}
-                            size={60}
-                            color={colors.APP_MAIN}
-                        />
-                    </Modal>
                 </Portal>
-
             </View>
         );
     }
@@ -302,4 +318,4 @@ const mapDispatchToProps = (dispatch) => {
     }
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(ProfileShopScheduleScreen);
+export default connect(mapStateToProps, mapDispatchToProps)(EditDaySchedule);

@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { StyleSheet, View, Text, ScrollView } from 'react-native';
-import { Button, Dialog, IconButton, Modal, Portal } from 'react-native-paper';
+import { Button, Dialog, IconButton, Modal, Portal, ActivityIndicator } from 'react-native-paper';
 import { appStyles, colors, sizes } from '../../../index.styles';
 import { DataTable, DataTableCell, DataTableRow } from 'material-bread'
-import EditSchedule from '../profile/profileShopSchedule'
+import EditSchedule from '../../commons/editDaySchedule'
 import { Actions } from 'react-native-router-flux';
 
 class SignUpShopScheduleScreen extends Component {
@@ -15,8 +15,21 @@ class SignUpShopScheduleScreen extends Component {
             visibleDialogFinish: false,
             visibleModalEditSchedule: false,
             daySelected: null,
+            loading: false,
+            actionMessage: '',
         }
+        this.updateIsLoading = this.updateIsLoading.bind(this)
+        this._showDialogResponse = this._showDialogResponse.bind(this)
     }
+
+    updateIsLoading(value) {
+        this.setState({ loading: value })
+    }
+
+    _showDialogResponse(message) {
+        this.setState({ visibleDialogResponse: true, actionMessage: message })
+    }
+    _hideDialogResponse = () => this.setState({ visibleDialogResponse: false, actionMessage: '' });
 
     _showDialogFinish = () => this.setState({ visibleDialogFinish: true });
     _hideDialogFinish = () => this.setState({ visibleDialogFinish: false });
@@ -80,8 +93,29 @@ class SignUpShopScheduleScreen extends Component {
                     </Dialog>
 
                     <Modal contentContainerStyle={styles.modalView} visible={this.state.visibleModalEditSchedule} dismissable={false}>
-                        <EditSchedule hideModalFromChild={this._hideModalEditSchedule} day={this.state.daySelected} />
+                        <EditSchedule hideModalFromChild={this._hideModalEditSchedule} day={this.state.daySelected} rute={'editShop'}
+                        updateLoading={this.updateIsLoading} showDialogResponse={this._showDialogResponse}/>
                     </Modal>
+
+                    <Modal dismissable={false}
+                        visible={this.state.loading}
+                        style={styles.modalActivityIndicator} >
+                        <ActivityIndicator
+                            animating={this.state.loading}
+                            size={60}
+                            color={colors.APP_MAIN}
+                        />
+                    </Modal>
+
+                    <Dialog
+                        style={{ width: sizes.wp('70%'), alignSelf: 'center' }}
+                        visible={this.state.visibleDialogResponse}
+                        onDismiss={this._hideDialogResponse}>
+                        <Dialog.Title style={{ alignSelf: 'center', textAlign: 'center' }}>{this.state.actionMessage}</Dialog.Title>
+                        <Dialog.Actions>
+                            <Button style={{ marginRight: sizes.wp('3%') }} color={'#000000'} onPress={this._hideDialogResponse}>Ok</Button>
+                        </Dialog.Actions>
+                    </Dialog>
 
                 </Portal>
 

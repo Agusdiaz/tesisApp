@@ -3,10 +3,10 @@ import { connect } from 'react-redux';
 import { StyleSheet, Text, View } from 'react-native';
 import { appStyles, colors, sizes } from '../../../index.styles';
 import { Button, Dialog, Modal, Portal, ActivityIndicator } from 'react-native-paper';
-import { Tabs, Tab, RadioButton } from 'material-bread';
+import { Tabs, Tab } from 'material-bread';
 import ShopCard from '../../commons/shopCard'
+import Schedule from '../../commons/schedule'
 import EditFeatures from './profileShopFeatures'
-import EditSchedule from './profileShopSchedule'
 import { Actions } from 'react-native-router-flux';
 import ShopActions from '../../../redux/authState/action'
 import PieChart from '../statistics/pieChart'
@@ -136,7 +136,7 @@ class ProfileShopScreen extends Component {
                                 icon="clock-outline"
                                 mode="contained"
                                 color={colors.APP_MAIN}
-                                onPress={this._showDialogSchedule}>
+                                onPress={this._showModalEditSchedule}>
                                 Editar Horarios
                                 </Button>
 
@@ -169,8 +169,7 @@ class ProfileShopScreen extends Component {
                     </Modal>
 
                     <Modal contentContainerStyle={styles.modalView} visible={this.state.visibleModalEditSchedule} dismissable={false}>
-                        <EditSchedule hideModalFromChild={this._hideModalEditSchedule} day={this.state.checked}
-                        updateLoading={this.updateIsLoading} showDialogResponse={this._showDialogResponse}/>
+                        <Schedule hideModalFromChild={this._hideModalEditSchedule} data={this.props.shop.horarios[0]} rute={'editShop'}/>
                     </Modal>
 
                     <Dialog
@@ -198,71 +197,6 @@ class ProfileShopScreen extends Component {
                         </Dialog.Actions>
                     </Dialog>
 
-                    <Dialog
-                        style={{ width: sizes.wp('70%'), alignSelf: 'center', alignItems: 'center' }}
-                        visible={this.state.visibleDialogSchedule}
-                        onDismiss={this._hideDialogSchedule}>
-                        <Dialog.Title style={{ alignSelf: 'center', textAlign: 'center' }}>Seleccioná un día</Dialog.Title>
-                        <Dialog.Actions>
-                            <View style={{ flexDirection: 'column', marginTop: sizes.hp('-2%')}}>
-                                <RadioButton
-                                    checked={this.state.checked == 1}
-                                    onPress={() => this.setState({ checked: 1 })}
-                                    radioButtonColor={colors.APP_MAIN}
-                                    rippleColor={colors.APP_MAIN}
-                                    label="Domingo"
-                                />
-                                <RadioButton
-                                    checked={this.state.checked == 2}
-                                    radioButtonColor={colors.APP_MAIN}
-                                    rippleColor={colors.APP_MAIN}
-                                    onPress={() => this.setState({ checked: 2 })}
-                                    label="Lunes"
-                                />
-                                <RadioButton
-                                    checked={this.state.checked == 3}
-                                    onPress={() => this.setState({ checked: 3 })}
-                                    radioButtonColor={colors.APP_MAIN}
-                                    rippleColor={colors.APP_MAIN}
-                                    label="Martes"
-                                />
-                                <RadioButton
-                                    checked={this.state.checked == 4}
-                                    onPress={() => this.setState({ checked: 4 })}
-                                    radioButtonColor={colors.APP_MAIN}
-                                    rippleColor={colors.APP_MAIN}
-                                    label="Miércoles"
-                                />
-                                <RadioButton
-                                    checked={this.state.checked == 5}
-                                    onPress={() => this.setState({ checked: 5 })}
-                                    radioButtonColor={colors.APP_MAIN}
-                                    rippleColor={colors.APP_MAIN}
-                                    label="Jueves"
-                                />
-                                <RadioButton
-                                    checked={this.state.checked == 6}
-                                    onPress={() => this.setState({ checked: 6 })}
-                                    radioButtonColor={colors.APP_MAIN}
-                                    rippleColor={colors.APP_MAIN}
-                                    label="Viernes"
-                                />
-                                <RadioButton
-                                    checked={this.state.checked == 7}
-                                    onPress={() => this.setState({ checked: 7 })}
-                                    radioButtonColor={colors.APP_MAIN}
-                                    rippleColor={colors.APP_MAIN}
-                                    label="Sábado"
-                                />
-
-                                <View style={{ flexDirection: 'row', marginTop: sizes.hp('2%')  }}>
-                                    <Button style={{ marginRight: sizes.wp('15%') }} color={colors.APP_RED} onPress={this._hideDialogSchedule}>Cancelar</Button>
-                                    <Button color={colors.APP_GREEN} onPress={() => { this._hideDialogSchedule(), this._showModalEditSchedule() }}>Ok</Button>
-                                </View>
-                            </View>
-                        </Dialog.Actions>
-                    </Dialog>
-
                     <Modal dismissable={false}
                         visible={this.state.loading}
                         style={styles.modalActivityIndicator} >
@@ -286,24 +220,6 @@ const styles = StyleSheet.create({
         top: sizes.hp('5%'),
         borderTopWidth: 2,
         borderColor: colors.APP_MAIN,
-    },
-    viewImage: {
-        justifyContent: 'center',
-        margin: 20,
-        marginTop: sizes.hp('75%'),
-        top: sizes.hp('-40%')
-    },
-    image: {
-        width: 170,
-        height: 170,
-        marginBottom: sizes.hp('2%'),
-        alignSelf: 'center',
-    },
-    infoImage: {
-        fontSize: 17,
-        fontWeight: 'bold',
-        justifyContent: 'center',
-        textAlign: 'center',
     },
     modalView: {
         marginTop: sizes.hp('0%'),

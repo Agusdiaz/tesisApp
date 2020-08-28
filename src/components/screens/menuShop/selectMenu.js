@@ -37,19 +37,26 @@ class SelectMenu extends Component {
                 />
 
                 {(this.state.selectedTab === 0) ?
-                    <ProductMenu rute={(this.props.rute === 'initial') ? 'initial' : 'shop'}/>
+                    <ProductMenu rute={(this.props.rute === 'initial') ? 'initial' : 'shop'} />
                     : (this.state.selectedTab === 1) ?
-                        <IngredientMenu rute={(this.props.rute === 'initial') ? 'initial' : null}/>
+                        <IngredientMenu rute={(this.props.rute === 'initial') ? 'initial' : null} />
                         :
                         <SalesMenu rute='shop' />
                 }
 
                 {(this.props.rute === 'initial') ?
-                <TouchableHighlight activeOpacity={0.6} onPress={() => { Actions.signupshopmenu() }}>
-                    <Image source={require('../../../icons/arrow.png')} style={[styles.imageCart, 
-                        {bottom: (this.state.selectedTab === 2) ? sizes.hp('-45%') : sizes.hp('5%')}]}/>
-                </TouchableHighlight>
-                    : null}
+                    <TouchableHighlight activeOpacity={0.6} onPress={() => { Actions.signupshopmenu() }}>
+                        <Image source={require('../../../icons/arrow.png')} style={[styles.imageCart,
+                        { bottom: (this.state.selectedTab === 2) ? sizes.hp('-45%') : sizes.hp('5%') }]} />
+                    </TouchableHighlight>
+                    : (this.state.selectedTab !== 1) ?
+                    <FAB
+                        style={[styles.fabPlus, { bottom: (this.state.selectedTab === 2) ? sizes.hp('2%') : sizes.hp('2%') }]}
+                        color='#FFF'
+                        icon="plus"
+                        onPress={() => { if (this.state.selectedTab === 0) { } else { } }} />
+                        : null }
+                
             </View>
         )
     }
@@ -73,6 +80,16 @@ const styles = StyleSheet.create({
         borderRadius: sizes.wp('50%'),
         right: sizes.wp('22%'),
         resizeMode: 'center',
+    },
+    fabPlus: {
+        backgroundColor: colors.APP_MAIN,
+        borderRadius: sizes.wp('50%'),
+        position: 'absolute',
+        height: '8%',//sizes.hp('8%'),
+        width: '16%', //sizes.wp('18%'),
+        justifyContent: 'center',
+        alignItems: 'center',
+        right: sizes.wp('75%'),
     },
 });
 

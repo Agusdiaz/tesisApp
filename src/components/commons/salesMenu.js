@@ -14,6 +14,7 @@ class SalesMenu extends Component {
             sales: [],
             refreshing: false,
         }
+        this.onRefresh = this.onRefresh.bind(this);
     }
 
     componentDidMount() {
@@ -41,7 +42,7 @@ class SalesMenu extends Component {
     _renderItem(item) {
         if (this.state.areSales) {
             return (
-                <SalesCard data={item} />
+                <SalesCard data={item} rute={(this.props.user.mail === undefined) ? 'editPromo' : null} refreshParent={this.onRefresh}/>
             );
         } else {
             return (
@@ -55,7 +56,6 @@ class SalesMenu extends Component {
     }
 
     render() {
-
         return (
             <View style={{ width: sizes.wp('100%'), height: sizes.hp('77%'), top: (this.props.rute === 'shop') ? sizes.hp('11%') : sizes.hp('21%'), position: 'absolute' }}>
 

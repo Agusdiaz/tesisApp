@@ -136,7 +136,8 @@ class ShopCard extends Component {
 
                 <Portal>
                     <Modal contentContainerStyle={styles.modalView} visible={this.state.visibleModalSchedule} onDismiss={this._hideModalSchedule}>
-                        <Schedule hideModalFromChild={this._hideModalSchedule} data={this.props.shop.horarios[0]} />
+                        <Schedule hideModalFromChild={this._hideModalSchedule} data={this.props.shop.horarios[0]} 
+                        rute={'shop'}/>
                     </Modal>
                 </Portal>
             </Card>

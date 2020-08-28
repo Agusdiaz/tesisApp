@@ -12,7 +12,7 @@ class IngredientMenu extends Component {
         this.state = {
             refreshing: false,
             ingredients: [],
-            areIngredients: false,
+            areIngredients: true,
             searchQuery: '',
         }
         this.arrayholder = []
