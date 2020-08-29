@@ -59,7 +59,8 @@ class CreateProduct extends Component {
         } else {
             this.setState({ loading: false, actionMessage: data.body })
             this._showDialogResponse()
-            Actions.signupshopmenu()
+            this.props.onRefreshChilds()
+            Actions.pop()
         }
     }
 
@@ -243,7 +244,7 @@ class CreateProduct extends Component {
                         icon="close"
                         mode="contained"
                         color={colors.APP_MAIN}
-                        onPress={() => Actions.signupshopmenu()}>
+                        onPress={() => Actions.pop()}>
                         Cancelar
  				</Button>
 

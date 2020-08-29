@@ -302,10 +302,10 @@ class ExistentProduct extends Component {
                     </Modal>
 
                     <Dialog
-                        style={{ margin: 5 }}
+                        style={{ top: -50 }}
                         visible={this.state.visibleDialogAmount}
                         onDismiss={this._hideDialogAmount}>
-                        <Dialog.Title style={{ alignSelf: 'center' }}>El producto debe tener una cantidad:</Dialog.Title>
+                        <Dialog.Title style={{ alignSelf: 'center', textAlign: 'center' }}>El producto debe tener una cantidad:</Dialog.Title>
                         <Dialog.Content style={{ alignItems: 'center' }}>
                             <TextInput
                                 style={styles.inputView}

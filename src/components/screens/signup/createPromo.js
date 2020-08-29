@@ -29,7 +29,7 @@ class CreatePromo extends Component {
         this.setState({ loading: true })
         var response = {
             cuit: this.props.shop.cuit,
-            nombre: (this.state.name.trim() === "") ? 'Promoción' : this.state.nombre,
+            nombre: (this.state.name.trim() === "") ? 'Promoción' : this.state.name,
             detalle: (this.state.details.trim() === "") ? null : this.state.details,
             precio: parseFloat(this.state.price),
             productos: this.state.products,
@@ -41,7 +41,8 @@ class CreatePromo extends Component {
         } else {
             this.setState({ loading: false, actionMessage: data.body })
             this._showDialogResponse()
-            Actions.signupshopmenu()
+            this.props.onRefreshChilds()
+            Actions.pop()
         }
     }
 
@@ -166,7 +167,7 @@ class CreatePromo extends Component {
                         icon="close"
                         mode="contained"
                         color={colors.APP_MAIN}
-                        onPress={() => Actions.signupshopmenu()}>
+                        onPress={() => Actions.pop()}>
                         Cancelar
  				</Button>
 

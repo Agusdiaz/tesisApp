@@ -260,4 +260,9 @@ function mapStateToProps(state) {
     };
 }
 
-export default connect(mapStateToProps)(Menu)
+const mapDispatchToProps = (dispatch) => {
+    return {
+    }
+};
+
+export default connect(mapStateToProps, mapDispatchToProps, null, { forwardRef: true })(Menu)

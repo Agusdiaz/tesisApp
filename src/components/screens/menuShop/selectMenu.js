@@ -14,9 +14,20 @@ class SelectMenu extends Component {
         this.state = {
             selectedTab: 0,
         }
+        this.products = React.createRef();
+        this.promos = React.createRef();
     }
 
+    onRefreshChilds = () => {
+        console.log(this.state.selectedTab)
+        if(this.state.selectedTab === 2)
+            this.promos.current.onRefresh();
+        else
+            this.products.current.onRefresh();
+      };
+
     render() {
+       
 
         return (
             <View style={appStyles.container}>
@@ -37,26 +48,27 @@ class SelectMenu extends Component {
                 />
 
                 {(this.state.selectedTab === 0) ?
-                    <ProductMenu rute={(this.props.rute === 'initial') ? 'initial' : 'shop'} />
+                    <ProductMenu rute={(this.props.rute === 'initial') ? 'initial' : 'shop'} ref={this.products}/>
                     : (this.state.selectedTab === 1) ?
-                        <IngredientMenu rute={(this.props.rute === 'initial') ? 'initial' : null} />
+                        <IngredientMenu rute={(this.props.rute === 'initial') ? 'initial' : null}/>
                         :
-                        <SalesMenu rute='shop' />
+                        <SalesMenu rute='shop' ref={this.promos}/>
                 }
 
                 {(this.props.rute === 'initial') ?
-                    <TouchableHighlight activeOpacity={0.6} onPress={() => { Actions.signupshopmenu() }}>
+                    <TouchableHighlight activeOpacity={0.6} onPress={() => { Actions.pop() }}>
                         <Image source={require('../../../icons/arrow.png')} style={[styles.imageCart,
                         { bottom: (this.state.selectedTab === 2) ? sizes.hp('-45%') : sizes.hp('5%') }]} />
                     </TouchableHighlight>
                     : (this.state.selectedTab !== 1) ?
-                    <FAB
-                        style={[styles.fabPlus, { bottom: (this.state.selectedTab === 2) ? sizes.hp('2%') : sizes.hp('2%') }]}
-                        color='#FFF'
-                        icon="plus"
-                        onPress={() => { if (this.state.selectedTab === 0) { } else { } }} />
-                        : null }
-                
+                        <FAB
+                            style={styles.fabPlus}
+                            color='#FFF'
+                            icon="plus"
+                            onPress={() => {(this.state.selectedTab === 2) ? Actions.createpromo({onRefreshChilds: this.onRefreshChilds.bind(this)}) 
+                                : Actions.createproduct({onRefreshChilds: this.onRefreshChilds.bind(this)})}} />
+                        : null}
+
             </View>
         )
     }
@@ -85,11 +97,12 @@ const styles = StyleSheet.create({
         backgroundColor: colors.APP_MAIN,
         borderRadius: sizes.wp('50%'),
         position: 'absolute',
-        height: '8%',//sizes.hp('8%'),
-        width: '16%', //sizes.wp('18%'),
+        height: '8%',
+        width: '16%',
         justifyContent: 'center',
         alignItems: 'center',
         right: sizes.wp('75%'),
+        bottom: sizes.hp('2%'),
     },
 });
 
