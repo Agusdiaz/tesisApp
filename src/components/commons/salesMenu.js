@@ -5,6 +5,8 @@ import { colors, sizes } from '../../index.styles';
 import { Button } from 'react-native-paper';
 import SalesCard from '../commons/salesCard'
 import { getAllShopPromos } from '../../api/promos'
+import { Actions } from 'react-native-router-flux';
+import UserActions from '../../redux/authState/action'
 
 class SalesMenu extends Component {
     constructor(props) {
@@ -28,7 +30,10 @@ class SalesMenu extends Component {
         }else{ 
             data = await getAllShopPromos(this.props.shop.cuit, this.props.shop.token)
         }
-        if (data.status === 500 || data.status === 204)
+        if(data.status === 500 && data.body.error){
+            this.props.logout()
+            Actions.logsign({visible: true})
+        } else if (data.status === 500 || data.status === 204)
             this.setState({ areSales: false })
         else this.setState({ areSales: true, sales: data.body })
     }
@@ -108,6 +113,7 @@ function mapStateToProps(state) {
 
 const mapDispatchToProps = (dispatch) => {
     return {
+        logout: () => dispatch(UserActions.logout())
     }
 };
 

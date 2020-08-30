@@ -7,6 +7,8 @@ import ArrowButton from '../../commons/arrowButton'
 import ShopCardSummary from '../../commons/shopCardSummary'
 import ShopActions from '../../../redux/shops/action'
 import { getAllShopsOpenClose } from '../../../api/shops'
+import { Actions } from 'react-native-router-flux';
+import UserActions from '../../../redux/authState/action'
 
 class SearchShopByNameScreen extends Component {
 
@@ -36,7 +38,10 @@ class SearchShopByNameScreen extends Component {
     async getShopsOpenClose() {
         let newShops = []
         const data = await getAllShopsOpenClose(this.props.user.mail, this.props.user.token)
-        if (data.status === 200) {
+        if(data.status === 500 && data.body.error){
+            this.props.logout()
+            Actions.logsign({visible: true})
+        } else if (data.status === 200) {
             this.props.setShopsData(data.body)
             newShops = this.props.shops.allShops
             this.setState({ shops: newShops})
@@ -165,7 +170,8 @@ function mapStateToProps(state) {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        setShopsData: (shops) => dispatch(ShopActions.setShopsData(shops))
+        setShopsData: (shops) => dispatch(ShopActions.setShopsData(shops)),
+        logout: () => dispatch(UserActions.logout()),
     }
 };
 

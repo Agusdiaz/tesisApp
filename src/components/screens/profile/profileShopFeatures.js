@@ -6,6 +6,7 @@ import ShopActions from '../../../redux/authState/action'
 import { Button, Dialog, Modal, Portal, Menu, } from 'react-native-paper';
 import { Tabs, Tab, RadioButton } from 'material-bread';
 import { updateShopFeatures } from '../../../api/shops'
+import { Actions } from 'react-native-router-flux';
 
 class ProfileShopFeaturesScreen extends Component {
     constructor(props) {
@@ -28,7 +29,10 @@ class ProfileShopFeaturesScreen extends Component {
         this.props.updateLoading(true)
         const data = await updateShopFeatures(this.state.checkedPets, this.state.checkedKids, this.state.checkedGames, this.state.checkedOutside,
             this.state.checkedSmoking, this.state.checkedWifi, this.props.shop.cuit, this.props.shop.token)
-        if (data.status === 500 || data.status === 404) {
+            if(data.status === 500 && data.body.error){
+                this.props.logout()
+                Actions.logsign({visible: true})
+            } else if (data.status === 500 || data.status === 404) {
             this.props.updateLoading(false)
             this.props.showDialogResponse(data.body)
         }
@@ -233,7 +237,8 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        updateShopFeatures: (mascotas, bebes, juegos, aireLibre, libreHumo, wifi) => dispatch(ShopActions.updateShopFeatures(mascotas, bebes, juegos, aireLibre, libreHumo, wifi))
+        updateShopFeatures: (mascotas, bebes, juegos, aireLibre, libreHumo, wifi) => dispatch(ShopActions.updateShopFeatures(mascotas, bebes, juegos, aireLibre, libreHumo, wifi)),
+        logout: () => dispatch(ShopActions.logout()),
     }
 }
 

@@ -5,7 +5,7 @@ import { appStyles, colors, sizes } from '../../../index.styles';
 import { Avatar, Button, Dialog, TextInput, Modal, IconButton, Portal, ActivityIndicator } from 'react-native-paper';
 import TextTicker from 'react-native-text-ticker'
 import { Actions } from 'react-native-router-flux';
-import {updateClient } from '../../../api/user'
+import { updateClient } from '../../../api/users'
 import ClientActions from '../../../redux/authState/action'
 
 class ProfileClientScreen extends Component {
@@ -62,7 +62,10 @@ class ProfileClientScreen extends Component {
             (this.state.lastNameNew != '' && this.state.lastNameNew.localeCompare(this.props.user.lastName) != 0)) {
                 this.setState({ loading: true })
             const data = await updateClient(this.props.user.mail, this.state.firstNameNew, this.state.lastNameNew, this.props.user.token)
-            if (data.status === 500 || data.status === 404) {
+            if(data.status === 500 && data.body.error){
+                this.props.logout()
+                Actions.logsign({visible: true})
+            } else if (data.status === 500 || data.status === 404) {
                 this.setState({ firstNameNew: '', lastNameNew: '', loading: false, messageError: data.body})
                 this._showDialogEditProfile()
             } else {
@@ -74,7 +77,10 @@ class ProfileClientScreen extends Component {
         } else if (this.state.firstNameNew != '' && this.state.firstNameNew.localeCompare(this.props.user.name) != 0) {
             this.setState({ loading: true })
             const data = await updateClient(this.props.user.mail, this.state.firstNameNew, this.props.user.lastName, this.props.user.token)
-            if (data.status === 500 || data.status === 404) {
+            if(data.status === 500 && data.body.error){
+                this.props.logout()
+                Actions.logsign({visible: true})
+            } else if (data.status === 500 || data.status === 404) {
                 this.setState({ firstNameNew: '', loading: false, messageError: data.body})
                 this._showDialogEditProfile()
             } else {
@@ -87,7 +93,10 @@ class ProfileClientScreen extends Component {
         else if (this.state.lastNameNew != '' && this.state.lastNameNew.localeCompare(this.props.user.lastName) != 0) {
             this.setState({ loading: true })
             const data = await updateClient(this.props.user.mail, this.props.user.name, this.state.lastNameNew, this.props.user.token)
-            if (data.status === 500 || data.status === 404) {
+            if(data.status === 500 && data.body.error){
+                this.props.logout()
+                Actions.logsign({visible: true})
+            } else if (data.status === 500 || data.status === 404) {
                 this.setState({ lastNameNew: '', loading: false, messageError: data.body})
                 this._showDialogEditProfile()
             } else {

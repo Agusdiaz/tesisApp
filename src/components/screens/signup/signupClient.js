@@ -6,7 +6,7 @@ import { appStyles, colors, sizes } from '../../../index.styles';
 import ArrowButton from '../../commons/arrowButton'
 import LoginActions from '../../../redux/authState/action'
 import { Actions } from 'react-native-router-flux';
-import { insertClient } from '../../../api/user'
+import { insertClient } from '../../../api/users'
 
 class SignUpClientScreen extends Component {
 

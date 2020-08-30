@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { StyleSheet, Text, View, FlatList, Image, KeyboardAvoidingView } from 'react-native';
+import { StyleSheet, Text, View, FlatList, Image } from 'react-native';
 import { colors, sizes, productType } from '../../index.styles';
 import { Button, Searchbar } from 'react-native-paper';
 import ProductCard from '../commons/productCard'
 import { getMenu } from '../../api/menus'
+import UserActions from '../../redux/authState/action'
+import { Actions } from 'react-native-router-flux';
 
 class Menu extends Component {
     constructor(props) {
@@ -34,6 +36,10 @@ class Menu extends Component {
         var cuit = (this.props.rute === 'shop' || this.props.rute === 'initial') ? this.props.shop.cuit : this.props.selected.cuit
         var token = (this.props.rute === 'shop' || this.props.rute === 'initial') ? this.props.shop.token : this.props.user.token
         const data = await getMenu(cuit, token)
+        if(data.status === 500 && data.body.error){
+            this.props.logout()
+            Actions.logsign({visible: true})
+        }
         if (data.status === 500 || data.status === 204)
             this.setState({ areSalty: false, areSweet: false, areDrinks: false })
         else {
@@ -262,6 +268,7 @@ function mapStateToProps(state) {
 
 const mapDispatchToProps = (dispatch) => {
     return {
+        logout: () => dispatch(UserActions.logout())
     }
 };
 

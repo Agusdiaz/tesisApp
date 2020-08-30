@@ -71,7 +71,7 @@ class HorizontalStepIndicator extends Component {
     }
 
     nextStep = () => {
-        console.log('acaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa')
+        //console.log('acaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa')
         this.setState({ currentPosition: this.state.currentPosition + 1 })
         this.updateScroll()
     }

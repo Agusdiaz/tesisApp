@@ -6,6 +6,8 @@ import { Button, Card, Modal, Dialog, Portal, Divider, FAB, TextInput, ActivityI
 import OrderDetailsClient from './orderDetailsClient'
 import moment from 'moment'
 import { shareOrder, setOrderDeliveredByClient } from '../../api/orders'
+import { Actions } from 'react-native-router-flux';
+import UserActions from '../../redux/authState/action'
 
 class OrderCardClient extends Component {
 
@@ -50,7 +52,10 @@ class OrderCardClient extends Component {
             const data = await setOrderDeliveredByClient(this.props.data.numero, this.props.user.token)
             this._hideDialogTake()
             this.setState({ actionMessage: data.body, loading: false })
-            if (data.status === 200)
+            if(data.status === 500 && data.body.error){
+                this.props.logout()
+                Actions.logsign({visible: true})
+            } else if (data.status === 200)
                 this.props.refreshParent()
             this._showDialogResponse()
         }
@@ -266,4 +271,10 @@ function mapStateToProps(state) {
     };
 }
 
-export default connect(mapStateToProps)(OrderCardClient);
+const mapDispatchToProps = (dispatch) => {
+    return {
+        logout: () => dispatch(UserActions.logout())
+    }
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(OrderCardClient);

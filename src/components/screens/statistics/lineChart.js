@@ -1,61 +1,111 @@
 import React from 'react'
-import { Grid, LineChart, XAxis, YAxis } from 'react-native-svg-charts'
-import { StyleSheet, View, Text } from 'react-native'
-import { HelperText, TouchableRipple, IconButton } from 'react-native-paper';
+import { connect } from 'react-redux';
+import { LineChart } from 'react-native-chart-kit'
+import { StyleSheet, View, Text, ScrollView } from 'react-native'
+import { IconButton } from 'react-native-paper';
 import { appStyles, colors, sizes } from '../../../index.styles';
+import { getMonthOrders } from '../../../api/stats'
+import { Actions } from 'react-native-router-flux';
+import UserActions from '../../../redux/authState/action'
 
-export default class LineChartGraph extends React.PureComponent {
+class LineChartGraph extends React.PureComponent {
+
+    months = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre']
+
+    constructor(props) {
+        super(props);
+        this.state = {
+            labels: [],
+            stats: [0, 0, 0, 0, 0, 0],
+        }
+    }
+
+    componentDidMount() {
+        var actualMonth = new Date().getMonth() + 1
+        if (actualMonth < 6) {
+            var rest = -(actualMonth - 6)
+            var m = 12 - rest;
+            for (var i = 0; i < rest; i++) {
+                this.state.labels.push(this.months[m])
+                m++
+            }
+            for (var i = 0; i < 6 - rest; i++) {
+                this.state.labels.push(this.months[i])
+            }
+        }
+        else {
+            for (var i = actualMonth - 6; i < actualMonth; i++) {
+                this.state.labels.push(this.months[i])
+            }
+        }
+        this.getStats()
+    }
+
+    async getStats() {
+        const data = await getMonthOrders(this.props.shop.cuit, this.props.shop.token)
+        if(data.status === 500 && data.body.error){
+            this.props.logout()
+            Actions.logsign({visible: true})
+        } else if (data.status === 200)
+            this.setState({ stats: data.body })
+    }
 
     render() {
+        const lineData = {
+            labels: this.state.labels,
+            datasets: [
+                {
+                    data: this.state.stats,
+                    strokeWidth: 2,
+                },
+            ],
+            legend: ['Cantidad de pedidos']
+        };
 
-        const data = [ 50, 10, 40, 95, -4, -24, 85, 91, 35, 53, -53, 24, 50, -20, -80 ]
-
-        const axesSvg = { fontSize: 10, fill: 'grey' };
-        const verticalContentInset = { top: 10, bottom: 10,  }
-        const xAxisHeight = 30
-
-        // Layout of an x-axis together with a y-axis is a problem that stems from flexbox.
-        // All react-native-svg-charts components support full flexbox and therefore all
-        // layout problems should be approached with the mindset "how would I layout regular Views with flex in this way".
-        // In order for us to align the axes correctly we must know the height of the x-axis or the width of the x-axis
-        // and then displace the other axis with just as many pixels. Simple but manual.
+        const chartConfig = {
+            decimalPlaces: 0,
+            color: () => "#E1454A",
+            style: {
+                borderRadius: 16
+            },
+            propsForDots: {
+                r: "6",
+                strokeWidth: "2",
+                stroke: "#fff"
+            },
+            backgroundColor: '#cc14aa',
+            backgroundGradientFrom: '#7ff591',
+            backgroundGradientTo: '#f0f716',
+        }
 
         return (
-            <View style={{ height: sizes.hp('90%')}}>
-            <IconButton
+            <View style={{ height: sizes.hp('90%') }}>
+                <IconButton
                     icon="close"
-                    style={{right: sizes.wp('-70%')}}
+                    style={{ right: sizes.wp('-70%') }}
                     color={colors.APP_MAIN}
                     size={30}
                     onPress={this.props.hideModalFromChild}
                 />
 
                 <Text style={styles.textTitle}>¿Cuántos pedidos recibes por mes en los últimos seis meses?</Text>
-            <View style={styles.lineChart}>
-                <YAxis
-                    data={data}
-                    style={{ marginBottom: xAxisHeight }}
-                    contentInset={verticalContentInset}
-                    svg={axesSvg}
-                />
-                <View style={{ flex: 1, marginLeft: 10 }}>
-                    <LineChart
-                        style={{ flex: 1, borderStyle: 'dashed' }}
-                        data={data}
-                        contentInset={verticalContentInset}
-                        svg={{ stroke: '#319014' }}
-                    >
-                        <Grid/>
-                    </LineChart>
-                    <XAxis
-                        style={{ marginHorizontal: -10, height: xAxisHeight }}
-                        data={data}
-                        formatLabel={(value, index) => index}
-                        contentInset={{ left: 10, right: 10 }}
-                        svg={axesSvg}
-                    />
+                <View style={styles.lineChart}>
+                    <ScrollView horizontal={true}>
+                        <LineChart
+                            data={lineData}
+                            width={sizes.wp('110%')}
+                            height={sizes.wp('70%')}
+                            yAxisLabel={''}
+                            chartConfig={chartConfig}
+                            bezier
+                            style={{
+                                borderRadius: 16,
+                            }}
+                            showValuesOnTopOfBars
+                            segments={5}
+                        />
+                    </ScrollView>
                 </View>
-            </View>
             </View>
         )
     }
@@ -69,10 +119,21 @@ const styles = StyleSheet.create({
         textAlign: 'center'
     },
     lineChart: {
-        height: sizes.hp('35%'), 
-        width: sizes.wp('80%'), 
-        marginTop: sizes.hp('-45%'), 
-        top: sizes.hp('50%'),
-        flexDirection: 'row'
+        width: sizes.wp('80%'),
+        top: sizes.hp('5%'),
     },
 })
+
+function mapStateToProps(state) {
+    return {
+        shop: state.authState.shop
+    };
+}
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        logout: () => dispatch(UserActions.logout())
+    }
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(LineChartGraph);

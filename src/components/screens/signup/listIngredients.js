@@ -10,9 +10,9 @@ class ListIngredients extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            tope: null,
-            checkedSelectivo: 0,
-            checkedTope: 0,
+            tope: this.props.tope,
+            checkedSelectivo: this.props.selectivo,
+            checkedTope: (this.props.tope === null) ? 0 : 1,
             visibleModalIngredients: false,
             visibleModalExistents: false,
             selectedIngredient: {}
@@ -71,7 +71,7 @@ class ListIngredients extends Component {
             icon='close'
             color={colors.APP_MAIN}
             size={30}
-            onPress={this.hideModal}
+            onPress={() => { this.changeSelectiveAndTop(), this.hideModal() }}
         />
 
         return (
@@ -149,8 +149,8 @@ class ListIngredients extends Component {
                                 {(this.props.ingredients.length > 0) ?
                                     this.props.ingredients.map((row, i) =>
                                         < DataTableRow key={i} >
-                                            <DataTableCell text={'Eliminar'} textStyle={{ textAlign: 'center', fontWeight: 'bold', color: colors.APP_RED, textDecorationLine: 'underline' }} 
-                                            style={{ maxWidth: '2%', alignSelf: 'center' }} minWidth={85} onPress={() => {this.removeIngredient(i)}}/>
+                                            <DataTableCell text={'Eliminar'} textStyle={{ textAlign: 'center', fontWeight: 'bold', color: colors.APP_RED, textDecorationLine: 'underline' }}
+                                                style={{ maxWidth: '2%', alignSelf: 'center' }} minWidth={85} onPress={() => { this.removeIngredient(i) }} />
                                             <DataTableCell text={row.nombre} borderRight style={{ maxWidth: '28%' }} textStyle={{ textAlign: 'center' }} />
                                             <DataTableCell text={(row.detalle) ? row.detalle : '-'} textStyle={{ textAlign: 'center' }} style={{ maxWidth: '10%', alignSelf: 'center' }} minWidth={90} />
                                             <DataTableCell text={(row.cantidad) ? (row.cantidad).toString() : '-'} textStyle={{ textAlign: 'center' }} style={{ maxWidth: '3%', alignSelf: 'center' }} minWidth={90} />
@@ -183,7 +183,7 @@ class ListIngredients extends Component {
                         style={{}}
                         mode="contained"
                         color={colors.APP_MAIN}
-                        onPress={this._showModalIngredients}>
+                        onPress={() => { this.setSelectedIngredient(null, '', ''), this._showModalIngredients() }}>
                         Crear nuevo
  				</Button>
                 </Card.Actions>
@@ -192,7 +192,7 @@ class ListIngredients extends Component {
                     <Modal contentContainerStyle={styles.modalView} visible={this.state.visibleModalIngredients} dismissable={false}>
                         <CreateIngredient hideModalFromChild={this._hideModalIngredients} selected={this.state.selectedIngredient}
                             addIngredient={this.props.addIngredient} removeIngredient={this.props.removeIngredient}
-                            isIngredientNameRepeated={this.props.isIngredientNameRepeated}/>
+                            isIngredientNameRepeated={this.props.isIngredientNameRepeated} />
                     </Modal>
 
                     <Modal contentContainerStyle={styles.modalView} visible={this.state.visibleModalExistents} dismissable={false}>

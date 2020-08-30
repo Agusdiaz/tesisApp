@@ -5,6 +5,8 @@ import { colors, sizes } from '../../../index.styles';
 import { Card, FAB, Button, Divider, IconButton, TextInput, Searchbar } from 'react-native-paper';
 import TextTicker from 'react-native-text-ticker';
 import { getIngredients } from '../../../api/menus'
+import { Actions } from 'react-native-router-flux';
+import UserActions from '../../../redux/authState/action'
 
 class ExistentIngredient extends Component {
     constructor(props) {
@@ -34,7 +36,11 @@ class ExistentIngredient extends Component {
 
     async getIngredients() {
         const data = await getIngredients(this.props.shop.cuit, this.props.shop.token)
-        if (data.status === 500 || data.status === 204)
+        if (data.status === 500 && data.body.error) {
+            this.setState({ areIngredients: false })
+            this.props.logout()
+            Actions.logsign({ visible: true })
+        } else if (data.status === 500 || data.status === 204)
             this.setState({ areIngredients: false })
         else if (this.props.ingredientsInProduct.length > 0) {
             this.setState({ ingredients: data.body.filter(val => this.props.ingredientsInProduct.findIndex(x => x.id === val.id)) })
@@ -70,24 +76,24 @@ class ExistentIngredient extends Component {
     _renderItem(item) {
         if (this.state.areIngredients) {
             return (
-                <Card style={{height: sizes.hp('8%'), elevation: 2 }}>
-                    <Card.Title style={{alignSelf: 'center', height: sizes.hp('7%') }}
-                    left={() => <View style={{ width: sizes.wp('53%'), alignSelf: 'center' }}>
-                        <TextTicker style={styles.title}
-                            duration={5000}
-                            loop
-                            animationType='bounce'
-                            repeatSpacer={50}
-                            marqueeDelay={1000}>{item.nombre}</TextTicker>
-                    </View>}
+                <Card style={{ height: sizes.hp('8%'), elevation: 2 }}>
+                    <Card.Title style={{ alignSelf: 'center', height: sizes.hp('7%') }}
+                        left={() => <View style={{ width: sizes.wp('53%'), alignSelf: 'center' }}>
+                            <TextTicker style={styles.title}
+                                duration={5000}
+                                loop
+                                animationType='bounce'
+                                repeatSpacer={50}
+                                marqueeDelay={1000}>{item.nombre}</TextTicker>
+                        </View>}
                         right={() => <FAB
                             style={styles.fabActions}
                             color={colors.APP_MAIN}
                             icon="plus"
                             small
-                            onPress={() => this.setSelected(item.id, item.nombre, item.detalle)} />} 
-                            rightStyle={{left: sizes.wp('-4%'),}}
-                            leftStyle={{width: sizes.wp('55%')}} />
+                            onPress={() => this.setSelected(item.id, item.nombre, item.detalle)} />}
+                        rightStyle={{ left: sizes.wp('-4%'), }}
+                        leftStyle={{ width: sizes.wp('55%') }} />
                 </Card>
             );
         } else {
@@ -208,4 +214,10 @@ function mapStateToProps(state) {
     };
 }
 
-export default connect(mapStateToProps)(ExistentIngredient)
+const mapDispatchToProps = (dispatch) => {
+    return {
+        logout: () => dispatch(UserActions.logout())
+    }
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(ExistentIngredient)

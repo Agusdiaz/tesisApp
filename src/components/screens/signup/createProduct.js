@@ -6,6 +6,7 @@ import { Button, Dialog, TextInput, Modal, Portal, ActivityIndicator } from 'rea
 import { RadioButton, Select } from 'material-bread'
 import { Actions } from 'react-native-router-flux';
 import ListIngredients from './listIngredients'
+import UserActions from '../../../redux/authState/action'
 import { createProduct } from '../../../api/menus'
 
 class CreateProduct extends Component {
@@ -50,7 +51,11 @@ class CreateProduct extends Component {
             response.tope = this.state.tope
         }
         const data = await createProduct(response, this.props.shop.token)
-        if (data.status === 500) {
+        if(data.status === 500 && data.body.error){
+            this.setState({ loading: false })
+            this.props.logout()
+            Actions.logsign({visible: true})
+        } else if (data.status === 500) {
             this.setState({ loading: false, actionMessage: 'Error al crear producto. Inténtelo nuevamente' })
             this._showDialogResponse()
         } else if (data.status === 401) {
@@ -59,7 +64,7 @@ class CreateProduct extends Component {
         } else {
             this.setState({ loading: false, actionMessage: data.body })
             this._showDialogResponse()
-            this.props.onRefreshChilds()
+            if(this.props.rute === 'shop') this.props.onRefreshChilds()
             Actions.pop()
         }
     }
@@ -273,7 +278,7 @@ class CreateProduct extends Component {
                     <Modal contentContainerStyle={styles.modalView} visible={this.state.visibleModalIngredients} dismissable={false}>
                         <ListIngredients hideModalFromChild={this._hideModalIngredients} ingredients={this.state.ingredients}
                             addIngredient={this.addIngredient} removeIngredient={this.removeIngredient} isIngredientNameRepeated={this.isIngredientNameRepeated}
-                            changeState={this.changeSelectiveAndTop} />
+                            changeState={this.changeSelectiveAndTop} tope={this.state.tope} selectivo={this.state.isSelectivo}/>
                     </Modal>
 
                     <Modal dismissable={false}
@@ -356,6 +361,7 @@ function mapStateToProps(state) {
 
 const mapDispatchToProps = (dispatch) => {
     return {
+        logout: () => dispatch(UserActions.logout())
     }
 };
 

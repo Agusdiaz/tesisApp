@@ -8,6 +8,8 @@ import TimePicker from "react-native-24h-timepicker";
 import ShopActions from '../../redux/authState/action'
 import { updateShopSchedule } from '../../api/shops'
 import { updatePromoHours } from '../../api/promos'
+import { Actions } from 'react-native-router-flux';
+import UserActions from '../../redux/authState/action'
 
 const TimeOpening = TimePicker;
 const TimeClosing = TimePicker;
@@ -38,7 +40,10 @@ class EditDaySchedule extends Component {
                 horas: this.state.newSchedule,
             }
             const data = await updateShopSchedule(response, this.props.shop.token)
-            if (data.status === 500 || data.status === 404) {
+            if(data.status === 500 && data.body.error){
+                this.props.logout()
+                Actions.logsign({visible: true})
+            } else if (data.status === 500 || data.status === 404) {
                 this.props.updateLoading(false)
                 this.props.showDialogResponse(data.body)
             } else {
@@ -59,7 +64,10 @@ class EditDaySchedule extends Component {
                 horas: this.state.newSchedule,
             }
             const data = await updatePromoHours(response, this.props.shop.token)
-            if (data.status === 500 || data.status === 404) {
+            if(data.status === 500 && data.body.error){
+                this.props.logout()
+                Actions.logsign({visible: true})
+            } else if (data.status === 500 || data.status === 404) {
                 this.props.updateLoading(false)
                 this.props.showDialogResponse(data.body)
             } else {
@@ -315,6 +323,7 @@ function mapStateToProps(state) {
 const mapDispatchToProps = (dispatch) => {
     return {
         updateShopSchedule: (hours, id, action) => dispatch(ShopActions.updateShopSchedule(hours, id, action)),
+        logout: () => dispatch(UserActions.logout()),
     }
 };
 

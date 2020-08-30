@@ -6,6 +6,8 @@ import { Button } from 'react-native-paper';
 import Animated from 'react-native-reanimated';
 import SalesCard from '../../commons/salesCard'
 import { getAllShopPromos } from '../../../api/promos'
+import { Actions } from 'react-native-router-flux';
+import UserActions from '../../../redux/authState/action'
 
 const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
 
@@ -25,7 +27,10 @@ class SalesProcess extends Component {
 
     async getPromos() {
         const data = await getAllShopPromos(this.props.shop.cuit, this.props.user.token)
-        if (data.status === 500 || data.status === 204)
+        if(data.status === 500 && data.body.error){
+            this.props.logout()
+            Actions.logsign({visible: true})
+        } else if (data.status === 500 || data.status === 204)
             this.setState({ areSales: false })
         else{
             var promos = []
@@ -116,4 +121,10 @@ function mapStateToProps(state) {
     };
 }
 
-export default connect(mapStateToProps)(SalesProcess);
+const mapDispatchToProps = (dispatch) => {
+    return {
+        logout: () => dispatch(UserActions.logout())
+    }
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(SalesProcess);

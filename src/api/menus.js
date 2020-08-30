@@ -7,7 +7,8 @@ export const getMenu = async (cuit, token) => {
         method: 'POST',
         body: JSON.stringify(requestBody),
         headers: new Headers({
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'Authorization': token
         })
     }).then(r => (r.status === 204) ? r : r.json()
         .then(data =>
@@ -23,7 +24,8 @@ export const getIngredients = async (cuit, token) => {
         method: 'POST',
         body: JSON.stringify(requestBody),
         headers: new Headers({
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'Authorization': token
         })
     }).then(r => (r.status === 204) ? r : r.json()
         .then(data =>
@@ -39,7 +41,8 @@ export const getMenuDisabled = async (cuit, token) => {
         method: 'POST',
         body: JSON.stringify(requestBody),
         headers: new Headers({
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'Authorization': token
         })
     }).then(r => (r.status === 204) ? r : r.json()
         .then(data =>
@@ -56,7 +59,8 @@ export const updateProductStatus = async (status, id, token) => {
         method: 'POST',
         body: JSON.stringify(requestBody),
         headers: new Headers({
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'Authorization': token
         })
     }).then(r => (r.status === 204) ? r : r.json()
         .then(data =>
@@ -73,7 +77,8 @@ export const updateIngredientStatus = async (status, id, token) => {
         method: 'POST',
         body: JSON.stringify(requestBody),
         headers: new Headers({
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'Authorization': token
         })
     }).then(r => (r.status === 204) ? r : r.json()
         .then(data =>
@@ -87,7 +92,8 @@ export const createProduct = async (body, token) => {
         method: 'POST',
         body: JSON.stringify(body),
         headers: new Headers({
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'Authorization': token
         })
     }).then(r => (r.status === 204) ? r : r.json()
         .then(data =>
@@ -104,7 +110,8 @@ export const validateIngredientName = async (name, cuit, token) => {
         method: 'POST',
         body: JSON.stringify(requestBody),
         headers: new Headers({
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'Authorization': token
         })
     }).then(r => (r.status === 204) ? r : r.json()
         .then(data =>
@@ -118,7 +125,8 @@ export const createPromo = async (body, token) => {
         method: 'POST',
         body: JSON.stringify(body),
         headers: new Headers({
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'Authorization': token
         })
     }).then(r => (r.status === 204) ? r : r.json()
         .then(data =>

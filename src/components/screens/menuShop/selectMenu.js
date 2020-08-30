@@ -19,7 +19,6 @@ class SelectMenu extends Component {
     }
 
     onRefreshChilds = () => {
-        console.log(this.state.selectedTab)
         if(this.state.selectedTab === 2)
             this.promos.current.onRefresh();
         else
@@ -65,8 +64,10 @@ class SelectMenu extends Component {
                             style={styles.fabPlus}
                             color='#FFF'
                             icon="plus"
-                            onPress={() => {(this.state.selectedTab === 2) ? Actions.createpromo({onRefreshChilds: this.onRefreshChilds.bind(this)}) 
-                                : Actions.createproduct({onRefreshChilds: this.onRefreshChilds.bind(this)})}} />
+                            onPress={() => {(this.state.selectedTab === 2) ? Actions.createpromo({onRefreshChilds: this.onRefreshChilds.bind(this),
+                                rute: (this.props.rute === 'initial') ? 'initial' : 'shop'}) 
+                                : Actions.createproduct({onRefreshChilds: this.onRefreshChilds.bind(this),
+                                rute: (this.props.rute === 'initial') ? 'initial' : 'shop'})}} />
                         : null}
 
             </View>

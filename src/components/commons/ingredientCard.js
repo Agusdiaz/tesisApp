@@ -5,6 +5,7 @@ import { colors, sizes, productCondition } from '../../index.styles';
 import { Card, FAB, Modal, Portal, Button, Dialog, ActivityIndicator } from 'react-native-paper';
 import TextTicker from 'react-native-text-ticker';
 import { updateIngredientStatus } from '../../api/menus'
+import UserActions from '../../redux/authState/action'
 import { Actions } from 'react-native-router-flux';
 
 class IngredientCard extends Component {
@@ -40,7 +41,10 @@ class IngredientCard extends Component {
             const data = await updateIngredientStatus(this.state.status, this.props.data.id, this.props.shop.token)
             this._hideDialogDisabled()
             this.setState({ actionMessage: data.body, loading: false })
-            if (data.status === 200) {
+            if(data.status === 500 && data.body.error){
+                this.props.logout()
+                Actions.logsign({visible: true})
+            } else if (data.status === 200) {
                 this.props.refreshParent()
             }
             this._showDialogResponse()
@@ -180,4 +184,10 @@ function mapStateToProps(state) {
     };
 }
 
-export default connect(mapStateToProps)(IngredientCard);
+const mapDispatchToProps = (dispatch) => {
+    return {
+        logout: () => dispatch(UserActions.logout())
+    }
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(IngredientCard);

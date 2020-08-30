@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import { BottomNavigation, Text, Badge } from 'react-native-paper';
 import { appStyles, colors } from '../../../../src/index.styles';
 import HomeClient from '../home/homeClient'
 import ProfileClient from '../profile/profileClient'
 import SearchShops from '../shopView/searchShops'
 import PendingOrdersClient from '../orderView/pendingOrdersClient'
+import BadgeActions from '../../../redux/notifications/action'
 
 const HomeRoute = () => <HomeClient />;
 
@@ -14,31 +16,16 @@ const NotificationRoute = () => <PendingOrdersClient />;
 
 const ProfileRoute = () => <ProfileClient />;
 
-export default class NavigationBarScreen extends Component {
+class NavigationBarScreen extends Component {
   state = {
     index: (this.props.page != null) ? this.props.page : 0,
-    routes: [
-      { key: 'home', title: 'Principal', icon: 'food', color: colors.APP_BACKGR },
-      { key: 'shops', title: 'Buscar', icon: 'magnify', color: colors.APP_BACKGR },
-      { key: 'notifications', title: 'Notificaciones', icon: 'bell-ring-outline', badge: null, color: colors.APP_BACKGR },
-      { key: 'profile', title: 'Perfil', icon: 'face', color: colors.APP_BACKGR },
-    ],
+    routes: this.props.badge.routesClient,
   };
-
-  _setNotifications = (value) => { 
-    const newBadge = [...this.state.routes]
-    newBadge[2].badge = value
-    this.setState( {routes: newBadge} )
-    }
-
-  _handleNotifications = () => {
-      this._setNotifications(null)
-    }
 
   _handleIndexChange = index => {
     this.setState({ index })
-    if(index === 2)
-      this._handleNotifications()
+    if (index === 2)
+      this.props.updateBadgeClient(null)
   };
 
   _renderScene = BottomNavigation.SceneMap({
@@ -49,7 +36,6 @@ export default class NavigationBarScreen extends Component {
   });
 
   render() {
-    
     return (
       <BottomNavigation
         navigationState={this.state}
@@ -65,3 +51,17 @@ export default class NavigationBarScreen extends Component {
     );
   }
 }
+
+function mapStateToProps(state) {
+  return {
+    badge: state.badge
+  };
+}
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    updateBadgeClient: (action) => dispatch(BadgeActions.updateBadgeClient(action)),
+  }
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(NavigationBarScreen)

@@ -5,6 +5,7 @@ import { appStyles, colors, sizes } from '../../../index.styles';
 import { Button, Dialog, IconButton } from 'react-native-paper'
 import { Actions } from 'react-native-router-flux';
 import { updateNewField } from '../../../api/shops'
+import UserActions from '../../../redux/authState/action'
 
 class SignUpShopMenu extends Component {
 
@@ -18,7 +19,10 @@ class SignUpShopMenu extends Component {
     async updateField() {
         this._hideDialogFinish()
         const data = await updateNewField(this.props.shop.cuit, this.props.shop.token)
-        if (data.status === 200) Actions.navbarshop()
+        if(data.status === 500 && data.body.error){
+            this.props.logout()
+            Actions.logsign({visible: true})
+        } else if (data.status === 200) Actions.navbarshop()
     }
 
     _showDialogFinish = () => this.setState({ visibleDialogFinish: true });
@@ -133,6 +137,7 @@ function mapStateToProps(state) {
 
 const mapDispatchToProps = (dispatch) => {
     return {
+        logout: () => dispatch(UserActions.logout()),
     }
 };
 

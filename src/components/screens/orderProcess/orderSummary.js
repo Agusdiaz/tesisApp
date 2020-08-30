@@ -8,6 +8,7 @@ import OrderActions from '../../../redux/orders/action'
 import TextTicker from 'react-native-text-ticker'
 import { Actions } from 'react-native-router-flux';
 import { insertOrder } from '../../../api/orders'
+import UserActions from '../../../redux/authState/action'
 import Disabled from './cardDisabled'
 import moment from 'moment'
 
@@ -36,7 +37,11 @@ class OrderSummary extends Component {
         this.props.order.cuit = this.props.shop.cuit
         this.props.order.mail = this.props.user.mail
         const data = await insertOrder(this.props.order, this.props.user.token)
-        if (data.status === 500) {
+        if(data.status === 500 && data.body.error){
+            this.setState({ loading: false })
+            this.props.logout()
+            Actions.logsign({visible: true})
+        } else if (data.status === 500) {
             this.setState({ loading: false, actionMessage: 'Error al crear pedido. Inténtalo nuevamente.' })
             this._showDialogResponse()
         } else if (data.status === 405) {
@@ -582,6 +587,7 @@ const mapDispatchToProps = (dispatch) => {
         setComents: (coment) => dispatch(OrderActions.setComents(coment)),
         setCuitAndMail: (mail, cuit) => dispatch(OrderActions.setCuitAndMail(mail, cuit)),
         deleteOrder: () => dispatch(OrderActions.deleteOrder()),
+        logout: () => dispatch(UserActions.logout()),
     }
 };
 

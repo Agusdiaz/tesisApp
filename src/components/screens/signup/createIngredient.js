@@ -5,13 +5,15 @@ import { colors, sizes } from '../../../index.styles';
 import { RadioButton } from 'material-bread'
 import { Card, Dialog, Button, Divider, TextInput, Portal, } from 'react-native-paper';
 import { validateIngredientName } from '../../../api/menus'
+import { Actions } from 'react-native-router-flux';
+import UserActions from '../../../redux/authState/action'
 
 class CreateIngredient extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            name: (this.props.selected.name) ? this.props.selected.name : '',
-            details: (this.props.selected.details) ? this.props.selected.details : '',
+            name: this.props.selected.name,
+            details: this.props.selected.details,
             amount: '',
             price: '',
             checkedOption: 0,
@@ -31,10 +33,13 @@ class CreateIngredient extends Component {
 
     async validateIngredientName() {
         const data = await validateIngredientName(this.state.name, this.props.shop.cuit, this.props.shop.token)
-        if (data.status === 500 || data.status === 401) {
+        if (data.status === 500 && data.body.error) {
+            this.props.logout()
+            Actions.logsign({ visible: true })
+        } else if (data.status === 500 || data.status === 401) {
             this.setState({ loading: false, actionMessage: data.body })
             this._showDialogResponse()
-        } else if(this.props.isIngredientNameRepeated(this.state.name)){
+        } else if (this.props.isIngredientNameRepeated(this.state.name)) {
             this.setState({ loading: false, actionMessage: 'Ya existe un ingrediente con ese nombre' })
             this._showDialogResponse()
         } else this.addIngredient()
@@ -48,7 +53,7 @@ class CreateIngredient extends Component {
             opcion: options[this.state.checkedOption],
             precio: (this.state.price === "") ? null : this.state.price,
         }
-        if (Object.keys(this.props.selected).length === 0) {
+        if (this.props.selected.id === null) {
             ingredient.nombre = this.state.name
             ingredient.detalle = (this.state.details.trim() === "") ? null : this.state.details
         } else {
@@ -104,7 +109,7 @@ class CreateIngredient extends Component {
                         mode='outlined'
                         label='Nombre del Ingrediente'
                         placeholder="Nombre"
-                        disabled={Object.keys(this.props.selected).length > 0}
+                        disabled={(this.props.selected.id !== null)}
                         error={this.state.nameError}
                         theme={{ colors: { text: colors.TEXT_INPUT, primary: colors.APP_MAIN } }}
                         onChangeText={text => this.validateEmptyText(text)}
@@ -116,7 +121,7 @@ class CreateIngredient extends Component {
                         mode='outlined'
                         label='OPCIONAL - Detalles'
                         multiline
-                        disabled={Object.keys(this.props.selected).length > 0}
+                        disabled={(this.props.selected.id !== null)}
                         numberOfLines={5}
                         placeholder='Detalles'
                         theme={{ colors: { text: colors.TEXT_INPUT, primary: colors.APP_MAIN } }}
@@ -187,11 +192,11 @@ class CreateIngredient extends Component {
                         color={colors.APP_MAIN}
                         disabled={this.state.name === ''}
                         onPress={() => {
-                            if (Object.keys(this.props.selected).length > 0)
+                            if (this.props.selected.id !== null)
                                 this.addIngredient()
                             else this.validateIngredientName()
                         }}>
-                        Crear
+                        Agregar
  				</Button>
                 </Card.Actions>
 
@@ -251,6 +256,7 @@ function mapStateToProps(state) {
 
 const mapDispatchToProps = (dispatch) => {
     return {
+        logout: () => dispatch(UserActions.logout())
     }
 };
 

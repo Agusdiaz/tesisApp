@@ -5,8 +5,11 @@ import { appStyles, colors, sizes } from '../../../index.styles';
 import { Searchbar } from 'react-native-paper';
 import OrderCardShop from '../../commons/orderCardShop'
 import { Surface, ToggleButton } from 'react-native-paper';
+import BadgeActions from '../../../redux/notifications/action'
 import moment from 'moment'
 import { getPendingOrdersByShopInOrder, getPendingOrdersByShopMoreProducts } from '../../../api/orders'
+import { Actions } from 'react-native-router-flux';
+import UserActions from '../../../redux/authState/action'
 
 class HomeShopScreen extends Component {
 
@@ -37,7 +40,10 @@ class HomeShopScreen extends Component {
 
     async getOrdersByArrival() {
         const data = await getPendingOrdersByShopInOrder(this.props.shop.cuit, this.props.shop.token)
-        if (data.status === 500 || data.status === 204)
+        if(data.status === 500 && data.body.error){
+            this.props.logout()
+            Actions.logsign({visible: true})
+        } else if (data.status === 500 || data.status === 204)
             this.setState({ areOrders: false })
         else {
             this.setState({ areOrders: true, orders: data.body })
@@ -47,7 +53,10 @@ class HomeShopScreen extends Component {
 
     async getOrdersByMoreProducts() {
         const data = await getPendingOrdersByShopMoreProducts(this.props.shop.cuit, this.props.shop.token)
-        if (data.status === 500 || data.status === 204)
+        if(data.status === 500 && data.body.error){
+            this.props.logout()
+            Actions.logsign({visible: true})
+        } else if (data.status === 500 || data.status === 204)
             this.setState({ areOrders: false })
         else {
             this.setState({ areOrders: true, orders: data.body.sort(function(a,b){
@@ -208,4 +217,11 @@ function mapStateToProps(state) {
     };
 }
 
-export default connect(mapStateToProps)(HomeShopScreen);
+const mapDispatchToProps = (dispatch) => {
+    return {
+        updateBadgeShop: (action) => dispatch(BadgeActions.updateBadgeShop(action)),
+        logout: () => dispatch(UserActions.logout()),
+    }
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(HomeShopScreen);

@@ -7,6 +7,8 @@ import TextTicker from 'react-native-text-ticker'
 import OrderDetailsShop from './orderDetailsShop'
 import { setOrderReadyByShop } from '../../api/orders'
 import moment from 'moment'
+import { Actions } from 'react-native-router-flux';
+import UserActions from '../../redux/authState/action'
 
 class OrderCardShop extends Component {
 
@@ -36,7 +38,11 @@ class OrderCardShop extends Component {
             this.setState({ loading: true })
             const data = await setOrderReadyByShop(this.props.data.numero, this.props.shop.token)
             this._hideDialogReady()
-            if(data.status === 404 || data.status === 500)
+            if(data.status === 500 && data.body.error){
+                this.setState({ loading: false })
+                this.props.logout()
+                Actions.logsign({visible: true})
+            } else if(data.status === 404 || data.status === 500)
                 this.setState({ actionMessage: 'Error al actualizar pedido', loading: false })
             else{
                 this.setState({ actionMessage: 'Pedido actualizado', loading: false })
@@ -235,4 +241,10 @@ function mapStateToProps(state) {
     };
 }
 
-export default connect(mapStateToProps)(OrderCardShop);
+const mapDispatchToProps = (dispatch) => {
+    return {
+        logout: () => dispatch(UserActions.logout())
+    }
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(OrderCardShop);

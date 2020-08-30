@@ -4,9 +4,10 @@ import { StyleSheet, View, Text, Alert, ScrollView } from 'react-native';
 import { appStyles, colors, sizes } from '../../../index.styles';
 import { Button, Dialog, TextInput, Modal, Portal, ActivityIndicator } from 'react-native-paper'
 import { DataTable, DataTableCell, DataTableRow } from 'material-bread'
-import { Actions } from 'react-native-router-flux';
 import ExistentProducts from './existentProduct'
 import { createPromo } from '../../../api/menus'
+import { Actions } from 'react-native-router-flux';
+import UserActions from '../../../redux/authState/action'
 
 class CreatePromo extends Component {
 
@@ -35,13 +36,17 @@ class CreatePromo extends Component {
             productos: this.state.products,
         }
         const data = await createPromo(response, this.props.shop.token)
-        if (data.status === 500 || data.status === 401) {
+        if (data.status === 500 && data.body.error) {
+            this.setState({ loading: false })
+            this.props.logout()
+            Actions.logsign({ visible: true })
+        } else if (data.status === 500 || data.status === 401) {
             this.setState({ loading: false, actionMessage: 'Error al crear promoción. Inténtelo nuevamente' })
             this._showDialogResponse()
         } else {
             this.setState({ loading: false, actionMessage: data.body })
             this._showDialogResponse()
-            this.props.onRefreshChilds()
+            if(this.props.rute === 'shop') this.props.onRefreshChilds()
             Actions.pop()
         }
     }
@@ -285,6 +290,7 @@ function mapStateToProps(state) {
 
 const mapDispatchToProps = (dispatch) => {
     return {
+        logout: () => dispatch(UserActions.logout())
     }
 };
 

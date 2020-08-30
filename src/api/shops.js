@@ -7,7 +7,8 @@ export const getAllShopsOpenClose = async (mail, token) => {
         method: 'POST',
         body: JSON.stringify(requestBody),
         headers: new Headers({
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'Authorization': token
         })
     }).then(r => (r.status === 204) ? r : r.json()
         .then(data => 
@@ -23,7 +24,8 @@ export const getAllShopsWithPromo = async (mail, token) => {
         method: 'POST',
         body: JSON.stringify(requestBody),
         headers: new Headers({
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'Authorization': token
         })
     }).then(r => (r.status === 204) ? r : r.json()
         .then(data => 
@@ -40,7 +42,8 @@ export const setShopAsFavourite = async (mail, cuit, token) => {
         method: 'POST',
         body: JSON.stringify(requestBody),
         headers: new Headers({
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'Authorization': token
         })
     }).then(r => r.json()
         .then(data => 
@@ -57,7 +60,8 @@ export const deleteShopAsFavourite = async (mail, cuit, token) => {
         method: 'POST',
         body: JSON.stringify(requestBody),
         headers: new Headers({
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'Authorization': token
         })
     }).then(r => r.json()
         .then(data => 
@@ -79,7 +83,8 @@ export const updateShopFeatures = async (mascotas, bebes, juegos, aireLibre, lib
         method: 'POST',
         body: JSON.stringify(requestBody),
         headers: new Headers({
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'Authorization': token
         })
     }).then(r => r.json()
         .then(data => 
@@ -93,7 +98,8 @@ export const updateShopSchedule = async (body, token) => {
         method: 'POST',
         body: JSON.stringify(body),
         headers: new Headers({
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'Authorization': token
         })
     }).then(r => r.json()
         .then(data => 
@@ -109,7 +115,8 @@ export const updateNewField = async (cuit, token) => {
         method: 'POST',
         body: JSON.stringify(requestBody),
         headers: new Headers({
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'Authorization': token
         })
     }).then(r => r.json()
         .then(data => 

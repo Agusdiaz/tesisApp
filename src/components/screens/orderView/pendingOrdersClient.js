@@ -6,6 +6,8 @@ import { Searchbar } from 'react-native-paper';
 import { appStyles, colors, sizes } from '../../../index.styles';
 import OrderCardClient from '../../commons/orderCardClient';
 import { getPendingOrdersByClient } from '../../../api/orders'
+import { Actions } from 'react-native-router-flux';
+import UserActions from '../../../redux/authState/action'
 
 class PendingOrdersClientScreen extends Component {
 
@@ -27,7 +29,10 @@ class PendingOrdersClientScreen extends Component {
 
     async getPendings() {
         const data = await getPendingOrdersByClient(this.props.user.mail, this.props.user.token)
-        if (data.status === 500 || data.status === 204)
+        if(data.status === 500 && data.body.error){
+            this.props.logout()
+            Actions.logsign({visible: true})
+        } else if (data.status === 500 || data.status === 204)
             this.setState({ arePendings: false })
         else {
             this.setState({ arePendings: true, orders: data.body.sort((a, b) => a.etapa.localeCompare(b.etapa)) || b.tiempo - a.tiempo })
@@ -157,4 +162,10 @@ function mapStateToProps(state) {
     };
 }
 
-export default connect(mapStateToProps)(PendingOrdersClientScreen);
+const mapDispatchToProps = (dispatch) => {
+    return {
+        logout: () => dispatch(UserActions.logout())
+    }
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(PendingOrdersClientScreen);

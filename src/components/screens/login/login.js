@@ -6,15 +6,15 @@ import { TextInput, Button, ActivityIndicator, Modal, Dialog, Paragraph } from '
 import { appStyles, colors, sizes } from '../../../index.styles';
 import ArrowButton from '../../commons/arrowButton'
 import { Actions } from 'react-native-router-flux';
-import { login } from '../../../api/user'
+import { login } from '../../../api/users'
 
 class LoginScreen extends Component {
 
     constructor(props) {
         super(props);
         this.state = {
-            email: 'm',
-            password: '123456',
+            email: '',
+            password: '',
             loading: false,
             visibleDialog: false,
             messageError: '',
@@ -49,7 +49,7 @@ class LoginScreen extends Component {
                 this.props.setLoginShopData(data.body.cuit, data.body.nombre, data.body.direccion, data.body.telefono, data.body.mail,
                     data.body.mascotas, data.body.bebes, data.body.juegos, data.body.aireLibre, data.body.libreHumo, data.body.wifi,
                     data.body.demora, data.body.abierto, data.body.horarios, data.body.token)
-                Actions.signupshopfeatures() //features - schedule - menu
+                Actions.signupshopfeatures()
             }
         }
     }

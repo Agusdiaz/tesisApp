@@ -7,7 +7,8 @@ export const getAllShopPromos = async (cuit, token) => {
         method: 'POST',
         body: JSON.stringify(requestBody),
         headers: new Headers({
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'Authorization': token
         })
     }).then(r => (r.status === 204) ? r : r.json()
         .then(data => 
@@ -21,7 +22,8 @@ export const updatePromoHours = async (body, token) => {
         method: 'POST',
         body: JSON.stringify(body),
         headers: new Headers({
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'Authorization': token
         })
     }).then(r => (r.status === 204) ? r : r.json()
         .then(data => 

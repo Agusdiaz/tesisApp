@@ -5,6 +5,8 @@ import { colors, sizes, productType } from '../../../index.styles';
 import { Card, FAB, Button, Divider, Modal, TextInput, Searchbar, Portal, Dialog } from 'react-native-paper';
 import TextTicker from 'react-native-text-ticker';
 import ProductDetails from '../../commons/productDetails'
+import { Actions } from 'react-native-router-flux';
+import UserActions from '../../../redux/authState/action'
 import { getMenu } from '../../../api/menus'
 
 class ExistentProduct extends Component {
@@ -58,6 +60,10 @@ class ExistentProduct extends Component {
 
     async getMenu() {
         const data = await getMenu(this.props.shop.cuit, this.props.shop.token)
+        if(data.status === 500 && data.body.error){
+            this.props.logout()
+            Actions.logsign({visible: true})
+        }
         if (data.status === 500 || data.status === 204)
             this.setState({ areSalty: false, areSweet: false, areDrinks: false })
         else {
@@ -420,4 +426,10 @@ function mapStateToProps(state) {
     };
 }
 
-export default connect(mapStateToProps)(ExistentProduct)
+const mapDispatchToProps = (dispatch) => {
+    return {
+        logout: () => dispatch(UserActions.logout())
+    }
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(ExistentProduct)

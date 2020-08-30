@@ -8,6 +8,8 @@ import OrderCardShop from '../../commons/orderCardShop';
 import ArrowButton from '../../commons/arrowButton'
 import moment from 'moment'
 import { getDeliveredOrdersByShop } from '../../../api/orders'
+import { Actions } from 'react-native-router-flux';
+import UserActions from '../../../redux/authState/action'
 
 class OrdersShopScreen extends Component {
 
@@ -28,7 +30,10 @@ class OrdersShopScreen extends Component {
 
     async getOrders() {
         const data = await getDeliveredOrdersByShop(this.props.shop.cuit, this.props.shop.token)
-        if (data.status === 500 || data.status === 204)
+        if(data.status === 500 && data.body.error){
+            this.props.logout()
+            Actions.logsign({visible: true})
+        } else if (data.status === 500 || data.status === 204)
             this.setState({ areOrders: false })
         else {
             this.setState({
@@ -168,4 +173,10 @@ function mapStateToProps(state) {
     };
 }
 
-export default connect(mapStateToProps)(OrdersShopScreen);
+const mapDispatchToProps = (dispatch) => {
+    return {
+        logout: () => dispatch(UserActions.logout())
+    }
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(OrdersShopScreen);

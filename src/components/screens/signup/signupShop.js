@@ -3,7 +3,7 @@ import { StyleSheet, View, Text, KeyboardAvoidingView, Platform, } from 'react-n
 import { TextInput, Button, Dialog, ActivityIndicator, Modal, HelperText, Paragraph } from 'react-native-paper';
 import { appStyles, colors, sizes } from '../../../index.styles';
 import ArrowButton from '../../commons/arrowButton'
-import { insertShop } from '../../../api/user'
+import { insertShop } from '../../../api/users'
  
 export default class SignUpShopScreen extends Component {
 

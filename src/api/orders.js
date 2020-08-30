@@ -7,7 +7,8 @@ export const getPendingOrdersByClient = async (mail, token) => {
         method: 'POST',
         body: JSON.stringify(requestBody),
         headers: new Headers({
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'Authorization': token
         })
     }).then(r => (r.status === 204) ? r : r.json()
         .then(data =>
@@ -23,7 +24,8 @@ export const getAllOrdersByClient = async (mail, token) => {
         method: 'POST',
         body: JSON.stringify(requestBody),
         headers: new Headers({
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'Authorization': token
         })
     }).then(r => (r.status === 204) ? r : r.json()
         .then(data =>
@@ -40,7 +42,8 @@ export const shareOrder = async (mail, num, token) => {
         method: 'POST',
         body: JSON.stringify(requestBody),
         headers: new Headers({
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'Authorization': token
         })
     }).then(r => (r.status === 204) ? r : r.json()
         .then(data => 
@@ -56,7 +59,8 @@ export const setOrderDeliveredByClient = async (num, token) => {
         method: 'POST',
         body: JSON.stringify(requestBody),
         headers: new Headers({
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'Authorization': token
         })
     }).then(r => (r.status === 204) ? r : r.json()
         .then(data => 
@@ -72,7 +76,8 @@ export const getPendingOrdersByShopInOrder = async (cuit, token) => {
         method: 'POST',
         body: JSON.stringify(requestBody),
         headers: new Headers({
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'Authorization': token
         })
     }).then(r => (r.status === 204) ? r : r.json()
         .then(data =>
@@ -88,7 +93,8 @@ export const getPendingOrdersByShopMoreProducts = async (cuit, token) => {
         method: 'POST',
         body: JSON.stringify(requestBody),
         headers: new Headers({
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'Authorization': token
         })
     }).then(r => (r.status === 204) ? r : r.json()
         .then(data =>
@@ -104,7 +110,8 @@ export const getDeliveredOrdersByShop = async (cuit, token) => {
         method: 'POST',
         body: JSON.stringify(requestBody),
         headers: new Headers({
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'Authorization': token
         })
     }).then(r => (r.status === 204) ? r : r.json()
         .then(data =>
@@ -120,7 +127,8 @@ export const setOrderReadyByShop = async (num, token) => {
         method: 'POST',
         body: JSON.stringify(requestBody),
         headers: new Headers({
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'Authorization': token
         })
     }).then(r => (r.status === 204) ? r : r.json()
         .then(data =>
@@ -134,7 +142,8 @@ export const insertOrder = async (body, token) => {
         method: 'POST',
         body: JSON.stringify(body),
         headers: new Headers({
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'Authorization': token
         })
     }).then(r => (r.status === 204) ? r : r.json()
         .then(data =>

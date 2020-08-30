@@ -6,6 +6,8 @@ import { Searchbar } from 'react-native-paper';
 import ArrowButton from '../../commons/arrowButton'
 import ShopCardSummary from '../../commons/shopCardSummary'
 import ShopActions from '../../../redux/shops/action'
+import { Actions } from 'react-native-router-flux';
+import UserActions from '../../../redux/authState/action'
 import { getAllShopsWithPromo, getAllShopsOpenClose } from '../../../api/shops'
 
 class SearchShopBySaleScreen extends Component {
@@ -43,7 +45,10 @@ class SearchShopBySaleScreen extends Component {
         let shopsPromo = []
         const dataPromos = await getAllShopsWithPromo(this.props.user.mail, this.props.user.token)
         const dataShops = await getAllShopsOpenClose(this.props.user.mail, this.props.user.token)
-        if (dataPromos.status === 200 && dataShops.status === 200) {
+        if((dataPromos.status === 500 && dataPromos.body.error) || (dataShops.status === 500 && dataShops.body.error)){
+            this.props.logout()
+            Actions.logsign({visible: true})
+        } else if (dataPromos.status === 200 && dataShops.status === 200) {
             this.props.setShopsData(dataShops.body)
             shopsPromo = this.props.shops.allShops.filter(function (item) {
                 return dataPromos.body.some(function (item2) {
@@ -174,7 +179,8 @@ function mapStateToProps(state) {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        setShopsData: (shops) => dispatch(ShopActions.setShopsData(shops))
+        setShopsData: (shops) => dispatch(ShopActions.setShopsData(shops)),
+        logout: () => dispatch(UserActions.logout())
     }
 };
 

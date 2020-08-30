@@ -1,22 +1,22 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { StyleSheet, Text, Image, View } from 'react-native';
-import { Button, IconButton } from 'react-native-paper';
+import { Button, IconButton, Dialog } from 'react-native-paper';
 import { appStyles, colors, sizes } from '../../../index.styles';
 import { Actions } from 'react-native-router-flux';
-import { verifyToken } from '../../../api/user'
+import { verifyToken } from '../../../api/users'
 
 class LogSignScreen extends Component {
 
-    async UNSAFE_componentWillMount(){ 
-        const data = await verifyToken(this.props.user.token)
-        if(data.status === 200){ //VALIDO
-            
-        }
-        else{ //INVALIDO
-
+    constructor(props) {
+        super(props);
+        this.state = {
+           visibleDialog: (props.visible) ? props.visible : false
         }
     }
+
+    _showDialog = () => this.setState({ visibleDialog: true });
+    _hideDialog = () => this.setState({ visibleDialog: false });
 
     render() {
         return (
@@ -46,6 +46,16 @@ class LogSignScreen extends Component {
                         REGISTRATE
  				</Button>
                 </View>
+
+                <Dialog
+                    style={{ width: sizes.wp('70%'), alignSelf: 'center' }}
+                    visible={this.state.visibleDialog}
+                    onDismiss={this._hideDialog}>
+                    <Dialog.Title style={{ alignSelf: 'center', textAlign: 'center' }}>Tu sesión ha caducado. Vuelve a iniciar sesión</Dialog.Title>
+                    <Dialog.Actions>
+                        <Button style={{ marginRight: sizes.wp('3%') }} color={'#000000'} onPress={this._hideDialog}>Ok</Button>
+                    </Dialog.Actions>
+                </Dialog>
             </View>
         );
     }
@@ -88,7 +98,6 @@ function mapStateToProps(state) {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        
     }
 };
 

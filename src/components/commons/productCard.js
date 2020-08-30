@@ -7,6 +7,7 @@ import TextTicker from 'react-native-text-ticker';
 import ProductDetails from './productDetails'
 import ProductDetailsOrder from '../screens/orderProcess/productDetailsOrder'
 import { updateProductStatus } from '../../api/menus'
+import UserActions from '../../redux/authState/action'
 import { Actions } from 'react-native-router-flux';
 
 class ProductCard extends Component {
@@ -43,7 +44,12 @@ class ProductCard extends Component {
             const data = await updateProductStatus(this.state.status, this.props.data.id, this.props.shop.token)
             this._hideDialogDisabled()
             this.setState({ actionMessage: data.body, loading: false })
-            if (data.status === 200) {
+            if (data.status === 500 && data.body.error) {
+                this.setState({ loading: false })
+                this.props.logout()
+                Actions.logsign({ visible: true })
+            }else if (data.status === 200) {
+                this.setState({ loading: false })
                 this.props.refreshParent()
             }
             this._showDialogResponse()
@@ -140,12 +146,12 @@ class ProductCard extends Component {
                 </Card>
 
                 <Portal>
-               
+
                     <Modal contentContainerStyle={styles.modalView} visible={this.state.visibleModalDetails} onDismiss={this._hideModalDetails}>
                         <ProductDetails hideModalFromChild={this._hideModalDetails} data={this.props.data} />
                     </Modal>
 
-                    <Modal contentContainerStyle={[styles.modalView, {maxHeight: sizes.hp('92%')}]} visible={this.state.visibleModalOrder} onDismiss={this._hideModalOrder}>
+                    <Modal contentContainerStyle={[styles.modalView, { maxHeight: sizes.hp('92%') }]} visible={this.state.visibleModalOrder} onDismiss={this._hideModalOrder}>
                         <ProductDetailsOrder hideModalFromChild={this._hideModalOrder} data={this.props.data} />
                     </Modal>
 
@@ -232,4 +238,10 @@ function mapStateToProps(state) {
     };
 }
 
-export default connect(mapStateToProps)(ProductCard);
+const mapDispatchToProps = (dispatch) => {
+    return {
+        logout: () => dispatch(UserActions.logout())
+    }
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(ProductCard);

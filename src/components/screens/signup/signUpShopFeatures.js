@@ -34,7 +34,10 @@ class SignUpShopFeaturesScreen extends Component {
         this.setState({ loading: true })
         const data = await updateShopFeatures(this.state.checkedPets, this.state.checkedKids, this.state.checkedGames, this.state.checkedOutside,
             this.state.checkedSmoking, this.state.checkedWifi, this.props.shop.cuit, this.props.shop.token)
-        if (data.status === 500 || data.status === 404) {
+            if(data.status === 500 && data.body.error){
+                this.props.logout()
+                Actions.logsign({visible: true})
+            } else if (data.status === 500 || data.status === 404) {
             this.setState({ loading: false, actionMessage: data.body })
             this._showDialogResponse()
         } else {
@@ -276,6 +279,7 @@ function mapStateToProps(state) {
 const mapDispatchToProps = (dispatch) => {
     return {
         updateShopFeatures: (mascotas, bebes, juegos, aireLibre, libreHumo, wifi) => dispatch(ShopActions.updateShopFeatures(mascotas, bebes, juegos, aireLibre, libreHumo, wifi)),
+        logout: () => dispatch(ShopActions.logout()),
     }
 };
 

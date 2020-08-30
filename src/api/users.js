@@ -8,7 +8,7 @@ export const login = async (mail, pass) => {
         method: 'POST',
         body: JSON.stringify(requestBody),
         headers: new Headers({
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
         })
     }).then(r => r.json()
         .then(data => ({ status: r.status, body: data })))
@@ -23,7 +23,8 @@ export const verifyToken = async (token) => {
         method: 'POST',
         body: JSON.stringify(requestBody),
         headers: new Headers({
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'Authorization': token
         })
     }).then(r => r.json()
         .then(data => ({ status: r.status, body: data })))
@@ -40,7 +41,8 @@ export const updateClient = async (mail, name, lastName, token) => {
         method: 'POST',
         body: JSON.stringify(requestBody),
         headers: new Headers({
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'Authorization': token
         })
     }).then(r => r.json()
         .then(data => ({ status: r.status, body: data })))
@@ -58,7 +60,7 @@ export const insertClient = async (mail, name, lastName, password) => {
         method: 'POST',
         body: JSON.stringify(requestBody),
         headers: new Headers({
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
         })
     }).then(r => r.json()
         .then(data => ({ status: r.status, body: data })))
@@ -79,7 +81,7 @@ export const insertShop = async (cuit, name, address, phone, legalName, mail, pa
         method: 'POST',
         body: JSON.stringify(requestBody),
         headers: new Headers({
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
         })
     }).then(r => r.json()
         .then(data => ({ status: r.status, body: data })))

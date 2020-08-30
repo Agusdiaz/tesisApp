@@ -5,6 +5,8 @@ import { colors, sizes, productType } from '../../../index.styles';
 import { Button, Searchbar } from 'react-native-paper';
 import IngredientCard from '../../commons/ingredientCard'
 import { getIngredients } from '../../../api/menus'
+import { Actions } from 'react-native-router-flux';
+import UserActions from '../../../redux/authState/action'
 
 class IngredientMenu extends Component {
     constructor(props) {
@@ -25,6 +27,10 @@ class IngredientMenu extends Component {
 
     async getIngredients() {
         const data = await getIngredients(this.props.shop.cuit, this.props.shop.token)
+        if(data.status === 500 && data.body.error){
+            this.props.logout()
+            Actions.logsign({visible: true})
+        }
         if (data.status === 500 || data.status === 204)
             this.setState({ areIngredients: false })
         else {
@@ -136,4 +142,10 @@ function mapStateToProps(state) {
     };
 }
 
-export default connect(mapStateToProps)(IngredientMenu)
+const mapDispatchToProps = (dispatch) => {
+    return {
+        logout: () => dispatch(UserActions.logout())
+    }
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(IngredientMenu)

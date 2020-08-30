@@ -7,6 +7,7 @@ import TextTicker from 'react-native-text-ticker'
 import { Actions } from 'react-native-router-flux';
 import { setShopAsFavourite, deleteShopAsFavourite } from '../../api/shops'
 import ShopActions from '../../redux/shops/action'
+import UserActions from '../../redux/authState/action'
 
 class ShopCardSummary extends Component {
 
@@ -23,16 +24,20 @@ class ShopCardSummary extends Component {
 
     async setFavourite(){
         const data = await setShopAsFavourite(this.props.user.mail, this.props.data.cuit, this.props.user.token)
-        if (data.status === 200 ) {
+        if(data.status === 500 && data.body.error){
+            this.props.logout()
+            Actions.logsign({visible: true})
+        } else if (data.status === 200 )
             this.props.updateShopFavourite(this.props.data.cuit, true)
-        }
     }
 
     async removeFavourite(){
         const data = await deleteShopAsFavourite(this.props.user.mail, this.props.data.cuit, this.props.user.token)
-        if (data.status === 200 ){
+        if(data.status === 500 && data.body.error){
+            this.props.logout()
+            Actions.logsign({visible: true})
+        } else if (data.status === 200 )
             this.props.updateShopFavourite(this.props.data.cuit, false)
-        }
     }
 
     render() {
@@ -203,6 +208,7 @@ const mapDispatchToProps = dispatch => {
     return {
         updateShopFavourite: (cuit, favourite) => dispatch(ShopActions.updateShopFavourite(cuit, favourite)),
         setSelected: (selected) => dispatch(ShopActions.setSelected(selected)),
+        logout: () => dispatch(UserActions.logout())
     }
 }
 

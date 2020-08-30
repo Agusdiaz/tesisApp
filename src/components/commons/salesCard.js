@@ -133,11 +133,13 @@ class SalesCard extends Component {
                     <Modal contentContainerStyle={[styles.modalView, { maxHeight: sizes.hp('92%') }]} visible={this.state.visibleModalPromoDetails} onDismiss={this._hideModalPromoDetails}>
                         <PromoDetails hideModalFromChild={this._hideModalPromoDetails} data={this.props.data} />
                     </Modal>
-
+                    
+                    {(this.props.rute !== 'order') ? 
                     <Modal contentContainerStyle={styles.modalView} visible={this.state.visibleModalSchedule} onDismiss={this._hideModalSchedule}>
                         <Schedule hideModalFromChild={this._hideModalSchedule} data={this.props.data.horarios[0]} id={this.props.data.id}
                             rute={this.props.rute} refreshParent={this.props.refreshParent} />
                     </Modal>
+                    : null}
                 </Portal>
             </View>
         )

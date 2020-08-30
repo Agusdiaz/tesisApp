@@ -6,6 +6,8 @@ import { Button, Surface, Searchbar } from 'react-native-paper';
 import ProductCard from '../../commons/productCard'
 import IngredientCard from '../../commons/ingredientCard'
 import { getMenuDisabled } from '../../../api/menus'
+import { Actions } from 'react-native-router-flux';
+import UserActions from '../../../redux/authState/action'
 
 class DisabledMenu extends Component {
     constructor(props) {
@@ -30,7 +32,10 @@ class DisabledMenu extends Component {
 
     async getMenuDisabled() {
         const data = await getMenuDisabled(this.props.shop.cuit, this.props.shop.token)
-        if (data.status === 500 || data.status === 204)
+        if(data.status === 500 && data.body.error){
+            this.props.logout()
+            Actions.logsign({visible: true})
+        } else if (data.status === 500 || data.status === 204)
             this.setState({ areProducts: false, areIngredients: false })
         else {
             data.body.productos.map(obj => {
@@ -227,4 +232,10 @@ function mapStateToProps(state) {
     };
 }
 
-export default connect(mapStateToProps)(DisabledMenu)
+const mapDispatchToProps = (dispatch) => {
+    return {
+        logout: () => dispatch(UserActions.logout())
+    }
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(DisabledMenu)

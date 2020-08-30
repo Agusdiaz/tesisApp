@@ -7,6 +7,8 @@ import ShopCardSummary from '../../commons/shopCardSummary'
 import { Actions } from 'react-native-router-flux';
 import Animated from 'react-native-reanimated';
 import ShopActions from '../../../redux/shops/action'
+import BadgeActions from '../../../redux/notifications/action'
+import UserActions from '../../../redux/authState/action'
 import { getAllShopsAZ, getAllShopsOpenClose } from '../../../api/shops'
 
 const HEADER_EXPANDED_HEIGHT = 205
@@ -33,7 +35,10 @@ class AnimatedHeader extends React.Component {
     
     async getShopsOpenClose() {
         const data = await getAllShopsOpenClose(this.props.user.mail, this.props.user.token)
-        if (data.status === 500 || data.status === 204) {
+        if(data.status === 500 && data.body.error){
+            this.props.logout()
+            Actions.logsign({visible: true})
+        } else if (data.status === 500 || data.status === 204) {
             this.setState({ areStores: false })
         } else {
             this.props.setShopsData(data.body)
@@ -43,7 +48,10 @@ class AnimatedHeader extends React.Component {
 
     async getShopsAZ() {
         const data = await getAllShopsAZ(this.props.user.mail, this.props.user.token)
-        if (data.status === 500 || data.status === 204) {
+        if(data.status === 500 && data.body.error){
+            this.props.logout()
+            Actions.logsign({visible: true})
+        } else if (data.status === 500 || data.status === 204) {
             this.setState({ areStores: false })
         } else {
             this.props.setShopsData(data.body)
@@ -231,6 +239,8 @@ function mapStateToProps(state) {
 const mapDispatchToProps = (dispatch) => {
     return {
         setShopsData: (shops) => dispatch(ShopActions.setShopsData(shops)),
+        updateBadgeClient: (action) => dispatch(BadgeActions.updateBadgeClient(action)),
+        logout: () => dispatch(UserActions.logout()),
     }
 };
 
