@@ -301,7 +301,7 @@ class ProductDetailsOrder extends Component {
                     </DataTable>
                 </Card.Content>
                 <Card.Actions style={{ alignSelf: 'center' }}>
-                    {(this.props.data.ingredientes[0] && this.props.data.selectivo === 0 && this.props.rute !== 'promo') ?
+                    {(this.props.data.ingredientes[0].length > 0 && this.props.data.selectivo === 0 && this.props.rute !== 'promo') ?
                         <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                             <Button
                                 style={{ width: sizes.wp('33%'), marginRight: sizes.wp('19.7%') }}
@@ -320,7 +320,7 @@ class ProductDetailsOrder extends Component {
                                 Agregar
  				            </Button>
                         </View>
-                        : (this.props.data.ingredientes[0] && this.props.data.selectivo === 0 && this.props.rute === 'promo') ?
+                        : (this.props.data.ingredientes[0].length > 0 && this.props.data.selectivo === 0 && this.props.rute === 'promo') ?
                             <Button
                                 style={{ width: sizes.wp('33%') }}
                                 mode="contained"

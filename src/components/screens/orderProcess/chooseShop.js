@@ -46,15 +46,15 @@ class ChooseShopScreen extends Component {
     async getOpenShops() {
         let newShops = []
         const data = await getAllShopsOpenClose(this.props.user.mail, this.props.user.token)
-        if(data.status === 500 && data.body.error){
+        if (data.status === 500 && data.body.error) {
             this.props.logout()
-            Actions.logsign({visible: true})
+            Actions.logsign({ visible: true })
         } else if (data.status === 200) {
             this.props.setShopsData(data.body)
             newShops = this.props.shops.allShops.filter(function (item) {
                 return item.abierto === 1
             });
-            this.setState({ shops: newShops})
+            this.setState({ shops: newShops })
             this.arrayholder = newShops
         }
         if (newShops.length === 0)
@@ -113,7 +113,7 @@ class ChooseShopScreen extends Component {
 
     render() {
         return (
-            <View style={[appStyles.container, { top: sizes.hp('1%'), marginTop: sizes.hp('0%')}]}>
+            <View style={[appStyles.container, { top: sizes.hp('1%'), marginTop: sizes.hp('0%') }]}>
 
                 <Searchbar
                     style={styles.searchInput}

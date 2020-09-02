@@ -24,6 +24,16 @@ class CartOrder extends Component {
     _showModalPromo = () => this.setState({ visibleModalPromo: true })
     _hideModalPromo = () => this.setState({ visibleModalPromo: false })
 
+    async removeProduct(item) {
+        this.props.updateTotal(this.props.order.total - (item.precio * item.cantidad))
+        this.props.removeProduct(item.index)
+    }
+
+    removePromo(item) {
+        this.props.updateTotal(this.props.order.total - (item.precio * item.cantidad))
+        this.props.removePromo(item.index)
+    }
+
     nextStep = () => {
         Actions.makeorder({ pos: 2 })
     }
@@ -42,7 +52,7 @@ class CartOrder extends Component {
                 <Text style={styles.subtitle}>Precio: ${item.precio * item.cantidad}</Text>
             </View>
             return (
-                <Card style={{ height: sizes.hp('15%') }}>
+                <Card style={{ height: sizes.hp('15%'), elevation: 5,}}>
                     <Card.Actions style={styles.actionSide} >
                         {(item.modificado) ?
                             <Button style={{ position: 'absolute', }}
@@ -54,10 +64,20 @@ class CartOrder extends Component {
                             </Button>
                             :
                             null}
-                        <FAB
-                            style={{
-                                backgroundColor: '#FFFFFF', borderColor: colors.APP_MAIN, borderWidth: 2, top: sizes.hp('6%')
+
+                            <View style={{flexDirection: 'row', justifyContent:'space-between', width: sizes.wp('30%')}}>
+                            <FAB
+                            style={styles.fabButtons}
+                            color={colors.APP_MAIN}
+                            icon="delete"
+                            small
+                            onPress={() => {
+                                if (item.idProducto !== undefined) this.removeProduct(item)
+                                else this.removePromo(item)
                             }}
+                        />
+                        <FAB
+                            style={styles.fabButtons}
                             color={colors.APP_MAIN}
                             icon="eye"
                             small
@@ -72,6 +92,7 @@ class CartOrder extends Component {
                                 }
                             }}
                         />
+                        </View>
                     </Card.Actions>
                     <Card.Title left={Info} leftStyle={styles.leftSide} />
                 </Card>
@@ -107,7 +128,7 @@ class CartOrder extends Component {
                             style={styles.list}
                             data={(this.props.order.productos.length === 0 && this.props.order.promociones.length === 0) ? [1] : this.props.order.productos.concat(this.props.order.promociones)}
                             initialNumToRender={0}
-                            renderItem={( {item, index }) => this._renderItem(item, index)}
+                            renderItem={({ item, index }) => this._renderItem(item, index)}
                             keyExtractor={(item, i) => i.toString()} />
                     </Card.Content>
                     <Divider style={styles.divider} />
@@ -198,13 +219,13 @@ const styles = StyleSheet.create({
     },
     leftSide: {
         top: sizes.hp('-10.5%'),
-        width: sizes.wp('40%'),
+        width: sizes.wp('48%'),
         height: sizes.hp('11%'),
     },
     actionSide: {
         alignSelf: 'flex-end',
         margin: -2,
-        left: sizes.wp('-6%'),
+        left: sizes.wp('-3%'),
         top: sizes.hp('1.2%'),
         height: sizes.hp('13%'),
         width: sizes.wp('30%'),
@@ -213,11 +234,17 @@ const styles = StyleSheet.create({
     title: {
         textAlign: 'center',
         fontSize: 18,
-        fontWeight: 'bold'
+        fontWeight: 'bold',
     },
     subtitle: {
         marginTop: 15,
         fontSize: 16,
+    },
+    fabButtons: {
+        backgroundColor: '#FFFFFF', 
+        borderColor: colors.APP_MAIN, 
+        borderWidth: 2, 
+        top: sizes.hp('6%'),
     },
 });
 
@@ -231,6 +258,9 @@ const mapDispatchToProps = (dispatch) => {
     return {
         setSelectedProduct: (product) => dispatch(OrderActions.setSelectedProduct(product)),
         setSelectedPromo: (promo) => dispatch(OrderActions.setSelectedPromo(promo)),
+        removeProduct: (index) => dispatch(OrderActions.removeProduct(index)),
+        removePromo: (index) => dispatch(OrderActions.removePromo(index)),
+        updateTotal: (total) => dispatch(OrderActions.updateTotal(total)),
     }
 };
 

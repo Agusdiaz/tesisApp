@@ -400,13 +400,13 @@ class OrderSummary extends Component {
                     <Dialog
                         visible={this.state.visibleDialogContinue}
                         onDismiss={this._hideDialogContinue}>
-                        <Dialog.Title style={{ alignSelf: 'center', fontWeight: 'bold' }}>El total es ${this.props.order.total + this.props.order.propina}</Dialog.Title>
-                        <Dialog.Content style={{ alignSelf: 'center' }}><Paragraph style={{ fontSize: 16.5 }}>¿Desea modificar su pedido?</Paragraph></Dialog.Content>
+                        <Dialog.Title style={{ alignSelf: 'center', textAlign:'center' }}>¿Desea modificar su pedido?</Dialog.Title>
                         <Dialog.Actions>
                             <Button style={{ marginRight: sizes.wp('3%') }} color={colors.APP_RED} onPress={this._hideDialogContinue}>Modificar</Button>
                             <Button color={colors.APP_GREEN} onPress={() => {
                                 this._hideDialogContinue()
-                                this.makeOrder()
+                                this.nextStepParent()
+                                //this.makeOrder() 
                             }}>Continuar</Button>
                         </Dialog.Actions>
                     </Dialog>

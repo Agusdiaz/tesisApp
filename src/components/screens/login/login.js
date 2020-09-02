@@ -141,10 +141,7 @@ const styles = StyleSheet.create({
         fontSize: sizes.TEXT_INPUT,
     },
     modalActivityIndicator: {
-        //flex: 1,
         alignItems: 'center',
-        //flexDirection: 'column',
-        //justifyContent: 'space-around',
         backgroundColor: '#00000040'
     },
 });

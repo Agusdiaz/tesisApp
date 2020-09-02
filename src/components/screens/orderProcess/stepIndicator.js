@@ -2,13 +2,14 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { View, Text, StyleSheet, ListView } from 'react-native';
 import StepIndicator from 'react-native-step-indicator';
-import { appStyles, colors, sizes } from '../../../index.styles';
+import { appStyles, colors, sizes } from '../../../index.styles'
 import { IconButton, Dialog, Button, Portal, } from 'react-native-paper';
 import { Actions } from 'react-native-router-flux';
 import Animated from 'react-native-reanimated';
-import ChooseShop from '../orderProcess/chooseShop'
-import ChooseMenu from '../orderProcess/chooseMenu'
-import OrderSummary from '../orderProcess/orderSummary'
+import ChooseShop from './chooseShop'
+import ChooseMenu from './chooseMenu'
+import OrderSummary from './orderSummary'
+import Payment from './payment'
 import OrderActions from '../../../redux/orders/action'
 
 const labels = ["Elegir local", "Realizar pedido", "Resumen pedido", "Pagar"];
@@ -44,7 +45,7 @@ class HorizontalStepIndicator extends Component {
         this.state = {
             currentPosition: (props.pos !== undefined) ? props.pos : 0,
             visibleDialogOut: false,
-            animatedValue: new Animated.Value(0),
+            animatedValue: new Animated.Value(0.01),
         }
     }
 
@@ -77,7 +78,7 @@ class HorizontalStepIndicator extends Component {
     }
 
     updateScroll = () => {
-        this.setState({ animatedValue: new Animated.Value(0) })
+        this.setState({ animatedValue: new Animated.Value(0.01) })
     }
 
     render() {
@@ -157,7 +158,7 @@ class HorizontalStepIndicator extends Component {
                                 <OrderSummary nextStepParent={this.nextStep} />
 
                                 :
-                                <Text>Pagar</Text>
+                                <Payment/>
                     }
 
                 </Animated.View>

@@ -21,6 +21,7 @@ import CreateProduct from './screens/signup/createProduct'
 import CreatePromo from './screens/signup/createPromo'
 import OrdersShop from './screens/orderView/ordersShop'
 import CartOrder from './screens/orderProcess/cartOrder'
+import Pay from './screens/orderProcess/payment'
 
 export default class Routes extends Component {
     render() {
@@ -40,6 +41,7 @@ export default class Routes extends Component {
                     <Scene key="searchshopaddress" component={SearchShopByAddress} title="SearchShopByAddress" />
                     <Scene key="searchshopsale" component={SearchShopBySale} title="SearchShopBySale" />
                     <Scene key="shopinformation" component={ShopInformation} title="ShopInformation" />
+                    <Scene key="pay" component={Pay} title="Pay" />
 
                     <Scene key="signupshop" component={SignUpShop} title="SignUpShop" />
                     <Scene key="signupshopfeatures" component={SignUpShopFeatures} title="SignUpShopFeatures" />

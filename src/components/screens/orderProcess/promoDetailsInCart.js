@@ -23,12 +23,6 @@ class PromoDetailsInCart extends Component {
     _showModalDetails = () => this.setState({ visibleModalDetails: true });
     _hideModalDetails = () => this.setState({ visibleModalDetails: false });
 
-    removePromo() {
-        this.props.updateTotal(this.props.order.total - (this.props.promo.precio * this.props.promo.cantidad))
-        this.props.removePromo(this.props.promo.index)
-        this.hideModal()
-    }
-
     setAmount(action) {
         if (action === 0 && this.props.promo.cantidad > 1) {
             var cant = this.props.promo.cantidad - 1
@@ -98,7 +92,7 @@ class PromoDetailsInCart extends Component {
                     </DataTable>
                 </Card.Content>
                 <Card.Actions style={{ alignSelf: 'center', marginTop: sizes.hp('0.5%') }}>
-                    <View style={{ flexDirection: 'row', alignItems: 'center', marginRight: sizes.wp('14%') }}>
+                    <View style={{ flexDirection: 'row', alignItems: 'center'}}>
 
                         <FAB
                             style={styles.fabAmount}
@@ -120,14 +114,6 @@ class PromoDetailsInCart extends Component {
                             onPress={() => this.setAmount(1)}
                         />
                     </View>
-
-                    <Button
-                        style={{ width: sizes.wp('33%') }}
-                        mode="contained"
-                        color={colors.APP_MAIN}
-                        onPress={() => { this.removePromo() }}>
-                        Eliminar
- 				        </Button>
                 </Card.Actions>
 
                 <Portal>
@@ -211,14 +197,14 @@ const styles = StyleSheet.create({
         backgroundColor: '#FFFFFF',
         borderColor: colors.APP_MAIN,
         borderWidth: 2,
-        width: 40,
-        height: 40,
+        width: 45,
+        height: 45,
         alignItems: "center",
         justifyContent: "center",
     },
     surfaceAmount: {
-        width: 40,
-        height: 40,
+        width: 45,
+        height: 45,
         alignItems: 'center',
         justifyContent: 'center',
         marginRight: sizes.wp('2%'),
@@ -237,7 +223,6 @@ function mapStateToProps(state) {
 const mapDispatchToProps = (dispatch) => {
     return {
         updatePromoAmount: (id, amount) => dispatch(OrderActions.updatePromoAmount(id, amount)),
-        removePromo: (index) => dispatch(OrderActions.removePromo(index)),
         updateTotal: (total) => dispatch(OrderActions.updateTotal(total)),
     }
 };
