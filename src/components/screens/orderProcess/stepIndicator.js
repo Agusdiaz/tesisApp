@@ -45,7 +45,7 @@ class HorizontalStepIndicator extends Component {
         this.state = {
             currentPosition: (props.pos !== undefined) ? props.pos : 0,
             visibleDialogOut: false,
-            animatedValue: new Animated.Value(0.01),
+            animatedValue: new Animated.Value(1),
         }
     }
 
@@ -77,7 +77,7 @@ class HorizontalStepIndicator extends Component {
     }
 
     updateScroll = () => {
-        this.setState({ animatedValue: new Animated.Value(0.01) })
+        this.setState({ animatedValue: new Animated.Value(1) })
     }
 
     render() {

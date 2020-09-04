@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { StyleSheet, Text, Image, View } from 'react-native';
-import { Button, IconButton, Dialog } from 'react-native-paper';
+import { Button, Dialog } from 'react-native-paper';
 import { appStyles, colors, sizes } from '../../../index.styles';
 import { Actions } from 'react-native-router-flux';
 import { verifyToken } from '../../../api/users'
@@ -30,7 +30,6 @@ class LogSignScreen extends Component {
                         icon="send"
                         mode="contained"
                         color={colors.APP_MAIN}
-                        //disabled="true"
                         onPress={() => Actions.login()}>
                         INICIA SESIÓN
  				</Button>
@@ -41,7 +40,6 @@ class LogSignScreen extends Component {
                         icon="account-plus"
                         mode="contained"
                         color={colors.APP_MAIN}
-                        //disabled="true"
                         onPress={() => Actions.signupclient()}>
                         REGISTRATE
  				</Button>

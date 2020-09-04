@@ -23,7 +23,7 @@ class AnimatedHeader extends React.Component {
         this.state = {
             valueButtons: 'open',
             sortText: 'Abierto/Cerrado',
-            animatedValue: new Animated.Value(0.01),
+            animatedValue: new Animated.Value(1),
             refreshing: false,
             areStores: true,
         }

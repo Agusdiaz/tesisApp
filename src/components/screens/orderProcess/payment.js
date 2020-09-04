@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { connect, useSelector, useDispatch } from 'react-redux';
-import { StyleSheet, Text, Alert, View, TouchableOpacity } from 'react-native';
+import { useSelector, useDispatch } from 'react-redux';
+import { StyleSheet, Text, View } from 'react-native';
 import { colors, sizes, appStyles } from '../../../index.styles';
-import { TextInput, Button, ActivityIndicator, Portal, Modal, Dialog } from 'react-native-paper'
+import { Button, ActivityIndicator, Portal, Modal, Dialog } from 'react-native-paper'
 import { Actions } from 'react-native-router-flux';
 import { WebView } from 'react-native-webview';
 import { APIURL } from '../../../../assets/constants'
@@ -18,6 +18,9 @@ export default function PayOrder() {
     const [visibleDialogResponse, setVisibleDialogResponse] = useState(false)
     const [visibleDialogCancel, setVisibleDialogCancel] = useState(false)
     const [message, setMessage] = useState('')
+    const [seconds, setSeconds] = useState('00')
+    const [minutes, setMinutes] = useState('00')
+    const [timer, setTimer] = useState(null)
     const dispatch = useDispatch()
 
     const stateChange = (state) => {
@@ -59,6 +62,20 @@ export default function PayOrder() {
             Actions.navbarclient()
         }
     }
+
+    const startTimer = () => {
+        let timer = setInterval(() => {
+            var num = (Number(seconds) + 1).toString(),
+              count = minutes;
+            if (Number(seconds) == 59) {
+              count = (Number(minutes) + 1).toString();
+              num = '00';
+            }
+            setSeconds(num.length == 1 ? '0' + num : num)
+            setMinutes(count.length == 1 ? '0' + count : count)
+          }, 1000);
+          setTimer(timer)
+        }
 
     if (!showCheckout) {
         return (
@@ -107,9 +124,10 @@ export default function PayOrder() {
             </View>
         )
     } else {
-
+        startTimer()
         return (
             <View style={{ flex: 1, justifyContent: 'center', top: sizes.hp('0%'), width: sizes.wp('95%') }}>
+                <Text style={styles.timer}>{timer}</Text>
                 <View style={{ height: sizes.hp('79%'), }}>
                     <WebView
                         source={{
@@ -153,5 +171,9 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         top: sizes.hp('0%'),
         marginBottom: sizes.hp('10%')
+    },
+    timer: {
+        fontSize: 20,
+        color: colors.APP_MAIN,
     },
 });
