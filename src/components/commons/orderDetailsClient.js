@@ -42,12 +42,13 @@ class OrderDetailsClient extends Component {
         />
 
         const stageOrder = props =>
-            <Button style={{ borderRadius: 20, width: sizes.wp('30%') }}
+            <Button style={{ borderRadius: 20, width: sizes.wp('48%') }}
                 mode="contained"
                 dark
-                color={(this.props.data.etapa === orderStage.PENDING) ? colors.APP_PENDING : (this.props.data.etapa === orderStage.READY) ? colors.APP_GREEN : colors.APP_DELIVERED}
+                color={ (this.props.data.aceptado === 0) ? colors.APP_WAITING : (this.props.data.etapa === orderStage.PENDING) ? colors.APP_PENDING 
+                    : (this.props.data.etapa === orderStage.READY) ? colors.APP_GREEN : colors.APP_DELIVERED}
                 labelStyle={{ fontSize: 11, color: '#FFF' }} contentStyle={{ width: sizes.wp('50%'), alignSelf: 'center' }} >
-                {(this.props.data.etapa === orderStage.PENDING) ? 'En Proceso' : (this.props.data.etapa === orderStage.READY) ?
+                {(this.props.data.aceptado === 0) ? 'Esperando aprobación' : (this.props.data.etapa === orderStage.PENDING) ? 'En Proceso' : (this.props.data.etapa === orderStage.READY) ?
                     'Listo' : 'Entregado'} </Button>
 
         const takeAway = props => <Text style={styles.rightText}> {(this.props.data.takeAway === 1) ? 'Para llevar' : 'Para comer aquí'} </Text>

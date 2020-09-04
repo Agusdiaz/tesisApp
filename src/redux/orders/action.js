@@ -156,6 +156,15 @@ const removeDisabledPromoIngredient = (id) => {
     }
 }
 
+const setOrderNumber = (number) => {
+    return {
+        type: 'SET_NUMBER',
+        payload: {
+            number: number
+        },
+    }
+}
+
 const deleteOrder = () => configureStore.dispatch({ type: 'DELETE_ORDER' })
 
 export default {
@@ -177,4 +186,5 @@ export default {
     removeDisabledProductIngredient,
     removeDisabledPromo,
     removeDisabledPromoIngredient,
+    setOrderNumber,
 }

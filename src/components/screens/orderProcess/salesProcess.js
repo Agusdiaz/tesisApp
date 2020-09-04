@@ -8,6 +8,7 @@ import SalesCard from '../../commons/salesCard'
 import { getAllShopPromos } from '../../../api/promos'
 import { Actions } from 'react-native-router-flux';
 import UserActions from '../../../redux/authState/action'
+import OrderActions from '../../../redux/orders/action'
 
 const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
 
@@ -28,6 +29,7 @@ class SalesProcess extends Component {
     async getPromos() {
         const data = await getAllShopPromos(this.props.shop.cuit, this.props.user.token)
         if(data.status === 500 && data.body.error){
+            this.props.deleteOrder()
             this.props.logout()
             Actions.logsign({visible: true})
         } else if (data.status === 500 || data.status === 204)
@@ -123,7 +125,8 @@ function mapStateToProps(state) {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        logout: () => dispatch(UserActions.logout())
+        logout: () => dispatch(UserActions.logout()),
+        deleteOrder: () => dispatch(OrderActions.deleteOrder()),
     }
 };
 

@@ -72,7 +72,6 @@ class HorizontalStepIndicator extends Component {
     }
 
     nextStep = () => {
-        //console.log('acaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa')
         this.setState({ currentPosition: this.state.currentPosition + 1 })
         this.updateScroll()
     }
@@ -109,9 +108,9 @@ class HorizontalStepIndicator extends Component {
                             <IconButton
                                 style={{ left: sizes.wp('-2%'), top: sizes.hp('-2%') }}
                                 icon='chevron-left'
-                                color={colors.APP_MAIN}
+                                color={(this.state.currentPosition !== 3) ? colors.APP_MAIN : colors.APP_INACTIVE}
                                 size={40}
-                                onPress={() => this.previousStep()} />
+                                onPress={(this.state.currentPosition !== 3) ? () => this.previousStep() : null}/>
                             :
                             null
                         }

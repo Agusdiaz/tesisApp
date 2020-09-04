@@ -1,4 +1,5 @@
 const initialState = {
+    numero: undefined,
     mail: undefined,
     cuit: undefined,
     total: 0,
@@ -50,6 +51,8 @@ export default (state = initialState, { type, payload }) => {
             return { ...state, comentario: payload.coment }
         case 'SET_CUITMAIL':
             return { ...state, mail: payload.mail, cuit: payload.cuit }
+            case 'SET_NUMBER':
+            return { ...state, numero: payload.number }
         case 'DELETE_ORDER':
             return initialState
         case 'REMOVE_DISABLED_PRODUCT':

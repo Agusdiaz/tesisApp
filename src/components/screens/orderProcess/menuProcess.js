@@ -8,6 +8,7 @@ import ProductCard from '../../commons/productCard'
 import { getMenu } from '../../../api/menus'
 import { Actions } from 'react-native-router-flux';
 import UserActions from '../../../redux/authState/action'
+import OrderActions from '../../../redux/orders/action'
 
 const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
 
@@ -37,6 +38,7 @@ class MenuProcess extends Component {
     async getMenu() {
         const data = await getMenu(this.props.shop.cuit, this.props.user.token)
         if(data.status === 500 && data.body.error){
+            this.props.deleteOrder()
             this.props.logout()
             Actions.logsign({visible: true})
         } else if (data.status === 500 || data.status === 204)
@@ -261,7 +263,8 @@ function mapStateToProps(state) {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        logout: () => dispatch(UserActions.logout())
+        logout: () => dispatch(UserActions.logout()),
+        deleteOrder: () => dispatch(OrderActions.deleteOrder()),
     }
 };
 

@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { StyleSheet, View, Text, FlatList, ActivityIndicator, Image } from 'react-native';
+import { StyleSheet, View, Text, FlatList, Image } from 'react-native';
 import { appStyles, colors, sizes } from '../../../index.styles';
-import { Searchbar } from 'react-native-paper';
+import { Searchbar, Portal, Dialog, Modal, ActivityIndicator, Button } from 'react-native-paper';
 import OrderCardShop from '../../commons/orderCardShop'
 import { Surface, ToggleButton } from 'react-native-paper';
 import BadgeActions from '../../../redux/notifications/action'
@@ -22,9 +22,14 @@ class HomeShopScreen extends Component {
             valueButtons: 'time',
             sortText: 'Orden de llegada',
             searchQuery: '',
+            actionMessage: '',
+            visibleDialogResponse: false,
+            loading: false,
         };
         this.arrayholder = [];
         this.onRefresh = this.onRefresh.bind(this);
+        this.updateIsLoading = this.updateIsLoading.bind(this);
+        this._showDialogResponse = this._showDialogResponse.bind(this);
     }
 
     componentDidMount() {
@@ -38,11 +43,20 @@ class HomeShopScreen extends Component {
         }
     }
 
+    updateIsLoading(value) {
+        this.setState({ loading: value })
+    }
+
+    _showDialogResponse(message) {
+        this.setState({ visibleDialogResponse: true, actionMessage: message })
+    }
+    _hideDialogResponse = () => this.setState({ visibleDialogResponse: false, actionMessage: '' });
+
     async getOrdersByArrival() {
         const data = await getPendingOrdersByShopInOrder(this.props.shop.cuit, this.props.shop.token)
-        if(data.status === 500 && data.body.error){
+        if (data.status === 500 && data.body.error) {
             this.props.logout()
-            Actions.logsign({visible: true})
+            Actions.logsign({ visible: true })
         } else if (data.status === 500 || data.status === 204)
             this.setState({ areOrders: false })
         else {
@@ -53,15 +67,17 @@ class HomeShopScreen extends Component {
 
     async getOrdersByMoreProducts() {
         const data = await getPendingOrdersByShopMoreProducts(this.props.shop.cuit, this.props.shop.token)
-        if(data.status === 500 && data.body.error){
+        if (data.status === 500 && data.body.error) {
             this.props.logout()
-            Actions.logsign({visible: true})
+            Actions.logsign({ visible: true })
         } else if (data.status === 500 || data.status === 204)
             this.setState({ areOrders: false })
         else {
-            this.setState({ areOrders: true, orders: data.body.sort(function(a,b){
-                return b.cantProductos - a.cantProductos;
-              }) })
+            this.setState({
+                areOrders: true, orders: data.body.sort(function (a, b) {
+                    return b.cantProductos - a.cantProductos;
+                })
+            })
             this.arrayholder = data.body
         }
     }
@@ -103,7 +119,7 @@ class HomeShopScreen extends Component {
     _renderItem(item) {
         if (this.state.areOrders) {
             return (
-                <OrderCardShop data={item} refreshParent={this.onRefresh} />
+                <OrderCardShop data={item} refreshParent={this.onRefresh} updateLoading={this.updateIsLoading} showDialogResponse={this._showDialogResponse} />
             );
         } else {
             return (
@@ -161,6 +177,30 @@ class HomeShopScreen extends Component {
                     initialNumToRender={0}
                     renderItem={({ item }) => this._renderItem(item)}
                     keyExtractor={(item, i) => i.toString()} />
+
+                <Portal>
+
+                    <Dialog
+                        style={{ width: sizes.wp('70%'), alignSelf: 'center' }}
+                        visible={this.state.visibleDialogResponse}
+                        onDismiss={this._hideDialogResponse}>
+                        <Dialog.Title style={{ alignSelf: 'center', textAlign: 'center' }}>{this.state.actionMessage}</Dialog.Title>
+                        <Dialog.Actions>
+                            <Button style={{ marginRight: sizes.wp('3%') }} color={'#000000'} onPress={this._hideDialogResponse}>Ok</Button>
+                        </Dialog.Actions>
+                    </Dialog>
+
+                    <Modal dismissable={false}
+                        visible={this.state.loading}
+                        style={styles.modalActivityIndicator} >
+                        <ActivityIndicator
+                            animating={this.state.loading}
+                            size={60}
+                            color={colors.APP_MAIN}
+                        />
+                    </Modal>
+
+                </Portal>
 
             </View>
         )

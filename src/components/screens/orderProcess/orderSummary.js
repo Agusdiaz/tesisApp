@@ -37,10 +37,11 @@ class OrderSummary extends Component {
         this.props.order.cuit = this.props.shop.cuit
         this.props.order.mail = this.props.user.mail
         const data = await insertOrder(this.props.order, this.props.user.token)
-        if(data.status === 500 && data.body.error){
+        if (data.status === 500 && data.body.error) {
             this.setState({ loading: false })
+            this.props.deleteOrder()
             this.props.logout()
-            Actions.logsign({visible: true})
+            Actions.logsign({ visible: true })
         } else if (data.status === 500) {
             this.setState({ loading: false, actionMessage: 'Error al crear pedido. Inténtalo nuevamente.' })
             this._showDialogResponse()
@@ -213,14 +214,16 @@ class OrderSummary extends Component {
                     })
                 })
             }
-                this.setState({ disabled: disabled })
-                this._showModalDisabled()
+            this.setState({ disabled: disabled })
+            this._showModalDisabled()
         } else {
-            this.setState({ loading: false, actionMessage: '¡Pedido creado exitosamente!' })
+            /* this.setState({ loading: false, actionMessage: '¡Pedido creado exitosamente!' })
             this._showDialogResponse()
-            Actions.navbarclient()
-            this.props.deleteOrder()
-            //this.nextStepParent()
+            Actions.navbarclient() 
+            this.props.deleteOrder() */
+            this.setState({ loading: false })
+            this.props.setOrderNumber(data.body)
+            this.nextStepParent()
         }
     }
 
@@ -231,7 +234,7 @@ class OrderSummary extends Component {
             if (numbers.indexOf(tip[i]) > -1) {
                 newText = newText + tip[i]
                 //if (i === tip.length - 1)
-                this.setState({ tips: tip.toString() })
+                this.setState({ tips: tip })
             }
             else {
                 Alert.alert('Atención', 'Por favor, ingrese solo números');
@@ -243,8 +246,8 @@ class OrderSummary extends Component {
     }
 
     validateComent(text) {
-        if(text.length > 300) 
-                Alert.alert('Texto demasiado largo')
+        if (text.length > 300)
+            Alert.alert('Texto demasiado largo')
         else if (text.trim() === "") {
             this.setState(() => ({ comentError: true, coments: text }));
         } else {
@@ -400,13 +403,14 @@ class OrderSummary extends Component {
                     <Dialog
                         visible={this.state.visibleDialogContinue}
                         onDismiss={this._hideDialogContinue}>
-                        <Dialog.Title style={{ alignSelf: 'center', textAlign:'center' }}>¿Desea modificar su pedido?</Dialog.Title>
+                        <Dialog.Title style={{ alignSelf: 'center', fontWeight: 'bold' }}>El total es ${this.props.order.total + this.props.order.propina}</Dialog.Title>
+                        <Dialog.Content style={{ alignSelf: 'center' }}><Paragraph style={{ fontSize: 18, textAlign: 'center' }}>
+                            Una vez que comience con el pago no podrá modificar el pedido</Paragraph></Dialog.Content>
                         <Dialog.Actions>
                             <Button style={{ marginRight: sizes.wp('3%') }} color={colors.APP_RED} onPress={this._hideDialogContinue}>Modificar</Button>
                             <Button color={colors.APP_GREEN} onPress={() => {
                                 this._hideDialogContinue()
-                                this.nextStepParent()
-                                //this.makeOrder() 
+                                this.makeOrder()
                             }}>Continuar</Button>
                         </Dialog.Actions>
                     </Dialog>
@@ -587,6 +591,7 @@ const mapDispatchToProps = (dispatch) => {
         setComents: (coment) => dispatch(OrderActions.setComents(coment)),
         setCuitAndMail: (mail, cuit) => dispatch(OrderActions.setCuitAndMail(mail, cuit)),
         deleteOrder: () => dispatch(OrderActions.deleteOrder()),
+        setOrderNumber: (number) => dispatch(OrderActions.setOrderNumber(number)),
         logout: () => dispatch(UserActions.logout()),
     }
 };

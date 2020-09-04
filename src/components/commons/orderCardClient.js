@@ -75,9 +75,10 @@ class OrderCardClient extends Component {
     render() {
         const orderNumber = props => <Text style={styles.rightText}> {this.props.data.numero} </Text>
 
-        const stageOrder = props => (this.props.data.etapa === orderStage.READY) ? <Button style={{ borderRadius: 20, width: sizes.wp('30%'), marginRight: sizes.wp('3%') }} mode="contained" color={colors.APP_GREEN} labelStyle={{ fontSize: 11, color: '#FFF' }} contentStyle={{ width: sizes.wp('50%'), alignSelf: 'center' }} >
-            Listo </Button> : (this.props.data.etapa === orderStage.PENDING) ? <Button style={{ borderRadius: 20, width: sizes.wp('30%'), marginRight: sizes.wp('3%') }} mode="contained" color={colors.APP_PENDING} labelStyle={{ fontSize: 11, color: '#FFF' }} contentStyle={{ width: sizes.wp('50%'), alignSelf: 'center' }} >
-                En proceso </Button> : <Button style={{ borderRadius: 20, width: sizes.wp('30%'), marginRight: sizes.wp('3%') }} mode="contained" color={colors.APP_DELIVERED} labelStyle={{ fontSize: 11, color: '#FFF' }} contentStyle={{ width: sizes.wp('50%'), alignSelf: 'center' }} >
+        const stageOrder = props => (this.props.data.aceptado === 0) ? <Button style={{ borderRadius: 20, marginRight: sizes.wp('3%') }} mode="contained" color={colors.APP_WAITING} labelStyle={{ fontSize: 11, color: '#FFF' }} contentStyle={{ width: sizes.wp('50%'), alignSelf: 'center' }}> Esperando aprobación</Button>
+        : (this.props.data.etapa === orderStage.READY) ? <Button style={{ borderRadius: 20, width: sizes.wp('35%'), marginRight: sizes.wp('3%') }} mode="contained" color={colors.APP_GREEN} labelStyle={{ fontSize: 11, color: '#FFF' }} contentStyle={{ width: sizes.wp('50%'), alignSelf: 'center' }} >
+            Listo </Button> : (this.props.data.etapa === orderStage.PENDING) ? <Button style={{ borderRadius: 20, width: sizes.wp('35%'), marginRight: sizes.wp('3%') }} mode="contained" color={colors.APP_PENDING} labelStyle={{ fontSize: 11, color: '#FFF' }} contentStyle={{ width: sizes.wp('50%'), alignSelf: 'center' }} >
+                En proceso </Button> : <Button style={{ borderRadius: 20, width: sizes.wp('35%'), marginRight: sizes.wp('3%') }} mode="contained" color={colors.APP_DELIVERED} labelStyle={{ fontSize: 11, color: '#FFF' }} contentStyle={{ width: sizes.wp('50%'), alignSelf: 'center' }} >
                     Entregado </Button>
 
         const total = props => <Text style={styles.rightText}> ${this.props.data.total}</Text>

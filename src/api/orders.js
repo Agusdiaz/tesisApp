@@ -151,3 +151,49 @@ export const insertOrder = async (body, token) => {
         .then(obj => { return obj });
     return response
 }
+
+export const deleteOrder = async (num, token) => {
+    let requestBody = {};
+    requestBody.numero = num
+    const response = await fetch(`${APIURL}deleteClientOrder`, {
+        method: 'POST',
+        body: JSON.stringify(requestBody),
+        headers: new Headers({
+            'Content-Type': 'application/json',
+            'Authorization': token
+        })
+    }).then(r => (r.status === 204) ? r : r.json()
+        .then(data =>
+            ({ status: r.status, body: data })))
+        .then(obj => { return obj });
+    return response
+}
+
+export const refundOrder = async (num, token) => {
+    const response = await fetch(`${APIURL}payments/refund/${num}`, {
+        headers: {
+            'Authorization': token
+        }
+    }).then(r => (r.status === 204) ? r : r.json()
+        .then(data =>
+            ({ status: r.status, body: data })))
+        .then(obj => { return obj });
+    return response
+}
+
+export const aceptOrder = async (num, token) => {
+    let requestBody = {};
+    requestBody.numero = num
+    const response = await fetch(`${APIURL}aceptClientOrder`, {
+        method: 'POST',
+        body: JSON.stringify(requestBody),
+        headers: new Headers({
+            'Content-Type': 'application/json',
+            'Authorization': token
+        })
+    }).then(r => (r.status === 204) ? r : r.json()
+        .then(data =>
+            ({ status: r.status, body: data })))
+        .then(obj => { return obj });
+    return response
+}

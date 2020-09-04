@@ -11,6 +11,7 @@ const colors = {
     APP_RED: '#F50808',
     APP_PENDING: '#E3BD12',
     APP_DELIVERED : '#1253E3',
+    APP_WAITING: '#DA6C11',
     SALTY : '#EE9226',
     SWEET : '#E863A5',
     DRINKS : '#3658C6',
