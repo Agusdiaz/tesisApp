@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { View, Text, StyleSheet, ListView } from 'react-native';
+import { View, Text, StyleSheet, YellowBox } from 'react-native';
 import StepIndicator from 'react-native-step-indicator';
 import { appStyles, colors, sizes } from '../../../index.styles'
 import { IconButton, Dialog, Button, Portal, } from 'react-native-paper';
@@ -11,6 +11,10 @@ import ChooseMenu from './chooseMenu'
 import OrderSummary from './orderSummary'
 import Payment from './payment'
 import OrderActions from '../../../redux/orders/action'
+
+YellowBox.ignoreWarnings([
+    'Animated: `useNativeDriver` was not specified. This is a required option and must be explicitly set to `true` or `false`',
+])
 
 const labels = ["Elegir local", "Realizar pedido", "Resumen pedido", "Pagar"];
 const customStyles = {
@@ -110,7 +114,7 @@ class HorizontalStepIndicator extends Component {
                                 icon='chevron-left'
                                 color={(this.state.currentPosition !== 3) ? colors.APP_MAIN : colors.APP_INACTIVE}
                                 size={40}
-                                onPress={(this.state.currentPosition !== 3) ? () => this.previousStep() : null}/>
+                                onPress={(this.state.currentPosition !== 3) ? () => this.previousStep() : null} />
                             :
                             null
                         }
@@ -130,26 +134,20 @@ class HorizontalStepIndicator extends Component {
                     {(this.state.currentPosition == 0) ?
 
                         <ChooseShop nextStepParent={this.nextStep}
-                            onScroll={Animated.event(
-                                [
-                                    {
-                                        nativeEvent: { contentOffset: { y: this.state.animatedValue } },
-                                    },
-                                ],
-                                { useNativeDriver: true }
-                            )}
+                            onScroll={Animated.event([{
+                                nativeEvent: { contentOffset: { y: this.state.animatedValue } },
+                            },
+                            ],
+                                { useNativeDriver: true })}
                         />
 
                         : (this.state.currentPosition == 1) ?
 
-                            <ChooseMenu onScroll={Animated.event(
-                                [
-                                    {
-                                        nativeEvent: { contentOffset: { y: this.state.animatedValue } },
-                                    },
-                                ],
-                                { useNativeDriver: true }
-                            )}
+                            <ChooseMenu onScroll={Animated.event([{
+                                nativeEvent: { contentOffset: { y: this.state.animatedValue } },
+                            },
+                            ],
+                                { useNativeDriver: true })}
                                 updateScrollFromParent={this.updateScroll} />
 
                             : (this.state.currentPosition == 2) ?
@@ -157,7 +155,7 @@ class HorizontalStepIndicator extends Component {
                                 <OrderSummary nextStepParent={this.nextStep} />
 
                                 :
-                                <Payment/>
+                                <Payment />
                     }
 
                 </Animated.View>
@@ -171,7 +169,7 @@ class HorizontalStepIndicator extends Component {
                             <Button style={{ marginRight: sizes.wp('3%') }} color={colors.APP_RED} onPress={this._hideDialogOut}>Cancelar</Button>
                             <Button color={colors.APP_GREEN} onPress={() => {
                                 this._hideDialogOut(), this.setState({ currentPosition: this.state.currentPosition - 1 }),
-                                this.props.deleteOrder(), this.updateScroll()
+                                    this.props.deleteOrder(), this.updateScroll()
                             }}>Sí</Button>
                         </Dialog.Actions>
                     </Dialog>

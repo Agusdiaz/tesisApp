@@ -116,7 +116,7 @@ class DisabledCard extends Component {
                             mode={'contained'}
                             onPress={() => { this.props.deleteOrder()
                             this.props.hideModalFromChild()
-                            Actions.makeorder() }} >
+                            Actions.navbarclient() }} >
                             Cancelar pedido
                     </Button>
 

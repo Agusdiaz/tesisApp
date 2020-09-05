@@ -7,7 +7,7 @@ import { Card, FAB, Button, Divider, Portal, Dialog, TextInput, Paragraph, Modal
 import OrderActions from '../../../redux/orders/action'
 import TextTicker from 'react-native-text-ticker'
 import { Actions } from 'react-native-router-flux';
-import { insertOrder } from '../../../api/orders'
+import { insertOrder, validateClosing } from '../../../api/orders'
 import UserActions from '../../../redux/authState/action'
 import Disabled from './cardDisabled'
 import moment from 'moment'
@@ -24,11 +24,18 @@ class OrderSummary extends Component {
             visibleDialogComent: false,
             visibleDialogResponse: false,
             visibleModalDisabled: false,
+            visibleDialogClosing: false,
             disabled: null,
             loading: false,
             actionMessage: '',
             status: null,
         }
+    }
+
+    async validateClosingShop(){
+        const data = await validateClosing(this.props.shop.cuit, this.props.user.token)
+        if(data.status === 200 && data.body) this._showDialogClosing()
+        else this.makeOrder()
     }
 
     async makeOrder() {
@@ -217,10 +224,6 @@ class OrderSummary extends Component {
             this.setState({ disabled: disabled })
             this._showModalDisabled()
         } else {
-            /* this.setState({ loading: false, actionMessage: '¡Pedido creado exitosamente!' })
-            this._showDialogResponse()
-            Actions.navbarclient() 
-            this.props.deleteOrder() */
             this.setState({ loading: false })
             this.props.setOrderNumber(data.body)
             this.nextStepParent()
@@ -257,6 +260,9 @@ class OrderSummary extends Component {
 
     _showDialogContinue = () => this.setState({ visibleDialogContinue: true });
     _hideDialogContinue = () => this.setState({ visibleDialogContinue: false });
+
+    _showDialogClosing = () => this.setState({ visibleDialogClosing: true });
+    _hideDialogClosing = () => this.setState({ visibleDialogClosing: false });
 
     _showDialogComent = () => this.setState({ visibleDialogComent: true });
     _hideDialogComent = () => this.setState({ visibleDialogComent: false });
@@ -410,8 +416,23 @@ class OrderSummary extends Component {
                             <Button style={{ marginRight: sizes.wp('3%') }} color={colors.APP_RED} onPress={this._hideDialogContinue}>Modificar</Button>
                             <Button color={colors.APP_GREEN} onPress={() => {
                                 this._hideDialogContinue()
-                                this.makeOrder()
+                                this.validateClosingShop()
                             }}>Continuar</Button>
+                        </Dialog.Actions>
+                    </Dialog>
+
+                    <Dialog
+                        visible={this.state.visibleDialogClosing}
+                        onDismiss={this._hideDialogClosing}>
+                        <Dialog.Title style={{ alignSelf: 'center', textAlign: 'center'}}>Es posible que el local este próximo a cerrar, ¿qué desea hacer?</Dialog.Title>
+                        <Dialog.Actions>
+                            <Button style={{ marginRight: sizes.wp('3%') }} color={colors.APP_RED} onPress={() => {this.props.deleteOrder()
+                            this._hideDialogClosing()
+                            Actions.navbarclient()}}>Cancelar pedido</Button>
+                            <Button color={colors.APP_GREEN} onPress={() => {
+                                this._hideDialogClosing()
+                                this.makeOrder()
+                            }}>Pedir igualmente</Button>
                         </Dialog.Actions>
                     </Dialog>
 

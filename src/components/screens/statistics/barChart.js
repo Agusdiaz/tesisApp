@@ -41,8 +41,8 @@ class BarChartGraph extends React.PureComponent {
         }
 
         const chartConfig = {
-            backgroundGradientFrom: '#C63838',
-            backgroundGradientTo: '#C63838',
+            backgroundGradientFrom: '#FFFFFF',
+            backgroundGradientTo: '#FFFFFF',
             color: () => "#E1454A",
             strokeWidth: 2,
             barPercentage: 1.5,

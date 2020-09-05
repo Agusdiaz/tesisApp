@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { StyleSheet, Text, View } from 'react-native';
 import { colors, sizes, appStyles } from '../../../index.styles';
@@ -6,7 +6,7 @@ import { Button, ActivityIndicator, Portal, Modal, Dialog } from 'react-native-p
 import { Actions } from 'react-native-router-flux';
 import { WebView } from 'react-native-webview';
 import { APIURL } from '../../../../assets/constants'
-import { deleteOrder } from '../../../api/orders' 
+import { deleteOrder } from '../../../api/orders'
 
 export default function PayOrder() {
     const [number] = useState(useSelector(state => state.order.numero))
@@ -19,14 +19,22 @@ export default function PayOrder() {
     const [visibleDialogCancel, setVisibleDialogCancel] = useState(false)
     const [message, setMessage] = useState('')
     const [seconds, setSeconds] = useState('00')
-    const [minutes, setMinutes] = useState('00')
-    const [timer, setTimer] = useState(null)
+    const [minutes, setMinutes] = useState(null)
+    const [payed, setPayed] = useState(false)
     const dispatch = useDispatch()
 
+    const deleteClientOrder = async () => {
+        const data = await deleteOrder(number, token)
+        console.log(data)
+        dispatch({ type: 'DELETE_ORDER' })
+    }
+
     const stateChange = (state) => {
+        console.log(state.title)
         switch (state.title) {
             case 'success':
                 setShowCheckout(false)
+                setPayed(true)
                 setMessage("¡Pago y pedido realizados exitosamente!")
                 setVisibleDialogResponse(true)
                 Actions.navbarclient()
@@ -41,18 +49,23 @@ export default function PayOrder() {
                 setShowCheckout(false)
                 setMessage("Pago rechazado. Inténtalo nuevamente")
                 setVisibleDialogResponse(true)
+                break;
             case 'invalid':
                 setShowCheckout(false)
-                dispatch({ type: 'DELETE_ORDER' })
-                dispatch({type: 'LOGOUT'})
+                deleteClientOrder()
+                dispatch({ type: 'LOGOUT' })
                 Actions.logsign({ visible: true })
+                break;
+            case '¡Listo! Se acreditó tu pago':
+                console.log('aca')
+                setPayed(true)
                 break;
         }
     }
 
     const cancelOrder = async () => {
         const data = await deleteOrder(number, token)
-        if(data.status === 500){
+        if (data.status === 500) {
             setMessage(data.body)
             setVisibleDialogResponse(true)
         } else {
@@ -63,19 +76,30 @@ export default function PayOrder() {
         }
     }
 
-    const startTimer = () => {
-        let timer = setInterval(() => {
-            var num = (Number(seconds) + 1).toString(),
-              count = minutes;
-            if (Number(seconds) == 59) {
-              count = (Number(minutes) + 1).toString();
-              num = '00';
+    useEffect(() => {
+        if (minutes === '00' && seconds === '00') {
+            setMinutes(null)
+            if (!payed) {
+                deleteClientOrder()
+                setShowCheckout(false)
+                setMessage("El tiempo para realizar el pago ha caducado. Vuelve a hacer el pedido")
+                setVisibleDialogResponse(true)
+                Actions.navbarclient()
             }
-            setSeconds(num.length == 1 ? '0' + num : num)
-            setMinutes(count.length == 1 ? '0' + count : count)
-          }, 1000);
-          setTimer(timer)
         }
+        if (minutes === null) return
+        const interval = setInterval(() => {
+            var num = (Number(seconds) - 1).toString()
+            var count = minutes;
+            if (Number(seconds) === 0) {
+                count = (Number(minutes) - 1).toString()
+                num = '59'
+            }
+            setSeconds(num.length === 1 ? '0' + num : num)
+            setMinutes(count.length === 1 ? '0' + count : count)
+        }, 1000);
+        return () => clearInterval(interval)
+    }, [seconds, minutes])
 
     if (!showCheckout) {
         return (
@@ -88,11 +112,11 @@ export default function PayOrder() {
                     icon="cash"
                     mode="contained"
                     color={colors.APP_MAIN}
-                    onPress={() => setShowCheckout(true)}>
+                    onPress={() => { setShowCheckout(true), setMinutes('10'), setSeconds('00') }}>
                     Comenzar con el pago
  				</Button>
 
-                 <Button
+                <Button
                     style={styles.payButton}
                     icon="cancel"
                     mode="contained"
@@ -114,21 +138,20 @@ export default function PayOrder() {
                     <Dialog
                         visible={visibleDialogCancel}
                         onDismiss={() => setVisibleDialogCancel(false)}>
-                        <Dialog.Title style={{ alignSelf: 'center', textAlign:'center' }}>¿Esta seguro que desea cancelar su pedido?</Dialog.Title>
+                        <Dialog.Title style={{ alignSelf: 'center', textAlign: 'center' }}>¿Esta seguro que desea cancelar su pedido?</Dialog.Title>
                         <Dialog.Actions>
                             <Button style={{ marginRight: sizes.wp('10%') }} color={colors.APP_RED} onPress={() => setVisibleDialogCancel(false)}>No</Button>
-                            <Button color={colors.APP_GREEN} onPress={() => {setVisibleDialogCancel(false), cancelOrder()}}>Sí</Button>
+                            <Button color={colors.APP_GREEN} onPress={() => { setVisibleDialogCancel(false), cancelOrder() }}>Sí</Button>
                         </Dialog.Actions>
                     </Dialog>
                 </Portal>
             </View>
         )
     } else {
-        startTimer()
         return (
-            <View style={{ flex: 1, justifyContent: 'center', top: sizes.hp('0%'), width: sizes.wp('95%') }}>
-                <Text style={styles.timer}>{timer}</Text>
-                <View style={{ height: sizes.hp('79%'), }}>
+            <View style={{ flex: 1, justifyContent: 'center', top: sizes.hp('-1%'), width: sizes.wp('95%') }}>
+                <Text style={styles.timer}>Tiempo restante: {(minutes === null) ? '00' : minutes}:{seconds}</Text>
+                <View style={{ height: sizes.hp('74%'), }}>
                     <WebView
                         source={{
                             uri: `${APIURL}payments/checkout/${number}/${mail}/${total}/${cuit}`,
@@ -173,7 +196,9 @@ const styles = StyleSheet.create({
         marginBottom: sizes.hp('10%')
     },
     timer: {
-        fontSize: 20,
+        fontSize: 22,
         color: colors.APP_MAIN,
+        textAlign: 'center',
+        marginBottom: sizes.hp('1%')
     },
 });

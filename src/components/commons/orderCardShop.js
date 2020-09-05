@@ -192,9 +192,9 @@ class OrderCardShop extends Component {
                     <Dialog
                         visible={this.state.visibleDialogCancel}
                         onDismiss={this._hideDialogCancel}>
-                        <Dialog.Title style={{ alignSelf: 'center', textAlign: 'center' }}>¿Desea aceptar o cancelar el pedido?</Dialog.Title>
+                        <Dialog.Title style={{ alignSelf: 'center', textAlign: 'center' }}>¿Desea aceptar o rechazar el pedido?</Dialog.Title>
                         <Dialog.Actions>
-                            <Button style={{ marginRight: sizes.wp('5%') }} color={colors.APP_RED} onPress={() => this.makeRefund()}>Cancelar</Button>
+                            <Button style={{ marginRight: sizes.wp('5%') }} color={colors.APP_RED} onPress={() => this.makeRefund()}>Rechazar</Button>
                             <Button color={colors.APP_GREEN} onPress={() => this.aceptOrder()}>Aceptar</Button>
                         </Dialog.Actions>
                     </Dialog>

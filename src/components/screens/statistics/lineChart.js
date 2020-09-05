@@ -73,9 +73,8 @@ class LineChartGraph extends React.PureComponent {
                 strokeWidth: "2",
                 stroke: "#fff"
             },
-            backgroundColor: '#cc14aa',
-            backgroundGradientFrom: '#7ff591',
-            backgroundGradientTo: '#f0f716',
+            backgroundGradientFrom: '#FFFFFF',
+            backgroundGradientTo: '#FFFFFF',
         }
 
         return (
