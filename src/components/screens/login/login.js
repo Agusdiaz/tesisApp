@@ -87,7 +87,7 @@ class LoginScreen extends Component {
                 </TouchableOpacity>
 
                 <Button
-                    style={{ top: sizes.hp('-10%') }}
+                    style={{ top: sizes.hp('-13%') }}
                     icon="send"
                     mode="contained"
                     color={colors.APP_MAIN}
@@ -134,7 +134,7 @@ const styles = StyleSheet.create({
     inputView: {
         width: sizes.wp('80%'),
         height: sizes.hp('5%'),
-        top: sizes.hp('-12%'),
+        top: sizes.hp('-13%'),
         marginBottom: 20,
         justifyContent: "center",
         padding: 5,

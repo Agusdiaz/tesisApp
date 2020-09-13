@@ -135,3 +135,40 @@ export const createPromo = async (body, token) => {
     return response
 }
 
+export const updateProductPrice = async (id, price, cuit, token) => {
+    let requestBody = {};
+    requestBody.id = id
+    requestBody.precio = price
+    requestBody.cuit = cuit
+    const response = await fetch(`${APIURL}updateProductPrice`, {
+        method: 'POST',
+        body: JSON.stringify(requestBody),
+        headers: new Headers({
+            'Content-Type': 'application/json',
+            'Authorization': token
+        })
+    }).then(r => (r.status === 204) ? r : r.json()
+        .then(data =>
+            ({ status: r.status, body: data })))
+        .then(obj => { return obj });
+    return response
+}
+
+export const updatePromoPrice = async (id, price, cuit, token) => {
+    let requestBody = {};
+    requestBody.id = id
+    requestBody.precio = price
+    requestBody.cuit = cuit
+    const response = await fetch(`${APIURL}updatePromoPrice`, {
+        method: 'POST',
+        body: JSON.stringify(requestBody),
+        headers: new Headers({
+            'Content-Type': 'application/json',
+            'Authorization': token
+        })
+    }).then(r => (r.status === 204) ? r : r.json()
+        .then(data =>
+            ({ status: r.status, body: data })))
+        .then(obj => { return obj });
+    return response
+}

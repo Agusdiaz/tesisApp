@@ -43,7 +43,7 @@ class ProductCard extends Component {
             this.setState({ loading: true })
             const data = await updateProductStatus(this.state.status, this.props.data.id, this.props.shop.token)
             this._hideDialogDisabled()
-            this.setState({ actionMessage: data.body, loading: false })
+            this.setState({ loading: false })
             if (data.status === 500 && data.body.error) {
                 this.setState({ loading: false })
                 this.props.logout()
@@ -52,7 +52,7 @@ class ProductCard extends Component {
                 this.setState({ loading: false })
                 this.props.refreshParent()
             }
-            this._showDialogResponse()
+            this._showDialogResponse(data.body)
         }
     }
 
@@ -64,9 +64,6 @@ class ProductCard extends Component {
 
     _showDialogDisabled = (text) => (this._isMounted) ? this.setState({ visibleDialogDisabled: true, statusMessage: text }) : null;
     _hideDialogDisabled = () => (this._isMounted) ? this.setState({ visibleDialogDisabled: false, statusMessage: '' }) : null;
-
-    _showDialogResponse = () => (this._isMounted) ? this.setState({ visibleDialogResponse: true }) : null;
-    _hideDialogResponse = () => (this._isMounted) ? this.setState({ visibleDialogResponse: false }) : null;
 
     render() {
         const pic = props => <Image source={{ uri: this.state.photo }} resizeMode='cover' style={styles.image} />
@@ -148,11 +145,12 @@ class ProductCard extends Component {
                 <Portal>
 
                     <Modal contentContainerStyle={styles.modalView} visible={this.state.visibleModalDetails} onDismiss={this._hideModalDetails}>
-                        <ProductDetails hideModalFromChild={this._hideModalDetails} data={this.props.data} />
+                        <ProductDetails hideModalFromChild={this._hideModalDetails} data={this.props.data} rute={this.props.rute} 
+                        showDialogResponse={this.props.showDialogResponse} refreshParent={this.props.refreshParent}/>
                     </Modal>
 
                     <Modal contentContainerStyle={[styles.modalView, { maxHeight: sizes.hp('92%') }]} visible={this.state.visibleModalOrder} onDismiss={this._hideModalOrder}>
-                        <ProductDetailsOrder hideModalFromChild={this._hideModalOrder} data={this.props.data} />
+                        <ProductDetailsOrder hideModalFromChild={this._hideModalOrder} data={this.props.data}/>
                     </Modal>
 
                     <Dialog

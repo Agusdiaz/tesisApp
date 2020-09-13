@@ -1,20 +1,70 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, Image, ScrollView } from 'react-native';
+import { connect } from 'react-redux';
+import { StyleSheet, Text, View, Image, ScrollView, Alert } from 'react-native';
 import { colors, sizes, productCondition } from '../../index.styles';
 import { DataTable, DataTableHeader, DataTableCell, DataTableRow } from 'material-bread'
-import { Card, FAB, Button, Divider, IconButton } from 'react-native-paper';
+import { Card, FAB, Button, Divider, IconButton, Portal, Dialog, TextInput, Modal, ActivityIndicator } from 'react-native-paper';
 import TextTicker from 'react-native-text-ticker'
+import ShopActions from '../../redux/authState/action'
+import { Actions } from 'react-native-router-flux';
+import { updateProductPrice } from '../../api/menus'
 
 class ProductDetails extends Component {
     constructor(props) {
         super(props);
         this.state = {
             photo: 'https://picsum.photos/500',
+            price: '',
+            loading: false,
+            visibleDialogPrice: false,
+            visibleDialogError: false,
+            actionError: '',
         }
     }
 
     hideModal = () => {
         this.props.hideModalFromChild();
+    }
+
+    _showDialogPrice = () => this.setState({ visibleDialogPrice: true })
+    _hideDialogPrice = () => this.setState({ visibleDialogPrice: false })
+
+    _showDialogError(message) {
+        this.setState({ visibleDialogError: true, actionError: message })
+    }
+    _hideDialogError = () => this.setState({ visibleDialogError: false, actionError: '' })
+
+    validateNumber = (number) => {
+        let newText = '';
+        let numbers = '0123456789';
+        for (var i = 0; i < number.length; i++) {
+            if (numbers.indexOf(number[i]) > -1) {
+                newText = newText + number[i]
+                this.setState({ price: number.toString() })
+            }
+            else {
+                Alert.alert('Atención', 'Por favor, ingrese solo números');
+                break
+            }
+        }
+        if (number.length === 0) this.setState({ price: '' })
+    }
+
+    async updatePrice() {
+        this.setState({ loading: true })
+        const data = await updateProductPrice(this.props.data.id, this.state.price, this.props.shop.cuit, this.props.shop.token)
+        if (data.status === 500 && data.body.error) {
+            this.props.logout()
+            Actions.logsign({ visible: true })
+        } else if (data.status !== 200) {
+            this.setState({ price: '', loading: false });
+            this._showDialogError(data.body)
+        } else {
+            this.setState({ price: '', loading: false });
+            this.hideModal()
+            this.props.refreshParent()
+            this.props.showDialogResponse(data.body)
+        }
     }
 
     render() {
@@ -117,7 +167,63 @@ class ProductDetails extends Component {
                             }
                         </ScrollView>
                     </DataTable>
+                    {(this.props.rute === 'shop') ?
+                        <View style={{ borderWidth: 2, alignItems: 'center', justifyContent: 'center' }}>
+                            <Button
+                                style={{}}
+                                mode="contained"
+                                color={colors.APP_MAIN}
+                                onPress={this._showDialogPrice}>
+                                Modificar Precio
+ 				                </Button>
+                        </View>
+                        : null}
                 </Card.Content>
+
+                <Portal>
+                    <Dialog
+                        style={{ top: -50 }}
+                        visible={this.state.visibleDialogPrice}
+                        onDismiss={this._hideDialogPrice}>
+                        <Dialog.Title style={{ alignSelf: 'center', textAlign: 'center' }}>Ingresá el nuevo precio para tu producto:</Dialog.Title>
+                        <Dialog.Content style={{ alignItems: 'center' }}>
+                            <TextInput
+                                style={styles.inputView}
+                                mode='outlined'
+                                label='Nuevo precio'
+                                placeholder='$'
+                                theme={{ colors: { text: colors.TEXT_INPUT, primary: colors.APP_MAIN } }}
+                                onChangeText={(price) => this.validateNumber(price)}
+                                value={this.state.price} />
+                        </Dialog.Content>
+                        <Dialog.Actions style={{ marginTop: sizes.hp('-2%') }}>
+                            <Button style={{ marginRight: sizes.wp('3%') }} color={colors.APP_RED} onPress={this._hideDialogPrice}>Cancelar</Button>
+                            <Button color={colors.APP_GREEN} disabled={this.state.price === '' || this.state.price === '0'} onPress={() => {
+                                this.updatePrice(),
+                                this._hideDialogPrice()
+                            }}>Modificar</Button>
+                        </Dialog.Actions>
+                    </Dialog>
+
+                    <Modal dismissable={false}
+                        visible={this.state.loading}
+                        style={styles.modalActivityIndicator} >
+                        <ActivityIndicator
+                            animating={this.state.loading}
+                            size={60}
+                            color={colors.APP_MAIN}
+                        />
+                    </Modal>
+
+                    <Dialog
+                        visible={this.state.visibleDialogError}
+                        onDismiss={this._hideDialogError}>
+                        <Dialog.Title style={{ alignSelf: 'center', textAlign: 'center' }}>{this.state.actionError}</Dialog.Title>
+                        <Dialog.Actions>
+                            <Button style={{ marginRight: sizes.wp('3%') }} color={'#000000'} onPress={this._hideDialogError}>Ok</Button>
+                        </Dialog.Actions>
+                    </Dialog>
+                </Portal>
 
             </Card >
         )
@@ -171,11 +277,36 @@ const styles = StyleSheet.create({
         textAlign: 'center',
     },
     cell: {
-        //borderWidth: 1,
         width: sizes.wp('80%'),
         right: sizes.wp('-3%'),
         marginTop: sizes.hp('2%'),
     },
+    title: {
+        textAlign: 'center',
+        fontSize: 18,
+        fontWeight: '500',
+    },
+    inputView: {
+        marginTop: sizes.hp('1%'),
+        width: "90%",
+        height: 50,
+        marginBottom: 20,
+        justifyContent: "center",
+        padding: 8,
+        fontSize: sizes.TEXT_INPUT,
+    },
 });
 
-export default ProductDetails;
+function mapStateToProps(state) {
+    return {
+        shop: state.authState.shop,
+    };
+}
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        logout: () => dispatch(ShopActions.logout())
+    }
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(ProductDetails);

@@ -1,13 +1,16 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import { StyleSheet, Text, View, ScrollView, ImageBackground } from 'react-native';
 import { colors, sizes } from '../../index.styles';
-import { Card, FAB, Modal, Portal, Button, Dialog, Divider, IconButton } from 'react-native-paper';
+import { Card, ActivityIndicator, Modal, Portal, Button, Dialog, Divider, IconButton, TextInput } from 'react-native-paper';
 import { DataTable, DataTableHeader, DataTableCell, DataTableRow } from 'material-bread'
 import TextTicker from 'react-native-text-ticker';
 import ProductDetails from '../commons/productDetails'
 import PromoDetails from '../screens/orderProcess/promoDetailsOrder'
+import ShopActions from '../../redux/authState/action'
 import { Actions } from 'react-native-router-flux';
 import Schedule from './schedule'
+import { updatePromoPrice } from '../../api/menus'
 
 class SalesCard extends Component {
 
@@ -20,6 +23,11 @@ class SalesCard extends Component {
             visibleModalSchedule: false,
             visibleModalPromoDetails: false,
             productDetails: [],
+            price: '',
+            loading: false,
+            visibleDialogPrice: false,
+            visibleDialogError: false,
+            actionError: '',
         }
     }
 
@@ -31,6 +39,9 @@ class SalesCard extends Component {
         this._isMounted = false;
     }
 
+    _showDialogPrice = () => (this._isMounted) ? this.setState({ visibleDialogPrice: true }) : null;
+    _hideDialogPrice = () => (this._isMounted) ? this.setState({ visibleDialogPrice: false }) : null;
+
     _showModalDetails = () => (this._isMounted) ? this.setState({ visibleModalDetails: true }) : null;
     _hideModalDetails = () => (this._isMounted) ? this.setState({ visibleModalDetails: false }) : null;
 
@@ -39,6 +50,45 @@ class SalesCard extends Component {
 
     _showModalPromoDetails = () => (this._isMounted) ? this.setState({ visibleModalPromoDetails: true }) : null;
     _hideModalPromoDetails = () => (this._isMounted) ? this.setState({ visibleModalPromoDetails: false }) : null;
+
+    _showDialogError(message) {
+        (this._isMounted) ? this.setState({ visibleDialogError: true, actionError: message }) : null;
+    }
+    _hideDialogError = () => (this._isMounted) ? this.setState({ visibleDialogError: false, actionError: '' }) : null;
+
+    async updatePrice() {
+        if (this._isMounted) {
+            this.setState({ loading: true })
+            const data = await updatePromoPrice(this.props.data.id, this.state.price, this.props.shop.cuit, this.props.shop.token)
+            if (data.status === 500 && data.body.error) {
+                this.props.logout()
+                Actions.logsign({ visible: true })
+            } else if (data.status !== 200) {
+                this.setState({ price: '', loading: false });
+                this._showDialogError(data.body)
+            } else {
+                this.setState({ price: '', loading: false });
+                this.props.refreshParent()
+                this.props.showDialogResponse(data.body)
+            }
+        }
+    }
+
+    validateNumber = (number) => {
+        let newText = '';
+        let numbers = '0123456789';
+        for (var i = 0; i < number.length; i++) {
+            if (numbers.indexOf(number[i]) > -1) {
+                newText = newText + number[i]
+                this.setState({ price: number.toString() })
+            }
+            else {
+                Alert.alert('Atención', 'Por favor, ingrese solo números');
+                break
+            }
+        }
+        if (number.length === 0) this.setState({ price: '' })
+    }
 
     render() {
         const NamePriceButton = props => <View style={{
@@ -120,6 +170,17 @@ class SalesCard extends Component {
                                     ))}
                             </ScrollView>
                         </DataTable>
+                        {(this.props.rute === 'editPromo') ?
+                            <View style={{ marginTop: sizes.hp('1%'), alignItems: 'center', justifyContent: 'center' }}>
+                                <Button
+                                    style={{}}
+                                    mode="contained"
+                                    color={colors.APP_MAIN}
+                                    onPress={this._showDialogPrice}>
+                                    Modificar Precio
+ 				                </Button>
+                            </View>
+                            : null}
                     </Card.Content>
 
                 </Card>
@@ -133,13 +194,56 @@ class SalesCard extends Component {
                     <Modal contentContainerStyle={[styles.modalView, { maxHeight: sizes.hp('92%') }]} visible={this.state.visibleModalPromoDetails} onDismiss={this._hideModalPromoDetails}>
                         <PromoDetails hideModalFromChild={this._hideModalPromoDetails} data={this.props.data} />
                     </Modal>
-                    
-                    {(this.props.rute !== 'order') ? 
-                    <Modal contentContainerStyle={styles.modalView} visible={this.state.visibleModalSchedule} onDismiss={this._hideModalSchedule}>
-                        <Schedule hideModalFromChild={this._hideModalSchedule} data={this.props.data.horarios[0]} id={this.props.data.id}
-                            rute={this.props.rute} refreshParent={this.props.refreshParent} />
+
+                    {(this.props.rute !== 'order') ?
+                        <Modal contentContainerStyle={styles.modalView} visible={this.state.visibleModalSchedule} onDismiss={this._hideModalSchedule}>
+                            <Schedule hideModalFromChild={this._hideModalSchedule} data={this.props.data.horarios[0]} id={this.props.data.id}
+                                rute={this.props.rute} refreshParent={this.props.refreshParent} />
+                        </Modal>
+                        : null}
+
+                    <Dialog
+                        style={{ top: -50 }}
+                        visible={this.state.visibleDialogPrice}
+                        onDismiss={this._hideDialogPrice}>
+                        <Dialog.Title style={{ alignSelf: 'center', textAlign: 'center' }}>Ingresá el nuevo precio para tu producto:</Dialog.Title>
+                        <Dialog.Content style={{ alignItems: 'center' }}>
+                            <TextInput
+                                style={styles.inputView}
+                                mode='outlined'
+                                label='Nuevo precio'
+                                placeholder='$'
+                                theme={{ colors: { text: colors.TEXT_INPUT, primary: colors.APP_MAIN } }}
+                                onChangeText={(price) => this.validateNumber(price)}
+                                value={this.state.price} />
+                        </Dialog.Content>
+                        <Dialog.Actions style={{ marginTop: sizes.hp('-2%') }}>
+                            <Button style={{ marginRight: sizes.wp('3%') }} color={colors.APP_RED} onPress={this._hideDialogPrice}>Cancelar</Button>
+                            <Button color={colors.APP_GREEN} disabled={this.state.price === '' || this.state.price === '0'} onPress={() => {
+                                this.updatePrice(),
+                                    this._hideDialogPrice()
+                            }}>Modificar</Button>
+                        </Dialog.Actions>
+                    </Dialog>
+
+                    <Dialog
+                        visible={this.state.visibleDialogError}
+                        onDismiss={this._hideDialogError}>
+                        <Dialog.Title style={{ alignSelf: 'center', textAlign: 'center' }}>{this.state.actionError}</Dialog.Title>
+                        <Dialog.Actions>
+                            <Button style={{ marginRight: sizes.wp('3%') }} color={'#000000'} onPress={this._hideDialogError}>Ok</Button>
+                        </Dialog.Actions>
+                    </Dialog>
+
+                    <Modal dismissable={false}
+                        visible={this.state.loading}
+                        style={styles.modalActivityIndicator} >
+                        <ActivityIndicator
+                            animating={this.state.loading}
+                            size={60}
+                            color={colors.APP_MAIN}
+                        />
                     </Modal>
-                    : null}
                 </Portal>
             </View>
         )
@@ -215,6 +319,32 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         position: 'absolute',
     },
+    title: {
+        textAlign: 'center',
+        fontSize: 18,
+        fontWeight: '500',
+    },
+    inputView: {
+        marginTop: sizes.hp('1%'),
+        width: "90%",
+        height: 50,
+        marginBottom: 20,
+        justifyContent: "center",
+        padding: 8,
+        fontSize: sizes.TEXT_INPUT,
+    },
 });
 
-export default SalesCard;
+function mapStateToProps(state) {
+    return {
+        shop: state.authState.shop,
+    };
+}
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        logout: () => dispatch(ShopActions.logout())
+    }
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(SalesCard);

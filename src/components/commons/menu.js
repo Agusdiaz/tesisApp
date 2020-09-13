@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { StyleSheet, Text, View, FlatList, Image } from 'react-native';
 import { colors, sizes, productType } from '../../index.styles';
-import { Button, Searchbar } from 'react-native-paper';
+import { Button, Searchbar, Portal, Dialog } from 'react-native-paper';
 import ProductCard from '../commons/productCard'
 import { getMenu } from '../../api/menus'
 import UserActions from '../../redux/authState/action'
@@ -21,24 +21,32 @@ class Menu extends Component {
             areSweet: false,
             areDrinks: false,
             searchQuery: '',
+            visibleDialogResponse: false,
+            actionMessage: '',
         }
         this.arrayholderSalty = []
         this.arrayholderSweet = []
         this.arrayholderDrinks = []
         this.onRefresh = this.onRefresh.bind(this);
+        this._showDialogResponse = this._showDialogResponse.bind(this);
     }
 
     componentDidMount() {
         this.getMenu()
     }
 
+    _showDialogResponse(message) {
+        this.setState({ visibleDialogResponse: true, actionMessage: message })
+    }
+    _hideDialogResponse = () => this.setState({ visibleDialogResponse: false, actionMessage: '' })
+
     async getMenu() {
         var cuit = (this.props.rute === 'shop' || this.props.rute === 'initial') ? this.props.shop.cuit : this.props.selected.cuit
         var token = (this.props.rute === 'shop' || this.props.rute === 'initial') ? this.props.shop.token : this.props.user.token
         const data = await getMenu(cuit, token)
-        if(data.status === 500 && data.body.error){
+        if (data.status === 500 && data.body.error) {
             this.props.logout()
-            Actions.logsign({visible: true})
+            Actions.logsign({ visible: true })
         }
         if (data.status === 500 || data.status === 204)
             this.setState({ areSalty: false, areSweet: false, areDrinks: false })
@@ -117,7 +125,7 @@ class Menu extends Component {
         if ((this.state.valueButtons === productType.SALTY && this.state.areSalty) || (this.state.valueButtons === productType.SWEET && this.state.areSweet) ||
             (this.state.valueButtons === productType.DRINK && this.state.areDrinks)) {
             return (
-                <ProductCard rute={this.props.rute} data={item} refreshParent={this.onRefresh} />
+                <ProductCard rute={this.props.rute} data={item} refreshParent={this.onRefresh} showDialogResponse={this._showDialogResponse} />
             );
         } else {
             return (
@@ -134,85 +142,98 @@ class Menu extends Component {
         return (
             <View style={{ width: sizes.wp('100%'), height: sizes.hp('100%'), top: (this.props.rute === 'client') ? sizes.hp('17%') : sizes.hp('11%'), flex: 1 }}>
 
-                    <View style={{ flexDirection: 'row', justifyContent: 'center', width: sizes.wp('100%'), height: sizes.hp('4%'), marginTop: 7 }}>
-                        <Button
-                            style={styles.toggleButton}
-                            dark
-                            color={colors.SALTY}
-                            mode={(this.state.valueButtons === productType.SALTY) ? 'contained' : 'outlined'}
-                            onPress={() => this.handleButtons(productType.SALTY)}>
-                            {productType.SALTY}
-                        </Button>
+                <View style={{ flexDirection: 'row', justifyContent: 'center', width: sizes.wp('100%'), height: sizes.hp('4%'), marginTop: 7 }}>
+                    <Button
+                        style={styles.toggleButton}
+                        dark
+                        color={colors.SALTY}
+                        mode={(this.state.valueButtons === productType.SALTY) ? 'contained' : 'outlined'}
+                        onPress={() => this.handleButtons(productType.SALTY)}>
+                        {productType.SALTY}
+                    </Button>
 
-                        <Button
-                            style={styles.toggleButton}
-                            dark
-                            color={colors.SWEET}
-                            mode={(this.state.valueButtons === productType.SWEET) ? 'contained' : 'outlined'}
-                            onPress={() => this.handleButtons(productType.SWEET)}>
-                            {productType.SWEET}
-                        </Button>
+                    <Button
+                        style={styles.toggleButton}
+                        dark
+                        color={colors.SWEET}
+                        mode={(this.state.valueButtons === productType.SWEET) ? 'contained' : 'outlined'}
+                        onPress={() => this.handleButtons(productType.SWEET)}>
+                        {productType.SWEET}
+                    </Button>
 
-                        <Button
-                            style={styles.toggleButton}
-                            dark
-                            color={colors.DRINKS}
-                            mode={(this.state.valueButtons === productType.DRINK) ? 'contained' : 'outlined'}
-                            onPress={() => this.handleButtons(productType.DRINK)}>
-                            {productType.DRINK}
-                        </Button>
-                    </View>
+                    <Button
+                        style={styles.toggleButton}
+                        dark
+                        color={colors.DRINKS}
+                        mode={(this.state.valueButtons === productType.DRINK) ? 'contained' : 'outlined'}
+                        onPress={() => this.handleButtons(productType.DRINK)}>
+                        {productType.DRINK}
+                    </Button>
+                </View>
 
-                    <Searchbar
-                        style={styles.searchInput}
-                        placeholder="Buscar por nombre del producto"
-                        theme={{ colors: { primary: colors.APP_MAIN } }}
-                        iconColor={colors.APP_MAIN}
-                        onChangeText={text => this._onChangeSearch(text)}
-                        value={this.state.searchQuery}
+                <Searchbar
+                    style={styles.searchInput}
+                    placeholder="Buscar por nombre del producto"
+                    theme={{ colors: { primary: colors.APP_MAIN } }}
+                    iconColor={colors.APP_MAIN}
+                    onChangeText={text => this._onChangeSearch(text)}
+                    value={this.state.searchQuery}
+                />
+
+                {(this.state.valueButtons === productType.SALTY) ?
+                    <FlatList
+                        style={[styles.list, {
+                            marginBottom: (this.props.rute == 'client') ? sizes.hp('29%') : (this.props.rute === 'shop') ?
+                                sizes.hp('18%') : null, //36.3
+                        }]}
+                        refreshing={this.state.refreshing}
+                        onRefresh={this.onRefresh}
+                        data={(this.state.areSalty) ? this.state.menuSalty : [1]}
+                        initialNumToRender={0}
+                        renderItem={({ item }) => this._renderItem(item)}
+                        keyExtractor={(item, i) => i.toString()}
                     />
-
-                    {(this.state.valueButtons === productType.SALTY) ?
+                    :
+                    (this.state.valueButtons === productType.SWEET) ?
                         <FlatList
                             style={[styles.list, {
                                 marginBottom: (this.props.rute == 'client') ? sizes.hp('29%') : (this.props.rute === 'shop') ?
-                                        sizes.hp('18%') : null, //36.3
+                                    sizes.hp('18%') : null, //36.3
                             }]}
                             refreshing={this.state.refreshing}
                             onRefresh={this.onRefresh}
-                            data={(this.state.areSalty) ? this.state.menuSalty : [1]}
+                            data={(this.state.areSweet) ? this.state.menuSweet : [1]}
                             initialNumToRender={0}
                             renderItem={({ item }) => this._renderItem(item)}
                             keyExtractor={(item, i) => i.toString()}
                         />
                         :
-                        (this.state.valueButtons === productType.SWEET) ?
-                            <FlatList
-                                style={[styles.list, {
-                                    marginBottom: (this.props.rute == 'client') ? sizes.hp('29%') : (this.props.rute === 'shop') ?
+                        <FlatList
+                            style={[styles.list, {
+                                marginBottom: (this.props.rute === 'client') ? sizes.hp('29%') : (this.props.rute === 'shop') ?
                                     sizes.hp('18%') : null, //36.3
-                                }]}
-                                refreshing={this.state.refreshing}
-                                onRefresh={this.onRefresh}
-                                data={(this.state.areSweet) ? this.state.menuSweet : [1]}
-                                initialNumToRender={0}
-                                renderItem={({ item }) => this._renderItem(item)}
-                                keyExtractor={(item, i) => i.toString()}
-                            />
-                            :
-                            <FlatList
-                                style={[styles.list, {
-                                    marginBottom: (this.props.rute === 'client') ? sizes.hp('29%') : (this.props.rute === 'shop') ?
-                                    sizes.hp('18%') : null, //36.3
-                                }]}
-                                refreshing={this.state.refreshing}
-                                onRefresh={this.onRefresh}
-                                data={(this.state.areDrinks) ? this.state.menuDrinks : [1]}
-                                initialNumToRender={0}
-                                renderItem={({ item }) => this._renderItem(item)}
-                                keyExtractor={(item, i) => i.toString()}
-                            />
-                    }
+                            }]}
+                            refreshing={this.state.refreshing}
+                            onRefresh={this.onRefresh}
+                            data={(this.state.areDrinks) ? this.state.menuDrinks : [1]}
+                            initialNumToRender={0}
+                            renderItem={({ item }) => this._renderItem(item)}
+                            keyExtractor={(item, i) => i.toString()}
+                        />
+                }
+
+                <Portal>
+
+                    <Dialog
+                        visible={this.state.visibleDialogResponse}
+                        onDismiss={this._hideDialogResponse}>
+                        <Dialog.Title style={{ alignSelf: 'center', textAlign: 'center' }}>{this.state.actionMessage}</Dialog.Title>
+                        <Dialog.Actions>
+                            <Button style={{ marginRight: sizes.wp('3%') }} color={'#000000'} onPress={this._hideDialogResponse}>Ok</Button>
+                        </Dialog.Actions>
+                    </Dialog>
+
+                </Portal>
             </View>
         )
     }

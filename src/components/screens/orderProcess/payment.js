@@ -56,8 +56,7 @@ export default function PayOrder() {
                 dispatch({ type: 'LOGOUT' })
                 Actions.logsign({ visible: true })
                 break;
-            case '¡Listo! Se acreditó tu pago':
-                console.log('aca')
+            case '¿En cuántas cuotas?': //Revisá si está todo bien - ¡Listo! Se acreditó tu pago
                 setPayed(true)
                 break;
         }

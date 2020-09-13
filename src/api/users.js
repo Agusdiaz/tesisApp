@@ -88,3 +88,20 @@ export const insertShop = async (cuit, name, address, phone, legalName, mail, pa
         .then(obj => {return obj});
     return response
 }
+
+export const changePassword = async (mail, password, token) => {
+    let requestBody = {};
+    requestBody.mail = mail
+    requestBody.contraseña = password
+    const response = await fetch(`${APIURL}changePassword`, {
+        method: 'POST',
+        body: JSON.stringify(requestBody),
+        headers: new Headers({
+            'Content-Type': 'application/json',
+            'Authorization': token
+        })
+    }).then(r => r.json()
+        .then(data => ({ status: r.status, body: data })))
+        .then(obj => {return obj});
+    return response
+}

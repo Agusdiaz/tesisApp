@@ -5,7 +5,7 @@ import { appStyles, colors, sizes } from '../../../index.styles';
 import { Avatar, Button, Dialog, TextInput, Modal, IconButton, Portal, ActivityIndicator } from 'react-native-paper';
 import TextTicker from 'react-native-text-ticker'
 import { Actions } from 'react-native-router-flux';
-import { updateClient } from '../../../api/users'
+import { updateClient, changePassword } from '../../../api/users'
 import ClientActions from '../../../redux/authState/action'
 
 class ProfileClientScreen extends Component {
@@ -39,22 +39,37 @@ class ProfileClientScreen extends Component {
     _hideModalPassword = () => this.setState({ visibleModalPassword: false });
 
     passwordsMatch() {
-        if (this.state.passwordNew.localeCompare(this.state.passwordRepeated) == 0 && this.state.passwordNew.length > 5 &&
-            this.state.passwordNew.localeCompare(this.state.password) != 0)
+        if (this.state.passwordNew.localeCompare(this.state.passwordRepeated) === 0 && this.state.passwordNew.length > 5)
             return true
-        return false;
+        else if(this.state.passwordNew.localeCompare(this.state.passwordRepeated) !== 0){
+            this.setState({errorMessage: 'Las contraseñas ingresadas deben coincidir' });
+            this._showDialogEditProfile()
+            return
+        } else if(this.state.passwordNew.length <= 5){
+            this.setState({errorMessage: 'La contraseña debe tener 6 o más caracteres' });
+            this._showDialogEditProfile()
+            return
+        }
     }
 
-    editPassword() {
+    async editPassword() {
         if (this.state.passwordNew != '' && this.state.passwordRepeated != '') {
             if (this.passwordsMatch()) {
-                this.setState({ password: this.state.passwordNew, passwordNew: '', passwordRepeated: '' });
-                this._hideModalPassword()
-            } else
-                this._showDialogEditProfile()
+                this.setState({loading: true})
+                const data = await changePassword(this.props.user.mail, this.state.passwordNew, this.props.user.token)
+                if(data.status === 500 && data.body.error){
+                    this.props.logout()
+                    Actions.logsign({visible: true})
+                } else if(data.status !== 200){
+                    this.setState({ passwordRepeated: '', passwordNew: '', errorMessage: data.body, loading: false });
+                    this._showDialogEditProfile()
+                } else {
+                    this.setState({ passwordNew: '', passwordRepeated: '', errorMessage: data.body, loading: false });
+                    this._showDialogEditProfile()
+                    this._hideModalPassword()
+                }
+            }
         }
-        else
-            this._showDialogEditProfile()
     }        
 
     async editNameLastName() {
@@ -288,7 +303,7 @@ class ProfileClientScreen extends Component {
                     <Dialog
                         visible={this.state.visibleDialogEditProfile}
                         onDismiss={this._hideDialogEditProfile}>
-                        <Dialog.Title style={{ alignSelf: 'center' }}>{this.state.errorMessage}</Dialog.Title>
+                        <Dialog.Title style={{ alignSelf: 'center', textAlign: 'center' }}>{this.state.errorMessage}</Dialog.Title>
                         <Dialog.Actions>
                             <Button style={{ marginRight: sizes.wp('3%') }} color={'#000000'} onPress={this._hideDialogEditProfile}>Ok</Button>
                         </Dialog.Actions>

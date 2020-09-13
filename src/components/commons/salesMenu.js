@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { StyleSheet, Text, View, FlatList, Image } from 'react-native';
 import { colors, sizes } from '../../index.styles';
-import { Button } from 'react-native-paper';
+import { Button, Portal, Dialog } from 'react-native-paper';
 import SalesCard from '../commons/salesCard'
 import { getAllShopPromos } from '../../api/promos'
 import { Actions } from 'react-native-router-flux';
@@ -15,8 +15,11 @@ class SalesMenu extends Component {
             areSales: true,
             sales: [],
             refreshing: false,
+            visibleDialogResponse: false,
+            actionMessage: '',
         }
         this.onRefresh = this.onRefresh.bind(this);
+        this._showDialogResponse = this._showDialogResponse.bind(this);
     }
 
     componentDidMount() {
@@ -38,6 +41,11 @@ class SalesMenu extends Component {
         else this.setState({ areSales: true, sales: data.body })
     }
 
+    _showDialogResponse(message) {
+        this.setState({ visibleDialogResponse: true, actionMessage: message })
+    }
+    _hideDialogResponse = () => this.setState({ visibleDialogResponse: false, actionMessage: '' })
+
     onRefresh() {
         this.setState({ sales: [], refreshing: true })
         this.getPromos()
@@ -47,7 +55,8 @@ class SalesMenu extends Component {
     _renderItem(item) {
         if (this.state.areSales) {
             return (
-                <SalesCard data={item} rute={(this.props.user.mail === undefined) ? 'editPromo' : null} refreshParent={this.onRefresh}/>
+                <SalesCard data={item} rute={(this.props.user.mail === undefined) ? 'editPromo' : null} refreshParent={this.onRefresh}
+                showDialogResponse={this._showDialogResponse} />
             );
         } else {
             return (
@@ -72,6 +81,19 @@ class SalesMenu extends Component {
                     initialNumToRender={0}
                     renderItem={({ item }) => this._renderItem(item)}
                     keyExtractor={(item, i) => i.toString()} />
+
+<Portal>
+
+<Dialog
+    visible={this.state.visibleDialogResponse}
+    onDismiss={this._hideDialogResponse}>
+    <Dialog.Title style={{ alignSelf: 'center', textAlign: 'center' }}>{this.state.actionMessage}</Dialog.Title>
+    <Dialog.Actions>
+        <Button style={{ marginRight: sizes.wp('3%') }} color={'#000000'} onPress={this._hideDialogResponse}>Ok</Button>
+    </Dialog.Actions>
+</Dialog>
+
+</Portal>
             </View>
         )
     }
