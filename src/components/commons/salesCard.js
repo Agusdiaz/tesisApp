@@ -10,7 +10,7 @@ import PromoDetails from '../screens/orderProcess/promoDetailsOrder'
 import ShopActions from '../../redux/authState/action'
 import { Actions } from 'react-native-router-flux';
 import Schedule from './schedule'
-import { updatePromoPrice } from '../../api/menus'
+import { updatePromoPrice, deletePromo } from '../../api/promos'
 
 class SalesCard extends Component {
 
@@ -27,6 +27,7 @@ class SalesCard extends Component {
             loading: false,
             visibleDialogPrice: false,
             visibleDialogError: false,
+            visibleDialogDelete: false,
             actionError: '',
         }
     }
@@ -51,6 +52,9 @@ class SalesCard extends Component {
     _showModalPromoDetails = () => (this._isMounted) ? this.setState({ visibleModalPromoDetails: true }) : null;
     _hideModalPromoDetails = () => (this._isMounted) ? this.setState({ visibleModalPromoDetails: false }) : null;
 
+    _showDialogDelete = () => (this._isMounted) ? this.setState({ visibleDialogDelete: true }) : null;
+    _hideDialogDelete = () => (this._isMounted) ? this.setState({ visibleDialogDelete: false }) : null;
+
     _showDialogError(message) {
         (this._isMounted) ? this.setState({ visibleDialogError: true, actionError: message }) : null;
     }
@@ -68,6 +72,24 @@ class SalesCard extends Component {
                 this._showDialogError(data.body)
             } else {
                 this.setState({ price: '', loading: false });
+                this.props.refreshParent()
+                this.props.showDialogResponse(data.body)
+            }
+        }
+    }
+
+    async deletePromo() {
+        if (this._isMounted) {
+            this.setState({ loading: true })
+            const data = await deletePromo(this.props.data.id, this.props.shop.cuit, this.props.shop.token)
+            if (data.status === 500 && data.body.error) {
+                this.props.logout()
+                Actions.logsign({ visible: true })
+            } else if (data.status !== 200) {
+                this.setState({ loading: false });
+                this._showDialogError(data.body)
+            } else {
+                this.setState({ loading: false });
                 this.props.refreshParent()
                 this.props.showDialogResponse(data.body)
             }
@@ -123,8 +145,7 @@ class SalesCard extends Component {
                         mode='contained'
                         dark
                         onPress={this._showModalPromoDetails}
-                        color={colors.APP_MAIN}
-                    >
+                        color={colors.APP_MAIN}>
                         Agregar
             </Button>
                     :
@@ -133,8 +154,7 @@ class SalesCard extends Component {
                         icon='close'
                         color={colors.APP_MAIN}
                         size={30}
-                        onPress={() => this.props.hideModalFromChild()}
-                    />}
+                        onPress={() => this.props.hideModalFromChild()}/>}
         </View>
 
         return (
@@ -171,14 +191,23 @@ class SalesCard extends Component {
                             </ScrollView>
                         </DataTable>
                         {(this.props.rute === 'editPromo') ?
-                            <View style={{ marginTop: sizes.hp('1%'), alignItems: 'center', justifyContent: 'center' }}>
+                            <View style={{ marginTop: sizes.hp('1%'), alignItems: 'center', justifyContent: 'space-between', flexDirection: 'row' }}>
                                 <Button
-                                    style={{}}
+                                    style={{ marginRight: sizes.wp('12%')}}
                                     mode="contained"
                                     color={colors.APP_MAIN}
                                     onPress={this._showDialogPrice}>
                                     Modificar Precio
  				                </Button>
+
+                                 <Button
+                                style={{}}
+                                mode="contained"
+                                color={colors.APP_MAIN}
+                                onPress={this._showDialogDelete}>
+                                Eliminar
+ 				                </Button>
+                                 
                             </View>
                             : null}
                     </Card.Content>
@@ -223,6 +252,19 @@ class SalesCard extends Component {
                                 this.updatePrice(),
                                     this._hideDialogPrice()
                             }}>Modificar</Button>
+                        </Dialog.Actions>
+                    </Dialog>
+
+                    <Dialog
+                        visible={this.state.visibleDialogDelete}
+                        onDismiss={this._hideDialogDelete}>
+                        <Dialog.Title style={{ alignSelf: 'center', textAlign: 'center' }}>¿Desea eliminar esta promoción?</Dialog.Title>
+                        <Dialog.Actions>
+                            <Button style={{ marginRight: sizes.wp('4%') }} color={colors.APP_RED} onPress={() => this._hideDialogDelete()}>No</Button>
+                            <Button color={colors.APP_GREEN} onPress={() => {
+                                this._hideDialogDelete()
+                                this.deletePromo()
+                            }}>Sí</Button>
                         </Dialog.Actions>
                     </Dialog>
 

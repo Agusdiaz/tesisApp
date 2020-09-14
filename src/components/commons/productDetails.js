@@ -7,7 +7,7 @@ import { Card, FAB, Button, Divider, IconButton, Portal, Dialog, TextInput, Moda
 import TextTicker from 'react-native-text-ticker'
 import ShopActions from '../../redux/authState/action'
 import { Actions } from 'react-native-router-flux';
-import { updateProductPrice } from '../../api/menus'
+import { updateProductPrice, deleteProduct } from '../../api/menus'
 
 class ProductDetails extends Component {
     constructor(props) {
@@ -18,6 +18,7 @@ class ProductDetails extends Component {
             loading: false,
             visibleDialogPrice: false,
             visibleDialogError: false,
+            visibleDialogDelete: false,
             actionError: '',
         }
     }
@@ -28,6 +29,9 @@ class ProductDetails extends Component {
 
     _showDialogPrice = () => this.setState({ visibleDialogPrice: true })
     _hideDialogPrice = () => this.setState({ visibleDialogPrice: false })
+
+    _showDialogDelete = () => this.setState({ visibleDialogDelete: true })
+    _hideDialogDelete = () => this.setState({ visibleDialogDelete: false })
 
     _showDialogError(message) {
         this.setState({ visibleDialogError: true, actionError: message })
@@ -61,6 +65,23 @@ class ProductDetails extends Component {
             this._showDialogError(data.body)
         } else {
             this.setState({ price: '', loading: false });
+            this.hideModal()
+            this.props.refreshParent()
+            this.props.showDialogResponse(data.body)
+        }
+    }
+
+    async deleteProduct() {
+        this.setState({ loading: true })
+        const data = await deleteProduct(this.props.data.id, this.props.shop.cuit, this.props.shop.token)
+        if (data.status === 500 && data.body.error) {
+            this.props.logout()
+            Actions.logsign({ visible: true })
+        } else if (data.status !== 200) {
+            this.setState({ loading: false });
+            this._showDialogError(data.body)
+        } else {
+            this.setState({ loading: false });
             this.hideModal()
             this.props.refreshParent()
             this.props.showDialogResponse(data.body)
@@ -168,13 +189,21 @@ class ProductDetails extends Component {
                         </ScrollView>
                     </DataTable>
                     {(this.props.rute === 'shop') ?
-                        <View style={{ borderWidth: 2, alignItems: 'center', justifyContent: 'center' }}>
+                        <View style={{ alignItems: 'center', justifyContent: 'space-between', flexDirection: 'row' }}>
                             <Button
-                                style={{}}
+                                style={{ marginRight: sizes.wp('12%') }}
                                 mode="contained"
                                 color={colors.APP_MAIN}
                                 onPress={this._showDialogPrice}>
                                 Modificar Precio
+ 				                </Button>
+
+                            <Button
+                                style={{}}
+                                mode="contained"
+                                color={colors.APP_MAIN}
+                                onPress={this._showDialogDelete}>
+                                Eliminar
  				                </Button>
                         </View>
                         : null}
@@ -200,8 +229,21 @@ class ProductDetails extends Component {
                             <Button style={{ marginRight: sizes.wp('3%') }} color={colors.APP_RED} onPress={this._hideDialogPrice}>Cancelar</Button>
                             <Button color={colors.APP_GREEN} disabled={this.state.price === '' || this.state.price === '0'} onPress={() => {
                                 this.updatePrice(),
-                                this._hideDialogPrice()
+                                    this._hideDialogPrice()
                             }}>Modificar</Button>
+                        </Dialog.Actions>
+                    </Dialog>
+
+                    <Dialog
+                        visible={this.state.visibleDialogDelete}
+                        onDismiss={this._hideDialogDelete}>
+                        <Dialog.Title style={{ alignSelf: 'center', textAlign: 'center' }}>Se eliminarán todas las promociones que contengan este producto</Dialog.Title>
+                        <Dialog.Actions>
+                            <Button style={{ marginRight: sizes.wp('4%') }} color={colors.APP_RED} onPress={() => this._hideDialogDelete()}>Cancelar</Button>
+                            <Button color={colors.APP_GREEN} onPress={() => {
+                                this._hideDialogDelete()
+                                this.deleteProduct()
+                            }}>Continuar</Button>
                         </Dialog.Actions>
                     </Dialog>
 

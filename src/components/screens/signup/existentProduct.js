@@ -97,6 +97,11 @@ class ExistentProduct extends Component {
         let newText = '';
         let numbers = '0123456789';
         for (var i = 0; i < number.length; i++) {
+            if(number === '0'){
+                Alert.alert('Atención', 'La cantidad no puede ser 0');
+                this.setState({ amount: '' })
+                break
+            }
             if (numbers.indexOf(number[i]) > -1) {
                 newText = newText + number[i]
                 this.setState({ amount: number.toString() })

@@ -28,14 +28,14 @@ class SalesMenu extends Component {
 
     async getPromos() {
         var data
-        if(this.props.user.mail !== undefined){
+        if (this.props.user.mail !== undefined) {
             data = await getAllShopPromos(this.props.selected.cuit, this.props.user.token)
-        }else{ 
+        } else {
             data = await getAllShopPromos(this.props.shop.cuit, this.props.shop.token)
         }
-        if(data.status === 500 && data.body.error){
+        if (data.status === 500 && data.body.error) {
             this.props.logout()
-            Actions.logsign({visible: true})
+            Actions.logsign({ visible: true })
         } else if (data.status === 500 || data.status === 204)
             this.setState({ areSales: false })
         else this.setState({ areSales: true, sales: data.body })
@@ -56,14 +56,14 @@ class SalesMenu extends Component {
         if (this.state.areSales) {
             return (
                 <SalesCard data={item} rute={(this.props.user.mail === undefined) ? 'editPromo' : null} refreshParent={this.onRefresh}
-                showDialogResponse={this._showDialogResponse} />
+                    showDialogResponse={this._showDialogResponse} />
             );
         } else {
             return (
                 <View style={styles.viewImage}>
                     <Image source={require('../../icons/noSales.png')} style={styles.image} />
                     <Text style={styles.infoImage}>{(this.props.user.mail !== undefined) ? 'Este local no tiene promociones'
-                    : 'Tu local no tiene promociones '}</Text>
+                        : 'Tu local no tiene promociones '}</Text>
                 </View>
             );
         }
@@ -82,18 +82,18 @@ class SalesMenu extends Component {
                     renderItem={({ item }) => this._renderItem(item)}
                     keyExtractor={(item, i) => i.toString()} />
 
-<Portal>
+                <Portal>
 
-<Dialog
-    visible={this.state.visibleDialogResponse}
-    onDismiss={this._hideDialogResponse}>
-    <Dialog.Title style={{ alignSelf: 'center', textAlign: 'center' }}>{this.state.actionMessage}</Dialog.Title>
-    <Dialog.Actions>
-        <Button style={{ marginRight: sizes.wp('3%') }} color={'#000000'} onPress={this._hideDialogResponse}>Ok</Button>
-    </Dialog.Actions>
-</Dialog>
+                    <Dialog
+                        visible={this.state.visibleDialogResponse}
+                        onDismiss={this._hideDialogResponse}>
+                        <Dialog.Title style={{ alignSelf: 'center', textAlign: 'center' }}>{this.state.actionMessage}</Dialog.Title>
+                        <Dialog.Actions>
+                            <Button style={{ marginRight: sizes.wp('3%') }} color={'#000000'} onPress={this._hideDialogResponse}>Ok</Button>
+                        </Dialog.Actions>
+                    </Dialog>
 
-</Portal>
+                </Portal>
             </View>
         )
     }
@@ -103,7 +103,7 @@ const styles = StyleSheet.create({
     list: {
         top: sizes.hp('1%'),
         width: sizes.wp('100%'),
-        //marginBottom: sizes.hp('23%'),
+        marginBottom: sizes.hp('1.5%'),
     },
     viewImage: {
         justifyContent: 'center',

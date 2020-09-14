@@ -52,11 +52,14 @@ class ListIngredients extends Component {
         let newText = '';
         let numbers = '0123456789';
         for (var i = 0; i < number.length; i++) {
-            if (numbers.indexOf(number[i]) > -1) {
+            if(number === '0'){
+                Alert.alert('Atención', 'El tope no puede ser 0');
+                this.setState({ tope: '' })
+                break
+            } else if (numbers.indexOf(number[i]) > -1) {
                 newText = newText + number[i]
                 this.setState({ tope: number.toString() })
-            }
-            else {
+            } else {
                 Alert.alert('Atención', 'Por favor, ingrese solo números');
                 break
             }

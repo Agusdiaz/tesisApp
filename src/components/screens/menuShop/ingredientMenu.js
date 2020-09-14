@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { StyleSheet, Text, View, FlatList, Image, KeyboardAvoidingView } from 'react-native';
 import { colors, sizes, productType } from '../../../index.styles';
-import { Button, Searchbar } from 'react-native-paper';
+import { Button, Searchbar, Dialog, Portal } from 'react-native-paper';
 import IngredientCard from '../../commons/ingredientCard'
 import { getIngredients } from '../../../api/menus'
 import { Actions } from 'react-native-router-flux';
@@ -16,20 +16,28 @@ class IngredientMenu extends Component {
             ingredients: [],
             areIngredients: true,
             searchQuery: '',
+            visibleDialogResponse: false,
+            actionMessage: '',
         }
         this.arrayholder = []
         this.onRefresh = this.onRefresh.bind(this);
+        this._showDialogResponse = this._showDialogResponse.bind(this);
     }
 
     componentDidMount() {
         this.getIngredients()
     }
 
+    _showDialogResponse(message) {
+        this.setState({ visibleDialogResponse: true, actionMessage: message })
+    }
+    _hideDialogResponse = () => this.setState({ visibleDialogResponse: false, actionMessage: '' })
+
     async getIngredients() {
         const data = await getIngredients(this.props.shop.cuit, this.props.shop.token)
-        if(data.status === 500 && data.body.error){
+        if (data.status === 500 && data.body.error) {
             this.props.logout()
-            Actions.logsign({visible: true})
+            Actions.logsign({ visible: true })
         }
         if (data.status === 500 || data.status === 204)
             this.setState({ areIngredients: false })
@@ -62,7 +70,8 @@ class IngredientMenu extends Component {
     _renderItem(item) {
         if (this.state.areIngredients) {
             return (
-                <IngredientCard rute={(this.props.rute === 'initial') ? 'initial' : 'enable'} data={item} refreshParent={this.onRefresh} />
+                <IngredientCard rute={(this.props.rute === 'initial') ? 'initial' : 'enable'} data={item} refreshParent={this.onRefresh}
+                    showDialogResponse={this._showDialogResponse} />
             );
         } else {
             return (
@@ -77,8 +86,8 @@ class IngredientMenu extends Component {
     render() {
 
         return (
-            <View style={{ width: sizes.wp('100%'), height: sizes.hp('100%'), top: sizes.hp('13%'), flex: 1,}}>
-            
+            <View style={{ width: sizes.wp('100%'), height: sizes.hp('100%'), top: sizes.hp('13%'), flex: 1, }}>
+
                 <Searchbar
                     style={styles.searchInput}
                     placeholder="Buscar por nombre del ingrediente"
@@ -88,15 +97,28 @@ class IngredientMenu extends Component {
                     value={this.state.searchQuery}
                 />
 
-                    <FlatList
-                        style={styles.list}
-                        refreshing={this.state.refreshing}
-                        onRefresh={this.onRefresh}
-                        data={(this.state.areIngredients) ? this.state.ingredients : [1]}
-                        initialNumToRender={0}
-                        renderItem={({ item }) => this._renderItem(item)}
-                        keyExtractor={(item, i) => i.toString()}
-                    />
+                <FlatList
+                    style={styles.list}
+                    refreshing={this.state.refreshing}
+                    onRefresh={this.onRefresh}
+                    data={(this.state.areIngredients) ? this.state.ingredients : [1]}
+                    initialNumToRender={0}
+                    renderItem={({ item }) => this._renderItem(item)}
+                    keyExtractor={(item, i) => i.toString()}
+                />
+
+                <Portal>
+
+                    <Dialog
+                        visible={this.state.visibleDialogResponse}
+                        onDismiss={this._hideDialogResponse}>
+                        <Dialog.Title style={{ alignSelf: 'center', textAlign: 'center' }}>{this.state.actionMessage}</Dialog.Title>
+                        <Dialog.Actions>
+                            <Button style={{ marginRight: sizes.wp('3%') }} color={'#000000'} onPress={this._hideDialogResponse}>Ok</Button>
+                        </Dialog.Actions>
+                    </Dialog>
+
+                </Portal>
             </View>
         )
     }

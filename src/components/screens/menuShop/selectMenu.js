@@ -19,15 +19,13 @@ class SelectMenu extends Component {
     }
 
     onRefreshChilds = () => {
-        if(this.state.selectedTab === 2)
+        if (this.state.selectedTab === 2)
             this.promos.current.onRefresh();
         else
             this.products.current.onRefresh();
-      };
+    };
 
     render() {
-       
-
         return (
             <View style={appStyles.container}>
                 <Tabs
@@ -47,11 +45,11 @@ class SelectMenu extends Component {
                 />
 
                 {(this.state.selectedTab === 0) ?
-                    <ProductMenu rute={(this.props.rute === 'initial') ? 'initial' : 'shop'} ref={this.products}/>
+                    <ProductMenu rute={(this.props.rute === 'initial') ? 'initial' : 'shop'} ref={this.products} />
                     : (this.state.selectedTab === 1) ?
-                        <IngredientMenu rute={(this.props.rute === 'initial') ? 'initial' : null}/>
+                        <IngredientMenu rute={(this.props.rute === 'initial') ? 'initial' : null} />
                         :
-                        <SalesMenu rute='shop' ref={this.promos}/>
+                        <SalesMenu rute='shop' ref={this.promos} />
                 }
 
                 {(this.props.rute === 'initial') ?
@@ -64,12 +62,17 @@ class SelectMenu extends Component {
                             style={styles.fabPlus}
                             color='#FFF'
                             icon="plus"
-                            onPress={() => {(this.state.selectedTab === 2) ? Actions.createpromo({onRefreshChilds: this.onRefreshChilds.bind(this),
-                                rute: (this.props.rute === 'initial') ? 'initial' : 'shop'}) 
-                                : Actions.createproduct({onRefreshChilds: this.onRefreshChilds.bind(this),
-                                rute: (this.props.rute === 'initial') ? 'initial' : 'shop'})}} />
+                            onPress={() => {
+                                (this.state.selectedTab === 2) ? Actions.createpromo({
+                                    onRefreshChilds: this.onRefreshChilds.bind(this),
+                                    rute: (this.props.rute === 'initial') ? 'initial' : 'shop'
+                                })
+                                    : Actions.createproduct({
+                                        onRefreshChilds: this.onRefreshChilds.bind(this),
+                                        rute: (this.props.rute === 'initial') ? 'initial' : 'shop'
+                                    })
+                            }} />
                         : null}
-
             </View>
         )
     }
@@ -95,10 +98,10 @@ const styles = StyleSheet.create({
         resizeMode: 'center',
     },
     fabPlus: {
-        backgroundColor: colors.APP_MAIN,
+        backgroundColor: colors.APP_GREEN,
         borderRadius: sizes.wp('50%'),
         position: 'absolute',
-        height: '8%',
+        height: '8.2%',
         width: '16%',
         justifyContent: 'center',
         alignItems: 'center',

@@ -4,7 +4,7 @@ import { StyleSheet, Text, View, Image } from 'react-native';
 import { colors, sizes, productCondition } from '../../index.styles';
 import { Card, FAB, Modal, Portal, Button, Dialog, ActivityIndicator } from 'react-native-paper';
 import TextTicker from 'react-native-text-ticker';
-import { updateIngredientStatus } from '../../api/menus'
+import { updateIngredientStatus, deleteIngredient } from '../../api/menus'
 import UserActions from '../../redux/authState/action'
 import { Actions } from 'react-native-router-flux';
 
@@ -20,6 +20,7 @@ class IngredientCard extends Component {
             visibleModalDetails: false,
             visibleDialogDisabled: false,
             visibleDialogResponse: false,
+            visibleDialogDelete: false,
             statusMessage: '',
             actionMessage: '',
             loading: false,
@@ -41,13 +42,31 @@ class IngredientCard extends Component {
             const data = await updateIngredientStatus(this.state.status, this.props.data.id, this.props.shop.token)
             this._hideDialogDisabled()
             this.setState({ actionMessage: data.body, loading: false })
-            if(data.status === 500 && data.body.error){
+            if (data.status === 500 && data.body.error) {
                 this.props.logout()
-                Actions.logsign({visible: true})
+                Actions.logsign({ visible: true })
             } else if (data.status === 200) {
                 this.props.refreshParent()
             }
             this._showDialogResponse()
+        }
+    }
+
+    async deleteIngredient() {
+        if (this._isMounted) {
+            this.setState({ loading: true })
+            const data = await deleteIngredient(this.props.data.id, this.props.shop.cuit, this.props.shop.token)
+            if (data.status === 500 && data.body.error) {
+                this.props.logout()
+                Actions.logsign({ visible: true })
+            } else if (data.status !== 200) {
+                this.setState({ loading: false });
+                this.props.showDialogResponse(data.body)
+            } else {
+                this.setState({ loading: false });
+                this.props.refreshParent()
+                this.props.showDialogResponse(data.body)
+            }
         }
     }
 
@@ -60,11 +79,14 @@ class IngredientCard extends Component {
     _showDialogResponse = () => (this._isMounted) ? this.setState({ visibleDialogResponse: true }) : null;
     _hideDialogResponse = () => (this._isMounted) ? this.setState({ visibleDialogResponse: false }) : null;
 
+    _showDialogDelete = () => (this._isMounted) ? this.setState({ visibleDialogDelete: true }) : null;
+    _hideDialogDelete = () => (this._isMounted) ? this.setState({ visibleDialogDelete: false }) : null;
+
     render() {
         return (
             <View>
                 <Card style={{ margin: 2, }}>
-                    <Card.Content style={{ maxHeight: sizes.hp('17%')}}>
+                    <Card.Content style={{ maxHeight: sizes.hp('17%') }}>
                         <View style={{ flexDirection: 'row', margin: -5 }}>
                             <View style={{ width: sizes.hp('12%'), alignItems: 'center', justifyContent: 'center' }}>
                                 <Image source={{ uri: this.state.photo }} resizeMode='cover' style={styles.image} />
@@ -86,17 +108,26 @@ class IngredientCard extends Component {
 
                             </View>
 
-                            <View style={{ width: sizes.hp('7%'), alignItems: 'center', justifyContent: 'center'}}>
+                            <View style={{ width: sizes.hp('7%'), alignItems: 'center', justifyContent: 'center' }}>
                                 {(this.props.rute === 'enable') ?
-                                    <FAB
-                                        style={styles.fabDisabled}
-                                        color={colors.APP_MAIN}
-                                        icon="cart-remove"
-                                        small
-                                        onPress={() => {
-                                            this.setState({ status: 0 })
-                                            this._showDialogDisabled('¿Esta seguro que desea deshabilitar este producto?')
-                                        }} />
+                                    <View style={{}}>
+                                        <FAB
+                                            style={styles.fabDisabled}
+                                            color={colors.APP_MAIN}
+                                            icon="cart-remove"
+                                            small
+                                            onPress={() => {
+                                                this.setState({ status: 0 })
+                                                this._showDialogDisabled('¿Esta seguro que desea deshabilitar este producto?')
+                                            }} />
+
+                                        <FAB
+                                            style={[styles.fabDisabled, { marginTop: sizes.hp('1.3%') }]}
+                                            color={colors.APP_MAIN}
+                                            icon="delete"
+                                            small
+                                            onPress={this._showDialogDelete} />
+                                    </View>
                                     : (this.props.rute === 'disabled') ?
                                         <FAB
                                             style={styles.fabDisabled}
@@ -126,11 +157,15 @@ class IngredientCard extends Component {
                     </Dialog>
 
                     <Dialog
-                        visible={this.state.visibleDialogResponse}
-                        onDismiss={this._hideDialogResponse}>
-                        <Dialog.Title style={{ alignSelf: 'center', textAlign: 'center' }}>{this.state.actionMessage}</Dialog.Title>
+                        visible={this.state.visibleDialogDelete}
+                        onDismiss={this._hideDialogDelete}>
+                        <Dialog.Title style={{ alignSelf: 'center', textAlign: 'center' }}>Es posible que se eliminen productos y/o promociones que contengan este ingrediente</Dialog.Title>
                         <Dialog.Actions>
-                            <Button style={{ marginRight: sizes.wp('3%') }} color={'#000000'} onPress={this._hideDialogResponse}>Ok</Button>
+                            <Button style={{ marginRight: sizes.wp('4%') }} color={colors.APP_RED} onPress={() => this._hideDialogDelete()}>Cancelar</Button>
+                            <Button color={colors.APP_GREEN} onPress={() => {
+                                this._hideDialogDelete()
+                                this.deleteIngredient()
+                            }}>Continuar</Button>
                         </Dialog.Actions>
                     </Dialog>
 
@@ -174,7 +209,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#FFFFFF',
         borderColor: colors.APP_MAIN,
         borderWidth: 2,
-        position: 'absolute'
+        //position: 'absolute'
     },
 });
 
