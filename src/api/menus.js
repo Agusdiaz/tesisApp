@@ -189,3 +189,33 @@ export const deleteIngredient = async (id, cuit, token) => {
         .then(obj => { return obj });
     return response
 }
+
+export const modifyProduct = async (body, token) => {
+    const response = await fetch(`${APIURL}modifyProduct`, {
+        method: 'POST',
+        body: JSON.stringify(body),
+        headers: new Headers({
+            'Content-Type': 'application/json',
+            'Authorization': token
+        })
+    }).then(r => (r.status === 204) ? r : r.json()
+        .then(data =>
+            ({ status: r.status, body: data })))
+        .then(obj => { return obj });
+    return response
+}
+
+export const modifyIngredient = async (body, token) => {
+    const response = await fetch(`${APIURL}modifyIngredient`, {
+        method: 'POST',
+        body: JSON.stringify(body),
+        headers: new Headers({
+            'Content-Type': 'application/json',
+            'Authorization': token
+        })
+    }).then(r => (r.status === 204) ? r : r.json()
+        .then(data =>
+            ({ status: r.status, body: data })))
+        .then(obj => { return obj });
+    return response
+}

@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, Text, KeyboardAvoidingView, Platform, } from 'react-native';
+import { StyleSheet, View, Text, KeyboardAvoidingView, Platform, Alert } from 'react-native';
 import { TextInput, Button, Dialog, ActivityIndicator, Modal, HelperText, Paragraph } from 'react-native-paper';
 import { appStyles, colors, sizes } from '../../../index.styles';
 import ArrowButton from '../../commons/arrowButton'
 import { insertShop } from '../../../api/users'
- 
+
 export default class SignUpShopScreen extends Component {
 
 	constructor(props) {
@@ -21,54 +21,86 @@ export default class SignUpShopScreen extends Component {
 			visibleDialogError: false,
 			loading: false,
 			messageError: 'IMPORTANTE: Una vez cargada tu información, la misma será validada. Te enviaremos un mail a esa dirección ' +
-			'notificando el alta del local en nuestro sistema.',
+				'notificando el alta del local en nuestro sistema.',
 			emailError: false,
 			passwordError: false,
 		}
 	}
 
-	async signup(){
+	async signup() {
 		this.setState({ loading: true })
 		setTimeout(() => { this.setState({ loading: false }) }, 4000);
-		const data = await insertShop(this.state.cuit, this.state.name, this.state.address, this.state.phone, this.state.legalName, 
+		const data = await insertShop(this.state.cuit, this.state.name, this.state.address, this.state.phone, this.state.legalName,
 			this.state.email, this.state.password)
 		if (data.status === 500) {
 			this.setState({ loading: false, password: '', messageError: data.body })
 			this._showDialogError()
-		}else if(data.status === 401){
+		} else if (data.status === 401) {
 			this.setState({ loading: false, email: '', password: '', messageError: 'Error: ' + data.body })
 			this._showDialogError()
-		}else {
-			this.setState({ loading: false, cuit: '', name: '', address: '', phone: '', legalName: '', email: '', password: '', messageError: data.body})
+		} else {
+			this.setState({ loading: false, cuit: '', name: '', address: '', phone: '', legalName: '', email: '', password: '', messageError: data.body })
 			this._showDialogError()
 		}
 	}
 
 	validateMail = (text) => {
-		if(text === '')
+		if (text === '')
 			this.setState({ email: text, emailError: false })
-		else{
+		else {
 			let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-		if (reg.test(text) === false) //INCORRECTO
-			this.setState({ email: text, emailError: true })
-		else //CORRECTO
-			this.setState({ email: text, emailError: false })
+			if (reg.test(text) === false) //INCORRECTO
+				this.setState({ email: text, emailError: true })
+			else { //CORRECTO
+				if (text.length > 50)
+					Alert.alert('Texto demasiado largo')
+				else this.setState(() => ({ emailError: false, email: text }))
+			}
 		}
 	}
 
 	validatePassword = (text) => {
-		if(text === '')
+		if (text === '')
 			this.setState({ password: text, passwordError: false })
-		else{
+		else {
 			if (text.length > 5)
-			this.setState({ password: text, passwordError: false })
-		else
-			this.setState({ password: text, passwordError: true })			
+				this.setState({ password: text, passwordError: false })
+			else
+				this.setState({ password: text, passwordError: true })
 		}
 	}
-	
+
+	validateEmptyText(text, field) {
+		if (field === 0) {
+			if (text.trim() === "")
+				this.setState(() => ({ name: text }))
+			else if (text.length > 50)
+				Alert.alert('Texto demasiado largo')
+			else
+				this.setState(() => ({ name: text }))
+		}
+		else if (field === 1) {
+			if (text.trim() === "")
+				this.setState(() => ({ address: text }))
+			else if (text.length > 70)
+				Alert.alert('Texto demasiado largo')
+			else
+				this.setState(() => ({ address: text }))
+		}
+		else {
+			if (text.trim() === "")
+				this.setState(() => ({ legalName: text }))
+			else if (text.length > 70)
+				Alert.alert('Texto demasiado largo')
+			else
+				this.setState(() => ({ legalName: text }))
+		}
+	}
+
 	validatePhone = (text) => {
-		this.setState({ phone: text})
+		if (text.length > 50)
+			Alert.alert('Número demasiado largo')
+		else this.setState({ phone: text })
 	}
 
 	_showDialogCreate = () => this.setState({ visibleDialogCreate: true });
@@ -100,7 +132,7 @@ export default class SignUpShopScreen extends Component {
 					label='Nombre del Local'
 					placeholder='Nombre del Local'
 					theme={{ colors: { text: colors.TEXT_INPUT, primary: colors.APP_MAIN } }}
-					onChangeText={(text) => this.setState({ name: text })}
+					onChangeText={(text) => this.validateEmptyText(text, 0)}
 					value={this.state.name}
 				/>
 
@@ -110,7 +142,7 @@ export default class SignUpShopScreen extends Component {
 					label='Dirección'
 					placeholder='Calle 123'
 					theme={{ colors: { text: colors.TEXT_INPUT, primary: colors.APP_MAIN } }}
-					onChangeText={(text) => this.setState({ address: text })}
+					onChangeText={(text) => this.validateEmptyText(text, 1)}
 					value={this.state.address}
 				/>
 
@@ -120,7 +152,7 @@ export default class SignUpShopScreen extends Component {
 					label='Nombre Razón Social'
 					placeholder='Nombre Razón Social'
 					theme={{ colors: { text: colors.TEXT_INPUT, primary: colors.APP_MAIN } }}
-					onChangeText={(text) => this.setState({ legalName: text })}
+					onChangeText={(text) => this.validateEmptyText(text, 2)}
 					value={this.state.legalName}
 				/>
 
@@ -134,7 +166,7 @@ export default class SignUpShopScreen extends Component {
 					value={this.state.phone}
 				/>
 
-				<HelperText type="error" visible={this.state.emailError} style={{ bottom:sizes.hp('5%')}}>
+				<HelperText type="error" visible={this.state.emailError} style={{ bottom: sizes.hp('5%') }}>
 					El mail ingresado es inválido
       			</HelperText>
 
@@ -160,7 +192,7 @@ export default class SignUpShopScreen extends Component {
 					value={this.state.password}
 				/>
 
-				<HelperText type="error" visible={this.state.passwordError} style={{ bottom:sizes.hp('6%')}}>
+				<HelperText type="error" visible={this.state.passwordError} style={{ bottom: sizes.hp('6%') }}>
 					La contraseña debe tener 6 dígitos como mínimo
       			</HelperText>
 
@@ -169,19 +201,19 @@ export default class SignUpShopScreen extends Component {
 					icon="account-plus"
 					mode="contained"
 					color={colors.APP_MAIN}
-					disabled={this.state.cuit === '' || this.state.name === '' || this.state.address === '' || this.state.phone === '' || this.state.legalName === '' 
-					|| this.state.email === '' || this.state.password === '' || this.state.emailError || this.state.passwordError}
+					disabled={this.state.cuit === '' || this.state.name === '' || this.state.address === '' || this.state.phone === '' || this.state.legalName === ''
+						|| this.state.email === '' || this.state.password === '' || this.state.emailError || this.state.passwordError}
 					onPress={this._showDialogCreate}>
 					Registrarse
  				</Button>
 
-				 <Dialog
+				<Dialog
 					visible={this.state.visibleDialogCreate}
 					onDismiss={this._hideDialogCreate}>
 					<Dialog.Title style={{ alignSelf: 'center' }}>¿Desea crear cuenta?</Dialog.Title>
 					<Dialog.Actions>
 						<Button style={{ marginRight: sizes.wp('3%') }} color={colors.APP_RED} onPress={this._hideDialogCreate}>Cancelar</Button>
-						<Button color={colors.APP_GREEN} onPress={() => {this.signup(), this._hideDialogCreate()}}>Ok</Button>
+						<Button color={colors.APP_GREEN} onPress={() => { this.signup(), this._hideDialogCreate() }}>Ok</Button>
 					</Dialog.Actions>
 				</Dialog>
 
@@ -218,7 +250,6 @@ const styles = StyleSheet.create({
 		textAlign: "center",
 		alignSelf: 'center',
 		top: sizes.hp('6%'),
-		//marginBottom: sizes.hp('10%'),
 		padding: 12,
 		height: sizes.hp('12%'),
 		marginBottom: sizes.hp('12%'),
@@ -229,7 +260,5 @@ const styles = StyleSheet.create({
 		height: 40,
 		marginBottom: 20,
 		justifyContent: "center",
-		//padding: 5,
-		//position: 'absolute',
 	},
 })

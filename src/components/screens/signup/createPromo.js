@@ -94,6 +94,12 @@ class CreatePromo extends Component {
         else this.setState({ details: text })
     }
 
+    validateEmptyText(text) {
+        if (text.length > 50)
+            Alert.alert('Texto demasiado largo')
+        else this.setState(() => ({ name: text }))
+    }
+
     render() {
         return (
             <View style={appStyles.container}>
@@ -106,7 +112,7 @@ class CreatePromo extends Component {
                         label='OPCIONAL - Nombre'
                         placeholder="Nombre"
                         theme={{ colors: { text: colors.TEXT_INPUT, primary: colors.APP_MAIN } }}
-                        onChangeText={text => this.setState({ name: text })}
+                        onChangeText={text => this.validateEmptyText(text)}
                         value={this.state.name}
                     />
 

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { StyleSheet, View, Text, KeyboardAvoidingView, Platform, TouchableOpacity } from 'react-native';
+import { StyleSheet, View, Text, KeyboardAvoidingView, Platform, TouchableOpacity, Alert } from 'react-native';
 import { TextInput, Button, Dialog, Modal, ActivityIndicator, Paragraph, HelperText } from 'react-native-paper';
 import { appStyles, colors, sizes } from '../../../index.styles';
 import ArrowButton from '../../commons/arrowButton'
@@ -40,26 +40,38 @@ class SignUpClientScreen extends Component {
 	}
 
 	validateMail = (text) => {
-		if(text === '')
+		if (text === '')
 			this.setState({ email: text, emailError: false })
-		else{
+		else {
 			let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-		if (reg.test(text) === false) //INCORRECTO
-			this.setState({ email: text, emailError: true })
-		else //CORRECTO
-			this.setState({ email: text, emailError: false })
+			if (reg.test(text) === false) //INCORRECTO
+				this.setState({ email: text, emailError: true })
+			else { //CORRECTO
+				if (text.length > 50)
+					Alert.alert('Texto demasiado largo')
+				else this.setState(() => ({ emailError: false, email: text }))
+			}
 		}
 	}
 
 	validatePassword = (text) => {
-		if(text === '')
+		if (text === '')
 			this.setState({ password: text, passwordError: false })
-		else{
+		else {
 			if (text.length > 5)
-			this.setState({ password: text, passwordError: false })
-		else
-			this.setState({ password: text, passwordError: true })			
+				this.setState({ password: text, passwordError: false })
+			else
+				this.setState({ password: text, passwordError: true })
 		}
+	}
+
+	validateEmptyText(text, field) {
+		if (text.trim() === "")
+			(field === 0) ? this.setState(() => ({ firstName: text })) : this.setState(() => ({ lastName: text }))
+		else if (text.length > 50)
+			Alert.alert('Texto demasiado largo')
+		else
+			(field === 0) ? this.setState(() => ({ firstName: text })) : this.setState(() => ({ lastName: text }))
 	}
 
 	_showDialogCreate = () => this.setState({ visibleDialogCreate: true });
@@ -81,7 +93,7 @@ class SignUpClientScreen extends Component {
 					label='Nombre'
 					placeholder="Nombre(s)"
 					theme={{ colors: { text: colors.TEXT_INPUT, primary: colors.APP_MAIN } }}
-					onChangeText={(firstName) => this.setState({ firstName })}
+					onChangeText={(firstName) => this.validateEmptyText(firstName, 0)}
 					value={this.state.firstName}
 				/>
 
@@ -91,7 +103,7 @@ class SignUpClientScreen extends Component {
 					label='Apellido'
 					placeholder="Apellido(s)"
 					theme={{ colors: { text: colors.TEXT_INPUT, primary: colors.APP_MAIN } }}
-					onChangeText={(lastName) => this.setState({ lastName })}
+					onChangeText={(lastName) => this.validateEmptyText(lastName, 1)}
 					value={this.state.lastName}
 				/>
 
@@ -147,8 +159,10 @@ class SignUpClientScreen extends Component {
 					<Dialog.Title style={{ alignSelf: 'center' }}>¿Desea crear cuenta?</Dialog.Title>
 					<Dialog.Actions>
 						<Button style={{ marginRight: sizes.wp('3%') }} color={colors.APP_RED} onPress={this._hideDialogCreate}>Cancelar</Button>
-						<Button color={colors.APP_GREEN} onPress={() => {this.signup()
-						this._hideDialogCreate()}}>Ok</Button>
+						<Button color={colors.APP_GREEN} onPress={() => {
+							this.signup()
+							this._hideDialogCreate()
+						}}>Ok</Button>
 					</Dialog.Actions>
 				</Dialog>
 
@@ -198,8 +212,8 @@ const styles = StyleSheet.create({
 })
 
 function mapStateToProps(state) {
-    return {
-    };
+	return {
+	};
 }
 
 const mapDispatchToProps = (dispatch) => {

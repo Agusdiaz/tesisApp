@@ -27,9 +27,6 @@ class ProductDetails extends Component {
         this.props.hideModalFromChild();
     }
 
-    _showDialogPrice = () => this.setState({ visibleDialogPrice: true })
-    _hideDialogPrice = () => this.setState({ visibleDialogPrice: false })
-
     _showDialogDelete = () => this.setState({ visibleDialogDelete: true })
     _hideDialogDelete = () => this.setState({ visibleDialogDelete: false })
 
@@ -108,7 +105,7 @@ class ProductDetails extends Component {
                 :
                 null
 
-        const NamePrice = props => <View>
+        const NamePrice = props => <View style={{ alignItems: 'center' }}>
             <TextTicker style={styles.title}
                 duration={5000}
                 loop
@@ -191,11 +188,13 @@ class ProductDetails extends Component {
                     {(this.props.rute === 'shop') ?
                         <View style={{ alignItems: 'center', justifyContent: 'space-between', flexDirection: 'row' }}>
                             <Button
-                                style={{ marginRight: sizes.wp('12%') }}
+                                style={{ marginRight: sizes.wp('16%') }}
                                 mode="contained"
                                 color={colors.APP_MAIN}
-                                onPress={this._showDialogPrice}>
-                                Modificar Precio
+                                onPress={() => {
+                                    this.hideModal(), Actions.createproduct({ rute: 'modify', data: this.props.data, refreshParent: this.props.refreshParent })
+                                }}>
+                                Modificar
  				                </Button>
 
                             <Button
@@ -210,30 +209,6 @@ class ProductDetails extends Component {
                 </Card.Content>
 
                 <Portal>
-                    <Dialog
-                        style={{ top: -50 }}
-                        visible={this.state.visibleDialogPrice}
-                        onDismiss={this._hideDialogPrice}>
-                        <Dialog.Title style={{ alignSelf: 'center', textAlign: 'center' }}>Ingresá el nuevo precio para tu producto:</Dialog.Title>
-                        <Dialog.Content style={{ alignItems: 'center' }}>
-                            <TextInput
-                                style={styles.inputView}
-                                mode='outlined'
-                                label='Nuevo precio'
-                                placeholder='$'
-                                theme={{ colors: { text: colors.TEXT_INPUT, primary: colors.APP_MAIN } }}
-                                onChangeText={(price) => this.validateNumber(price)}
-                                value={this.state.price} />
-                        </Dialog.Content>
-                        <Dialog.Actions style={{ marginTop: sizes.hp('-2%') }}>
-                            <Button style={{ marginRight: sizes.wp('3%') }} color={colors.APP_RED} onPress={this._hideDialogPrice}>Cancelar</Button>
-                            <Button color={colors.APP_GREEN} disabled={this.state.price === '' || this.state.price === '0'} onPress={() => {
-                                this.updatePrice(),
-                                    this._hideDialogPrice()
-                            }}>Modificar</Button>
-                        </Dialog.Actions>
-                    </Dialog>
-
                     <Dialog
                         visible={this.state.visibleDialogDelete}
                         onDismiss={this._hideDialogDelete}>
@@ -327,15 +302,6 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         fontSize: 18,
         fontWeight: '500',
-    },
-    inputView: {
-        marginTop: sizes.hp('1%'),
-        width: "90%",
-        height: 50,
-        marginBottom: 20,
-        justifyContent: "center",
-        padding: 8,
-        fontSize: sizes.TEXT_INPUT,
     },
 });
 

@@ -43,10 +43,10 @@ class ExistentIngredient extends Component {
         } else if (data.status === 500 || data.status === 204)
             this.setState({ areIngredients: false })
         else if (this.props.ingredientsInProduct.length > 0) {
-            this.setState({ ingredients: data.body.filter(val => this.props.ingredientsInProduct.findIndex(x => x.id === val.id)) })
+            this.setState({ ingredients: data.body.filter(val => !this.props.ingredientsInProduct.find(x => x.id === val.id)) })
             if (this.state.ingredients.length > 0) this.setState({ areIngredients: true })
             else this.setState({ areIngredients: false })
-            this.arrayholder = data.body.filter(val => !this.props.ingredientsInProduct.findIndex(x => x.id === val.id))
+            this.arrayholder = this.state.ingredients
         } else {
             this.setState({ ingredients: data.body, areIngredients: true })
             this.arrayholder = data.body
@@ -110,7 +110,8 @@ class ExistentIngredient extends Component {
 
         return (
             <Card style={styles.ingredientCard}>
-                <Card.Title title='Seleccioná un ingrediente existente' style={{ alignSelf: 'center', }} titleStyle={styles.titleText} />
+                <Card.Title title='Seleccioná un ingrediente existente' style={{ alignSelf: 'center'}} 
+                titleStyle={styles.titleText} titleNumberOfLines={2}/>
                 <Divider />
                 <Card.Content style={{ alignItems: 'center', height: sizes.hp('70%') }}>
                     <Searchbar
@@ -168,6 +169,7 @@ const styles = StyleSheet.create({
         fontSize: 27,
         fontWeight: 'bold',
         textAlign: 'center',
+        padding: 5
     },
     searchInput: {
         marginTop: sizes.hp('1%'),

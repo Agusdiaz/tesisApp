@@ -67,8 +67,9 @@ class CreateIngredient extends Component {
     validateEmptyText(text) {
         if (text.trim() === "")
             this.setState(() => ({ nameError: true, name: text }))
-        else
-            this.setState(() => ({ nameError: false, name: text }))
+        else if (text.length > 50)
+            Alert.alert('Texto demasiado largo')
+        else this.setState(() => ({ nameError: false, name: text }))
     }
 
     validateNumber = (number, place) => {
@@ -146,7 +147,7 @@ class CreateIngredient extends Component {
                         onChangeText={(price) => this.validateNumber(price, 1)}
                         value={this.state.price} />
 
-                    <Text style={styles.questionText}> Este ingrediente .... </Text>
+                    <Text style={styles.questionText}> Este ingrediente ... </Text>
                     <View style={styles.viewRadioButtons}>
                         <RadioButton
                             radioButtonColor={colors.APP_MAIN}

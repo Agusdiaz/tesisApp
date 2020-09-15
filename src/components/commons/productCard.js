@@ -68,7 +68,7 @@ class ProductCard extends Component {
     render() {
         const pic = props => <Image source={{ uri: this.state.photo }} resizeMode='cover' style={styles.image} />
 
-        const NamePrice = props => <View>
+        const NamePrice = props => <View style={{alignItems: 'center'}}>
             <TextTicker style={styles.title}
                 duration={5000}
                 loop
@@ -218,6 +218,7 @@ const styles = StyleSheet.create({
     title: {
         textAlign: 'center',
         fontSize: 18,
+        fontWeight: '500',
     },
     subtitle: {
         textAlign: 'center',

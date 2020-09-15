@@ -7,7 +7,7 @@ import { RadioButton, Select } from 'material-bread'
 import { Actions } from 'react-native-router-flux';
 import ListIngredients from './listIngredients'
 import UserActions from '../../../redux/authState/action'
-import { createProduct } from '../../../api/menus'
+import { createProduct, modifyProduct } from '../../../api/menus'
 
 class CreateProduct extends Component {
 
@@ -28,21 +28,37 @@ class CreateProduct extends Component {
             actionMessage: '',
             isSelectivo: 0,
             tope: null,
+            id: null,
         }
     }
 
-    async createProduct() {
+    conditions = [null, productCondition.VEGAN, productCondition.VEGETARIAN, productCondition.CELIAC]
+    types = [productType.SALTY, productType.SWEET, productType.DRINK]
+
+    componentDidMount(){
+        if(this.props.rute === 'modify'){
+            this.props.data.ingredientes[0].map(obj => {
+                this.state.ingredients.push({id: obj.id, nombre: obj.nombre, detalle: obj.detalle, cantidad: obj.cantidad, 
+                    precio: (obj.precio != null) ? obj.precio.toString() : null, opcion: obj.opcion})
+            })
+            this.setState({name: this.props.data.nombre, details: (this.props.data.detalle != null) ? this.props.data.detalle : '', price: this.props.data.precio.toString(), 
+                checkedCondition: this.conditions.findIndex((e) => e === this.props.data.condicion), checkedType: this.types.findIndex((e) => e === this.props.data.tipo), 
+                isSelectivo: this.props.data.selectivo, tope: this.props.data.tope, id: this.props.data.id})
+        }
+    }
+
+    async actionProduct() {
         this.setState({ loading: true })
-        const conditions = [null, productCondition.VEGAN, productCondition.VEGETARIAN, productCondition.CELIAC]
-        const types = [productType.SALTY, productType.SWEET, productType.DRINK]
+        console.log(this.state.details)
         var response = {
             cuit: this.props.shop.cuit,
             producto: {
+                id: this.state.id,
                 nombre: this.state.name,
                 precio: parseFloat(this.state.price),
                 detalle: (this.state.details.trim() === "") ? null : this.state.details,
-                condicion: conditions[this.state.checkedCondition],
-                tipo: types[this.state.checkedType],
+                condicion: this.conditions[this.state.checkedCondition],
+                tipo: this.types[this.state.checkedType],
                 selectivo: this.state.isSelectivo
             }
         }
@@ -50,21 +66,24 @@ class CreateProduct extends Component {
             response.producto.ingredientes = this.state.ingredients
             response.tope = this.state.tope
         }
-        const data = await createProduct(response, this.props.shop.token)
+        const data = (this.props.rute === 'modify') ? await modifyProduct(response, this.props.shop.token)
+        : await createProduct(response, this.props.shop.token)
         if(data.status === 500 && data.body.error){
             this.setState({ loading: false })
             this.props.logout()
             Actions.logsign({visible: true})
         } else if (data.status === 500) {
-            this.setState({ loading: false, actionMessage: 'Error al crear producto. Inténtelo nuevamente' })
+            this.setState({ loading: false, actionMessage: `Error al ${(this.props.rute === 'modify') ? 'modificar' : 'crear'} producto. Inténtelo nuevamente` })
             this._showDialogResponse()
         } else if (data.status === 401) {
-            this.setState({ loading: false, actionMessage: 'Ya existe un producto con ese nombre', name: '' })
+            var message = (data.body.close) ? data.body.close : 'Ya existe un producto con ese nombre';
+            this.setState({ loading: false, actionMessage: message, name: '' })
             this._showDialogResponse()
         } else {
             this.setState({ loading: false, actionMessage: data.body })
             this._showDialogResponse()
             if(this.props.rute === 'shop') this.props.onRefreshChilds()
+            if(this.props.rute === 'modify') this.props.refreshParent()
             Actions.pop()
         }
     }
@@ -103,6 +122,8 @@ class CreateProduct extends Component {
     validateEmptyText(text) {
         if (text.trim() === "")
             this.setState(() => ({ nameError: true, name: text }))
+        else if (text.length > 50)
+            Alert.alert('Texto demasiado largo')
         else this.setState(() => ({ nameError: false, name: text }))
     }
 
@@ -134,7 +155,7 @@ class CreateProduct extends Component {
         return (
             <View style={appStyles.container}>
 
-                <Text style={styles.titleText}>Creá tu producto</Text>
+        <Text style={styles.titleText}>{(this.props.rute === 'modify') ? 'Modificá' : 'Creá'} tu producto</Text>
                 <View style={{ alignItems: 'center', height: sizes.hp('70%'), position: 'absolute', }}>
                     <TextInput
                         style={styles.inputView}
@@ -233,12 +254,12 @@ class CreateProduct extends Component {
 
                     <View style={{ alignItems: 'center', top: sizes.hp('5%') }}>
                         <Button
-                            style={{ width: sizes.wp('55%') }}
+                            style={{ width: sizes.wp('65%') }}
                             mode="contained"
                             color={colors.APP_MAIN}
                             onPress={this._showModalIngredients}>
-                            Agregar Ingredientes
- 				                </Button>
+                                {(this.props.rute === 'modify') ? 'Modificar' : 'Agregar'} Ingredientes
+ 				        </Button>
                     </View>
                 </View>
 
@@ -260,7 +281,7 @@ class CreateProduct extends Component {
                         color={colors.APP_MAIN}
                         disabled={this.state.name === '' || this.state.price === ''}
                         onPress={this._showDialogFinish}>
-                        Crear
+                        {(this.props.rute === 'modify') ? 'Modificar' : 'Crear'}
  				</Button>
                 </View>
 
@@ -268,10 +289,12 @@ class CreateProduct extends Component {
                     <Dialog
                         visible={this.state.visibleDialogFinish}
                         onDismiss={this._hideDialogFinish}>
-                        <Dialog.Title style={{ alignSelf: 'center', textAlign: 'center' }}>¿Desea crear el producto?</Dialog.Title>
+                        <Dialog.Title style={{ alignSelf: 'center', textAlign: 'center' }}>
+                        ¿Desea {(this.props.rute === 'modify') ? 'modificar' : 'crear'} el producto?
+                        </Dialog.Title>
                         <Dialog.Actions>
                             <Button style={{ left: sizes.wp('-12%') }} color={colors.APP_RED} onPress={this._hideDialogFinish}>No</Button>
-                            <Button color={colors.APP_GREEN} onPress={() => { this._hideDialogFinish(), this.createProduct() }}>Sí</Button>
+                            <Button color={colors.APP_GREEN} onPress={() => { this._hideDialogFinish(), this.actionProduct() }}>Sí</Button>
                         </Dialog.Actions>
                     </Dialog>
 
