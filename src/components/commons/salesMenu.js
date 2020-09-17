@@ -38,7 +38,7 @@ class SalesMenu extends Component {
             Actions.logsign({ visible: true })
         } else if (data.status === 500 || data.status === 204)
             this.setState({ areSales: false })
-        else this.setState({ areSales: true, sales: data.body })
+        else this.setState({ areSales: true, sales: data.body.sort((a, b) => b.valida - a.valida && b.habilitada - a.habilitada) })
     }
 
     _showDialogResponse(message) {
@@ -56,7 +56,7 @@ class SalesMenu extends Component {
         if (this.state.areSales) {
             return (
                 <SalesCard data={item} rute={(this.props.user.mail === undefined) ? 'editPromo' : null} refreshParent={this.onRefresh}
-                    showDialogResponse={this._showDialogResponse} />
+                    showDialogResponse={this._showDialogResponse} initial={this.props.initial} />
             );
         } else {
             return (
@@ -83,7 +83,6 @@ class SalesMenu extends Component {
                     keyExtractor={(item, i) => i.toString()} />
 
                 <Portal>
-
                     <Dialog
                         visible={this.state.visibleDialogResponse}
                         onDismiss={this._hideDialogResponse}>
@@ -92,7 +91,6 @@ class SalesMenu extends Component {
                             <Button style={{ marginRight: sizes.wp('3%') }} color={'#000000'} onPress={this._hideDialogResponse}>Ok</Button>
                         </Dialog.Actions>
                     </Dialog>
-
                 </Portal>
             </View>
         )

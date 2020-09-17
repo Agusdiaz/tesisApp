@@ -25,12 +25,11 @@ export default function PayOrder() {
 
     const deleteClientOrder = async () => {
         const data = await deleteOrder(number, token)
-        console.log(data)
         dispatch({ type: 'DELETE_ORDER' })
     }
 
     const stateChange = (state) => {
-        console.log(state.title)
+        //console.log(state.title)
         switch (state.title) {
             case 'success':
                 setShowCheckout(false)

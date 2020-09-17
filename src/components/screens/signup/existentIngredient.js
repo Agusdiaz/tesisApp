@@ -107,9 +107,16 @@ class ExistentIngredient extends Component {
     }
 
     render() {
-
+        const Close = props => <IconButton
+        icon='close'
+        color={colors.APP_MAIN}
+        size={30}
+        onPress={this.hideModal}
+    />
         return (
             <Card style={styles.ingredientCard}>
+                <Card.Title style={{ margin: -10, marginTop: sizes.hp('-3') }} right={Close} rightStyle={styles.close} />
+                <Divider />
                 <Card.Title title='Seleccioná un ingrediente existente' style={{ alignSelf: 'center'}} 
                 titleStyle={styles.titleText} titleNumberOfLines={2}/>
                 <Divider />
@@ -134,26 +141,6 @@ class ExistentIngredient extends Component {
                     />
                 </Card.Content>
                 <Divider />
-                <Card.Actions style={{ justifyContent: 'space-between', margin: 5, marginBottom: sizes.hp('-1%') }}>
-                    <Button
-                        style={{}}
-                        icon="close"
-                        mode="contained"
-                        color={colors.APP_MAIN}
-                        onPress={this.hideModal}>
-                        Cancelar
- 				</Button>
-
-                    <Button
-                        style={{}}
-                        icon="plus"
-                        mode="contained"
-                        color={colors.APP_MAIN}
-                        disabled={this.state.name === ''}
-                        onPress={() => { this.hideModal(), this.addIngredient() }}>
-                        Crear
- 				</Button>
-                </Card.Actions>
             </Card >
         )
     }
@@ -207,6 +194,9 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         fontSize: 18,
         fontWeight: '500',
+    },
+    close: {
+        left: sizes.wp('-2%')
     },
 });
 

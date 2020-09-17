@@ -36,7 +36,7 @@ class SalesProcess extends Component {
             this.setState({ areSales: false })
         else{
             var promos = []
-            promos = data.body.filter(obj => {return obj.valida === 1})
+            promos = data.body.filter(obj => {return obj.valida === 1 && obj.habilitada})
             this.setState({ areSales: (promos.length > 0) ? true : false, sales: promos })
         } 
     }

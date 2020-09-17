@@ -71,6 +71,15 @@ const updateShopSchedule = (hours, id) => {
     }
 }
 
+const updateShopOpen = (open) => {
+    return {
+        type: 'UPDATE_SHOP_OPEN',
+        payload: {
+            open: open,
+        },
+    }
+}
+
 export default {
     setLoginClientData,
     setLoginShopData,
@@ -78,4 +87,5 @@ export default {
     updateClientData,
     updateShopFeatures,
     updateShopSchedule,
+    updateShopOpen,
 }

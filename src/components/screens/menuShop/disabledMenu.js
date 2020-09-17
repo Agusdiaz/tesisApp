@@ -20,10 +20,13 @@ class DisabledMenu extends Component {
             areProducts: true,
             areIngredients: false,
             searchQuery: '',
+            visibleDialogResponse: false,
+            actionMessage: '',
         }
         this.arrayholderProducts = []
         this.arrayholderIngredients = []
         this.onRefresh = this.onRefresh.bind(this);
+        this._showDialogResponse = this._showDialogResponse.bind(this);
     }
 
     componentDidMount() {
@@ -51,6 +54,11 @@ class DisabledMenu extends Component {
             })
         }
     }
+
+    _showDialogResponse(message) {
+        this.setState({ visibleDialogResponse: true, actionMessage: message })
+    }
+    _hideDialogResponse = () => this.setState({ visibleDialogResponse: false, actionMessage: '' })
 
     handleButtons = (values) => {
         if (values != null)
@@ -94,7 +102,7 @@ class DisabledMenu extends Component {
     _renderItem(item) {
         if (this.state.valueButtons === 'products' && this.state.areProducts) {
             return (
-                <ProductCard rute={'disabled'} data={item} refreshParent={this.onRefresh}/>
+                <ProductCard rute={'disabled'} data={item} refreshParent={this.onRefresh} showDialogResponse={this._showDialogResponse}/>
             );
         } else if (this.state.valueButtons === 'products' && !this.state.areProducts) {
             return (
@@ -106,7 +114,7 @@ class DisabledMenu extends Component {
         }
         else if (this.state.valueButtons === 'ingredients' && this.state.areIngredients) {
             return (
-                <IngredientCard rute={'disabled'} data={item} refreshParent={this.onRefresh}/>
+                <IngredientCard rute={'disabled'} data={item} refreshParent={this.onRefresh} showDialogResponse={this._showDialogResponse}/>
             );
         } else if (this.state.valueButtons === 'ingredients' && !this.state.areIngredients) {
             return (
@@ -119,7 +127,6 @@ class DisabledMenu extends Component {
     }
 
     render() {
-
         return (
             <View style={appStyles.container}>
 

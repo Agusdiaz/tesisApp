@@ -10,8 +10,9 @@ export const getTopProducts = async (cuit, token) => {
             'Content-Type': 'application/json',
             'Authorization': token
         })
-    }).then(r => r.json()
-        .then(data => ({ status: r.status, body: data })))
+    }).then(r => (r.status === 204) ? r : r.json()
+        .then(data => 
+            ({ status: r.status, body: data })))
         .then(obj => {return obj});
     return response
 }

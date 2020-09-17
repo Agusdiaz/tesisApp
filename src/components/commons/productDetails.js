@@ -70,7 +70,7 @@ class ProductDetails extends Component {
 
     async deleteProduct() {
         this.setState({ loading: true })
-        const data = await deleteProduct(this.props.data.id, this.props.shop.cuit, this.props.shop.token)
+        const data = await deleteProduct(this.props.data.id, this.props.shop.cuit, this.props.shop.token, this.props.rute)
         if (data.status === 500 && data.body.error) {
             this.props.logout()
             Actions.logsign({ visible: true })
@@ -185,24 +185,27 @@ class ProductDetails extends Component {
                             }
                         </ScrollView>
                     </DataTable>
-                    {(this.props.rute === 'shop') ?
+                    {(this.props.rute === 'shop' || this.props.rute === 'initial') ?
                         <View style={{ alignItems: 'center', justifyContent: 'space-between', flexDirection: 'row' }}>
                             <Button
                                 style={{ marginRight: sizes.wp('16%') }}
                                 mode="contained"
                                 color={colors.APP_MAIN}
-                                onPress={() => {
-                                    this.hideModal(), Actions.createproduct({ rute: 'modify', data: this.props.data, refreshParent: this.props.refreshParent })
-                                }}>
-                                Modificar
+                                onPress={this._showDialogDelete}>
+                                Eliminar
  				                </Button>
 
                             <Button
                                 style={{}}
                                 mode="contained"
                                 color={colors.APP_MAIN}
-                                onPress={this._showDialogDelete}>
-                                Eliminar
+                                onPress={() => {
+                                    this.hideModal(), Actions.createproduct({
+                                        rute: 'modify', data: this.props.data, refreshParent: this.props.refreshParent,
+                                        showDialogResponse: this.props.showDialogResponse
+                                    })
+                                }}>
+                                Modificar
  				                </Button>
                         </View>
                         : null}

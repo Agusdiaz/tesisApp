@@ -256,7 +256,6 @@ const styles = StyleSheet.create({
     list: {
         top: sizes.hp('6.5%'),
         width: sizes.wp('100%'),
-        //borderWidth: 2,
         //height: sizes.hp('64%') //64
     },
     viewImage: {

@@ -51,7 +51,8 @@ class NavigationBarScreen extends React.Component {
 
 function mapStateToProps(state) {
   return {
-    badge: state.badge
+    badge: state.badge,
+    shop: state.authState.shop,
   };
 }
 

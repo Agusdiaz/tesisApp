@@ -48,12 +48,17 @@ class ScheduleDetails extends Component {
         const openClose = props => (this.props.shop.abierto === 1) ? <Button style={{ borderRadius: 20, width: 105, alignItems: 'center' }} mode="contained" color={colors.APP_GREEN} labelStyle={{ fontSize: 9, color: colors.APP_BACKGR }} >
             Abierto </Button> : <Button style={{ borderRadius: 20, width: 105, alignItems: 'center' }} mode="contained" color={colors.APP_RED} labelStyle={{ fontSize: 9, color: colors.APP_BACKGR }}>Cerrado </Button>
 
+        const Enabled = props => (!this.props.habilitada) ?
+            <Text style={{ fontSize: 17, fontWeight: 'bold', color: colors.APP_RED }}>Promoción deshabilitada</Text>
+            : null
+
         return (
             <Card style={styles.scheduleCard}>
                 {(this.props.rute === 'shop') ?
                     <Card.Title style={{ margin: -10, marginTop: sizes.hp('-3') }} left={openClose} leftStyle={{}} right={Close} rigthStyle={styles.close} />
                     :
-                    <Card.Title style={{ margin: -10, marginTop: sizes.hp('-3') }} right={Close} rigthStyle={styles.close} />
+                    <Card.Title style={{ margin: -10, marginTop: sizes.hp('-3') }} left={Enabled} leftStyle={{width: sizes.wp('60%')}}
+                    right={Close} rigthStyle={styles.close}/>
                 }
                 <Divider />
                 <Card.Title title='Estos son los horarios:' titleStyle={styles.title} />
@@ -68,15 +73,15 @@ class ScheduleDetails extends Component {
 
                     <ScrollView style={{ height: sizes.hp('31%') }}>
                         {this.props.data.map(row =>
-                                < DataTableRow key={row.id} style={{}} >
-                                    <DataTableCell text={row.dia} borderRight textStyle={{ textAlign: 'center' }} style={{ maxWidth: '20%' }} minWidth={130} />
-                                    <DataTableCell text={(row.horas.length > 0) ? row.horas : '----------------'} textStyle={{ textAlign: 'center' }} style={{ maxWidth: '20%', alignSelf: 'center' }} minWidth={140} />
-                                    {(this.props.rute === 'editShop' || this.props.rute === 'editPromo') ?
-                                        <DataTableCell text={'Modificar'} textStyle={{ textAlign: 'center', fontWeight: 'bold', color: colors.APP_GREEN, textDecorationLine: 'underline' }}
-                                            style={{ maxWidth: '12%', alignSelf: 'center' }} minWidth={120} onPress={() => { this.setState({ daySelected: row.id }), this._showModalEditSchedule() }} />
-                                        : null}
-                                </DataTableRow>
-                            )
+                            < DataTableRow key={row.id} style={{}} >
+                                <DataTableCell text={row.dia} borderRight textStyle={{ textAlign: 'center' }} style={{ maxWidth: '20%' }} minWidth={130} />
+                                <DataTableCell text={(row.horas.length > 0) ? row.horas : '----------------'} textStyle={{ textAlign: 'center' }} style={{ maxWidth: '20%', alignSelf: 'center' }} minWidth={140} />
+                                {(this.props.rute === 'editShop' || this.props.rute === 'editPromo') ?
+                                    <DataTableCell text={'Modificar'} textStyle={{ textAlign: 'center', fontWeight: 'bold', color: colors.APP_GREEN, textDecorationLine: 'underline' }}
+                                        style={{ maxWidth: '12%', alignSelf: 'center' }} minWidth={120} onPress={() => { this.setState({ daySelected: row.id }), this._showModalEditSchedule() }} />
+                                    : null}
+                            </DataTableRow>
+                        )
                         }
                     </ScrollView>
                 </DataTable>
@@ -86,7 +91,7 @@ class ScheduleDetails extends Component {
                         <EditDaySchedule hideModalFromChild={this._hideModalEditSchedule} day={this.state.daySelected}
                             rute={this.props.rute} updateLoading={this.updateIsLoading} showDialogResponse={this._showDialogResponse}
                             data={this.props.data.filter(x => x.id === this.state.daySelected)}
-                            id={this.props.id} updatePropsSchedule={this.updatePropsSchedule}/>
+                            id={this.props.id} updatePropsSchedule={this.updatePropsSchedule} />
                     </Modal>
 
                     <Modal dismissable={false}

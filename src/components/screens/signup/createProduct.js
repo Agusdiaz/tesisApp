@@ -35,21 +35,24 @@ class CreateProduct extends Component {
     conditions = [null, productCondition.VEGAN, productCondition.VEGETARIAN, productCondition.CELIAC]
     types = [productType.SALTY, productType.SWEET, productType.DRINK]
 
-    componentDidMount(){
-        if(this.props.rute === 'modify'){
+    componentDidMount() {
+        if (this.props.rute === 'modify') {
             this.props.data.ingredientes[0].map(obj => {
-                this.state.ingredients.push({id: obj.id, nombre: obj.nombre, detalle: obj.detalle, cantidad: obj.cantidad, 
-                    precio: (obj.precio != null) ? obj.precio.toString() : null, opcion: obj.opcion})
+                this.state.ingredients.push({
+                    id: obj.id, nombre: obj.nombre, detalle: obj.detalle, cantidad: obj.cantidad,
+                    precio: (obj.precio != null) ? obj.precio.toString() : null, opcion: obj.opcion
+                })
             })
-            this.setState({name: this.props.data.nombre, details: (this.props.data.detalle != null) ? this.props.data.detalle : '', price: this.props.data.precio.toString(), 
-                checkedCondition: this.conditions.findIndex((e) => e === this.props.data.condicion), checkedType: this.types.findIndex((e) => e === this.props.data.tipo), 
-                isSelectivo: this.props.data.selectivo, tope: this.props.data.tope, id: this.props.data.id})
+            this.setState({
+                name: this.props.data.nombre, details: (this.props.data.detalle != null) ? this.props.data.detalle : '', price: this.props.data.precio.toString(),
+                checkedCondition: this.conditions.findIndex((e) => e === this.props.data.condicion), checkedType: this.types.findIndex((e) => e === this.props.data.tipo),
+                isSelectivo: this.props.data.selectivo, tope: this.props.data.tope, id: this.props.data.id
+            })
         }
     }
 
     async actionProduct() {
         this.setState({ loading: true })
-        console.log(this.state.details)
         var response = {
             cuit: this.props.shop.cuit,
             producto: {
@@ -62,28 +65,29 @@ class CreateProduct extends Component {
                 selectivo: this.state.isSelectivo
             }
         }
+        if (this.props.rute === 'initial') response.inicial
         if (this.state.ingredients.length > 0) {
             response.producto.ingredientes = this.state.ingredients
             response.tope = this.state.tope
         }
         const data = (this.props.rute === 'modify') ? await modifyProduct(response, this.props.shop.token)
-        : await createProduct(response, this.props.shop.token)
-        if(data.status === 500 && data.body.error){
+            : await createProduct(response, this.props.shop.token)
+        if (data.status === 500 && data.body.error) {
             this.setState({ loading: false })
             this.props.logout()
-            Actions.logsign({visible: true})
+            Actions.logsign({ visible: true })
         } else if (data.status === 500) {
-            this.setState({ loading: false, actionMessage: `Error al ${(this.props.rute === 'modify') ? 'modificar' : 'crear'} producto. Inténtelo nuevamente` })
-            this._showDialogResponse()
+            this.setState({ loading: false })
+            this._showDialogResponse(`Error al ${(this.props.rute === 'modify') ? 'modificar' : 'crear'} producto. Inténtelo nuevamente`)
         } else if (data.status === 401) {
             var message = (data.body.close) ? data.body.close : 'Ya existe un producto con ese nombre';
-            this.setState({ loading: false, actionMessage: message, name: '' })
-            this._showDialogResponse()
+            this.props.showDialogResponse(message)
+            this.setState({ loading: false, name: '' })
         } else {
-            this.setState({ loading: false, actionMessage: data.body })
-            this._showDialogResponse()
-            if(this.props.rute === 'shop') this.props.onRefreshChilds()
-            if(this.props.rute === 'modify') this.props.refreshParent()
+            this.setState({ loading: false })
+            this.props.showDialogResponse(data.body)
+            if (this.props.rute === 'shop') this.props.onRefreshChilds()
+            if (this.props.rute === 'modify') this.props.refreshParent()
             Actions.pop()
         }
     }
@@ -102,9 +106,9 @@ class CreateProduct extends Component {
 
     isIngredientNameRepeated = (name) => {
         var i = this.state.ingredients.findIndex(x => x.nombre === name)
-        if (i === -1 ) return false
+        if (i === -1) return false
         else return true
-    }   
+    }
 
     changeSelectiveAndTop = (tope, selectivo) => {
         this.setState({ tope: tope, isSelectivo: selectivo })
@@ -130,32 +134,35 @@ class CreateProduct extends Component {
     validateNumber = (number) => {
         let newText = '';
         let numbers = '0123456789';
-        for (var i = 0; i < number.length; i++) {
-            if (numbers.indexOf(number[i]) > -1) {
-                newText = newText + number[i]
-                this.setState({ price: number.toString() })
+        if (number === '0') Alert.alert('Atención', 'El precio no puede ser 0');
+        else {
+            for (var i = 0; i < number.length; i++) {
+                if (numbers.indexOf(number[i]) > -1) {
+                    newText = newText + number[i]
+                    this.setState({ price: number.toString() })
+                }
+                else {
+                    Alert.alert('Atención', 'Por favor, ingrese solo números');
+                    break
+                }
             }
-            else {
-                Alert.alert('Atención', 'Por favor, ingrese solo números');
-                break
+            if (number.length === 0) {
+                this.setState({ price: '' })
             }
-        }
-        if (number.length === 0) {
-            this.setState({ price: '' })
         }
     }
 
-    validateTextLength(text){
-        if(text.length > 100)
+    validateTextLength(text) {
+        if (text.length > 100)
             Alert.alert('Texto demasiado largo')
-        else this.setState({details: text})
+        else this.setState({ details: text })
     }
 
     render() {
         return (
             <View style={appStyles.container}>
 
-        <Text style={styles.titleText}>{(this.props.rute === 'modify') ? 'Modificá' : 'Creá'} tu producto</Text>
+                <Text style={styles.titleText}>{(this.props.rute === 'modify') ? 'Modificá' : 'Creá'} tu producto</Text>
                 <View style={{ alignItems: 'center', height: sizes.hp('70%'), position: 'absolute', }}>
                     <TextInput
                         style={styles.inputView}
@@ -258,7 +265,7 @@ class CreateProduct extends Component {
                             mode="contained"
                             color={colors.APP_MAIN}
                             onPress={this._showModalIngredients}>
-                                {(this.props.rute === 'modify') ? 'Modificar' : 'Agregar'} Ingredientes
+                            {(this.props.rute === 'modify') ? 'Modificar' : 'Agregar'} Ingredientes
  				        </Button>
                     </View>
                 </View>
@@ -282,7 +289,7 @@ class CreateProduct extends Component {
                         disabled={this.state.name === '' || this.state.price === ''}
                         onPress={this._showDialogFinish}>
                         {(this.props.rute === 'modify') ? 'Modificar' : 'Crear'}
- 				</Button>
+                    </Button>
                 </View>
 
                 <Portal>
@@ -290,7 +297,7 @@ class CreateProduct extends Component {
                         visible={this.state.visibleDialogFinish}
                         onDismiss={this._hideDialogFinish}>
                         <Dialog.Title style={{ alignSelf: 'center', textAlign: 'center' }}>
-                        ¿Desea {(this.props.rute === 'modify') ? 'modificar' : 'crear'} el producto?
+                            ¿Desea {(this.props.rute === 'modify') ? 'modificar' : 'crear'} el producto?
                         </Dialog.Title>
                         <Dialog.Actions>
                             <Button style={{ left: sizes.wp('-12%') }} color={colors.APP_RED} onPress={this._hideDialogFinish}>No</Button>
@@ -301,7 +308,7 @@ class CreateProduct extends Component {
                     <Modal contentContainerStyle={styles.modalView} visible={this.state.visibleModalIngredients} dismissable={false}>
                         <ListIngredients hideModalFromChild={this._hideModalIngredients} ingredients={this.state.ingredients}
                             addIngredient={this.addIngredient} removeIngredient={this.removeIngredient} isIngredientNameRepeated={this.isIngredientNameRepeated}
-                            changeState={this.changeSelectiveAndTop} tope={this.state.tope} selectivo={this.state.isSelectivo}/>
+                            changeState={this.changeSelectiveAndTop} tope={this.state.tope} selectivo={this.state.isSelectivo} />
                     </Modal>
 
                     <Modal dismissable={false}

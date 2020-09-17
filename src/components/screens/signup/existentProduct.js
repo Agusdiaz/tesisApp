@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { StyleSheet, Text, View, FlatList, Image, Alert } from 'react-native';
 import { colors, sizes, productType } from '../../../index.styles';
-import { Card, FAB, Button, Divider, Modal, TextInput, Searchbar, Portal, Dialog } from 'react-native-paper';
+import { Card, FAB, Button, Divider, Modal, TextInput, Searchbar, Portal, Dialog, IconButton } from 'react-native-paper';
 import TextTicker from 'react-native-text-ticker';
 import ProductDetails from '../../commons/productDetails'
 import { Actions } from 'react-native-router-flux';
@@ -192,7 +192,6 @@ class ExistentProduct extends Component {
                                 onPress={() => {this.setState({ productData: item }), this._showDialogAmount()}} />
 
                         </View>}
-
                         rightStyle={{ left: sizes.wp('-4%'), }}
                         leftStyle={{ width: sizes.wp('53%') }} />
                 </Card>
@@ -208,10 +207,18 @@ class ExistentProduct extends Component {
     }
 
     render() {
-
+        const Close = props => <IconButton
+        icon='close'
+        color={colors.APP_MAIN}
+        size={30}
+        onPress={this.hideModal}
+    />
         return (
             <Card style={styles.productCard}>
-                <Card.Title title='Seleccioná un producto existente' style={{ alignSelf: 'center', }} titleStyle={styles.titleText} />
+                <Card.Title style={{ margin: -10, marginTop: sizes.hp('-3') }} right={Close} rightStyle={styles.close} />
+                <Divider />
+                <Card.Title title='Seleccioná un producto existente' style={{ alignSelf: 'center', }} titleNumberOfLines={2}
+                titleStyle={styles.titleText} />
                 <Divider />
                 <Card.Content style={{ alignItems: 'center', height: sizes.hp('70%') }}>
                     <View style={{ flexDirection: 'row', justifyContent: 'center', width: sizes.wp('85%'), height: sizes.hp('4.7%'), marginTop: 7 }}>
@@ -286,26 +293,6 @@ class ExistentProduct extends Component {
                     }
                 </Card.Content>
                 <Divider />
-                <Card.Actions style={{ justifyContent: 'space-between', margin: 5, marginBottom: sizes.hp('-1%') }}>
-                    <Button
-                        style={{}}
-                        icon="close"
-                        mode="contained"
-                        color={colors.APP_MAIN}
-                        onPress={this.hideModal}>
-                        Cancelar
- 				</Button>
-
-                    <Button
-                        style={{}}
-                        icon="plus"
-                        mode="contained"
-                        color={colors.APP_MAIN}
-                        disabled={this.state.name === ''}
-                        onPress={() => { this.hideModal(), this.addIngredient() }}>
-                        Crear
- 				</Button>
-                </Card.Actions>
 
                 <Portal>
                     <Modal contentContainerStyle={styles.modalView} visible={this.state.visibleModalDetails} onDismiss={this._hideModalDetails}>
@@ -366,6 +353,7 @@ const styles = StyleSheet.create({
         fontSize: 27,
         fontWeight: 'bold',
         textAlign: 'center',
+        padding: 5,
     },
     toggleButton: {
         width: sizes.wp('28%'),
@@ -422,6 +410,9 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         padding: 8,
         fontSize: sizes.TEXT_INPUT,
+    },
+    close: {
+        left: sizes.wp('-2%')
     },
 });
 

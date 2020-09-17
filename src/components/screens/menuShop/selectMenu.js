@@ -49,7 +49,7 @@ class SelectMenu extends Component {
                     : (this.state.selectedTab === 1) ?
                         <IngredientMenu rute={(this.props.rute === 'initial') ? 'initial' : null} />
                         :
-                        <SalesMenu rute='shop' ref={this.promos} />
+                        <SalesMenu rute='shop' ref={this.promos} initial={'yes'} />
                 }
 
                 {(this.props.rute === 'initial') ?

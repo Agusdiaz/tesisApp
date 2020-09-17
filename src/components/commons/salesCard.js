@@ -10,7 +10,7 @@ import PromoDetails from '../screens/orderProcess/promoDetailsOrder'
 import ShopActions from '../../redux/authState/action'
 import { Actions } from 'react-native-router-flux';
 import Schedule from './schedule'
-import { updatePromoPrice, deletePromo } from '../../api/promos'
+import { deletePromo } from '../../api/promos'
 
 class SalesCard extends Component {
 
@@ -25,7 +25,6 @@ class SalesCard extends Component {
             productDetails: [],
             price: '',
             loading: false,
-            visibleDialogPrice: false,
             visibleDialogError: false,
             visibleDialogDelete: false,
             actionError: '',
@@ -39,9 +38,6 @@ class SalesCard extends Component {
     componentWillUnmount() {
         this._isMounted = false;
     }
-
-    _showDialogPrice = () => (this._isMounted) ? this.setState({ visibleDialogPrice: true }) : null;
-    _hideDialogPrice = () => (this._isMounted) ? this.setState({ visibleDialogPrice: false }) : null;
 
     _showModalDetails = () => (this._isMounted) ? this.setState({ visibleModalDetails: true }) : null;
     _hideModalDetails = () => (this._isMounted) ? this.setState({ visibleModalDetails: false }) : null;
@@ -60,28 +56,10 @@ class SalesCard extends Component {
     }
     _hideDialogError = () => (this._isMounted) ? this.setState({ visibleDialogError: false, actionError: '' }) : null;
 
-    async updatePrice() {
-        if (this._isMounted) {
-            this.setState({ loading: true })
-            const data = await updatePromoPrice(this.props.data.id, this.state.price, this.props.shop.cuit, this.props.shop.token)
-            if (data.status === 500 && data.body.error) {
-                this.props.logout()
-                Actions.logsign({ visible: true })
-            } else if (data.status !== 200) {
-                this.setState({ price: '', loading: false });
-                this._showDialogError(data.body)
-            } else {
-                this.setState({ price: '', loading: false });
-                this.props.refreshParent()
-                this.props.showDialogResponse(data.body)
-            }
-        }
-    }
-
     async deletePromo() {
         if (this._isMounted) {
             this.setState({ loading: true })
-            const data = await deletePromo(this.props.data.id, this.props.shop.cuit, this.props.shop.token)
+            const data = await deletePromo(this.props.data.id, this.props.shop.cuit, this.props.shop.token, this.props.initial)
             if (data.status === 500 && data.body.error) {
                 this.props.logout()
                 Actions.logsign({ visible: true })
@@ -113,55 +91,51 @@ class SalesCard extends Component {
     }
 
     render() {
-        const NamePriceButton = props => <View style={{
-            width: sizes.wp('50%'), alignItems: 'center', height: sizes.wp('14%'),
-            right: (this.props.rute === 'order') ? sizes.wp('-10%') : null
-        }}>
-            <TextTicker style={styles.title}
-                duration={5000}
-                loop
-                animationType='bounce'
-                repeatSpacer={50}
-                marqueeDelay={1000}>{this.props.data.nombre}</TextTicker>
-            <Text style={styles.subtitle}>${this.props.data.precio}</Text>
-
-            {(this.props.rute !== 'order' && this.props.rute !== 'cart') ?
-                <Button
-                    style={styles.buttonAvailable}
-                    labelStyle={{ fontSize: 10, textAlign: 'center' }}
-                    compact
-                    mode='contained'
-                    dark
-                    onPress={this._showModalSchedule}
-                    color={(this.props.data.valida === 1) ? colors.APP_GREEN : colors.APP_RED}
-                >
-                    {(this.props.data.valida === 1) ? 'Válida' : 'No válida'}
-                </Button>
-                : (this.props.rute === 'cart') ?
-                    <Button
-                        style={styles.buttonAvailable}
-                        labelStyle={{ fontSize: 10, textAlign: 'center' }}
-                        compact
-                        mode='contained'
-                        dark
-                        onPress={this._showModalPromoDetails}
-                        color={colors.APP_MAIN}>
-                        Agregar
-            </Button>
-                    :
-                    <IconButton
-                        style={{ right: sizes.wp('-35%'), top: sizes.hp('-7%') }}
-                        icon='close'
-                        color={colors.APP_MAIN}
-                        size={30}
-                        onPress={() => this.props.hideModalFromChild()}/>}
-        </View>
-
         return (
             <View>
                 <Card style={[styles.salesCard, { width: (this.props.rute !== 'order') ? sizes.wp('100%') : sizes.wp('90%') }]}>
                     <ImageBackground source={require('../../icons/promo.jpg')} style={styles.imageOutside} imageStyle={styles.imageInside} >
-                        <Card.Title right={NamePriceButton} rightStyle={styles.rightSide} />
+                        <Card.Content style={styles.topContent}>
+                            <View style={{width: sizes.wp('50%'), alignItems: 'center', height: sizes.wp('14%'), justifyContent: 'center'}}>
+                                <TextTicker style={styles.title}
+                                    duration={5000}
+                                    loop
+                                    animationType='bounce'
+                                    repeatSpacer={50}
+                                    marqueeDelay={1000}>{this.props.data.nombre}</TextTicker>
+                                <Text style={styles.subtitle}>${this.props.data.precio}</Text>
+                                </View>
+
+                                {(this.props.rute !== 'order' && this.props.rute !== 'cart') ?
+                                    <Button
+                                        style={styles.buttonAvailable}
+                                        labelStyle={{ fontSize: 10, textAlign: 'center' }}
+                                        compact
+                                        mode='contained'
+                                        dark
+                                        onPress={this._showModalSchedule}
+                                        color={(this.props.data.valida === 1 && this.props.data.habilitada) ? colors.APP_GREEN : colors.APP_RED}>
+                                        {(this.props.data.valida === 1 && this.props.data.habilitada) ? 'Válida' : 'No válida'}
+                                    </Button>
+                                    : (this.props.rute === 'cart') ?
+                                        <Button
+                                            style={styles.buttonAvailable}
+                                            labelStyle={{ fontSize: 10, textAlign: 'center' }}
+                                            compact
+                                            mode='contained'
+                                            dark
+                                            onPress={this._showModalPromoDetails}
+                                            color={colors.APP_MAIN}>
+                                            Agregar
+                                        </Button>
+                                        :
+                                        <IconButton
+                                            style={{ right: sizes.wp('-35%'), top: sizes.hp('-7%') }}
+                                            icon='close'
+                                            color={colors.APP_MAIN}
+                                            size={30}
+                                            onPress={() => this.props.hideModalFromChild()} />}
+                        </Card.Content>
                     </ImageBackground>
                     <Divider />
                     <Card.Content style={{ alignItems: 'center' }}>
@@ -193,25 +167,26 @@ class SalesCard extends Component {
                         {(this.props.rute === 'editPromo') ?
                             <View style={{ marginTop: sizes.hp('1%'), alignItems: 'center', justifyContent: 'space-between', flexDirection: 'row' }}>
                                 <Button
-                                    style={{ marginRight: sizes.wp('12%')}}
+                                    style={{ marginRight: sizes.wp('12%') }}
                                     mode="contained"
                                     color={colors.APP_MAIN}
-                                    onPress={this._showDialogPrice}>
-                                    Modificar Precio
+                                    onPress={() => {
+                                        Actions.createpromo({ rute: 'modify', data: this.props.data, refreshParent: this.props.refreshParent, initial: this.props.initial,
+                                    showDialogResponse: this.props.showDialogResponse})
+                                    }}>
+                                    Modificar
  				                </Button>
 
-                                 <Button
-                                style={{}}
-                                mode="contained"
-                                color={colors.APP_MAIN}
-                                onPress={this._showDialogDelete}>
-                                Eliminar
+                                <Button
+                                    style={{}}
+                                    mode="contained"
+                                    color={colors.APP_MAIN}
+                                    onPress={this._showDialogDelete}>
+                                    Eliminar
  				                </Button>
-                                 
                             </View>
                             : null}
                     </Card.Content>
-
                 </Card>
 
                 <Portal>
@@ -227,40 +202,16 @@ class SalesCard extends Component {
                     {(this.props.rute !== 'order') ?
                         <Modal contentContainerStyle={styles.modalView} visible={this.state.visibleModalSchedule} onDismiss={this._hideModalSchedule}>
                             <Schedule hideModalFromChild={this._hideModalSchedule} data={this.props.data.horarios[0]} id={this.props.data.id}
-                                rute={this.props.rute} refreshParent={this.props.refreshParent} />
+                                rute={this.props.rute} refreshParent={this.props.refreshParent} habilitada={this.props.data.habilitada}/>
                         </Modal>
                         : null}
-
-                    <Dialog
-                        style={{ top: -50 }}
-                        visible={this.state.visibleDialogPrice}
-                        onDismiss={this._hideDialogPrice}>
-                        <Dialog.Title style={{ alignSelf: 'center', textAlign: 'center' }}>Ingresá el nuevo precio para tu producto:</Dialog.Title>
-                        <Dialog.Content style={{ alignItems: 'center' }}>
-                            <TextInput
-                                style={styles.inputView}
-                                mode='outlined'
-                                label='Nuevo precio'
-                                placeholder='$'
-                                theme={{ colors: { text: colors.TEXT_INPUT, primary: colors.APP_MAIN } }}
-                                onChangeText={(price) => this.validateNumber(price)}
-                                value={this.state.price} />
-                        </Dialog.Content>
-                        <Dialog.Actions style={{ marginTop: sizes.hp('-2%') }}>
-                            <Button style={{ marginRight: sizes.wp('3%') }} color={colors.APP_RED} onPress={this._hideDialogPrice}>Cancelar</Button>
-                            <Button color={colors.APP_GREEN} disabled={this.state.price === '' || this.state.price === '0'} onPress={() => {
-                                this.updatePrice(),
-                                    this._hideDialogPrice()
-                            }}>Modificar</Button>
-                        </Dialog.Actions>
-                    </Dialog>
 
                     <Dialog
                         visible={this.state.visibleDialogDelete}
                         onDismiss={this._hideDialogDelete}>
                         <Dialog.Title style={{ alignSelf: 'center', textAlign: 'center' }}>¿Desea eliminar esta promoción?</Dialog.Title>
                         <Dialog.Actions>
-                            <Button style={{ marginRight: sizes.wp('4%') }} color={colors.APP_RED} onPress={() => this._hideDialogDelete()}>No</Button>
+                            <Button style={{ marginRight: sizes.wp('8%') }} color={colors.APP_RED} onPress={() => this._hideDialogDelete()}>No</Button>
                             <Button color={colors.APP_GREEN} onPress={() => {
                                 this._hideDialogDelete()
                                 this.deletePromo()
@@ -322,11 +273,11 @@ const styles = StyleSheet.create({
         borderTopLeftRadius: 15,
         borderTopRightRadius: 15,
     },
-    rightSide: {
+    topContent: {
         height: sizes.hp('7%'),
-        marginRight: sizes.wp('28%'),
         alignItems: 'center',
-        top: sizes.hp('1%')
+        width: sizes.wp('90%'),
+        alignSelf: 'center',
     },
     title: {
         textAlign: 'center',
@@ -347,33 +298,14 @@ const styles = StyleSheet.create({
     },
     buttonAvailable: {
         width: sizes.wp('20%'),
-        right: sizes.wp('-41%'),
-        top: sizes.hp('-4.4%'),
+        right: sizes.wp('-37%'),
+        top: sizes.hp('-4.8%'),
         fontSize: 5
-    },
-    fab: {
-        backgroundColor: '#FFFFFF',
-        borderColor: colors.APP_MAIN,
-        borderWidth: 2,
-        width: sizes.wp('10%'),
-        height: sizes.hp('4%'),
-        alignSelf: 'center',
-        justifyContent: 'center',
-        position: 'absolute',
     },
     title: {
         textAlign: 'center',
         fontSize: 18,
         fontWeight: '500',
-    },
-    inputView: {
-        marginTop: sizes.hp('1%'),
-        width: "90%",
-        height: 50,
-        marginBottom: 20,
-        justifyContent: "center",
-        padding: 8,
-        fontSize: sizes.TEXT_INPUT,
     },
 });
 

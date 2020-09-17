@@ -48,11 +48,11 @@ class ProductCard extends Component {
                 this.setState({ loading: false })
                 this.props.logout()
                 Actions.logsign({ visible: true })
-            }else if (data.status === 200) {
+            } else if (data.status === 200) {
                 this.setState({ loading: false })
                 this.props.refreshParent()
             }
-            this._showDialogResponse(data.body)
+            this.props.showDialogResponse(data.body)
         }
     }
 
@@ -68,7 +68,7 @@ class ProductCard extends Component {
     render() {
         const pic = props => <Image source={{ uri: this.state.photo }} resizeMode='cover' style={styles.image} />
 
-        const NamePrice = props => <View style={{alignItems: 'center'}}>
+        const NamePrice = props => <View style={{ alignItems: 'center' }}>
             <TextTicker style={styles.title}
                 duration={5000}
                 loop
@@ -91,7 +91,6 @@ class ProductCard extends Component {
                             </Button>
                             :
                             null}
-
                     </Card.Actions>
                     <Card.Title left={pic} leftStyle={{ marginLeft: sizes.wp('-1%'), marginTop: (this.props.data.condicion === null) ? sizes.hp('3.9%') : sizes.hp('0.5%'), }}
                         right={NamePrice} rightStyle={styles.rightSide} />
@@ -145,12 +144,12 @@ class ProductCard extends Component {
                 <Portal>
 
                     <Modal contentContainerStyle={styles.modalView} visible={this.state.visibleModalDetails} onDismiss={this._hideModalDetails}>
-                        <ProductDetails hideModalFromChild={this._hideModalDetails} data={this.props.data} rute={this.props.rute} 
-                        showDialogResponse={this.props.showDialogResponse} refreshParent={this.props.refreshParent}/>
+                        <ProductDetails hideModalFromChild={this._hideModalDetails} data={this.props.data} rute={this.props.rute}
+                            showDialogResponse={this.props.showDialogResponse} refreshParent={this.props.refreshParent} />
                     </Modal>
 
                     <Modal contentContainerStyle={[styles.modalView, { maxHeight: sizes.hp('92%') }]} visible={this.state.visibleModalOrder} onDismiss={this._hideModalOrder}>
-                        <ProductDetailsOrder hideModalFromChild={this._hideModalOrder} data={this.props.data}/>
+                        <ProductDetailsOrder hideModalFromChild={this._hideModalOrder} data={this.props.data} />
                     </Modal>
 
                     <Dialog

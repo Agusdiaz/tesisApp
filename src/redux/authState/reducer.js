@@ -49,6 +49,8 @@ export default (state = initialState, { type, payload }) => {
                             (obj2.id === payload.id) ? { ...obj2, horas: payload.hours } : obj2))]
                 }
             }
+        case 'UPDATE_SHOP_OPEN':
+            return { ...state, shop: { ...state.shop, abierto: payload.open}}
         default:
             return state
     }

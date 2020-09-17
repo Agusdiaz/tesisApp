@@ -93,7 +93,7 @@ class LineChartGraph extends React.PureComponent {
                         <LineChart
                             data={lineData}
                             width={sizes.wp('110%')}
-                            height={sizes.wp('70%')}
+                            height={sizes.wp('100%')}
                             yAxisLabel={''}
                             chartConfig={chartConfig}
                             bezier
@@ -101,7 +101,7 @@ class LineChartGraph extends React.PureComponent {
                                 borderRadius: 16,
                             }}
                             showValuesOnTopOfBars
-                            segments={5}
+                            segments={6}
                         />
                     </ScrollView>
                 </View>

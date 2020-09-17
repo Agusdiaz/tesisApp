@@ -5,7 +5,7 @@ import { appStyles, colors, sizes } from '../../../index.styles';
 import { Button, Dialog, TextInput, Modal, Portal, ActivityIndicator } from 'react-native-paper'
 import { DataTable, DataTableCell, DataTableRow } from 'material-bread'
 import ExistentProducts from './existentProduct'
-import { createPromo } from '../../../api/menus'
+import { createPromo, modifyPromo } from '../../../api/promos'
 import { Actions } from 'react-native-router-flux';
 import UserActions from '../../../redux/authState/action'
 
@@ -21,32 +21,56 @@ class CreatePromo extends Component {
             name: '',
             details: '',
             price: '',
+            id: null,
             loading: false,
             actionMessage: '',
         }
     }
 
-    async createPromo() {
+    componentDidMount() {
+        if (this.props.rute === 'modify') {
+            this.props.data.productos[0].map(obj => {
+                this.state.products.push({
+                    id: obj.id, nombre: obj.nombre, cantidad: obj.cantidad, precio: (obj.precio != null) ? obj.precio.toString() : null
+                })
+            })
+            this.setState({
+                id: this.props.data.id, name: this.props.data.nombre, details: (this.props.data.detalle != null) ? this.props.data.detalle : '',
+                price: this.props.data.precio.toString()
+            })
+        }
+    }
+
+    async actionPromo() {
         this.setState({ loading: true })
         var response = {
             cuit: this.props.shop.cuit,
-            nombre: (this.state.name.trim() === "") ? 'Promoción' : this.state.name,
-            detalle: (this.state.details.trim() === "") ? null : this.state.details,
-            precio: parseFloat(this.state.price),
-            productos: this.state.products,
+            promocion: {
+                id: this.state.id,
+                nombre: (this.state.name.trim() === "") ? 'Promoción' : this.state.name,
+                detalle: (this.state.details.trim() === "") ? null : this.state.details,
+                precio: parseFloat(this.state.price),
+                productos: this.state.products,
+            }
         }
-        const data = await createPromo(response, this.props.shop.token)
+        if (this.props.rute === 'initial') response.inicial
+        const data = (this.props.rute === 'modify') ? await modifyPromo(response, this.props.shop.token) :
+            await createPromo(response, this.props.shop.token)
         if (data.status === 500 && data.body.error) {
             this.setState({ loading: false })
             this.props.logout()
             Actions.logsign({ visible: true })
-        } else if (data.status === 500 || data.status === 401) {
-            this.setState({ loading: false, actionMessage: 'Error al crear promoción. Inténtelo nuevamente' })
-            this._showDialogResponse()
+        } else if (data.status === 500) {
+            this.setState({ loading: false })
+            this.props.showDialogResponse(`Error al ${(this.props.rute === 'modify') ? 'modificar' : 'crear'} promoción. Inténtelo nuevamente`)
+        } else if (data.status === 401) {
+            this.setState({ loading: false })
+            this.props.showDialogResponse(data.body.close)
         } else {
-            this.setState({ loading: false, actionMessage: data.body })
-            this._showDialogResponse()
-            if(this.props.rute === 'shop') this.props.onRefreshChilds()
+            this.setState({ loading: false })
+            this.props.showDialogResponse(data.body)
+            if (this.props.rute === 'shop') this.props.onRefreshChilds()
+            if (this.props.rute === 'modify') this.props.refreshParent()
             Actions.pop()
         }
     }
@@ -75,17 +99,20 @@ class CreatePromo extends Component {
     validateNumber = (number) => {
         let newText = '';
         let numbers = '0123456789';
-        for (var i = 0; i < number.length; i++) {
-            if (numbers.indexOf(number[i]) > -1) {
-                newText = newText + number[i]
-                this.setState({ price: number.toString() })
+        if (number === '0') Alert.alert('Atención', 'El precio no puede ser 0');
+        else {
+            for (var i = 0; i < number.length; i++) {
+                if (numbers.indexOf(number[i]) > -1) {
+                    newText = newText + number[i]
+                    this.setState({ price: number.toString() })
+                }
+                else {
+                    Alert.alert('Atención', 'Por favor, ingrese solo números');
+                    break
+                }
             }
-            else {
-                Alert.alert('Atención', 'Por favor, ingrese solo números');
-                break
-            }
+            if (number.length === 0) this.setState({ price: '' })
         }
-        if (number.length === 0) this.setState({ price: '' })
     }
 
     validateTextLength(text) {
@@ -104,7 +131,7 @@ class CreatePromo extends Component {
         return (
             <View style={appStyles.container}>
 
-                <Text style={styles.titleText}>Creá tu promoción</Text>
+                <Text style={styles.titleText}>{(this.props.rute === 'modify') ? 'Modificá' : 'Creá'} tu promoción</Text>
                 <View style={{ alignItems: 'center', height: sizes.hp('70%'), position: 'absolute', }}>
                     <TextInput
                         style={styles.inputView}
@@ -139,7 +166,7 @@ class CreatePromo extends Component {
                     <DataTable style={{ marginTop: sizes.wp('1%'), width: sizes.wp('95%'), margin: 15, }}>
                         <DataTableRow >
                             <DataTableCell text={''} type={'header'} textStyle={{ textAlign: 'center', fontWeight: 'bold' }} style={{ maxWidth: '2%' }} minWidth={85} />
-                            <DataTableCell text={'PRODUCTOS'} type={'header'} borderRight textStyle={{ textAlign: 'center', fontWeight: 'bold' }} style={{ maxWidth: '28%' }} />
+                            <DataTableCell text={'PRODUCTOS'} type={'header'} borderRight textStyle={{ textAlign: 'center', fontWeight: 'bold' }} style={{ maxWidth: '30%' }} />
                             <DataTableCell text={'Cantidad'} type={'header'} textStyle={{ textAlign: 'center', fontWeight: 'bold' }} style={{ maxWidth: '3%' }} minWidth={90} />
                             <DataTableCell text={'Precio'} type={'header'} textStyle={{ textAlign: 'center', fontWeight: 'bold' }} style={{ maxWidth: '3%' }} minWidth={85} />
                         </DataTableRow>
@@ -150,7 +177,7 @@ class CreatePromo extends Component {
                                     < DataTableRow key={i} >
                                         <DataTableCell text={'Eliminar'} textStyle={{ textAlign: 'center', fontWeight: 'bold', color: colors.APP_RED, textDecorationLine: 'underline' }}
                                             style={{ maxWidth: '2%', alignSelf: 'center' }} minWidth={85} onPress={() => { this.removeProduct(i) }} />
-                                        <DataTableCell text={row.nombre} borderRight style={{ maxWidth: '28%' }} textStyle={{ textAlign: 'center' }} />
+                                        <DataTableCell text={row.nombre} borderRight style={{ maxWidth: '30%' }} textStyle={{ textAlign: 'center' }} />
                                         <DataTableCell text={row.cantidad.toString()} textStyle={{ textAlign: 'center' }} style={{ maxWidth: '3%', alignSelf: 'center' }} minWidth={90} />
                                         <DataTableCell text={'$' + row.precio.toString()} textStyle={{ textAlign: 'center' }} style={{ maxWidth: '3%', alignSelf: 'center' }} minWidth={85} />
                                     </DataTableRow>
@@ -168,7 +195,7 @@ class CreatePromo extends Component {
                             color={colors.APP_MAIN}
                             onPress={this._showModalProducts}>
                             Agregar Productos
- 				                </Button>
+ 				        </Button>
                     </View>
                 </View>
 
@@ -189,18 +216,18 @@ class CreatePromo extends Component {
                         color={colors.APP_MAIN}
                         disabled={this.state.price === '' || this.state.products.length === 0}
                         onPress={this._showDialogFinish}>
-                        Crear
- 				</Button>
+                        {(this.props.rute === 'modify') ? 'Modificar' : 'Crear'}
+                    </Button>
                 </View>
 
                 <Portal>
                     <Dialog
                         visible={this.state.visibleDialogFinish}
                         onDismiss={this._hideDialogFinish}>
-                        <Dialog.Title style={{ alignSelf: 'center', textAlign: 'center' }}>¿Desea crear la promoción?</Dialog.Title>
+                        <Dialog.Title style={{ alignSelf: 'center', textAlign: 'center' }}>¿Desea {(this.props.rute === 'modify') ? 'modificar' : 'crear'} la promoción?</Dialog.Title>
                         <Dialog.Actions>
                             <Button style={{ left: sizes.wp('-12%') }} color={colors.APP_RED} onPress={this._hideDialogFinish}>No</Button>
-                            <Button color={colors.APP_GREEN} onPress={() => { this._hideDialogFinish(), this.createPromo() }}>Sí</Button>
+                            <Button color={colors.APP_GREEN} onPress={() => { this._hideDialogFinish(), this.actionPromo() }}>Sí</Button>
                         </Dialog.Actions>
                     </Dialog>
 
@@ -228,7 +255,6 @@ class CreatePromo extends Component {
                     </Dialog>
 
                 </Portal>
-
             </View>
         );
     }

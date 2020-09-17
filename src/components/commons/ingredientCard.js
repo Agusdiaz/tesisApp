@@ -51,14 +51,14 @@ class IngredientCard extends Component {
             } else if (data.status === 200) {
                 this.props.refreshParent()
             }
-            this._showDialogResponse()
+            this.props.showDialogResponse(data.body)
         }
     }
 
     async deleteIngredient() {
         if (this._isMounted) {
             this.setState({ loading: true })
-            const data = await deleteIngredient(this.props.data.id, this.props.shop.cuit, this.props.shop.token)
+            const data = await deleteIngredient(this.props.data.id, this.props.shop.cuit, this.props.shop.token, this.props.rute)
             if (data.status === 500 && data.body.error) {
                 this.props.logout()
                 Actions.logsign({ visible: true })
@@ -83,6 +83,7 @@ class IngredientCard extends Component {
                     detalle: (this.state.details.trim() === "") ? null : this.state.details,
                 }
             }
+            if(this.props.rute === 'initial') response.inicial
             this.setState({ loading: true })
             const data = await modifyIngredient(response, this.props.shop.token)
             if (data.status === 500 && data.body.error) {
@@ -121,9 +122,6 @@ class IngredientCard extends Component {
 
     _showDialogDisabled = (text) => (this._isMounted) ? this.setState({ visibleDialogDisabled: true, statusMessage: text }) : null;
     _hideDialogDisabled = () => (this._isMounted) ? this.setState({ visibleDialogDisabled: false, statusMessage: '' }) : null;
-
-    _showDialogResponse = () => (this._isMounted) ? this.setState({ visibleDialogResponse: true }) : null;
-    _hideDialogResponse = () => (this._isMounted) ? this.setState({ visibleDialogResponse: false }) : null;
 
     _showDialogDelete = () => (this._isMounted) ? this.setState({ visibleDialogDelete: true }) : null;
     _hideDialogDelete = () => (this._isMounted) ? this.setState({ visibleDialogDelete: false }) : null;
@@ -195,6 +193,22 @@ class IngredientCard extends Component {
                                                 this.setState({ status: 1 })
                                                 this._showDialogDisabled('¿Esta seguro que desea habilitar este producto?')
                                             }} />
+                                        : (this.props.rute === 'initial') ?
+                                        <View style={{ flexDirection: 'row' }}>
+                                            <FAB
+                                                style={[styles.fabDisabled, { marginRight: sizes.wp('3%') }]}
+                                                color={colors.APP_MAIN}
+                                                icon="delete"
+                                                small
+                                                onPress={this._showDialogDelete} />
+
+                                            <FAB
+                                                style={styles.fabDisabled}
+                                                color={colors.APP_MAIN}
+                                                icon="pencil"
+                                                small
+                                                onPress={this._showModalModify} />
+                                        </View>                                        
                                         : null
                                 }
                             </View>
@@ -328,7 +342,6 @@ const styles = StyleSheet.create({
         backgroundColor: '#FFFFFF',
         borderColor: colors.APP_MAIN,
         borderWidth: 2,
-        //position: 'absolute'
     },
     ingredientCard: {
         width: sizes.wp('90%'),
