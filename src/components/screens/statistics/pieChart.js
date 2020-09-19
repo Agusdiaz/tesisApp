@@ -1,12 +1,12 @@
 import React from 'react'
 import { connect } from 'react-redux';
-import { StyleSheet, View, Text, ScrollView, Image } from 'react-native';
-import { PieChart } from 'react-native-chart-kit'
-import { PieChart as Pie } from 'react-native-svg-charts'
-import { IconButton } from 'react-native-paper';
+import { StyleSheet, View, Text, Image, FlatList } from 'react-native';
+import { PieChart } from 'react-native-svg-charts'
+import { IconButton, Card } from 'react-native-paper';
 import { appStyles, colors, sizes } from '../../../index.styles';
 import { getTopProducts } from '../../../api/stats'
 import { Actions } from 'react-native-router-flux';
+import TextTicker from 'react-native-text-ticker';
 import UserActions from '../../../redux/authState/action'
 
 class PieChartGraph extends React.PureComponent {
@@ -16,11 +16,6 @@ class PieChartGraph extends React.PureComponent {
         this.state = {
             stats: [],
             areProducts: true,
-            /* selectedSlice: {
-                label: 'Seleccioná',
-                value: ''
-            },
-            labelWidth: 0 */
         }
     }
 
@@ -29,108 +24,79 @@ class PieChartGraph extends React.PureComponent {
     }
 
     randomColor = () => ('#' + ((Math.random() * 0xffffff) << 0).toString(16) + '000000').slice(0, 7)
-    /* colors = [this.randomColor(), this.randomColor(), this.randomColor(), this.randomColor(), this.randomColor(), this.randomColor(), this.randomColor(),
-        this.randomColor(), this.randomColor(), this.randomColor()]
-    keys = []
-    values = [] */
-    pieColors = ['#F11616', '#8EF116', '#387FBB', '#E72ECF', '#EF8433', '#21D385', '#737A77', '#A78CE3', '#000000', '#EFE433']
-    /* datos = [{nombre: 'Papas', cantidad: 25}, {nombre: 'Cerveza', cantidad: 24}, {nombre: 'Lomo', cantidad: 20}, {nombre: 'Nachos con cheddar', cantidad: 18}, {nombre: 'Torta', cantidad: 18}, {nombre: 'Waffle', cantidad: 17}, 
-    {nombre: 'Medialuna', cantidad: 14}, {nombre: 'Cafe', cantidad: 10}, {nombre: 'Pollo', cantidad: 8}, {nombre: 'Tortilla babe', cantidad: 4}] */
-    
+    pieColors = ['#F11616', '#8EF116', '#387FBB', '#E72ECF', '#EF8433', '#217C08', '#0030D8', '#A78CE3', '#000000', '#EFE433']
+
     async getStats() {
         const data = await getTopProducts(this.props.shop.cuit, this.props.shop.token)
         if (data.status === 500 && data.body.error) {
             this.props.logout()
             Actions.logsign({ visible: true })
-        } else if (data.status === 200){
-            this.setState({ stats: data.body, areProducts: true })
-            /* data.body.map(obj => {
-                this.keys.push(obj.nombre)
-                this.values.push(obj.cantidad)
-            }) */
+        } else if (data.status === 200) {
+            var newStats = []
+            data.body.map((obj, i) => {
+                newStats.push({
+                    key: i, nombre: obj.nombre, value: obj.cantidad, svg: { fill: this.pieColors[i] },
+                    arc: { outerRadius: '100%', cornerRadius: 5 }
+                })
+            })
+            this.setState({ areProducts: true, stats: newStats })
         }
         else if (data.status === 204)
             this.setState({ areProducts: false })
     }
 
+    _renderItem(item) {
+        return (
+            <Card style={{ height: sizes.hp('8%'), elevation: 2, marginTop: 2, width: sizes.wp('87%'), marginBottom: 5 }}>
+                <Card.Title style={{ alignSelf: 'center', height: sizes.hp('7%') }}
+                    right={() => <View style={{ alignSelf: 'center', width: sizes.wp('65%') }}>
+                        <TextTicker style={styles.title}
+                            duration={5000}
+                            loop
+                            animationType='bounce'
+                            repeatSpacer={50}
+                            marqueeDelay={1000}>({item.value}) {item.nombre}</TextTicker>
+                    </View>}
+                    left={() => <View style={[styles.circle, { backgroundColor: item.svg.fill }]} />}
+                    leftStyle={{ left: sizes.wp('0%'), }}
+                    rightStyle={{ width: sizes.wp('65%'), left: sizes.wp('-5%') }} />
+            </Card>
+        );
+    }
+
     render() {
-        const chartConfig = {
-            color: () => "#E1454A",
-            style: {
-                marginLeft: 0
-            },
-        }
-
-        const data = [];
-        this.state.stats.map((obj, i) => {
-            data.push({
-                name: obj.nombre, cantidad: obj.cantidad, color: this.pieColors[i], legendFontColor: "#000000",
-                legendFontSize: 15
-            })
-        })
-
-        /* const { labelWidth, selectedSlice } = this.state;
-        const { label, value } = selectedSlice;
-        const data2 = this.keys.map((key, index) => {
-            return {
-                key,
-                value: this.values[index],
-                svg: { fill: this.colors[index] },
-                arc: { outerRadius: (70 + this.values[index]) + '%', padAngle: label === key ? 0.1 : 0 },
-                onPress: () => this.setState({ selectedSlice: { label: key, value: this.values[index] } })
-            }
-        }) */
-
         return (
             <View style={{ height: sizes.hp('90%') }}>
                 <IconButton
                     icon="close"
-                    style={{ right: sizes.wp('-71%') }}
+                    style={{ right: sizes.wp('-75%'), marginBottom: -5 }}
                     color={colors.APP_MAIN}
                     size={30}
                     onPress={this.props.hideModalFromChild}
                 />
 
-                <Text style={styles.textTitle}>¿Cuáles son los productos más demandados por tu público?</Text>
+                <Text style={styles.textTitle}>Top 10 de productos más demandados por tu público</Text>
 
                 {(this.state.areProducts) ?
-                    <View style={styles.pieChart}>
-                         <ScrollView horizontal={true}>
-                             <PieChart
-                                 data={data}
-                                 width={sizes.wp('140%')}
-                                 height={sizes.wp('80%')}
-                                 paddingLeft={10}
-                                 chartConfig={chartConfig}
-                                 accessor="cantidad"
-                                 absolute
-                                 avoidFalseZero
-                                 hasLegend
-                             />
-                         </ScrollView>
 
-                         {/* <View style={{ justifyContent: 'center', flex: 1}}>
-                        <Pie
-                            style={{ height: sizes.hp('70%'), width: sizes.wp('90%')}}
-                            outerRadius={'80%'}
-                            innerRadius={'70%'}
-                            data={data2}
+                    <View style={styles.pieChart}>
+                        <PieChart
+                            style={{ height: sizes.hp('40%') }}
+                            outerRadius={'85%'}
+                            innerRadius={10}
+                            data={this.state.stats}
                         />
-                        <Text
-                            onLayout={({ nativeEvent: { layout: { width } } }) => {
-                                this.setState({ labelWidth: width });
-                            }}
-                            style={{
-                                //position: 'absolute',
-                                top: sizes.hp('-60%'),
-                                textAlign: 'center',
-                                fontWeight: 'bold',
-                                fontSize: 25,
-                            }}>
-                            {`${label} \n ${value}`}
-                        </Text>
-                    </View> */}
-                     </View>
+
+                        <FlatList
+                            style={styles.list}
+                            contentContainerStyle={{ alignItems: 'center' }}
+                            data={this.state.stats}
+                            initialNumToRender={0}
+                            renderItem={({ item }) => this._renderItem(item)}
+                            keyExtractor={(item, i) => i.toString()}
+                        />
+
+                    </View>
                     :
                     <View style={styles.viewImage}>
                         <Image source={require('../../../icons/noProducts.png')} style={styles.image} />
@@ -147,12 +113,11 @@ const styles = StyleSheet.create({
         color: colors.APP_MAIN,
         fontSize: 20,
         fontWeight: 'bold',
-        textAlign: 'center'
+        textAlign: 'center',
+        width: sizes.wp('87%')
     },
     pieChart: {
         width: sizes.wp('90%'),
-        top: sizes.hp('10%'),
-        //left: 10
     },
     viewImage: {
         justifyContent: 'center',
@@ -171,6 +136,19 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         justifyContent: 'center',
         textAlign: 'center',
+    },
+    list: {
+        height: sizes.hp('35%'),
+    },
+    title: {
+        textAlign: 'center',
+        fontSize: 18,
+        fontWeight: '500',
+    },
+    circle: {
+        width: 33,
+        height: 33,
+        borderRadius: 33 / 2,
     },
 })
 

@@ -197,7 +197,7 @@ class ProfileShopScreen extends Component {
 
                 <Portal>
 
-                <Dialog
+                    <Dialog
                         style={{ top: sizes.hp('-3%') }}
                         visible={this.state.visibleDialogSessionOut}
                         onDismiss={this._hideDialogSessionOut}>
@@ -231,7 +231,7 @@ class ProfileShopScreen extends Component {
                         <Schedule hideModalFromChild={this._hideModalEditSchedule} data={this.props.shop.horarios[0]} rute={'editShop'} />
                     </Modal>
 
-                    <Modal visible={this.state.visibleModalPassword} onDismiss={this._hideModalPassword} contentContainerStyle={[styles.modalView, {top: sizes.hp('-10%')}]}>
+                    <Modal visible={this.state.visibleModalPassword} onDismiss={this._hideModalPassword} contentContainerStyle={[styles.modalView, { top: sizes.hp('-10%') }]}>
 
                         <Text style={styles.signupText}>Modificá tu contraseña</Text>
                         <TextInput
@@ -277,7 +277,6 @@ class ProfileShopScreen extends Component {
                     </Modal>
 
                     <Dialog
-                        //style={{ width: sizes.wp('70%'), alignSelf: 'center' }}
                         visible={this.state.visibleDialogResponse}
                         onDismiss={this._hideDialogResponse}>
                         <Dialog.Title style={{ alignSelf: 'center', textAlign: 'center' }}>{this.state.actionMessage}</Dialog.Title>
@@ -349,7 +348,7 @@ const styles = StyleSheet.create({
         padding: 8,
         fontSize: sizes.TEXT_INPUT,
     },
-    
+
 });
 
 function mapStateToProps(state) {

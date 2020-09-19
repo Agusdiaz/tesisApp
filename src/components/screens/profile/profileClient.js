@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { StyleSheet, Text, View, KeyboardAvoidingView, } from 'react-native';
+import AsyncStorage from '@react-native-community/async-storage'
 import { appStyles, colors, sizes } from '../../../index.styles';
 import { Avatar, Button, Dialog, TextInput, Modal, IconButton, Portal, ActivityIndicator } from 'react-native-paper';
 import TextTicker from 'react-native-text-ticker'
@@ -41,12 +42,12 @@ class ProfileClientScreen extends Component {
     passwordsMatch() {
         if (this.state.passwordNew.localeCompare(this.state.passwordRepeated) === 0 && this.state.passwordNew.length > 5)
             return true
-        else if(this.state.passwordNew.localeCompare(this.state.passwordRepeated) !== 0){
-            this.setState({errorMessage: 'Las contraseñas ingresadas deben coincidir' });
+        else if (this.state.passwordNew.localeCompare(this.state.passwordRepeated) !== 0) {
+            this.setState({ errorMessage: 'Las contraseñas ingresadas deben coincidir' });
             this._showDialogEditProfile()
             return
-        } else if(this.state.passwordNew.length <= 5){
-            this.setState({errorMessage: 'La contraseña debe tener 6 o más caracteres' });
+        } else if (this.state.passwordNew.length <= 5) {
+            this.setState({ errorMessage: 'La contraseña debe tener 6 o más caracteres' });
             this._showDialogEditProfile()
             return
         }
@@ -55,12 +56,12 @@ class ProfileClientScreen extends Component {
     async editPassword() {
         if (this.state.passwordNew != '' && this.state.passwordRepeated != '') {
             if (this.passwordsMatch()) {
-                this.setState({loading: true})
+                this.setState({ loading: true })
                 const data = await changePassword(this.props.user.mail, this.state.passwordNew, this.props.user.token)
-                if(data.status === 500 && data.body.error){
+                if (data.status === 500 && data.body.error) {
                     this.props.logout()
-                    Actions.logsign({visible: true})
-                } else if(data.status !== 200){
+                    Actions.logsign({ visible: true })
+                } else if (data.status !== 200) {
                     this.setState({ passwordRepeated: '', passwordNew: '', errorMessage: data.body, loading: false });
                     this._showDialogEditProfile()
                 } else {
@@ -70,37 +71,37 @@ class ProfileClientScreen extends Component {
                 }
             }
         }
-    }        
+    }
 
     async editNameLastName() {
         if ((this.state.firstNameNew != '' && this.state.firstNameNew.localeCompare(this.props.user.name) != 0) &&
             (this.state.lastNameNew != '' && this.state.lastNameNew.localeCompare(this.props.user.lastName) != 0)) {
-                this.setState({ loading: true })
+            this.setState({ loading: true })
             const data = await updateClient(this.props.user.mail, this.state.firstNameNew, this.state.lastNameNew, this.props.user.token)
-            if(data.status === 500 && data.body.error){
+            if (data.status === 500 && data.body.error) {
                 this.props.logout()
-                Actions.logsign({visible: true})
+                Actions.logsign({ visible: true })
             } else if (data.status === 500 || data.status === 404) {
-                this.setState({ firstNameNew: '', lastNameNew: '', loading: false, messageError: data.body})
+                this.setState({ firstNameNew: '', lastNameNew: '', loading: false, messageError: data.body })
                 this._showDialogEditProfile()
             } else {
                 this.props.updateClientData(this.state.firstNameNew, this.state.lastNameNew)
-                this.setState({ loading: false, firstNameNew: '', lastNameNew: '', errorMessage: 'Se guardaron tus cambios'})
+                this.setState({ loading: false, firstNameNew: '', lastNameNew: '', errorMessage: 'Se guardaron tus cambios' })
                 this._showDialogEditProfile()
                 this._hideModalName()
             }
         } else if (this.state.firstNameNew != '' && this.state.firstNameNew.localeCompare(this.props.user.name) != 0) {
             this.setState({ loading: true })
             const data = await updateClient(this.props.user.mail, this.state.firstNameNew, this.props.user.lastName, this.props.user.token)
-            if(data.status === 500 && data.body.error){
+            if (data.status === 500 && data.body.error) {
                 this.props.logout()
-                Actions.logsign({visible: true})
+                Actions.logsign({ visible: true })
             } else if (data.status === 500 || data.status === 404) {
-                this.setState({ firstNameNew: '', loading: false, messageError: data.body})
+                this.setState({ firstNameNew: '', loading: false, messageError: data.body })
                 this._showDialogEditProfile()
             } else {
                 this.props.updateClientData(this.state.firstNameNew, this.props.user.lastName)
-                this.setState({ loading: false, firstNameNew: '', errorMessage: 'Se guardaron tus cambios'})
+                this.setState({ loading: false, firstNameNew: '', errorMessage: 'Se guardaron tus cambios' })
                 this._showDialogEditProfile()
                 this._hideModalName()
             }
@@ -108,15 +109,15 @@ class ProfileClientScreen extends Component {
         else if (this.state.lastNameNew != '' && this.state.lastNameNew.localeCompare(this.props.user.lastName) != 0) {
             this.setState({ loading: true })
             const data = await updateClient(this.props.user.mail, this.props.user.name, this.state.lastNameNew, this.props.user.token)
-            if(data.status === 500 && data.body.error){
+            if (data.status === 500 && data.body.error) {
                 this.props.logout()
-                Actions.logsign({visible: true})
+                Actions.logsign({ visible: true })
             } else if (data.status === 500 || data.status === 404) {
-                this.setState({ lastNameNew: '', loading: false, messageError: data.body})
+                this.setState({ lastNameNew: '', loading: false, messageError: data.body })
                 this._showDialogEditProfile()
             } else {
                 this.props.updateClientData(this.props.user.name, this.state.lastNameNew)
-                this.setState({ loading: false, firstNameNew: '', lastNameNew: '', errorMessage: 'Se guardaron tus cambios'})
+                this.setState({ loading: false, firstNameNew: '', lastNameNew: '', errorMessage: 'Se guardaron tus cambios' })
                 this._showDialogEditProfile()
                 this._hideModalName()
             }
@@ -131,8 +132,8 @@ class ProfileClientScreen extends Component {
                 <View style={{ alignItems: 'center', top: 0, bottom: 0 }}>
                     <View style={styles.header}>
                         <View style={styles.headerContent}>
-                        <Avatar.Text style={styles.avatar} size={100} label={(this.props.user.lastName !== undefined) ? 
-                        this.props.user.name.charAt(0)+this.props.user.lastName.charAt(0) : ''} labelStyle={{ color: colors.APP_MAIN }} />
+                            <Avatar.Text style={styles.avatar} size={100} label={(this.props.user.lastName !== undefined) ?
+                                this.props.user.name.charAt(0) + this.props.user.lastName.charAt(0) : ''} labelStyle={{ color: colors.APP_MAIN }} />
                             <TextTicker style={styles.fullName}
                                 duration={5000}
                                 loop
@@ -206,9 +207,9 @@ class ProfileClientScreen extends Component {
                         <Dialog.Actions>
                             <Button style={{ marginRight: sizes.wp('3%') }} color={colors.APP_RED} onPress={this._hideDialogSessionOut}>Cancelar</Button>
                             <Button color={colors.APP_GREEN} onPress={() => {
-                                this.props.logout()
-                                this._hideDialogSessionOut()
-                                Actions.logsign()}}>Ok</Button>
+                                this._hideDialogSessionOut(), this.props.logout()
+                                Actions.logsign()
+                            }}>Ok</Button>
                         </Dialog.Actions>
                     </Dialog>
 
@@ -310,14 +311,14 @@ class ProfileClientScreen extends Component {
                     </Dialog>
 
                     <Modal dismissable={false}
-                    visible={this.state.loading}
-                    style={styles.modalActivityIndicator} >
-                    <ActivityIndicator
-                        animating={this.state.loading}
-                        size={60}
-                        color={colors.APP_MAIN}
-                    />
-                </Modal>
+                        visible={this.state.loading}
+                        style={styles.modalActivityIndicator} >
+                        <ActivityIndicator
+                            animating={this.state.loading}
+                            size={60}
+                            color={colors.APP_MAIN}
+                        />
+                    </Modal>
                 </Portal>
             </View>
         );

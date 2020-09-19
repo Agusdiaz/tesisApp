@@ -125,7 +125,7 @@ class OrderCardShop extends Component {
                 <Card style={styles.cardContent}>
                     <ImageBackground source={require('../../icons/order.jpg')} style={styles.imageOutside} imageStyle={styles.imageInside} >
                         <Button mode='outlined' style={styles.takeAwayButton} color={colors.APP_MAIN}>
-                            {(this.props.data.takeAway === 1) ? 'Para Llevar' : 'Para Comer Aquí'}
+                            {(this.props.data.takeAway === 1) ? 'Para Llevar' : 'Para Comer Aca'}
                         </Button>
                         <Card.Title style={styles.cardTitle} titleStyle={styles.leftText} title="Número del pedido:" right={orderNumber} rightStyle={styles.rightSide} />
                         <Divider style={styles.divider} />

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { StyleSheet, Text, KeyboardAvoidingView, Platform, TouchableOpacity, Image } from 'react-native';
+import AsyncStorage from '@react-native-community/async-storage'
 import LoginActions from '../../../redux/authState/action'
 import { TextInput, Button, ActivityIndicator, Modal, Dialog, Paragraph } from 'react-native-paper';
 import { appStyles, colors, sizes } from '../../../index.styles';
@@ -24,6 +25,14 @@ class LoginScreen extends Component {
     _showDialog = () => this.setState({ visibleDialog: true });
     _hideDialog = () => this.setState({ visibleDialog: false });
 
+    async saveItem(item, selectedValue) {
+        try {
+            await AsyncStorage.setItem(item, selectedValue);
+        } catch (error) {
+            console.error('AsyncStorage error: ' + error.message);
+        }
+    }
+
     async _login() {
         this.setState({ loading: true })
         setTimeout(() => { this.setState({ loading: false, }) }, 3500); //5000
@@ -36,16 +45,19 @@ class LoginScreen extends Component {
             this._showDialog()
         } else {
             this.setState({ loading: false, email: '', password: '' })
+            this.saveItem('id_token', data.body.token)
             if (data.body.cuit === undefined) {
+                this.saveItem('profile', 'client')
                 this.props.setLoginClientData(data.body.mail, data.body.nombre, data.body.apellido, data.body.token)
                 Actions.navbarclient()
             } else if (data.body.nuevo === 0) {
+                this.saveItem('profile', 'shop')
                 this.props.setLoginShopData(data.body.cuit, data.body.nombre, data.body.direccion, data.body.telefono, data.body.mail,
                     data.body.mascotas, data.body.bebes, data.body.juegos, data.body.aireLibre, data.body.libreHumo, data.body.wifi,
                     data.body.demora, data.body.abierto, data.body.horarios, data.body.token)
                 Actions.navbarshop()
-            }
-            else {
+            } else {
+                this.saveItem('profile', 'newShop')
                 this.props.setLoginShopData(data.body.cuit, data.body.nombre, data.body.direccion, data.body.telefono, data.body.mail,
                     data.body.mascotas, data.body.bebes, data.body.juegos, data.body.aireLibre, data.body.libreHumo, data.body.wifi,
                     data.body.demora, data.body.abierto, data.body.horarios, data.body.token)

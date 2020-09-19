@@ -48,7 +48,7 @@ class ScheduleDetails extends Component {
         const openClose = props => (this.props.shop.abierto === 1) ? <Button style={{ borderRadius: 20, width: 105, alignItems: 'center' }} mode="contained" color={colors.APP_GREEN} labelStyle={{ fontSize: 9, color: colors.APP_BACKGR }} >
             Abierto </Button> : <Button style={{ borderRadius: 20, width: 105, alignItems: 'center' }} mode="contained" color={colors.APP_RED} labelStyle={{ fontSize: 9, color: colors.APP_BACKGR }}>Cerrado </Button>
 
-        const Enabled = props => (!this.props.habilitada) ?
+        const Enabled = props => (!this.props.habilitada && this.props.rute !== 'editShop') ?
             <Text style={{ fontSize: 17, fontWeight: 'bold', color: colors.APP_RED }}>Promoción deshabilitada</Text>
             : null
 

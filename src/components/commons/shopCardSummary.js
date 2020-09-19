@@ -14,7 +14,6 @@ class ShopCardSummary extends Component {
     constructor() {
         super();
         this.state = {
-            delay: 'Poca',
         };
     }
 
@@ -75,7 +74,7 @@ class ShopCardSummary extends Component {
             color={colors.APP_MAIN}
             mode='outlined'
             icon='account-clock-outline'>
-            En este momento hay {this.state.delay} demora</Button>
+            En este momento la demora es: {this.props.data.demora}</Button>
 
         return (
                 <Card style={styles.cardContent}>

@@ -11,7 +11,6 @@ class ShopCard extends Component {
         super(props);
         this.state = {
             photo: 'https://picsum.photos/500',
-            delay: 'Poca',
             visibleModalSchedule: false,
         }
     }
@@ -20,14 +19,6 @@ class ShopCard extends Component {
     _hideModalSchedule = () => this.setState({ visibleModalSchedule: false });
 
     render() {
-
-        const PeopleButton = props => <Button
-            style={{ borderRadius: 20, borderColor: colors.APP_MAIN, borderWidth: 1, width: sizes.wp('80%'), alignSelf: 'center', }}
-            labelStyle={{ fontSize: 12, color: colors.APP_MAIN, }}
-            color={colors.APP_MAIN}
-            mode='outlined'
-            icon='account-clock-outline'>
-            En este momento tenés {this.state.delay} demora</Button>
 
         const Name = props => <TextTicker style={{ fontSize: 22, textAlign: 'center', fontWeight: 'bold' }}
             duration={5000}
@@ -61,7 +52,6 @@ class ShopCard extends Component {
                 <Card.Title style={{ margin: 2 }} leftStyle={{ right: sizes.wp('-5%'), width: sizes.wp('72%'), alignItems: 'center' }} left={Name} />
                 <ScrollView>
                     <Divider />
-                    <Card.Title style={{ margin: -10,}} left={PeopleButton} leftStyle={{ alignSelf: 'center', right: sizes.wp('-38.5%')}} />
                     <Card.Cover source={{ uri: this.state.photo }} />
                     <Divider />
                     <Card.Actions style={{ alignContent: 'center' }}>

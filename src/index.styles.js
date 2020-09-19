@@ -43,7 +43,7 @@ const productCondition = {
 const productType = {
     SALTY: 'salado',
     SWEET: 'dulce',
-    DRINK: 'bebida'
+    DRINK: 'bebida',
 }
 
 const appStyles = StyleSheet.create({

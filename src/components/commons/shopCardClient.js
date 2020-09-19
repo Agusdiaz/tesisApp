@@ -15,7 +15,6 @@ class ShopCardClient extends Component {
         super();
         this.state = {
             photo: 'https://picsum.photos/500',
-            delay: 'Poca',
             visibleModalSchedule: false,
         };
     }
@@ -48,7 +47,7 @@ class ShopCardClient extends Component {
             color={colors.APP_MAIN}
             mode='outlined'
             icon='account-clock-outline'>
-            En este momento hay {this.state.delay} demora</Button>
+            En este momento la demora es: {this.props.shop.demora}</Button>
 
         const Address = props => <TextTicker style={{ fontSize: 16, }}
             duration={5000}

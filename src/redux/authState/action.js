@@ -1,4 +1,5 @@
 import configureStore from '../../store/configureStore'
+import AsyncStorage from '@react-native-community/async-storage'
 
 const setLoginClientData = (mail, name, lastName, token) => {
     return {
@@ -34,8 +35,6 @@ const setLoginShopData = (cuit, nombre, direccion, telefono, mail, mascotas, beb
         },
     }
 }
-
-const logout = () => configureStore.dispatch({ type: 'LOGOUT' })
 
 const updateClientData = (name, lastName) => {
     return {
@@ -79,6 +78,19 @@ const updateShopOpen = (open) => {
         },
     }
 }
+
+const logout = () => {
+    return async () => {
+        configureStore.dispatch({ type: 'LOGOUT' })
+        try {
+            await AsyncStorage.removeItem('id_token');
+            await AsyncStorage.removeItem('profile');
+        } catch (error) {
+            console.log('AsyncStorage error: ' + error.message);
+        }
+    }
+}
+//const logout = () => configureStore.dispatch({ type: 'LOGOUT' })
 
 export default {
     setLoginClientData,
