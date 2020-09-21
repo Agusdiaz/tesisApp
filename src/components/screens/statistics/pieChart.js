@@ -66,10 +66,10 @@ class PieChartGraph extends React.PureComponent {
 
     render() {
         return (
-            <View style={{ height: sizes.hp('90%') }}>
+            <View style={{ height: sizes.hp('83%') }}>
                 <IconButton
                     icon="close"
-                    style={{ right: sizes.wp('-75%'), marginBottom: -5 }}
+                    style={{ right: sizes.wp('-75%'), top: sizes.hp('-2%') }}
                     color={colors.APP_MAIN}
                     size={30}
                     onPress={this.props.hideModalFromChild}
@@ -81,7 +81,7 @@ class PieChartGraph extends React.PureComponent {
 
                     <View style={styles.pieChart}>
                         <PieChart
-                            style={{ height: sizes.hp('40%') }}
+                            style={{ height: sizes.hp('35%') }}
                             outerRadius={'85%'}
                             innerRadius={10}
                             data={this.state.stats}

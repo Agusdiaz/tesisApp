@@ -43,9 +43,9 @@ class LineChartGraph extends React.PureComponent {
 
     async getStats() {
         const data = await getMonthOrders(this.props.shop.cuit, this.props.shop.token)
-        if(data.status === 500 && data.body.error){
+        if (data.status === 500 && data.body.error) {
             this.props.logout()
-            Actions.logsign({visible: true})
+            Actions.logsign({ visible: true })
         } else if (data.status === 200)
             this.setState({ stats: data.body })
     }
@@ -78,16 +78,16 @@ class LineChartGraph extends React.PureComponent {
         }
 
         return (
-            <View style={{ height: sizes.hp('90%') }}>
+            <View style={{ height: sizes.hp('80%') }}>
                 <IconButton
                     icon="close"
-                    style={{ right: sizes.wp('-70%') }}
+                    style={{ right: sizes.wp('-70%'), top: sizes.hp('-2%') }}
                     color={colors.APP_MAIN}
                     size={30}
                     onPress={this.props.hideModalFromChild}
                 />
 
-                <Text style={styles.textTitle}>¿Cuántos pedidos recibes por mes en los últimos seis meses?</Text>
+                <Text style={styles.textTitle}>¿Cuántos pedidos recibiste en los últimos seis meses?</Text>
                 <View style={styles.lineChart}>
                     <ScrollView horizontal={true}>
                         <LineChart
@@ -99,8 +99,8 @@ class LineChartGraph extends React.PureComponent {
                             bezier
                             style={{
                                 borderRadius: 16,
+                                left: sizes.wp('-5%')
                             }}
-                            showValuesOnTopOfBars
                             segments={6}
                         />
                     </ScrollView>
