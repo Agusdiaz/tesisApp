@@ -100,7 +100,9 @@ class ShopCardClient extends Component {
                 <Card.Title style={{ marginBottom: -4 }} left={OpenClose} leftStyle={{ right: 8 }} right={TitleStar} />
                 <Divider />
                 <ScrollView>
+                {(this.props.shop.abierto === 1) ?
                     <Card.Title style={{ margin: -10 }} left={PeopleButton} leftStyle={{ alignItems: 'center', width: sizes.wp('80%'), right: sizes.wp('-5%') }} />
+                    : null}
                     <Card.Cover source={{ uri: this.state.photo }} />
                     <Divider />
                     <Card.Actions style={{ alignContent: 'center' }}>

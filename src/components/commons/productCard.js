@@ -51,8 +51,8 @@ class ProductCard extends Component {
             } else if (data.status === 200) {
                 this.setState({ loading: false })
                 this.props.refreshParent()
+                this.props.showDialogResponse(data.body)
             }
-            this.props.showDialogResponse(data.body)
         }
     }
 

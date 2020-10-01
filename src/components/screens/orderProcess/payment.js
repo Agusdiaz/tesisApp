@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { StyleSheet, Text, View } from 'react-native';
 import { colors, sizes, appStyles } from '../../../index.styles';
-import { Button, ActivityIndicator, Portal, Modal, Dialog } from 'react-native-paper'
+import { Button, ActivityIndicator, Portal, Modal, Dialog, IconButton } from 'react-native-paper'
 import { Actions } from 'react-native-router-flux';
 import { WebView } from 'react-native-webview';
 import { APIURL } from '../../../../assets/constants'
@@ -74,13 +74,18 @@ export default function PayOrder() {
         }
     }
 
+    const goBack = () => {
+        setMinutes(null)
+        setShowCheckout(false)
+    }
+
     useEffect(() => {
         if (minutes === '00' && seconds === '00') {
             setMinutes(null)
             if (!payed) {
                 deleteClientOrder()
                 setShowCheckout(false)
-                setMessage("El tiempo para realizar el pago ha caducado. Vuelve a hacer el pedido")
+                setMessage("El tiempo para realizar el pago ha caducado. Vuelva a hacer el pedido")
                 setVisibleDialogResponse(true)
                 Actions.navbarclient()
             }
@@ -147,8 +152,18 @@ export default function PayOrder() {
         )
     } else {
         return (
-            <View style={{ flex: 1, justifyContent: 'center', top: sizes.hp('-1%'), width: sizes.wp('95%') }}>
+            <View style={{ flex: 1, justifyContent: 'center', top: sizes.hp('-1.5%'), width: sizes.wp('95%') }}>
+                <View style={{flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center', height: sizes.hp('5%')}}>
                 <Text style={styles.timer}>Tiempo restante: {(minutes === null) ? '00' : minutes}:{seconds}</Text>
+                <IconButton
+                    icon='close'
+                    size={30}
+                    style={styles.arrowButton}
+                    color={colors.APP_MAIN}
+                    onPress={goBack}
+                />
+                </View>
+
                 <View style={{ height: sizes.hp('74%'), }}>
                     <WebView
                         source={{
@@ -197,6 +212,6 @@ const styles = StyleSheet.create({
         fontSize: 22,
         color: colors.APP_MAIN,
         textAlign: 'center',
-        marginBottom: sizes.hp('1%')
+        //marginRight: sizes.wp('%')
     },
 });

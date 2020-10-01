@@ -80,7 +80,9 @@ class ShopCardSummary extends Component {
                 <Card style={styles.cardContent}>
                     <Card.Title left={LeftContent} leftStyle={{ right: 8 }} right={RightContent} />
                     <Divider />
+                    {(this.props.data.abierto === 1) ?
                     <Card.Title style={{ margin: -10 }} left={PeopleButton} leftStyle={{ alignItems: 'center', width: sizes.wp('80%'), right: sizes.wp('-8%') }} />
+                    : null }
                     <Card.Cover style={{ height: sizes.hp('20%') }} source={{ uri: 'https://picsum.photos/500' }} />
                     <Card.Actions>
                         <View style={{ flexDirection: 'row', flexWrap: 'wrap', marginLeft: sizes.wp('3%'), width: sizes.wp('40%'), alignItems: 'center', justifyContent: 'flex-start' }}>

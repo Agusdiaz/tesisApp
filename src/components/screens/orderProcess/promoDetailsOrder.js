@@ -63,7 +63,7 @@ class PromoDetailsOrder extends Component {
             if (prod.modificado)
                 promo.modificado = true
             if (prod.selectivo === 0) {
-                if (!prod.ingredientes[0]) {
+                if (prod.ingredientes[0].length === 0) {
                     promo.productos.push({
                         idProducto: prod.id, nombre: prod.nombre, precio: prod.precio, cantidad: prod.cantidad, modificado: prod.modificado,
                         condicion: prod.condicion, detalle: prod.detalle, ingredientes: []

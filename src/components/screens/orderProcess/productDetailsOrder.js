@@ -58,7 +58,7 @@ class ProductDetailsOrder extends Component {
             selectivo: this.props.data.selectivo,
             ingredientes: [],
         }
-        if (!this.props.data.ingredientes[0]) {
+        if (this.props.data.ingredientes[0].length === 0) {
             this.props.setProductOrder(product)
             this.props.updateTotal(this.props.order.total + this.props.data.precio)
             this.hideModal()
@@ -145,7 +145,6 @@ class ProductDetailsOrder extends Component {
     }
 
     render() {
-      
         const Close = props => <IconButton
             icon='close'
             color={colors.APP_MAIN}

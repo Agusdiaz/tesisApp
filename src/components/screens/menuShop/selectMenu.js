@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { StyleSheet, Text, View, TouchableHighlight, Image } from 'react-native';
 import { colors, sizes, appStyles } from '../../../index.styles';
 import { Tabs, Tab } from 'material-bread'
-import { FAB } from 'react-native-paper'
+import { FAB, Portal, Dialog, Button } from 'react-native-paper'
 import ProductMenu from '../../commons/menu'
 import IngredientMenu from './ingredientMenu'
 import SalesMenu from '../../commons/salesMenu'
@@ -13,9 +13,12 @@ class SelectMenu extends Component {
         super(props);
         this.state = {
             selectedTab: 0,
+            visibleDialogResponse: false,
+            actionMessage: '',
         }
         this.products = React.createRef();
         this.promos = React.createRef();
+        this._showDialogResponse = this._showDialogResponse.bind(this);
     }
 
     onRefreshChilds = () => {
@@ -24,6 +27,12 @@ class SelectMenu extends Component {
         else
             this.products.current.onRefresh();
     };
+
+    _showDialogResponse(message) {
+        this.setState({ visibleDialogResponse: true, actionMessage: message })
+    }
+    _hideDialogResponse = () => this.setState({ visibleDialogResponse: false, actionMessage: '' })
+
 
     render() {
         return (
@@ -69,10 +78,24 @@ class SelectMenu extends Component {
                                 })
                                     : Actions.createproduct({
                                         onRefreshChilds: this.onRefreshChilds.bind(this),
-                                        rute: (this.props.rute === 'initial') ? 'initial' : 'shop'
+                                        rute: (this.props.rute === 'initial') ? 'initial' : 'shop',
+                                        showDialogResponse: this._showDialogResponse
                                     })
                             }} />
                         : null}
+
+<Portal>
+
+<Dialog
+    visible={this.state.visibleDialogResponse}
+    onDismiss={this._hideDialogResponse}>
+    <Dialog.Title style={{ alignSelf: 'center', textAlign: 'center' }}>{this.state.actionMessage}</Dialog.Title>
+    <Dialog.Actions>
+        <Button style={{ marginRight: sizes.wp('3%') }} color={'#000000'} onPress={this._hideDialogResponse}>Ok</Button>
+    </Dialog.Actions>
+</Dialog>
+
+</Portal>
             </View>
         )
     }
