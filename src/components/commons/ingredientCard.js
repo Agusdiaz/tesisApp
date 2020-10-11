@@ -165,7 +165,7 @@ class IngredientCard extends Component {
                                             small
                                             onPress={() => {
                                                 this.setState({ status: 0 })
-                                                this._showDialogDisabled('¿Esta seguro que desea deshabilitar este producto?')
+                                                this._showDialogDisabled('¿Esta seguro que desea deshabilitar este ingrediente?')
                                             }} />
                                         <View style={{ flexDirection: 'row' }}>
                                             <FAB
@@ -191,7 +191,7 @@ class IngredientCard extends Component {
                                             small
                                             onPress={() => {
                                                 this.setState({ status: 1 })
-                                                this._showDialogDisabled('¿Esta seguro que desea habilitar este producto?')
+                                                this._showDialogDisabled('¿Esta seguro que desea habilitar este ingrediente?')
                                             }} />
                                         : (this.props.rute === 'initial') ?
                                         <View style={{ flexDirection: 'row' }}>

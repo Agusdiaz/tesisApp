@@ -149,7 +149,7 @@ class AnimatedHeader extends React.Component {
                                     nativeEvent: { contentOffset: { y: this.state.animatedValue } },
                                 },
                             ],
-                            { useNativeDriver: true }
+                            { useNativeDriver: false }
                         )}
                         scrollEventThrottle={16}
                         renderItem={({ item }) => this._renderItem(item)}

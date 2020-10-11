@@ -45,21 +45,13 @@ class ScheduleDetails extends Component {
             onPress={() => this.props.hideModalFromChild()}
         />
 
-        const openClose = props => (this.props.shop.abierto === 1) ? <Button style={{ borderRadius: 20, width: 105, alignItems: 'center' }} mode="contained" color={colors.APP_GREEN} labelStyle={{ fontSize: 9, color: colors.APP_BACKGR }} >
-            Abierto </Button> : <Button style={{ borderRadius: 20, width: 105, alignItems: 'center' }} mode="contained" color={colors.APP_RED} labelStyle={{ fontSize: 9, color: colors.APP_BACKGR }}>Cerrado </Button>
-
-        const Enabled = props => (!this.props.habilitada && this.props.rute !== 'editShop') ?
+        const Enabled = props => (!this.props.habilitada && this.props.rute !== 'editShop' && this.props.rute !== undefined && this.props.rute !== 'shop') ?
             <Text style={{ fontSize: 17, fontWeight: 'bold', color: colors.APP_RED }}>Promoción deshabilitada</Text>
             : null
 
         return (
             <Card style={styles.scheduleCard}>
-                {(this.props.rute === 'shop') ?
-                    <Card.Title style={{ margin: -10, marginTop: sizes.hp('-3') }} left={openClose} leftStyle={{}} right={Close} rigthStyle={styles.close} />
-                    :
-                    <Card.Title style={{ margin: -10, marginTop: sizes.hp('-3') }} left={Enabled} leftStyle={{width: sizes.wp('60%')}}
-                    right={Close} rigthStyle={styles.close}/>
-                }
+                <Card.Title style={{ margin: -10, marginTop: sizes.hp('-3') }} left={Enabled} leftStyle={{ width: sizes.wp('60%') }} right={Close} rigthStyle={styles.close} />
                 <Divider />
                 <Card.Title title='Estos son los horarios:' titleStyle={styles.title} />
                 <DataTable style={{ marginTop: sizes.wp('1%'), width: sizes.wp('100%') }}>

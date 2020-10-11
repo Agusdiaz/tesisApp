@@ -38,7 +38,7 @@ class OrderCardShop extends Component {
         if (this._isMounted) {
             this._hideDialogCancel()
             this.props.updateLoading(true)
-            const data = await refundOrder(this.props.data.numero, this.props.shop.token)
+            const data = await refundOrder(this.props.data.numero, this.props.data.cliente, this.props.shop.token)
             if (data.status === 500 && data.body.error) {
                 this.props.updateLoading(false)
                 this.props.logout()
@@ -58,7 +58,7 @@ class OrderCardShop extends Component {
         if (this._isMounted) {
             this._hideDialogCancel()
             this.props.updateLoading(true)
-            const data = await aceptOrder(this.props.data.numero, this.props.shop.token)
+            const data = await aceptOrder(this.props.data.numero, this.props.data.cliente, this.props.shop.token)
             if (data.status === 500 && data.body.error) {
                 this.props.updateLoading(false)
                 this.props.logout()
@@ -210,7 +210,6 @@ class OrderCardShop extends Component {
 
 const styles = StyleSheet.create({
     modalView: {
-        minHeight: sizes.hp('86%'),
         maxHeight: sizes.hp('93%'),
         marginTop: sizes.hp('5%'),
         margin: sizes.hp('2%'),

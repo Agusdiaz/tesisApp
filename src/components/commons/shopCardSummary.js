@@ -21,27 +21,27 @@ class ShopCardSummary extends Component {
         this.props.nextStepParent();
     }
 
-    async setFavourite(){
+    async setFavourite() {
         const data = await setShopAsFavourite(this.props.user.mail, this.props.data.cuit, this.props.user.token)
-        if(data.status === 500 && data.body.error){
+        if (data.status === 500 && data.body.error) {
             this.props.logout()
-            Actions.logsign({visible: true})
-        } else if (data.status === 200 )
+            Actions.logsign({ visible: true })
+        } else if (data.status === 200)
             this.props.updateShopFavourite(this.props.data.cuit, true)
     }
 
-    async removeFavourite(){
+    async removeFavourite() {
         const data = await deleteShopAsFavourite(this.props.user.mail, this.props.data.cuit, this.props.user.token)
-        if(data.status === 500 && data.body.error){
+        if (data.status === 500 && data.body.error) {
             this.props.logout()
-            Actions.logsign({visible: true})
-        } else if (data.status === 200 )
+            Actions.logsign({ visible: true })
+        } else if (data.status === 200)
             this.props.updateShopFavourite(this.props.data.cuit, false)
     }
 
     render() {
-        const LeftContent = props => (this.props.data.abierto == 1) ? <Button style={{ borderRadius: 20, width: 105, alignItems: 'center' }} mode="contained" color={colors.APP_GREEN} labelStyle={{ fontSize: 9, color: colors.APP_BACKGR }} >
-            Abierto </Button> : <Button style={{ borderRadius: 20, width: 105, alignItems: 'center' }} mode="contained" color={colors.APP_RED} labelStyle={{ fontSize: 9, color: colors.APP_BACKGR }}>Cerrado </Button>
+        const LeftContent = props => (this.props.data.abierto == 1) ? <Button style={{ borderRadius: 20, alignItems: 'center' }} mode="contained" color={colors.APP_GREEN} labelStyle={{ fontSize: 9, color: colors.APP_BACKGR }} >
+            Abierto </Button> : <Button style={{ borderRadius: 20, alignItems: 'center' }} mode="contained" color={colors.APP_RED} labelStyle={{ fontSize: 9, color: colors.APP_BACKGR }}>Cerrado </Button>
 
         const RightContent = props => <View style={{ flexDirection: 'row', left: -6 }}>
 
@@ -65,11 +65,11 @@ class ShopCardSummary extends Component {
                 icon={(this.props.data.favorito) ? "star" : "star-outline"} //require('../../icons/flammaPic.p')
                 color={colors.STAR}
                 size={30}
-                onPress={() =>  (this.props.data.favorito) ? this.removeFavourite() : this.setFavourite()} />
+                onPress={() => (this.props.data.favorito) ? this.removeFavourite() : this.setFavourite()} />
         </View>
 
         const PeopleButton = props => <Button
-            style={{ borderRadius: 20, borderColor: colors.APP_MAIN, borderWidth: 1, width: sizes.wp('80%'), alignItems: 'center', }}
+            style={{ borderRadius: 20, borderColor: colors.APP_MAIN, borderWidth: 1, width: sizes.wp('90%'), alignItems: 'center', }}
             labelStyle={{ fontSize: 12, color: colors.APP_MAIN, }}
             color={colors.APP_MAIN}
             mode='outlined'
@@ -77,95 +77,101 @@ class ShopCardSummary extends Component {
             En este momento la demora es: {this.props.data.demora}</Button>
 
         return (
-                <Card style={styles.cardContent}>
-                    <Card.Title left={LeftContent} leftStyle={{ right: 8 }} right={RightContent} />
-                    <Divider />
-                    {(this.props.data.abierto === 1) ?
-                    <Card.Title style={{ margin: -10 }} left={PeopleButton} leftStyle={{ alignItems: 'center', width: sizes.wp('80%'), right: sizes.wp('-8%') }} />
-                    : null }
-                    <Card.Cover style={{ height: sizes.hp('20%') }} source={{ uri: 'https://picsum.photos/500' }} />
-                    <Card.Actions>
-                        <View style={{ flexDirection: 'row', flexWrap: 'wrap', marginLeft: sizes.wp('3%'), width: sizes.wp('40%'), alignItems: 'center', justifyContent: 'flex-start' }}>
-                            {(this.props.data.mascotas == 1) ?
-                                <FAB
-                                    color={colors.APP_MAIN}
-                                    style={styles.fab}
-                                    small
-                                    icon="dog-side"
-                                />
-                                :
-                                null
-                            }
-                            {(this.props.data.bebes == 1) ?
-                                <FAB
-                                    color={colors.APP_MAIN}
-                                    style={styles.fab}
-                                    small
-                                    icon="baby"
-                                />
-                                :
-                                null
-                            }
-                            {(this.props.data.juegos == 1) ?
-                                <FAB
-                                    color={colors.APP_MAIN}
-                                    style={styles.fab}
-                                    small
-                                    icon="gamepad-variant"
-                                />
-                                :
-                                null
-                            }
-                            {(this.props.data.aireLibre == 1) ?
-                                <FAB
-                                    color={colors.APP_MAIN}
-                                    style={styles.fab}
-                                    small
-                                    icon="image-filter-hdr"
-                                />
-                                :
-                                null
-                            }
+            <Card style={styles.cardContent}>
+                <Card.Title left={LeftContent} leftStyle={{ right: 8, width: sizes.wp('24%') }} right={RightContent} />
+                <Divider />
+                {(this.props.data.abierto === 1) ?
+                    <Card.Content style={{ margin: 10, alignItems: 'center', justifyContent: 'center', alignSelf: 'center' }}>
+                        <PeopleButton />
+                    </Card.Content>
+                    : null}
+                <Card.Cover style={{ height: sizes.hp('20%') }} source={{ uri: 'https://picsum.photos/500' }} />
+                <Card.Actions>
+                    <View style={{ flexDirection: 'row', flexWrap: 'wrap', marginLeft: sizes.wp('3%'), width: sizes.wp('40%'), alignItems: 'center', justifyContent: 'flex-start' }}>
+                        {(this.props.data.mascotas == 1) ?
                             <FAB
                                 color={colors.APP_MAIN}
                                 style={styles.fab}
                                 small
-                                icon={(this.props.data.libreHumo == 0) ? 'smoking' : 'smoking-off'}
+                                icon="dog-side"
                             />
-                            {(this.props.data.wifi == 1) ?
-                                <FAB
-                                    color={colors.APP_MAIN}
-                                    style={styles.fab}
-                                    small
-                                    icon="wifi"
-                                />
-                                :
-                                null
-                            }
-                        </View>
-                        {(this.props.rute == 'chooseShop') ?
-                            <Button
-                                style={{ left: sizes.wp('10%'), width: '40%', }}
-                                icon="cart-outline"
-                                mode="contained"
-                                color={colors.APP_MAIN}
-                                onPress={() => {this.props.setSelected(this.props.data)
-                                    this.nextStepParent()}}>
-                                Pedir Aca
-                        </Button>
                             :
-                            <Button
-                                style={{ left: sizes.wp('10%'), width: '40%', }}
-                                icon="plus"
-                                mode="contained"
-                                color={colors.APP_MAIN}
-                                onPress={() => { this.props.setSelected(this.props.data)
-                                    Actions.shopinformation()}}>
-                                Detalles
-                        </Button>
+                            null
                         }
-                    </Card.Actions>
-                </Card>
+                        {(this.props.data.bebes == 1) ?
+                            <FAB
+                                color={colors.APP_MAIN}
+                                style={styles.fab}
+                                small
+                                icon="baby"
+                            />
+                            :
+                            null
+                        }
+                        {(this.props.data.juegos == 1) ?
+                            <FAB
+                                color={colors.APP_MAIN}
+                                style={styles.fab}
+                                small
+                                icon="gamepad-variant"
+                            />
+                            :
+                            null
+                        }
+                        {(this.props.data.aireLibre == 1) ?
+                            <FAB
+                                color={colors.APP_MAIN}
+                                style={styles.fab}
+                                small
+                                icon="image-filter-hdr"
+                            />
+                            :
+                            null
+                        }
+                        <FAB
+                            color={colors.APP_MAIN}
+                            style={styles.fab}
+                            small
+                            icon={(this.props.data.libreHumo == 0) ? 'smoking' : 'smoking-off'}
+                        />
+                        {(this.props.data.wifi == 1) ?
+                            <FAB
+                                color={colors.APP_MAIN}
+                                style={styles.fab}
+                                small
+                                icon="wifi"
+                            />
+                            :
+                            null
+                        }
+                    </View>
+                    {(this.props.rute == 'chooseShop') ?
+                        <Button
+                            style={{ left: sizes.wp('10%'), width: '40%', }}
+                            icon="cart-outline"
+                            mode="contained"
+                            color={colors.APP_MAIN}
+                            onPress={() => {
+                                this.props.setSelected(this.props.data)
+                                this.nextStepParent()
+                            }}>
+                            Pedir Aca
+                        </Button>
+                        :
+                        <Button
+                            style={{ left: sizes.wp('10%'), width: '40%', }}
+                            icon="plus"
+                            mode="contained"
+                            color={colors.APP_MAIN}
+                            onPress={() => {
+                                this.props.setSelected(this.props.data)
+                                Actions.shopinformation()
+                            }}>
+                            Detalles
+                        </Button>
+                    }
+                </Card.Actions>
+            </Card>
         )
 
     }

@@ -213,7 +213,6 @@ class OrderCardClient extends Component {
 
 const styles = StyleSheet.create({
     modalView: {
-        minHeight: sizes.hp('89%'),
         maxHeight: sizes.hp('93%'),
         marginTop: sizes.hp('5%'),
         margin: sizes.hp('2%'),

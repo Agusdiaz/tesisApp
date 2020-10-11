@@ -169,8 +169,8 @@ export const deleteOrder = async (num, token) => {
     return response
 }
 
-export const refundOrder = async (num, token) => {
-    const response = await fetch(`${APIURL}payments/refund/${num}`, {
+export const refundOrder = async (num, mail, token) => {
+    const response = await fetch(`${APIURL}payments/refund/${num}/${mail}`, {
         headers: {
             'Authorization': token
         }
@@ -181,9 +181,10 @@ export const refundOrder = async (num, token) => {
     return response
 }
 
-export const aceptOrder = async (num, token) => {
+export const aceptOrder = async (num, mail, token) => {
     let requestBody = {};
     requestBody.numero = num
+    requestBody.mailCliente = mail
     const response = await fetch(`${APIURL}aceptClientOrder`, {
         method: 'POST',
         body: JSON.stringify(requestBody),

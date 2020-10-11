@@ -86,8 +86,9 @@ class OrderDetailsClient extends Component {
 
         return (
             <Card style={styles.orderCard}>
-                <Card.Title style={{ margin: -10, marginTop: sizes.hp('-4') }} left={stageOrder} leftStyle={styles.stageOrder} right={Close} rightStyle={styles.close} />
+                <Card.Title style={{ margin: -8, marginTop: sizes.hp('-4'), top: 3 }} left={stageOrder} leftStyle={styles.stageOrder} right={Close} rightStyle={styles.close} />
                 <Divider />
+                <ScrollView>
                 <Card.Title style={styles.cardTitle} titleStyle={styles.leftText} title="Modalidad:" right={takeAway} />
                 <Divider style={styles.divider} />
                 <Card.Title style={styles.cardTitle} titleStyle={styles.leftText} title="Número del Pedido:" right={orderNumber} />
@@ -104,7 +105,6 @@ class OrderDetailsClient extends Component {
                             title={'¿Qué es lo que pediste?'}
                             style={{ right: sizes.wp('-12.5%') }}
                         />
-                        <ScrollView style={{ height: sizes.hp('29.5%') }}>
                             {(this.props.data.productos[0] !== null) ?
                                 <View>
                                     <DataTableRow style={{}}>
@@ -155,7 +155,6 @@ class OrderDetailsClient extends Component {
                                 : null}
                             <Divider style={styles.divider} />
                             <Text style={{ color: colors.APP_MAIN, fontWeight: 'bold', marginBottom: sizes.hp('1%'), marginTop: sizes.hp('2%') }}>(*) modificaste este producto</Text>
-                        </ScrollView>
 
                     </DataTable>
                 </Card.Content>
@@ -165,6 +164,7 @@ class OrderDetailsClient extends Component {
                 <Card.Title style={styles.cardTitle} titleStyle={styles.leftText} title="Propina:" right={propina} />
                 <Divider style={styles.divider} />
                 <Card.Title style={styles.cardTitle} titleStyle={styles.leftText} title="Total:" right={total} />
+                </ScrollView>
                 <Divider style={styles.divider} />
 
                 <Portal>
@@ -193,7 +193,7 @@ class OrderDetailsClient extends Component {
 
 const styles = StyleSheet.create({
     orderCard: {
-        maxHeight: sizes.hp('87%'),
+        maxHeight: sizes.hp('84%'),
         width: sizes.wp('90%'),
         padding: 10,
         elevation: 0,

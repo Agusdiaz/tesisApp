@@ -37,16 +37,25 @@ const styles = StyleSheet.create({
         height: sizes.hp('26%'),
         width: sizes.wp('98%'),
         top: sizes.hp('3%'),
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: 10,
     },
     imageContainerAddress: {
         height: sizes.hp('26%'),
         width: sizes.wp('98%'),
         bottom: sizes.hp('-3%'),
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: 8,
     },
     imageContainerSale: {
         height: sizes.hp('26%'),
         width: sizes.wp('98%'),
         bottom: sizes.hp('-3%'),
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: 10,
     },
     imageInside: {
         borderRadius: 40,
@@ -57,13 +66,14 @@ const styles = StyleSheet.create({
     touchable: {
     },
     text: {
-        fontSize: 50,
+        fontSize: 45,
         fontWeight: 'bold',
         color: '#FFF',
         alignSelf: 'center',
-        marginTop: sizes.hp('6.5%'),
         textAlign: 'center',
         borderWidth: 2,
         borderColor: '#FFF',
+        textShadowRadius: 12,    
+        textShadowColor: '#000',
     },
 });

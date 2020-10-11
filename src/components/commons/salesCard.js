@@ -142,7 +142,7 @@ class SalesCard extends Component {
                         {(this.props.data.detalle) ? <Text style={styles.details} numberOfLines={6}>{this.props.data.detalle}</Text> : null}
                         <DataTable style={{ width: sizes.wp('90%'), left: -10 }}>
                             <DataTableHeader
-                                title={'¿Qué inlcuye la promoción?'}
+                                title={'¿Qué incluye la promoción?'}
                                 style={{ right: sizes.wp('-15%') }}
                             />
                             <DataTableRow >

@@ -42,7 +42,7 @@ class ShopCardClient extends Component {
 
     render() {
         const PeopleButton = props => <Button
-            style={{ borderRadius: 20, borderColor: colors.APP_MAIN, borderWidth: 1, width: sizes.wp('80%'), alignItems: 'center', }}
+            style={{ borderRadius: 20, borderColor: colors.APP_MAIN, borderWidth: 1, width: sizes.wp('85%'), alignItems: 'center', }}
             labelStyle={{ fontSize: 12, color: colors.APP_MAIN, }}
             color={colors.APP_MAIN}
             mode='outlined'
@@ -74,12 +74,12 @@ class ShopCardClient extends Component {
             onPress={() => this._showModalSchedule()}
         />
 
-        const OpenClose = props => (this.props.shop.abierto == 1) ? <Button style={{ borderRadius: 20, width: 105, alignItems: 'center' }} mode="contained" color={colors.APP_GREEN} labelStyle={{ fontSize: 9, color: colors.APP_BACKGR }} >
-            Abierto </Button> : <Button style={{ borderRadius: 20, width: 105, alignItems: 'center' }} mode="contained" color={colors.APP_RED} labelStyle={{ fontSize: 9, color: colors.APP_BACKGR }}>Cerrado </Button>
+        const OpenClose = props => (this.props.shop.abierto == 1) ? <Button style={{ borderRadius: 20, alignItems: 'center' }} mode="contained" color={colors.APP_GREEN} labelStyle={{ fontSize: 9, color: colors.APP_BACKGR }} >
+            Abierto </Button> : <Button style={{ borderRadius: 20, alignItems: 'center' }} mode="contained" color={colors.APP_RED} labelStyle={{ fontSize: 9, color: colors.APP_BACKGR }}>Cerrado </Button>
 
         const TitleStar = props => <View style={{ flexDirection: 'row', left: 7, }}>
 
-            <View style={{ flexDirection: 'column', width: sizes.wp('48%'), justifyContent: 'center', }}>
+            <View style={{ flexDirection: 'column', width: sizes.wp('48%'), justifyContent: 'center' }}>
                 <TextTicker style={styles.title}
                     duration={5000}
                     loop
@@ -97,11 +97,14 @@ class ShopCardClient extends Component {
 
         return (
             <Card style={styles.shopCard}>
-                <Card.Title style={{ marginBottom: -4 }} left={OpenClose} leftStyle={{ right: 8 }} right={TitleStar} />
+                <Card.Title style={{ marginBottom: -4 }} left={OpenClose} leftStyle={{ right: 8, width: sizes.wp('25%') }} right={TitleStar} 
+                rightStyle={{right: 15}}/>
                 <Divider />
                 <ScrollView>
                 {(this.props.shop.abierto === 1) ?
-                    <Card.Title style={{ margin: -10 }} left={PeopleButton} leftStyle={{ alignItems: 'center', width: sizes.wp('80%'), right: sizes.wp('-5%') }} />
+                    <Card.Content style={{ margin: 10, alignItems: 'center', justifyContent: 'center', alignSelf: 'center' }}>
+                    <PeopleButton />
+                </Card.Content>
                     : null}
                     <Card.Cover source={{ uri: this.state.photo }} />
                     <Divider />

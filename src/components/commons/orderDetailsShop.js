@@ -82,6 +82,7 @@ class OrderDetailsShop extends Component {
             <Card style={styles.orderCard}>
                 <Card.Title style={{ margin: -10, marginTop: sizes.hp('-3') }} left={stageOrder} leftStyle={styles.stageOrder} right={Close} rightStyle={styles.close} />
                 <Divider />
+                <ScrollView>
                 <Card.Title style={styles.cardTitle} titleStyle={styles.leftText} title="Modalidad:" right={takeAway} />
                 <Divider />
                 <Card.Title style={styles.cardTitle} titleStyle={styles.leftText} title="Número del Pedido:" right={orderNumber} />
@@ -96,7 +97,6 @@ class OrderDetailsShop extends Component {
                             title={'¿De qué se compone el pedido?'}
                             style={{ right: sizes.wp('-4.5%') }}
                         />
-                        <ScrollView style={{ height: sizes.hp('40%') }}>
                             {(this.props.data.productos[0] !== null) ?
                                 <View>
                                     <DataTableRow style={{}}>
@@ -147,13 +147,13 @@ class OrderDetailsShop extends Component {
                                 : null}
                             <Divider style={styles.divider} />
                             <Text style={{ color: colors.APP_MAIN, fontWeight: 'bold', marginBottom: sizes.hp('1%'), marginTop: sizes.hp('2%') }}>(*) productos modificados por el cliente</Text>
-                        </ScrollView>
                     </DataTable>
                 </Card.Content>
                 <Divider style={styles.divider} />
                 <Card.Title style={styles.cardTitle} titleStyle={styles.leftText} title="Comentario:" right={comment} />
                 <Divider style={styles.divider} />
                 <Card.Title style={styles.cardTitle} titleStyle={styles.leftText} title="Total:" right={total} />
+                </ScrollView>
                 <Divider style={styles.divider} />
 
                 <Portal>

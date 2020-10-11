@@ -105,3 +105,35 @@ export const changePassword = async (mail, password, token) => {
         .then(obj => {return obj});
     return response
 }
+
+export const setClientDevice = async (mail, id) => {
+    let requestBody = {};
+    requestBody.mail = mail
+    requestBody.device = id
+    const response = await fetch(`${APIURL}insertClientDeviceId`, {
+        method: 'POST',
+        body: JSON.stringify(requestBody),
+        headers: new Headers({
+            'Content-Type': 'application/json',
+        })
+    }).then(r => r.json()
+        .then(data => ({ status: r.status, body: data })))
+        .then(obj => {return obj});
+    return response
+}
+
+export const setShopDevice = async (cuit, id) => {
+    let requestBody = {};
+    requestBody.cuit = cuit
+    requestBody.device = id
+    const response = await fetch(`${APIURL}insertShopDeviceId`, {
+        method: 'POST',
+        body: JSON.stringify(requestBody),
+        headers: new Headers({
+            'Content-Type': 'application/json',
+        })
+    }).then(r => r.json()
+        .then(data => ({ status: r.status, body: data })))
+        .then(obj => {return obj});
+    return response
+}

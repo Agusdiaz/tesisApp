@@ -149,7 +149,7 @@ class PromoDetailsOrder extends Component {
 
                     <DataTable style={{ marginTop: sizes.wp('1%'), width: sizes.wp('80%'), left: -10 }}>
                         <DataTableHeader
-                            title={'¿Qué inlcuye la promoción?'}
+                            title={'¿Qué incluye la promoción?'}
                             style={{ right: sizes.wp('-12%') }}
                         />
                         <DataTableRow >

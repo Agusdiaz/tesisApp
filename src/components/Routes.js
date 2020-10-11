@@ -15,6 +15,7 @@ import OrdersClients from './screens/orderView/ordersClient'
 import SearchShopByName from './screens/shopView/searchShopByName'
 import SearchShopByAddress from './screens/shopView/searchShopByAddress'
 import SearchShopBySale from './screens/shopView/searchShopBySale'
+import SearchShopByFeatures from './screens/shopView/searchShopByFeatures'
 import FavouritesShops from './screens/shopView/favouritesShops'
 import SignUpShopFeatures from './screens/signup/signUpShopFeatures'
 import SignUpShopSchedule from './screens/signup/signUpShopSchedule'
@@ -25,6 +26,7 @@ import CreatePromo from './screens/signup/createPromo'
 import OrdersShop from './screens/orderView/ordersShop'
 import CartOrder from './screens/orderProcess/cartOrder'
 import Pay from './screens/orderProcess/payment'
+import searchShopByFeatures from './screens/shopView/searchShopByFeatures';
 
 export default class Routes extends Component {
 
@@ -68,6 +70,7 @@ export default class Routes extends Component {
                         <Scene key="searchshopname" component={SearchShopByName} title="SearchShopByName" />
                         <Scene key="searchshopaddress" component={SearchShopByAddress} title="SearchShopByAddress" />
                         <Scene key="searchshopsale" component={SearchShopBySale} title="SearchShopBySale" />
+                        <Scene key="searchshopfeatures" component={searchShopByFeatures} title="SearchShopByFeatures" />
                         <Scene key="shopinformation" component={ShopInformation} title="ShopInformation" />
                         <Scene key="pay" component={Pay} title="Pay" />
 

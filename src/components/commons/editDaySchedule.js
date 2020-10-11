@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { StyleSheet, View, Text, ScrollView, TouchableOpacity } from 'react-native';
+import { StyleSheet, View, Text, ScrollView, TouchableOpacity, YellowBox } from 'react-native';
 import { Button, Dialog, Modal, Portal, ActivityIndicator } from 'react-native-paper';
 import { appStyles, colors, sizes } from '../../index.styles';
 import { DataTable, DataTableCell, DataTableRow } from 'material-bread'
@@ -13,6 +13,10 @@ import UserActions from '../../redux/authState/action'
 
 const TimeOpening = TimePicker;
 const TimeClosing = TimePicker;
+
+YellowBox.ignoreWarnings([
+    'Warning: componentWillReceiveProps has been renamed, and is not recommended for use.',
+])
 
 class EditDaySchedule extends Component {
 
@@ -27,7 +31,7 @@ class EditDaySchedule extends Component {
             visibleDialogFinish: false,
             visibleDialogExtends: false,
             schedule: (this.props.rute === 'editPromo') ? this.props.data
-            : this.props.shop.horarios[0].filter(x => x.id === this.props.day),
+                : this.props.shop.horarios[0].filter(x => x.id === this.props.day),
         }
     }
 
@@ -40,9 +44,9 @@ class EditDaySchedule extends Component {
                 horas: this.state.newSchedule,
             }
             const data = await updateShopSchedule(response, this.props.shop.token)
-            if(data.status === 500 && data.body.error){
+            if (data.status === 500 && data.body.error) {
                 this.props.logout()
-                Actions.logsign({visible: true})
+                Actions.logsign({ visible: true })
             } else if (data.status === 500 || data.status === 404) {
                 this.props.updateLoading(false)
                 this.props.showDialogResponse(data.body)
@@ -56,7 +60,7 @@ class EditDaySchedule extends Component {
                 })
                 this.props.updateShopSchedule(hours, this.props.day, 1)
             }
-        } else if(this.props.rute === 'editPromo'){
+        } else if (this.props.rute === 'editPromo') {
             this.props.updateLoading(true)
             var response = {
                 idPromo: this.props.id,
@@ -64,9 +68,9 @@ class EditDaySchedule extends Component {
                 horas: this.state.newSchedule,
             }
             const data = await updatePromoHours(response, this.props.shop.token)
-            if(data.status === 500 && data.body.error){
+            if (data.status === 500 && data.body.error) {
                 this.props.logout()
-                Actions.logsign({visible: true})
+                Actions.logsign({ visible: true })
             } else if (data.status === 500 || data.status === 404) {
                 this.props.updateLoading(false)
                 this.props.showDialogResponse(data.body)
@@ -136,7 +140,7 @@ class EditDaySchedule extends Component {
                         <ScrollView style={{ height: sizes.hp('20%') }}>
                             <DataTableRow key={this.state.schedule[0].id} style={{}} >
                                 <DataTableCell text={'Tus horarios actualmente'} borderRight textStyle={{ textAlign: 'center', fontSize: 14 }} style={{ maxWidth: '15%' }} minWidth={150} />
-                                <DataTableCell text={(this.state.schedule[0].horas.length > 0) ? this.state.schedule[0].horas : 
+                                <DataTableCell text={(this.state.schedule[0].horas.length > 0) ? this.state.schedule[0].horas :
                                     (this.props.rute === 'editShop') ? 'CERRADO' : 'NO VÁLIDA'} textStyle={{ textAlign: 'center', fontSize: 14 }} style={{ maxWidth: '40%', alignSelf: 'center' }} minWidth={190} />
                             </DataTableRow>
                         </ScrollView>
