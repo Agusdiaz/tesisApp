@@ -49,8 +49,8 @@ class PendingOrdersClientScreen extends Component {
 
     _onChangeSearch(query) {
         const newData = this.arrayholder.filter(function (item) {
-            const shopFilter = item.nombre ? item.nombre.toUpperCase() : ''.toUpperCase();
-            const textData = (query.toString()).toUpperCase();
+            const shopFilter = item.nombre ? item.nombre.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase() : ''.toUpperCase();
+            const textData = (query.toString()).normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase();
             return (shopFilter.indexOf(textData) > -1);
         });
         this.setState({

@@ -67,7 +67,7 @@ class HorizontalStepIndicator extends Component {
     _hideDialogOut = () => this.setState({ visibleDialogOut: false });
 
     previousStep = () => {
-        if (this.state.currentPosition === 1)
+        if (this.state.currentPosition === 1 && (this.props.order.productos.length > 0 || this.props.order.promociones.length > 0))
             this._showDialogOut()
         else {
             this.setState({ currentPosition: this.state.currentPosition - 1 })
@@ -164,7 +164,7 @@ class HorizontalStepIndicator extends Component {
                     <Dialog
                         visible={this.state.visibleDialogOut}
                         onDismiss={this._hideDialogOut}>
-                        <Dialog.Title style={{ alignSelf: 'center' }}>Perderás todo tu progreso, ¿desea continuar?</Dialog.Title>
+                        <Dialog.Title style={{ alignSelf: 'center', textAlign: 'center' }}>Perderás todo tu progreso, ¿desea continuar?</Dialog.Title>
                         <Dialog.Actions>
                             <Button style={{ marginRight: sizes.wp('3%') }} color={colors.APP_RED} onPress={this._hideDialogOut}>Cancelar</Button>
                             <Button color={colors.APP_GREEN} onPress={() => {

@@ -74,7 +74,8 @@ class SelectMenu extends Component {
                             onPress={() => {
                                 (this.state.selectedTab === 2) ? Actions.createpromo({
                                     onRefreshChilds: this.onRefreshChilds.bind(this),
-                                    rute: (this.props.rute === 'initial') ? 'initial' : 'shop'
+                                    rute: (this.props.rute === 'initial') ? 'initial' : 'shop',
+                                    showDialogResponse: this._showDialogResponse
                                 })
                                     : Actions.createproduct({
                                         onRefreshChilds: this.onRefreshChilds.bind(this),

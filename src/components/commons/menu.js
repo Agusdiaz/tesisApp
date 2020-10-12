@@ -87,8 +87,8 @@ class Menu extends Component {
     _onChangeSearch(query) {
         if (this.state.valueButtons === productType.SALTY) {
             const newData = this.arrayholderSalty.filter(function (item) {
-                const productFilter = item.nombre ? item.nombre.toUpperCase() : ''.toUpperCase();
-                const textData = (query.toString()).toUpperCase();
+                const productFilter = item.nombre ? item.nombre.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase() : ''.toUpperCase();
+                const textData = (query.toString()).normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase();
                 return (productFilter.indexOf(textData) > -1);
             });
             this.setState({
@@ -98,8 +98,8 @@ class Menu extends Component {
             });
         } else if (this.state.valueButtons === productType.SWEET) {
             const newData = this.arrayholderSweet.filter(function (item) {
-                const productFilter = item.nombre ? item.nombre.toUpperCase() : ''.toUpperCase();
-                const textData = (query.toString()).toUpperCase();
+                const productFilter = item.nombre ? item.nombre.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase() : ''.toUpperCase();
+                const textData = (query.toString()).normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase();
                 return (productFilter.indexOf(textData) > -1);
             });
             this.setState({
@@ -109,8 +109,8 @@ class Menu extends Component {
             });
         } else {
             const newData = this.arrayholderDrinks.filter(function (item) {
-                const productFilter = item.nombre ? item.nombre.toUpperCase() : ''.toUpperCase();
-                const textData = (query.toString()).toUpperCase();
+                const productFilter = item.nombre ? item.nombre.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase() : ''.toUpperCase();
+                const textData = (query.toString()).normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase();
                 return (productFilter.indexOf(textData) > -1);
             });
             this.setState({

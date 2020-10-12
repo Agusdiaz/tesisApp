@@ -86,7 +86,7 @@ class ListIngredients extends Component {
                 <View style={{ flex: 1 }}>
                     <ScrollView style={{ flex: 1, maxHeight: sizes.hp('62%') }}>
                         <Card.Content style={{ alignItems: 'center', marginTop: sizes.hp('2%') }}>
-                            <Text style={styles.questionText}> ¿Los ingredientes de tu producto son selectivos? </Text>
+                            <Text style={styles.questionText}> ¿Es necesario que el cliente seleccione al menos un ingrediente por su cuenta? </Text>
                             <View style={styles.viewRadioButtons}>
                                 <RadioButton
                                     radioButtonColor={colors.APP_MAIN}

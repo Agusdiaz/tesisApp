@@ -52,6 +52,7 @@ class CreateProduct extends Component {
     }
 
     async actionProduct() {
+        var done = true
         this.setState({ loading: true })
         var response = {
             cuit: this.props.shop.cuit,
@@ -62,33 +63,39 @@ class CreateProduct extends Component {
                 detalle: (this.state.details.trim() === "") ? null : this.state.details,
                 condicion: this.conditions[this.state.checkedCondition],
                 tipo: this.types[this.state.checkedType],
-                selectivo: this.state.isSelectivo
+                selectivo: (this.state.ingredients.length === 0) ? 0 : this.state.isSelectivo
             }
         }
         if (this.props.rute === 'initial') response.inicial
         if (this.state.ingredients.length > 0) {
             response.producto.ingredientes = this.state.ingredients
-            response.tope = this.state.tope
+            response.producto.tope = this.state.tope
+            if (this.state.ingredients.find(el => el.opcion === 1) === undefined)
+                done = false
         }
-        const data = (this.props.rute === 'modify') ? await modifyProduct(response, this.props.shop.token)
-            : await createProduct(response, this.props.shop.token)
-        if (data.status === 500 && data.body.error) {
+        if (done) {
+            const data = (this.props.rute === 'modify') ? await modifyProduct(response, this.props.shop.token)
+                : await createProduct(response, this.props.shop.token)
             this.setState({ loading: false })
-            this.props.logout()
-            Actions.logsign({ visible: true })
-        } else if (data.status === 500) {
-            this.setState({ loading: false })
-            this._showDialogResponse(`Error al ${(this.props.rute === 'modify') ? 'modificar' : 'crear'} producto. Inténtelo nuevamente`)
-        } else if (data.status === 401) {
-            var message = (data.body.close) ? data.body.close : 'Ya existe un producto con ese nombre';
-            this.props.showDialogResponse(message)
-            this.setState({ loading: false, name: '' })
+            if (data.status === 500 && data.body.error) {
+                this.props.logout()
+                Actions.logsign({ visible: true })
+            } else if (data.status === 500) {
+                this._showDialogResponse(`Error al ${(this.props.rute === 'modify') ? 'modificar' : 'crear'} producto. Inténtelo nuevamente`)
+            } else if (data.status === 401) {
+                var message = (data.body.close) ? data.body.close : 'Ya existe un producto con ese nombre';
+                this.props.showDialogResponse(message)
+                this.setState({ name: '' })
+            } else {
+                this.props.showDialogResponse(data.body)
+                if (this.props.rute === 'shop') this.props.onRefreshChilds()
+                if (this.props.rute === 'modify') this.props.refreshParent()
+                Actions.pop()
+            }
         } else {
             this.setState({ loading: false })
-            this.props.showDialogResponse(data.body)
-            if (this.props.rute === 'shop') this.props.onRefreshChilds()
-            if (this.props.rute === 'modify') this.props.refreshParent()
-            Actions.pop()
+            this.setState({ actionMessage: 'Al menos debes tener un ingrediente que pueda agregar el cliente por su cuenta' })
+            this._showDialogResponse()
         }
     }
 

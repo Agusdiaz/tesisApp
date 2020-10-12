@@ -74,8 +74,9 @@ class PromoDetailsOrder extends Component {
                     var ingredientes = []
                     prod.ingredientes[0].map(ing => {
                         var cant = 0
-                        if (ing.opcion !== 1 || ing.cantidad) {
-                            cant = (ing.precio) ? ing.precio * ing.cantidad : 0
+                        console.log(ing.check)
+                        if (ing.check) {
+                            cant = (ing.precio && ing.cantidad) ? ing.precio * ing.cantidad : 0
                             ingredientes.push({ idIngrediente: ing.id, nombre: ing.nombre, detalle: ing.detalle, cantidad: ing.cantidad })
                         }
                         prod.precio = prod.precio + cant
@@ -94,10 +95,13 @@ class PromoDetailsOrder extends Component {
                 var long = prod.ingredientes[0].length
                 var ingredientes = []
                 prod.ingredientes[0].map(ing => {
+                    var cant = 0
                     if (ing.check) {
-                        isSelected[index] = true
+                        cant = (ing.precio && ing.cantidad) ? ing.precio * ing.cantidad : 0
                         ingredientes.push({ idIngrediente: ing.id, nombre: ing.nombre, detalle: ing.detalle, cantidad: ing.cantidad })
+                        if(ing.opcion === 1) isSelected[index] = true
                     }
+                    prod.precio = prod.precio + cant
                     i++
                     if (i === long) {
                         promo.productos.push({
@@ -110,7 +114,7 @@ class PromoDetailsOrder extends Component {
             }
         })
         if (isSelected.filter(x => x === false).length > 0) {
-            this.setState({ actionMessage: 'Es necesario que selecciones ingredientes de algunos productos para poder ordenar esta promoción' })
+            this.setState({ actionMessage: 'Es necesario que selecciones ingredientes de algunos productos para poder pedir esta promoción' })
             this._showDialogResponse()            
         } else {
             this.props.setPromoOrder(promo)

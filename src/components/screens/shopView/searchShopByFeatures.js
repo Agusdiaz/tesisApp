@@ -64,8 +64,8 @@ class SearchShopByNameFeatures extends Component {
     _onChangeSearch() {
         //HACER FILTRAR POR CARACTERISTICAS
         const newData = this.arrayholder.filter(function (item) {
-            const itemData = item.nombre ? item.nombre.toUpperCase() : ''.toUpperCase();
-            const textData = query.toUpperCase();
+            const itemData = item.nombre ? item.nombre.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase() : ''.toUpperCase();
+            const textData = query.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase();
             return itemData.indexOf(textData) > -1;
         });
         this.setState({

@@ -31,29 +31,29 @@ export default function LoginScreen() {
     const [password, setPassword] = useState('')
     const [messageError, setMessageError] = useState('')
     const [deviceId, setDeviceId] = useState('')
-  const [notification, setNotification] = useState(false);
-  const notificationListener = useRef();
-  const responseListener = useRef();
+    const [notification, setNotification] = useState(false);
+    const notificationListener = useRef();
+    const responseListener = useRef();
     const dispatch = useDispatch();
 
     useEffect(() => {
         registerForPushNotificationsAsync().then(token => setDeviceId(token));
-    
+
         // This listener is fired whenever a notification is received while the app is foregrounded
         notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
-          setNotification(notification);
+            setNotification(notification);
         });
-    
+
         // This listener is fired whenever a user taps on or interacts with a notification (works when app is foregrounded, backgrounded, or killed)
         responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
-          console.log(response);
+            console.log(response);
         });
-    
+
         return () => {
-          Notifications.removeNotificationSubscription(notificationListener);
-          Notifications.removeNotificationSubscription(responseListener);
+            Notifications.removeNotificationSubscription(notificationListener);
+            Notifications.removeNotificationSubscription(responseListener);
         };
-      }, []);
+    }, []);
 
     const saveItem = async (item, selectedValue) => {
         try {
@@ -80,8 +80,6 @@ export default function LoginScreen() {
             setVisibleDialog(true)
         } else {
             setLoading(false)
-            setEmail('')
-            setPassword('')
             saveItem('id_token', data.body.token)
             if (data.body.cuit === undefined) {
                 const notif = await setClientDevice(email, deviceId)
@@ -111,6 +109,8 @@ export default function LoginScreen() {
                 })
                 Actions.signupshopfeatures()
             }
+            setEmail('')
+            setPassword('')
         }
     }
 
@@ -183,31 +183,31 @@ export default function LoginScreen() {
 async function registerForPushNotificationsAsync() {
     let token;
     if (Constants.isDevice) {
-      const { status: existingStatus } = await Permissions.getAsync(Permissions.NOTIFICATIONS);
-      let finalStatus = existingStatus;
-      if (existingStatus !== 'granted') {
-        const { status } = await Permissions.askAsync(Permissions.NOTIFICATIONS);
-        finalStatus = status;
-      }
-      if (finalStatus !== 'granted') {
-        console.log('Failed to get push token for push notification!');
-        return;
-      }
-      token = (await Notifications.getExpoPushTokenAsync()).data;
+        const { status: existingStatus } = await Permissions.getAsync(Permissions.NOTIFICATIONS);
+        let finalStatus = existingStatus;
+        if (existingStatus !== 'granted') {
+            const { status } = await Permissions.askAsync(Permissions.NOTIFICATIONS);
+            finalStatus = status;
+        }
+        if (finalStatus !== 'granted') {
+            console.log('Failed to get push token for push notification!');
+            return;
+        }
+        token = (await Notifications.getExpoPushTokenAsync()).data;
     } else {
-      console.log('Must use physical device for Push Notifications');
+        console.log('Must use physical device for Push Notifications');
     }
-  
+
     if (Platform.OS === 'android') {
-      Notifications.setNotificationChannelAsync('default', {
-        name: 'default',
-        importance: Notifications.AndroidImportance.MAX,
-        vibrationPattern: [0, 250, 250, 250],
-        lightColor: '#FF231F7C',
-      });
+        Notifications.setNotificationChannelAsync('default', {
+            name: 'default',
+            importance: Notifications.AndroidImportance.MAX,
+            vibrationPattern: [0, 250, 250, 250],
+            lightColor: '#FF231F7C',
+        });
     }
     return token;
-  }
+}
 
 const styles = StyleSheet.create({
     imageLogo: {

@@ -57,8 +57,8 @@ class OrdersShopScreen extends Component {
     _onChangeSearch(query) {
         const newData = this.arrayholder.filter(function (item) {
             const dateFilter = item.fecha ? (moment(item.fecha).format("YYYY/MM/DD HH:mm")).toUpperCase() : ''.toUpperCase();
-            const clientFilter = item.cliente ? item.cliente.toUpperCase() : ''.toUpperCase();
-            const textData = (query.toString()).toUpperCase();
+            const clientFilter = item.cliente ? item.cliente.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase() : ''.toUpperCase();
+            const textData = (query.toString()).normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase();
             return (dateFilter.indexOf(textData) > -1 || clientFilter.indexOf(textData) > -1);
         });
         this.setState({

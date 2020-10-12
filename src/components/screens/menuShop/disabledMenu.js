@@ -76,8 +76,8 @@ class DisabledMenu extends Component {
     _onChangeSearch(query) {
         if (this.state.valueButtons === 'products') {
             const newData = this.arrayholderProducts.filter(function (item) {
-                const productFilter = item.nombre ? item.nombre.toUpperCase() : ''.toUpperCase();
-                const textData = (query.toString()).toUpperCase();
+                const productFilter = item.nombre ? item.nombre.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase().toUpperCase() : ''.toUpperCase();
+                const textData = (query.toString()).normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase();
                 return (productFilter.indexOf(textData) > -1);
             });
             this.setState({
@@ -87,8 +87,8 @@ class DisabledMenu extends Component {
             });
         } else if (this.state.valueButtons === 'ingredients') {
             const newData = this.arrayholderIngredients.filter(function (item) {
-                const ingredientFilter = item.nombre ? item.nombre.toUpperCase() : ''.toUpperCase();
-                const textData = (query.toString()).toUpperCase();
+                const ingredientFilter = item.nombre ? item.nombre.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase() : ''.toUpperCase();
+                const textData = (query.toString()).normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase();
                 return (ingredientFilter.indexOf(textData) > -1);
             });
             this.setState({

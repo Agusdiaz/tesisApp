@@ -64,8 +64,8 @@ class SearchShopByAddressScreen extends Component {
 
     _onChangeSearch(query) {
         const newData = this.arrayholder.filter(function (item) {
-            const itemData = item.direccion ? item.direccion.toUpperCase() : ''.toUpperCase();
-            const textData = query.toUpperCase();
+            const itemData = item.direccion ? item.direccion.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase() : ''.toUpperCase();
+            const textData = query.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase();
             return itemData.indexOf(textData) > -1;
         });
         this.setState({
