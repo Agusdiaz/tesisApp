@@ -32,9 +32,9 @@ class OrderSummary extends Component {
         }
     }
 
-    async validateClosingShop(){
+    async validateClosingShop() {
         const data = await validateClosing(this.props.shop.cuit, this.props.user.token)
-        if(data.status === 200 && data.body) this._showDialogClosing()
+        if (data.status === 200 && data.body) this._showDialogClosing()
         else this.makeOrder()
     }
 
@@ -85,7 +85,14 @@ class OrderSummary extends Component {
                 disabled.productos.map(prod1 => {
                     this.props.order.productos.map(prod2 => {
                         var eliminado = false
-                        if (prod1.id === prod2.idProducto) {
+                        if (prod2.ingredientes.filter(el => (el.opcion === 1 && !data.body.ingredientes.includes(el.idIngrediente))).length === 0) {
+                            eliminado = true
+                            prod1.nombre = prod2.nombre
+                            prod1.cantidad = prod1.cantidad + prod2.cantidad
+                            prod1.total = prod1.total + prod2.cantidad * prod2.precio
+                            disabled.total = disabled.total - prod2.cantidad * prod2.precio
+                        }
+                        if (prod1.id === prod2.idProducto && !eliminado) {
                             eliminado = true
                             prod1.nombre = prod2.nombre
                             prod1.cantidad = prod1.cantidad + prod2.cantidad
@@ -96,18 +103,11 @@ class OrderSummary extends Component {
                             disabled.ingredientes.map(ing1 => {
                                 prod2.ingredientes.map(ing2 => {
                                     if (ing1.id === ing2.idIngrediente) {
-                                        if (prod2.selectivo === 1 && prod2.ingredientes.length - 1 === 0) {
-                                            prod1.nombre = prod2.nombre
-                                            prod1.cantidad = prod1.cantidad + prod2.cantidad
-                                            prod1.total = prod1.total + prod2.cantidad * prod2.precio
-                                            disabled.total = disabled.total - prod2.cantidad * prod2.precio
-                                        } else {
-                                            ing1.nombre = ing2.nombre
-                                            if (ing2.cantidad !== null && ing2.precio !== null) {
-                                                ing1.cantidad = ing1.cantidad + ing2.cantidad
-                                                ing1.total = ing1.total + ing2.cantidad * ing2.precio
-                                                disabled.total = disabled.total - ing2.cantidad * ing2.precio
-                                            }
+                                        ing1.nombre = ing2.nombre
+                                        if (ing2.cantidad !== null && ing2.precio !== null) {
+                                            ing1.cantidad = ing1.cantidad + ing2.cantidad
+                                            ing1.total = ing1.total + ing2.cantidad * ing2.precio
+                                            disabled.total = disabled.total - ing2.cantidad * ing2.precio
                                         }
                                     }
                                 })
@@ -128,23 +128,25 @@ class OrderSummary extends Component {
                 disabled.ingredientes.map(ing1 => {
                     if (this.props.order.productos.length > 0) {
                         this.props.order.productos.map(prod => {
+                            var eliminado = false
+                            if (prod.ingredientes.filter(el => (el.opcion === 1 && !data.body.ingredientes.includes(el.idIngrediente))).length === 0) {
+                                eliminado = true
+                                var i = disabled.productos.findIndex(x => x.id === prod.idProducto)
+                                if (i === -1) {
+                                    disabled.productos.push({
+                                        id: prod.idProducto, nombre: prod.nombre, cantidad: prod.cantidad,
+                                        total: prod.cantidad * prod.precio
+                                    })
+                                } else {
+                                    disabled.productos[i].cantidad = disabled.productos[i].cantidad + prod.cantidad
+                                    disabled.productos[i].total = disabled.productos[i].total + prod.cantidad * prod.precio
+                                }
+                                disabled.total = disabled.total - prod.cantidad * prod.precio
+                            }
                             prod.ingredientes.map(ing2 => {
                                 if (ing1.id === ing2.idIngrediente) {
-                                    if (prod.selectivo === 1 && prod.ingredientes.length - 1 === 0) {
-                                        var i = disabled.productos.findIndex(x => x.id === prod.idProducto)
-                                        if (i === -1) {
-                                            disabled.productos.push({
-                                                id: prod.idProducto, nombre: prod.nombre, cantidad: prod.cantidad,
-                                                total: prod.cantidad * prod.precio
-                                            })
-                                        } else {
-                                            disabled.productos[i].cantidad = disabled.productos[i].cantidad + prod.cantidad
-                                            disabled.productos[i].total = disabled.productos[i].total + prod.cantidad * prod.precio
-                                        }
-                                        disabled.total = disabled.total - prod.cantidad * prod.precio
-                                    }
                                     ing1.nombre = ing2.nombre
-                                    if (ing2.cantidad !== null && ing2.precio !== null) {
+                                    if (ing2.cantidad !== null && ing2.precio !== null && !eliminado) {
                                         ing1.cantidad = ing1.cantidad + ing2.cantidad
                                         ing1.total = ing1.total + ing2.cantidad * ing2.precio
                                         disabled.total = disabled.total - ing2.cantidad * ing2.precio
@@ -155,23 +157,25 @@ class OrderSummary extends Component {
                     } else {
                         this.props.order.promociones.map(promo => {
                             promo.productos.map(prod => {
+                                var eliminado = false
+                                if (prod.ingredientes.filter(el => (el.opcion === 1 && !data.body.ingredientes.includes(el.idIngrediente))).length === 0) {
+                                    eliminado = true
+                                    var i = disabled.productos.findIndex(x => x.id === prod.idProducto)
+                                    if (i === -1) {
+                                        disabled.productos.push({
+                                            id: prod.idProducto, nombre: prod.nombre, cantidad: prod.cantidad,
+                                            total: prod.cantidad * prod.precio
+                                        })
+                                    } else {
+                                        disabled.productos[i].cantidad = disabled.productos[i].cantidad + prod.cantidad
+                                        disabled.productos[i].total = disabled.productos[i].total + prod.cantidad * prod.precio
+                                    }
+                                    disabled.total = disabled.total - prod.cantidad * prod.precio
+                                }
                                 prod.ingredientes.map(ing2 => {
                                     if (ing1.id === ing2.idIngrediente) {
-                                        if (prod.selectivo === 1 && prod.ingredientes.length - 1 === 0) {
-                                            var i = disabled.productos.findIndex(x => x.id === prod.idProducto)
-                                            if (i === -1) {
-                                                disabled.productos.push({
-                                                    id: prod.idProducto, nombre: prod.nombre, cantidad: prod.cantidad,
-                                                    total: prod.cantidad * prod.precio
-                                                })
-                                            } else {
-                                                disabled.productos[i].cantidad = disabled.productos[i].cantidad + prod.cantidad
-                                                disabled.productos[i].total = disabled.productos[i].total + prod.cantidad * prod.precio
-                                            }
-                                            disabled.total = disabled.total - prod.cantidad * prod.precio
-                                        }
                                         ing1.nombre = ing2.nombre
-                                        if (ing2.cantidad !== null && ing2.precio !== null) {
+                                        if (ing2.cantidad !== null && ing2.precio !== null && !eliminado) {
                                             ing1.cantidad = ing1.cantidad + ing2.cantidad
                                             ing1.total = ing1.total + ing2.cantidad * ing2.precio
                                             disabled.total = disabled.total - ing2.cantidad * ing2.precio
@@ -373,8 +377,19 @@ class OrderSummary extends Component {
                                             ))}
                                     </View>
                                     : null}
-                                <Divider style={styles.divider} />
-                                <Text style={{ color: colors.APP_MAIN, fontWeight: 'bold', marginTop: sizes.hp('3%'), marginBottom: sizes.hp('1%'), left: 10 }}>(*) modificaste este producto</Text>
+
+                                {(this.props.order.promociones.length === 0 && this.props.order.productos.length === 0) ?
+                                    <View style={styles.viewImage}>
+                                        <Image source={require('../../../icons/noProducts.png')} style={styles.image} />
+                                        <Text style={styles.infoImage}>Tu pedido esta vacío</Text>
+                                    </View>
+                                    :
+                                    <View>
+                                        <Divider style={styles.divider} />
+                                        <Text style={{ color: colors.APP_MAIN, fontWeight: 'bold', marginTop: sizes.hp('3%'), marginBottom: sizes.hp('1%'), left: 10 }}>(*) modificaste este producto</Text>
+                                    </View>}
+
+
                             </ScrollView>
                         </DataTable>
                     </Card.Content>
@@ -424,11 +439,13 @@ class OrderSummary extends Component {
                     <Dialog
                         visible={this.state.visibleDialogClosing}
                         onDismiss={this._hideDialogClosing}>
-                        <Dialog.Title style={{ alignSelf: 'center', textAlign: 'center'}}>Es posible que el local este próximo a cerrar, ¿qué desea hacer?</Dialog.Title>
+                        <Dialog.Title style={{ alignSelf: 'center', textAlign: 'center' }}>Es posible que el local este próximo a cerrar, ¿qué desea hacer?</Dialog.Title>
                         <Dialog.Actions>
-                            <Button style={{ marginRight: sizes.wp('3%') }} color={colors.APP_RED} onPress={() => {this.props.deleteOrder()
-                            this._hideDialogClosing()
-                            Actions.navbarclient()}}>Cancelar pedido</Button>
+                            <Button style={{ marginRight: sizes.wp('3%') }} color={colors.APP_RED} onPress={() => {
+                                this.props.deleteOrder()
+                                this._hideDialogClosing()
+                                Actions.navbarclient()
+                            }}>Cancelar pedido</Button>
                             <Button color={colors.APP_GREEN} onPress={() => {
                                 this._hideDialogClosing()
                                 this.makeOrder()
@@ -592,6 +609,23 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         padding: 8,
         fontSize: sizes.TEXT_INPUT,
+    },
+    viewImage: {
+        justifyContent: 'center',
+        margin: 20,
+        top: sizes.hp('0%'),
+    },
+    image: {
+        width: 170,
+        height: 170,
+        marginBottom: sizes.hp('2%'),
+        alignSelf: 'center',
+    },
+    infoImage: {
+        fontSize: 17,
+        fontWeight: 'bold',
+        justifyContent: 'center',
+        textAlign: 'center',
     },
 });
 

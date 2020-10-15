@@ -38,7 +38,8 @@ class DisabledCard extends Component {
         return (
             <View style={[appStyles.container, { top: sizes.hp('7%'), }]} >
                 <Card style={styles.orderCard}>
-                    <Card.Title style={styles.cardRow} titleStyle={{textAlign: 'center', fontSize: 16, fontWeight: 'bold'}} title='Mientras estabas haciendo tu pedido, hubo algunos ingredientes, productos y/o promociones que el local deshabilitó, y por lo tanto no podrás pedir' />
+                    <Card.Title style={styles.cardRow} titleStyle={{textAlign: 'center', fontSize: 16, fontWeight: 'bold'}} titleNumberOfLines={7}
+                    title='Mientras estabas haciendo tu pedido, hubo algunos ingredientes, productos y/o promociones que el local deshabilitó, y por lo tanto no podrás pedir' />
                     <Divider style={styles.divider} />
                     <Card.Content style={{ alignItems: 'center', width: sizes.wp('87%'),  alignSelf: 'center'}}>
                         <DataTable style={{ width: sizes.wp('100%'), }}>

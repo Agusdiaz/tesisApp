@@ -37,23 +37,25 @@ class MenuProcess extends Component {
 
     async getMenu() {
         const data = await getMenu(this.props.shop.cuit, this.props.user.token)
-        if(data.status === 500 && data.body.error){
+        if (data.status === 500 && data.body.error) {
             this.props.deleteOrder()
             this.props.logout()
-            Actions.logsign({visible: true})
+            Actions.logsign({ visible: true })
         } else if (data.status === 500 || data.status === 204)
             this.setState({ areSalty: false, areSweet: false, areDrinks: false })
         else {
             data.body.map(obj => {
-                if (obj.tipo === productType.SALTY) {
-                    this.state.menuSalty.push(obj)
-                    this.arrayholderSalty.push(obj)
-                } else if (obj.tipo === productType.SWEET) {
-                    this.state.menuSweet.push(obj)
-                    this.arrayholderSweet.push(obj)
-                } else {
-                    this.state.menuDrinks.push(obj)
-                    this.arrayholderDrinks.push(obj)
+                if (obj.valido) {
+                    if (obj.tipo === productType.SALTY) {
+                        this.state.menuSalty.push(obj)
+                        this.arrayholderSalty.push(obj)
+                    } else if (obj.tipo === productType.SWEET) {
+                        this.state.menuSweet.push(obj)
+                        this.arrayholderSweet.push(obj)
+                    } else {
+                        this.state.menuDrinks.push(obj)
+                        this.arrayholderDrinks.push(obj)
+                    }
                 }
             })
             this.setState({
@@ -118,7 +120,7 @@ class MenuProcess extends Component {
         if ((this.state.valueButtons === productType.SALTY && this.state.areSalty) || (this.state.valueButtons === productType.SWEET && this.state.areSweet) ||
             (this.state.valueButtons === productType.DRINK && this.state.areDrinks)) {
             return (
-                <ProductCard data={item} rute={'order'}/>
+                <ProductCard data={item} rute={'order'} />
             );
         } else {
             return (
@@ -133,9 +135,9 @@ class MenuProcess extends Component {
     render() {
 
         return (
-            <View style={{ width: sizes.wp('100%'), height: sizes.hp('74%'), top: sizes.hp('-4%')}}>
+            <View style={{ width: sizes.wp('100%'), height: sizes.hp('74%'), top: sizes.hp('-4%') }}>
 
-                <View style={{ flexDirection: 'row', justifyContent: 'center', width: sizes.wp('100%'), height: sizes.hp('4.5%')}}>
+                <View style={{ flexDirection: 'row', justifyContent: 'center', width: sizes.wp('100%'), height: sizes.hp('4.5%') }}>
                     <Button
                         style={styles.toggleButton}
                         dark
@@ -171,7 +173,7 @@ class MenuProcess extends Component {
                     iconColor={colors.APP_MAIN}
                     onChangeText={text => this._onChangeSearch(text)}
                     value={this.state.searchQuery}
-                />                
+                />
 
                 {(this.state.valueButtons === productType.SALTY) ?
                     <AnimatedFlatList

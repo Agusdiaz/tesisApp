@@ -77,7 +77,7 @@ class PromoDetailsOrder extends Component {
                         console.log(ing.check)
                         if (ing.check) {
                             cant = (ing.precio && ing.cantidad) ? ing.precio * ing.cantidad : 0
-                            ingredientes.push({ idIngrediente: ing.id, nombre: ing.nombre, detalle: ing.detalle, cantidad: ing.cantidad })
+                            ingredientes.push({ idIngrediente: ing.id, nombre: ing.nombre, detalle: ing.detalle, cantidad: ing.cantidad, opcion: ing.opcion  })
                         }
                         prod.precio = prod.precio + cant
                         i++
@@ -98,7 +98,7 @@ class PromoDetailsOrder extends Component {
                     var cant = 0
                     if (ing.check) {
                         cant = (ing.precio && ing.cantidad) ? ing.precio * ing.cantidad : 0
-                        ingredientes.push({ idIngrediente: ing.id, nombre: ing.nombre, detalle: ing.detalle, cantidad: ing.cantidad })
+                        ingredientes.push({ idIngrediente: ing.id, nombre: ing.nombre, detalle: ing.detalle, cantidad: ing.cantidad, opcion: ing.opcion  })
                         if(ing.opcion === 1) isSelected[index] = true
                     }
                     prod.precio = prod.precio + cant

@@ -23,8 +23,8 @@ class ProductDetailsOrder extends Component {
     }
 
     componentDidMount() {
-        if(this.props.rute !== 'promo') this.setState({ originalIngr: JSON.parse(JSON.stringify(this.props.data.ingredientes[0])) })
-        else this.setState({ originalIngr:this.props.data.ingredientes[0]})
+        if (this.props.rute !== 'promo') this.setState({ originalIngr: JSON.parse(JSON.stringify(this.props.data.ingredientes[0])) })
+        else this.setState({ originalIngr: this.props.data.ingredientes[0] })
         this.props.data.ingredientes[0].map(obj => {
             if (obj.check) this.state.allowIngredients.push(obj.id)
         })
@@ -59,7 +59,10 @@ class ProductDetailsOrder extends Component {
             this.state.originalIngr.map(obj => {
                 if (obj.check) {
                     cant = (obj.precio && obj.cantidad) ? obj.precio * obj.cantidad : 0
-                    product.ingredientes.push({ idIngrediente: obj.id, nombre: obj.nombre, detalle: obj.detalle, cantidad: obj.cantidad, precio: obj.precio })
+                    product.ingredientes.push({
+                        idIngrediente: obj.id, nombre: obj.nombre, detalle: obj.detalle, cantidad: obj.cantidad,
+                        precio: obj.precio, opcion: obj.opcion
+                    })
                 }
             })
             product.precio = this.props.data.precio + cant
@@ -85,15 +88,15 @@ class ProductDetailsOrder extends Component {
                     var text = 'Sólo se pueden agregar hasta ' + this.props.data.tope + ' ingrediente(s)'
                     this.setState({ actionMessage: text })
                     this._showDialogResponse()
-                } else{
-                copy[i].cantidad += 1
-                copy[i].check = true
-                this.setState({selected: this.state.selected + 1 })
+                } else {
+                    copy[i].cantidad += 1
+                    copy[i].check = true
+                    this.setState({ selected: this.state.selected + 1 })
                 }
-            } else{
+            } else {
                 copy[i].cantidad += 1
                 copy[i].check = true
-            } 
+            }
         }
         this.setState({ originalIngr: copy })
     }
