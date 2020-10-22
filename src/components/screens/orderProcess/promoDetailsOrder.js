@@ -74,7 +74,6 @@ class PromoDetailsOrder extends Component {
                     var ingredientes = []
                     prod.ingredientes[0].map(ing => {
                         var cant = 0
-                        console.log(ing.check)
                         if (ing.check) {
                             cant = (ing.precio && ing.cantidad) ? ing.precio * ing.cantidad : 0
                             ingredientes.push({ idIngrediente: ing.id, nombre: ing.nombre, detalle: ing.detalle, cantidad: ing.cantidad, opcion: ing.opcion  })

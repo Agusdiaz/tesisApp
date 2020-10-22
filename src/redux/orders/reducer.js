@@ -24,8 +24,6 @@ export default (state = initialState, { type, payload }) => {
             }
         case 'REMOVE_PRODUCT':
               return {...state, productos: [...state.productos.slice(0, payload.index), ...state.productos.slice(payload.index + 1)]}
-            /* state.productos.filter(obj => console.log(obj), console.log(payload.product)) //...state.productos.filter(obj => obj !== payload.product)
-            return { ...state, productos: [...state.productos.filter(obj => obj !== state.selectedProduct)]} */
         case 'SET_SELECTED_PRODUCT':
             return { ...state, ...payload }
         case 'SET_PROMO':

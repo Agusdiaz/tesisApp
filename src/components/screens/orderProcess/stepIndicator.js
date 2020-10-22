@@ -53,16 +53,6 @@ class HorizontalStepIndicator extends Component {
         }
     }
 
-    /* static getDerivedStateFromProps(props, state) {
-        console.log(props.pos)
-        if (props.pos !== undefined) {
-          return {
-            currentPosition: props.pos,
-          };
-        }
-        return null;
-      } */
-
     _showDialogOut = () => this.setState({ visibleDialogOut: true });
     _hideDialogOut = () => this.setState({ visibleDialogOut: false });
 

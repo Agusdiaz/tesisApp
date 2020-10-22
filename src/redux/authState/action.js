@@ -90,7 +90,6 @@ const logout = () => {
         }
     }
 }
-//const logout = () => configureStore.dispatch({ type: 'LOGOUT' })
 
 export default {
     setLoginClientData,
