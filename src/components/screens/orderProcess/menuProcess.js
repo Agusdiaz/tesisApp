@@ -232,9 +232,6 @@ const styles = StyleSheet.create({
     list: {
         top: sizes.hp('6%'),
         width: sizes.wp('100%'),
-        //height: sizes.hp('100%'),
-        //borderWidth: 4
-        //marginBottom: sizes.hp('23%'),
     },
     viewImage: {
         justifyContent: 'center',

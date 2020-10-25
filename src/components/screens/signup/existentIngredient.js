@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { StyleSheet, Text, View, FlatList, Image } from 'react-native';
 import { colors, sizes } from '../../../index.styles';
-import { Card, FAB, Button, Divider, IconButton, TextInput, Searchbar } from 'react-native-paper';
+import { Card, FAB, Button, Divider, IconButton, Searchbar } from 'react-native-paper';
 import TextTicker from 'react-native-text-ticker';
 import { getIngredients } from '../../../api/menus'
 import { Actions } from 'react-native-router-flux';

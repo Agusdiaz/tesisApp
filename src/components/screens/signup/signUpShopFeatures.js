@@ -68,22 +68,6 @@ class SignUpShopFeaturesScreen extends Component {
 
                 <Text style={styles.titleText}> ¡Bienvenido! Primero debes seleccionar las carecterísticas de tu local </Text>
 
-                {/* <View style={{ width: '93%', alignSelf: 'center', top: sizes.hp('3%') }}>
-                    <Select
-                        buttonStyle={styles.selectList}
-                        label={'¿Qué tipo de local sos?'}
-                        type={'outlined'}
-                        menuItems={types}
-                        onSelect={value => this.setState({ selectedType: value.name })}
-                        selectedItem={this.state.selectedType}
-                        textFieldProps={{
-                            borderColor: colors.APP_MAIN,
-                            labelColor: '#000',
-                            focusedLabelColor: '#000',
-                        }}
-                    />
-                </View> */}
-
                 <Text style={styles.questionText}> ¿Tu local admite la presencia de animales? </Text>
                 <View style={styles.viewRadioButtons}>
                 <RadioButton

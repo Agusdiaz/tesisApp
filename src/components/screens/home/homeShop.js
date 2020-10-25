@@ -161,7 +161,7 @@ class HomeShopScreen extends Component {
                         value={this.state.valueButtons}>
                         <ToggleButton style={styles.toggleButton} icon="timelapse" value="time" onPress={() => this.getOrdersByArrival()}
                             color={(this.state.valueButtons === 'time') ? colors.APP_MAIN : colors.APP_INACTIVE} />
-                        <ToggleButton style={styles.toggleButton} icon="sort-numeric" value="products" onPress={() => this.getOrdersByMoreProducts()} //icon="shopping"
+                        <ToggleButton style={styles.toggleButton} icon="sort-numeric" value="products" onPress={() => this.getOrdersByMoreProducts()}
                             color={(this.state.valueButtons === 'products') ? colors.APP_MAIN : colors.APP_INACTIVE} />
                     </ToggleButton.Group>
                 </View>

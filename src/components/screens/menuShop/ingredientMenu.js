@@ -136,7 +136,6 @@ const styles = StyleSheet.create({
         top: sizes.hp('5%'),
         width: sizes.wp('100%'),
         marginBottom: sizes.hp('18%')
-        //height: sizes.hp('64%')
     },
     viewImage: {
         justifyContent: 'center',

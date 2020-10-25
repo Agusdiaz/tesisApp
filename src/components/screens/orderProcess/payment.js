@@ -29,7 +29,6 @@ export default function PayOrder() {
     }
 
     const stateChange = (state) => {
-        //console.log(state.title)
         switch (state.title) {
             case 'success':
                 setShowCheckout(false)
@@ -55,7 +54,7 @@ export default function PayOrder() {
                 dispatch({ type: 'LOGOUT' })
                 Actions.logsign({ visible: true })
                 break;
-            case '¿En cuántas cuotas?': //Revisá si está todo bien - ¡Listo! Se acreditó tu pago
+            case '¿En cuántas cuotas?':
                 setPayed(true)
                 break;
         }
@@ -202,7 +201,6 @@ const styles = StyleSheet.create({
         padding: 15,
     },
     payButton: {
-        //width: sizes.wp('65%'),
         height: sizes.hp('5%'),
         justifyContent: 'center',
         top: sizes.hp('0%'),
@@ -212,6 +210,5 @@ const styles = StyleSheet.create({
         fontSize: 22,
         color: colors.APP_MAIN,
         textAlign: 'center',
-        //marginRight: sizes.wp('%')
     },
 });

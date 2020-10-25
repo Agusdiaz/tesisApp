@@ -38,9 +38,6 @@ class ChooseShopScreen extends Component {
         this.setState({ shops: newShops })
         this.arrayholder = newShops
         this._onChangeSearch(this.state.searchQuery)
-        /* if (newShops.length === 0)
-            this.setState({ areStores: false })
-        else this.setState({ areStores: true }) */
     }
 
     async getOpenShops() {
@@ -154,14 +151,12 @@ const styles = StyleSheet.create({
         position: 'absolute',
         top: sizes.hp('2%'),
         width: sizes.wp('98%'),
-        //left: sizes.wp('20%'),
         fontSize: sizes.TEXT_INPUT,
     },
     list: {
         top: sizes.hp('9%'),
         marginBottom: sizes.hp('7%'),
         width: sizes.wp('100%'),
-        //height: sizes.hp('80%'),
     },
     viewImage: {
         top: sizes.hp('10%'),

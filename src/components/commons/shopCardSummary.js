@@ -62,7 +62,7 @@ class ShopCardSummary extends Component {
             </View>
 
             <IconButton
-                icon={(this.props.data.favorito) ? "star" : "star-outline"} //require('../../icons/flammaPic.p')
+                icon={(this.props.data.favorito) ? "star" : "star-outline"}
                 color={colors.STAR}
                 size={30}
                 onPress={() => (this.props.data.favorito) ? this.removeFavourite() : this.setFavourite()} />

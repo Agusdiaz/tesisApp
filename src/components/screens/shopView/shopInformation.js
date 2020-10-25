@@ -14,7 +14,7 @@ class ShopInformationScreen extends Component {
     constructor() {
         super();
         this.state = {
-            areProducts: true, //COMO PASARLO DEL HIJO
+            areProducts: true,
             selectedTab: 0,
         };
     }
@@ -52,7 +52,7 @@ class ShopInformationScreen extends Component {
                         <Tab key={2} icon='restaurant-menu' label='Menú' activeTextColor={colors.APP_MAIN} inActiveTextColor={colors.APP_INACTIVE}
                             iconStyles={{ color: (this.state.selectedTab == 1) ? colors.APP_MAIN : colors.APP_INACTIVE }} />,
                         <Tab key={3} icon='new-releases' label='Promociones' activeTextColor={colors.APP_MAIN} inActiveTextColor={colors.APP_INACTIVE}
-                            iconStyles={{ color: (this.state.selectedTab == 2) ? colors.APP_MAIN : colors.APP_INACTIVE }} />, //attach-money
+                            iconStyles={{ color: (this.state.selectedTab == 2) ? colors.APP_MAIN : colors.APP_INACTIVE }} />,
                     ]}
                 />
 

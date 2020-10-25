@@ -341,8 +341,7 @@ const styles = StyleSheet.create({
         marginBottom: sizes.hp('4%'),
     },
     inputView: {
-        width: "80%",
-        height: 50,
+        width: sizes.wp('80%'),
         margin: sizes.hp('0.5%'),
         justifyContent: "center",
         padding: 8,

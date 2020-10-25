@@ -111,8 +111,6 @@ const styles = StyleSheet.create({
     list: {
         top: sizes.hp('1%'),
         width: sizes.wp('100%'),
-        //height: sizes.hp('70%'),
-        //marginBottom: sizes.hp('14%'),
     },
 });
 

@@ -62,8 +62,6 @@ const styles = StyleSheet.create({
     appBar: {
         position: 'absolute',
         width: sizes.wp('100%'),
-        //left: sizes.wp('0%'),
-        //right: 0,
         top: sizes.hp('-7%'),
         borderTopWidth: 2,
         borderColor: colors.APP_MAIN,

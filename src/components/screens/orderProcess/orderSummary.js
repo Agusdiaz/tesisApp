@@ -240,7 +240,6 @@ class OrderSummary extends Component {
         for (var i = 0; i < tip.length; i++) {
             if (numbers.indexOf(tip[i]) > -1) {
                 newText = newText + tip[i]
-                //if (i === tip.length - 1)
                 this.setState({ tips: tip })
             }
             else {
@@ -454,7 +453,7 @@ class OrderSummary extends Component {
                     </Dialog>
 
                     <Dialog
-                        style={{ margin: 5 }}
+                        style={{ margin: 5, top: sizes.hp('-5%') }}
                         visible={this.state.visibleDialogTip}
                         onDismiss={this._hideDialogTip}>
                         <Dialog.Title style={{ alignSelf: 'center' }}>¡Dejá tu propina!</Dialog.Title>
@@ -478,7 +477,7 @@ class OrderSummary extends Component {
                     </Dialog>
 
                     <Dialog
-                        style={{ margin: 5, marginBottom: sizes.hp('5%') }}
+                        style={{ margin: 5, top: sizes.hp('-5%') }}
                         visible={this.state.visibleDialogComent}
                         onDismiss={this._hideDialogComent}>
                         <Dialog.Title style={{ alignSelf: 'center', textAlign: 'center' }}>Podés dejar un comentario acerca de tu pedido</Dialog.Title>
@@ -603,12 +602,10 @@ const styles = StyleSheet.create({
     },
     inputView: {
         marginTop: sizes.hp('1%'),
-        width: "90%",
-        height: 50,
+        width: sizes.wp('75%'),
         marginBottom: 20,
         justifyContent: "center",
         padding: 8,
-        fontSize: sizes.TEXT_INPUT,
     },
     viewImage: {
         justifyContent: 'center',

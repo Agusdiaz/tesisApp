@@ -256,12 +256,10 @@ const styles = StyleSheet.create({
     },
     inputView: {
         marginTop: sizes.hp('1%'),
-        width: "90%",
-        height: 50,
+        width: sizes.wp('75%'),
         marginBottom: 20,
         justifyContent: "center",
         padding: 8,
-        fontSize: sizes.TEXT_INPUT,
     },
 });
 

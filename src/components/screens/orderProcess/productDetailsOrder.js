@@ -315,7 +315,6 @@ class ProductDetailsOrder extends Component {
 
 const styles = StyleSheet.create({
     productCard: {
-        //height: sizes.hp('86%'),
         width: sizes.wp('90%'),
         elevation: 0
     },
@@ -360,7 +359,6 @@ const styles = StyleSheet.create({
         textAlign: 'center',
     },
     cell: {
-        //borderWidth: 1,
         width: sizes.wp('80%'),
         right: sizes.wp('-3%'),
         marginTop: sizes.hp('2%'),

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { StyleSheet, Text, View, ScrollView, ImageBackground } from 'react-native';
 import { colors, sizes } from '../../index.styles';
-import { Card, ActivityIndicator, Modal, Portal, Button, Dialog, Divider, IconButton, TextInput } from 'react-native-paper';
+import { Card, ActivityIndicator, Modal, Portal, Button, Dialog, Divider, IconButton } from 'react-native-paper';
 import { DataTable, DataTableHeader, DataTableCell, DataTableRow } from 'material-bread'
 import TextTicker from 'react-native-text-ticker';
 import ProductDetails from '../commons/productDetails'

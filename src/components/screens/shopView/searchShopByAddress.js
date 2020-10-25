@@ -33,9 +33,6 @@ class SearchShopByAddressScreen extends Component {
         this.setState({ shops: newShops })
         this.arrayholder = newShops
         this._onChangeSearch(this.state.searchQuery)
-        /* if (newShops.length === 0)
-            this.setState({ areStores: false })
-        else this.setState({ areStores: true }) */
     }
 
     async getShopsOpenClose() {

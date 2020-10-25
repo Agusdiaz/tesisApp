@@ -229,11 +229,9 @@ const styles = StyleSheet.create({
     },
     inputView: {
         width: sizes.wp('70%'),
-        height: sizes.hp('5%'),
         marginBottom: sizes.hp('1%'),
         justifyContent: "center",
         padding: 5,
-        fontSize: sizes.TEXT_INPUT,
     },
     viewRadioButtons: {
         flexWrap: 'wrap',

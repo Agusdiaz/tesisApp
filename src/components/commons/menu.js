@@ -184,7 +184,7 @@ class Menu extends Component {
                     <FlatList
                         style={[styles.list, {
                             marginBottom: (this.props.rute == 'client') ? sizes.hp('29%') : (this.props.rute === 'shop') ?
-                                sizes.hp('18%') : null, //36.3
+                                sizes.hp('18%') : null,
                         }]}
                         refreshing={this.state.refreshing}
                         onRefresh={this.onRefresh}
@@ -198,7 +198,7 @@ class Menu extends Component {
                         <FlatList
                             style={[styles.list, {
                                 marginBottom: (this.props.rute == 'client') ? sizes.hp('29%') : (this.props.rute === 'shop') ?
-                                    sizes.hp('18%') : null, //36.3
+                                    sizes.hp('18%') : null,
                             }]}
                             refreshing={this.state.refreshing}
                             onRefresh={this.onRefresh}
@@ -211,7 +211,7 @@ class Menu extends Component {
                         <FlatList
                             style={[styles.list, {
                                 marginBottom: (this.props.rute === 'client') ? sizes.hp('29%') : (this.props.rute === 'shop') ?
-                                    sizes.hp('18%') : null, //36.3
+                                    sizes.hp('18%') : null,
                             }]}
                             refreshing={this.state.refreshing}
                             onRefresh={this.onRefresh}
@@ -256,7 +256,6 @@ const styles = StyleSheet.create({
     list: {
         top: sizes.hp('6.5%'),
         width: sizes.wp('100%'),
-        //height: sizes.hp('64%') //64
     },
     viewImage: {
         justifyContent: 'center',

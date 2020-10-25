@@ -84,7 +84,7 @@ class ListIngredients extends Component {
                 <Card.Title title='Agregale ingredientes a tu producto' style={{ alignSelf: 'center' }} titleStyle={{ textAlign: 'justify', fontWeight: 'bold' }} />
                 <Divider />
                 <View style={{ flex: 1 }}>
-                    <ScrollView style={{ flex: 1, maxHeight: sizes.hp('62%') }}>
+                    <ScrollView style={{ flex: 1, maxHeight: sizes.hp('65%') }}>
                         <Card.Content style={{ alignItems: 'center', marginTop: sizes.hp('2%') }}>
                             <Text style={styles.questionText}> ¿Es necesario que el cliente seleccione al menos un ingrediente por su cuenta? </Text>
                             <View style={styles.viewRadioButtons}>
@@ -235,12 +235,10 @@ const styles = StyleSheet.create({
     },
     inputView: {
         width: sizes.wp('50%'),
-        height: sizes.hp('5%'),
         marginTop: sizes.hp('-2%'),
         marginBottom: sizes.hp('1%'),
         justifyContent: "center",
         padding: 5,
-        fontSize: sizes.TEXT_INPUT,
     },
     viewRadioButtons: {
         flexDirection: 'row',

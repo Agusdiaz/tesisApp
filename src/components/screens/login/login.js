@@ -1,5 +1,4 @@
 import React, { Component, useState, useEffect, useRef } from 'react';
-//import { connect } from 'react-redux';
 import { StyleSheet, Text, KeyboardAvoidingView, Platform, TouchableOpacity, Image } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage'
 import LoginActions from '../../../redux/authState/action'
@@ -65,7 +64,7 @@ export default function LoginScreen() {
 
     const _login = async () => {
         setLoading(true)
-        setTimeout(() => { setLoading(false) }, 3500); //5000
+        setTimeout(() => { setLoading(false) }, 4000);
         const data = await login(email, password)
         if (data.status === 500 || data.status === 404) {
             setLoading(false)
@@ -82,12 +81,12 @@ export default function LoginScreen() {
             setLoading(false)
             saveItem('id_token', data.body.token)
             if (data.body.cuit === undefined) {
-                const notif = await setClientDevice(email, deviceId)
+                if(Constants.isDevice) await setClientDevice(email, deviceId)
                 saveItem('profile', 'client')
                 dispatch({ type: 'LOGIN_CLIENT', payload: { mail: data.body.mail, name: data.body.nombre, lastName: data.body.apellido, token: data.body.token } })
                 Actions.navbarclient()
             } else if (data.body.nuevo === 0) {
-                const notif = await setShopDevice(data.body.cuit, deviceId)
+                if(Constants.isDevice) await setShopDevice(data.body.cuit, deviceId)
                 saveItem('profile', 'shop')
                 dispatch({
                     type: 'LOGIN_SHOP', payload: {
@@ -98,7 +97,7 @@ export default function LoginScreen() {
                 })
                 Actions.navbarshop()
             } else {
-                const notif = await setShopDevice(data.body.cuit, deviceId)
+                if(Constants.isDevice) await setShopDevice(data.body.cuit, deviceId)
                 saveItem('profile', 'newShop')
                 dispatch({
                     type: 'LOGIN_SHOP', payload: {
@@ -125,7 +124,7 @@ export default function LoginScreen() {
                 mode='outlined'
                 label='Email'
                 placeholder="ejemplo@mail.com"
-                theme={{ colors: { text: colors.TEXT_INPUT, primary: colors.APP_MAIN } }}
+                theme={{ colors: { text: colors.TEXT_INPUT, primary: colors.APP_MAIN }}}
                 onChangeText={text => setEmail(text)}
                 value={email}
             />
@@ -141,12 +140,8 @@ export default function LoginScreen() {
                 value={password}
             />
 
-            <TouchableOpacity>
-                <Text style={{ color: colors.APP_MAIN, fontSize: 12 }}>¿Has olvidado tu contraseña?</Text>
-            </TouchableOpacity>
-
             <Button
-                style={{ top: sizes.hp('-13%') }}
+                style={{ top: sizes.hp('-6%') }}
                 icon="send"
                 mode="contained"
                 color={colors.APP_MAIN}
@@ -154,6 +149,10 @@ export default function LoginScreen() {
                 onPress={() => _login()}>
                 INICIAR SESIÓN
              </Button>
+
+             <TouchableOpacity>
+                <Text style={{ color: colors.APP_MAIN, fontSize: 12 }}>¿Has olvidado tu contraseña?</Text>
+            </TouchableOpacity>
 
             <Dialog
                 style={{ width: sizes.wp('70%'), alignSelf: 'center' }}
@@ -213,19 +212,17 @@ const styles = StyleSheet.create({
     imageLogo: {
         width: sizes.wp('50%'),
         height: sizes.hp('48%'),
-        top: sizes.hp('-10%'),
+        top: sizes.hp('-5%'),
         resizeMode: 'cover',
         justifyContent: 'center',
         alignItems: 'center',
     },
     inputView: {
         width: sizes.wp('80%'),
-        height: sizes.hp('5%'),
-        top: sizes.hp('-13%'),
+        top: sizes.hp('-10%'),
         marginBottom: 20,
         justifyContent: "center",
         padding: 5,
-        fontSize: sizes.TEXT_INPUT,
     },
     modalActivityIndicator: {
         alignItems: 'center',

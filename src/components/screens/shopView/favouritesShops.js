@@ -138,8 +138,6 @@ const styles = StyleSheet.create({
         textAlign: 'center',
     },
     list: {
-        //borderWidth: 5,
-        //height: sizes.hp('-5%'),
         top: sizes.hp('13%'),
         marginBottom: sizes.hp('14%'),
         width: '100%'

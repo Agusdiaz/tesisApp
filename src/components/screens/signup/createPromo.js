@@ -287,12 +287,10 @@ const styles = StyleSheet.create({
     },
     inputView: {
         width: sizes.wp('80%'),
-        height: sizes.hp('5%'),
         marginTop: sizes.hp('0%'),
         marginBottom: sizes.hp('1%'),
         justifyContent: "center",
         padding: 5,
-        fontSize: sizes.TEXT_INPUT,
     },
     viewRadioButtons: {
         flexDirection: 'row',

@@ -274,7 +274,6 @@ const styles = StyleSheet.create({
         textAlign: 'center',
     },
     cell: {
-        //borderWidth: 1,
         width: sizes.wp('80%'),
         right: sizes.wp('-3%'),
         marginTop: sizes.hp('2%'),

@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { StyleSheet, Text, View, Image, ScrollView, Alert } from 'react-native';
 import { colors, sizes, productCondition } from '../../index.styles';
 import { DataTable, DataTableHeader, DataTableCell, DataTableRow } from 'material-bread'
-import { Card, FAB, Button, Divider, IconButton, Portal, Dialog, TextInput, Modal, ActivityIndicator } from 'react-native-paper';
+import { Card, FAB, Button, Divider, IconButton, Portal, Dialog, Modal, ActivityIndicator } from 'react-native-paper';
 import TextTicker from 'react-native-text-ticker'
 import ShopActions from '../../redux/authState/action'
 import { Actions } from 'react-native-router-flux';

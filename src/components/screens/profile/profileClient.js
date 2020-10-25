@@ -148,7 +148,7 @@ class ProfileClientScreen extends Component {
                                 repeatSpacer={50}
                                 marqueeDelay={1000}> {this.props.user.mail} </TextTicker>
                             <IconButton
-                                icon='pencil'//"account-edit"
+                                icon='pencil'
                                 style={styles.iconEdit}
                                 color={'#fff'}
                                 size={38}
@@ -396,12 +396,10 @@ const styles = StyleSheet.create({
         marginBottom: sizes.hp('4%'),
     },
     inputView: {
-        width: "80%",
-        height: 50,
+        width: sizes.wp('80%'),
         margin: sizes.hp('0.5%'),
         justifyContent: "center",
         padding: 8,
-        fontSize: sizes.TEXT_INPUT,
     },
 });
 

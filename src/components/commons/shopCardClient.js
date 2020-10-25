@@ -223,7 +223,6 @@ const styles = StyleSheet.create({
         marginTop: sizes.hp('2%'),
         marginBottom: sizes.hp('2%'),
         width: sizes.wp('85%'),
-        //height: sizes.hp('13%'),
     },
     rightText: {
         fontSize: 16,

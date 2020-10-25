@@ -103,11 +103,6 @@ class SearchShopByNameFeatures extends Component {
     _hideDialog = () => this.setState({ visibleDialog: false })
 
     setFilter(index) {
-        /*
-        this.state.checked[index] = !this.state.checked[index]
-        if (index === 4 && this.state.checked[index + 1]) this.state.checked[index + 1] = false
-        else if (index === 5 && this.state.checked[index]) this.state.checked[index - 1] = false
-        */
         this.setState(prevState => ({
             checked: prevState.checked.map((el, i) => {
                 if (i === index) {

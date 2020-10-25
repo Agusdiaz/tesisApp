@@ -179,10 +179,10 @@ const styles = StyleSheet.create({
         marginTop: sizes.hp('6%'),
     },
     text: {
-        fontSize: 40, //28
+        fontSize: 40,
         fontWeight: 'bold',
         color: '#fff',
-        marginTop: sizes.hp('13%'), //13
+        marginTop: sizes.hp('13%'),
         textShadowRadius: 12,    
         textShadowColor: '#000',
         width: sizes.wp('70%'),
@@ -201,8 +201,6 @@ const styles = StyleSheet.create({
     },
     list: {
         marginTop: sizes.hp('0%'),
-        //marginBottom: sizes.hp('0.5%'),
-        //height: sizes.hp('70%'), //sizes.hp('69%'),
         width: '100%',
     },
     headerWrapper: {
