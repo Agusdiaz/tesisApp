@@ -58,7 +58,7 @@ class PromoDetailsOrder extends Component {
             detalle: this.props.data.detalle,
             productos: [],
         }
-        var isSelected = Array.from({length: this.state.originalProds.length}, () => null)
+        var isSelected = Array.from({ length: this.state.originalProds.length }, () => null)
         this.state.originalProds.map((prod, index) => {
             if (prod.modificado)
                 promo.modificado = true
@@ -76,7 +76,7 @@ class PromoDetailsOrder extends Component {
                         var cant = 0
                         if (ing.check) {
                             cant = (ing.precio && ing.cantidad) ? ing.precio * ing.cantidad : 0
-                            ingredientes.push({ idIngrediente: ing.id, nombre: ing.nombre, detalle: ing.detalle, cantidad: ing.cantidad, opcion: ing.opcion  })
+                            ingredientes.push({ idIngrediente: ing.id, nombre: ing.nombre, detalle: ing.detalle, cantidad: ing.cantidad, opcion: ing.opcion })
                         }
                         prod.precio = prod.precio + cant
                         i++
@@ -97,8 +97,8 @@ class PromoDetailsOrder extends Component {
                     var cant = 0
                     if (ing.check) {
                         cant = (ing.precio && ing.cantidad) ? ing.precio * ing.cantidad : 0
-                        ingredientes.push({ idIngrediente: ing.id, nombre: ing.nombre, detalle: ing.detalle, cantidad: ing.cantidad, opcion: ing.opcion  })
-                        if(ing.opcion === 1) isSelected[index] = true
+                        ingredientes.push({ idIngrediente: ing.id, nombre: ing.nombre, detalle: ing.detalle, cantidad: ing.cantidad, opcion: ing.opcion })
+                        if (ing.opcion === 1) isSelected[index] = true
                     }
                     prod.precio = prod.precio + cant
                     i++
@@ -114,7 +114,7 @@ class PromoDetailsOrder extends Component {
         })
         if (isSelected.filter(x => x === false).length > 0) {
             this.setState({ actionMessage: 'Es necesario que selecciones ingredientes de algunos productos para poder pedir esta promoción' })
-            this._showDialogResponse()            
+            this._showDialogResponse()
         } else {
             this.props.setPromoOrder(promo)
             this.props.updateTotal(this.props.order.total + this.props.data.precio)

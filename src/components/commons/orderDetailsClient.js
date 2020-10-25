@@ -45,7 +45,7 @@ class OrderDetailsClient extends Component {
             <Button style={{ borderRadius: 20, width: sizes.wp('48%') }}
                 mode="contained"
                 dark
-                color={ (this.props.data.aceptado === 0) ? colors.APP_WAITING : (this.props.data.etapa === orderStage.PENDING) ? colors.APP_PENDING 
+                color={(this.props.data.aceptado === 0) ? colors.APP_WAITING : (this.props.data.etapa === orderStage.PENDING) ? colors.APP_PENDING
                     : (this.props.data.etapa === orderStage.READY) ? colors.APP_GREEN : colors.APP_DELIVERED}
                 labelStyle={{ fontSize: 11, color: '#FFF' }} contentStyle={{ width: sizes.wp('50%'), alignSelf: 'center' }} >
                 {(this.props.data.aceptado === 0) ? 'Esperando aprobación' : (this.props.data.etapa === orderStage.PENDING) ? 'En Proceso' : (this.props.data.etapa === orderStage.READY) ?
@@ -89,22 +89,22 @@ class OrderDetailsClient extends Component {
                 <Card.Title style={{ margin: -8, marginTop: sizes.hp('-4'), top: 3 }} left={stageOrder} leftStyle={styles.stageOrder} right={Close} rightStyle={styles.close} />
                 <Divider />
                 <ScrollView>
-                <Card.Title style={styles.cardTitle} titleStyle={styles.leftText} title="Modalidad:" right={takeAway} />
-                <Divider style={styles.divider} />
-                <Card.Title style={styles.cardTitle} titleStyle={styles.leftText} title="Número del Pedido:" right={orderNumber} />
-                <Divider />
-                <Card.Title style={styles.cardTitle} titleStyle={styles.leftText} title="Local:" right={name} rightStyle={{ width: sizes.wp('54%'), right: sizes.wp('3%'), alignItems: 'flex-end', }} />
-                <Divider style={styles.divider} />
-                <Card.Title style={styles.cardTitle} titleStyle={styles.leftText} title="Dirección:" right={address} rightStyle={{ width: sizes.wp('54%'), right: sizes.wp('3%'), alignItems: 'flex-end', }} />
-                <Divider style={styles.divider} />
-                <Card.Title style={styles.cardTitle} titleStyle={styles.leftText} title="Fecha:" right={date} />
-                <Divider style={styles.divider} />
-                <Card.Content style={{ alignSelf: 'center', width: sizes.wp('90%'), }}>
-                    <DataTable style={{ width: sizes.wp('130%') }}>
-                        <DataTableHeader
-                            title={'¿Qué es lo que pediste?'}
-                            style={{ right: sizes.wp('-12.5%') }}
-                        />
+                    <Card.Title style={styles.cardTitle} titleStyle={styles.leftText} title="Modalidad:" right={takeAway} />
+                    <Divider style={styles.divider} />
+                    <Card.Title style={styles.cardTitle} titleStyle={styles.leftText} title="Número del Pedido:" right={orderNumber} />
+                    <Divider />
+                    <Card.Title style={styles.cardTitle} titleStyle={styles.leftText} title="Local:" right={name} rightStyle={{ width: sizes.wp('54%'), right: sizes.wp('3%'), alignItems: 'flex-end', }} />
+                    <Divider style={styles.divider} />
+                    <Card.Title style={styles.cardTitle} titleStyle={styles.leftText} title="Dirección:" right={address} rightStyle={{ width: sizes.wp('54%'), right: sizes.wp('3%'), alignItems: 'flex-end', }} />
+                    <Divider style={styles.divider} />
+                    <Card.Title style={styles.cardTitle} titleStyle={styles.leftText} title="Fecha:" right={date} />
+                    <Divider style={styles.divider} />
+                    <Card.Content style={{ alignSelf: 'center', width: sizes.wp('90%'), }}>
+                        <DataTable style={{ width: sizes.wp('130%') }}>
+                            <DataTableHeader
+                                title={'¿Qué es lo que pediste?'}
+                                style={{ right: sizes.wp('-12.5%') }}
+                            />
                             {(this.props.data.productos[0] !== null) ?
                                 <View>
                                     <DataTableRow style={{}}>
@@ -156,14 +156,14 @@ class OrderDetailsClient extends Component {
                             <Divider style={styles.divider} />
                             <Text style={{ color: colors.APP_MAIN, fontWeight: 'bold', marginBottom: sizes.hp('1%'), marginTop: sizes.hp('2%') }}>(*) modificaste este producto</Text>
 
-                    </DataTable>
-                </Card.Content>
-                <Divider style={styles.divider} />
-                <Card.Title style={styles.cardTitle} titleStyle={styles.leftText} title="Comentario:" right={comment} />
-                <Divider style={styles.divider} />
-                <Card.Title style={styles.cardTitle} titleStyle={styles.leftText} title="Propina:" right={propina} />
-                <Divider style={styles.divider} />
-                <Card.Title style={styles.cardTitle} titleStyle={styles.leftText} title="Total:" right={total} />
+                        </DataTable>
+                    </Card.Content>
+                    <Divider style={styles.divider} />
+                    <Card.Title style={styles.cardTitle} titleStyle={styles.leftText} title="Comentario:" right={comment} />
+                    <Divider style={styles.divider} />
+                    <Card.Title style={styles.cardTitle} titleStyle={styles.leftText} title="Propina:" right={propina} />
+                    <Divider style={styles.divider} />
+                    <Card.Title style={styles.cardTitle} titleStyle={styles.leftText} title="Total:" right={total} />
                 </ScrollView>
                 <Divider style={styles.divider} />
 

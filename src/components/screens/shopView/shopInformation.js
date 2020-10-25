@@ -26,7 +26,7 @@ class ShopInformationScreen extends Component {
     render() {
         return (
             <View style={appStyles.container}>
-                
+
                 <ArrowButton rute={'navBarClientHome'} />
 
                 <Button style={[styles.buttonOrder, {

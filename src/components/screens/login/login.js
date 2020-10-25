@@ -81,12 +81,12 @@ export default function LoginScreen() {
             setLoading(false)
             saveItem('id_token', data.body.token)
             if (data.body.cuit === undefined) {
-                if(Constants.isDevice) await setClientDevice(email, deviceId)
+                if (Constants.isDevice) await setClientDevice(email, deviceId)
                 saveItem('profile', 'client')
                 dispatch({ type: 'LOGIN_CLIENT', payload: { mail: data.body.mail, name: data.body.nombre, lastName: data.body.apellido, token: data.body.token } })
                 Actions.navbarclient()
             } else if (data.body.nuevo === 0) {
-                if(Constants.isDevice) await setShopDevice(data.body.cuit, deviceId)
+                if (Constants.isDevice) await setShopDevice(data.body.cuit, deviceId)
                 saveItem('profile', 'shop')
                 dispatch({
                     type: 'LOGIN_SHOP', payload: {
@@ -97,7 +97,7 @@ export default function LoginScreen() {
                 })
                 Actions.navbarshop()
             } else {
-                if(Constants.isDevice) await setShopDevice(data.body.cuit, deviceId)
+                if (Constants.isDevice) await setShopDevice(data.body.cuit, deviceId)
                 saveItem('profile', 'newShop')
                 dispatch({
                     type: 'LOGIN_SHOP', payload: {
@@ -124,7 +124,7 @@ export default function LoginScreen() {
                 mode='outlined'
                 label='Email'
                 placeholder="ejemplo@mail.com"
-                theme={{ colors: { text: colors.TEXT_INPUT, primary: colors.APP_MAIN }}}
+                theme={{ colors: { text: colors.TEXT_INPUT, primary: colors.APP_MAIN } }}
                 onChangeText={text => setEmail(text)}
                 value={email}
             />
@@ -150,7 +150,7 @@ export default function LoginScreen() {
                 INICIAR SESIÓN
              </Button>
 
-             <TouchableOpacity>
+            <TouchableOpacity>
                 <Text style={{ color: colors.APP_MAIN, fontSize: 12 }}>¿Has olvidado tu contraseña?</Text>
             </TouchableOpacity>
 

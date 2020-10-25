@@ -29,14 +29,14 @@ class PendingOrdersClientScreen extends Component {
 
     async getPendings() {
         const data = await getPendingOrdersByClient(this.props.user.mail, this.props.user.token)
-        if(data.status === 500 && data.body.error){
+        if (data.status === 500 && data.body.error) {
             this.props.logout()
-            Actions.logsign({visible: true})
+            Actions.logsign({ visible: true })
         } else if (data.status === 500 || data.status === 204)
             this.setState({ arePendings: false })
         else {
-            this.setState({ arePendings: true, orders: data.body.sort((a, b) => a.etapa.localeCompare(b.etapa) || b.tiempo - a.tiempo )})
-            this.arrayholder = data.body.sort((a, b) => a.etapa.localeCompare(b.etapa) || a.tiempo - b.tiempo )
+            this.setState({ arePendings: true, orders: data.body.sort((a, b) => a.etapa.localeCompare(b.etapa) || b.tiempo - a.tiempo) })
+            this.arrayholder = data.body.sort((a, b) => a.etapa.localeCompare(b.etapa) || a.tiempo - b.tiempo)
         }
     }
 

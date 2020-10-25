@@ -28,17 +28,17 @@ class SalesProcess extends Component {
 
     async getPromos() {
         const data = await getAllShopPromos(this.props.shop.cuit, this.props.user.token)
-        if(data.status === 500 && data.body.error){
+        if (data.status === 500 && data.body.error) {
             this.props.deleteOrder()
             this.props.logout()
-            Actions.logsign({visible: true})
+            Actions.logsign({ visible: true })
         } else if (data.status === 500 || data.status === 204)
             this.setState({ areSales: false })
-        else{
+        else {
             var promos = []
-            promos = data.body.filter(obj => {return obj.valida === 1 && obj.habilitada})
+            promos = data.body.filter(obj => { return obj.valida === 1 && obj.habilitada })
             this.setState({ areSales: (promos.length > 0) ? true : false, sales: promos })
-        } 
+        }
     }
 
     onRefresh() {
@@ -50,7 +50,7 @@ class SalesProcess extends Component {
     _renderItem(item) {
         if (this.state.areSales) {
             return (
-                <SalesCard data={item} rute={'cart'}/>
+                <SalesCard data={item} rute={'cart'} />
             );
         } else {
             return (
@@ -65,7 +65,7 @@ class SalesProcess extends Component {
     render() {
 
         return (
-            <View style={{ width: sizes.wp('100%'), height: sizes.hp('74%'), top: sizes.hp('-5%')}}>
+            <View style={{ width: sizes.wp('100%'), height: sizes.hp('74%'), top: sizes.hp('-5%') }}>
 
                 <AnimatedFlatList
                     style={styles.list}

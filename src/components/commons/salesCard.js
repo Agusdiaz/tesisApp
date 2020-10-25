@@ -96,7 +96,7 @@ class SalesCard extends Component {
                 <Card style={[styles.salesCard, { width: (this.props.rute !== 'order') ? sizes.wp('100%') : sizes.wp('90%') }]}>
                     <ImageBackground source={require('../../icons/promo.jpg')} style={styles.imageOutside} imageStyle={styles.imageInside} >
                         <Card.Content style={styles.topContent}>
-                            <View style={{width: sizes.wp('50%'), alignItems: 'center', height: sizes.wp('14%'), justifyContent: 'center'}}>
+                            <View style={{ width: sizes.wp('50%'), alignItems: 'center', height: sizes.wp('14%'), justifyContent: 'center' }}>
                                 <TextTicker style={styles.title}
                                     duration={5000}
                                     loop
@@ -104,37 +104,37 @@ class SalesCard extends Component {
                                     repeatSpacer={50}
                                     marqueeDelay={1000}>{this.props.data.nombre}</TextTicker>
                                 <Text style={styles.subtitle}>${this.props.data.precio}</Text>
-                                </View>
+                            </View>
 
-                                {(this.props.rute !== 'order' && this.props.rute !== 'cart') ?
+                            {(this.props.rute !== 'order' && this.props.rute !== 'cart') ?
+                                <Button
+                                    style={styles.buttonAvailable}
+                                    labelStyle={{ fontSize: 10, textAlign: 'center' }}
+                                    compact
+                                    mode='contained'
+                                    dark
+                                    onPress={this._showModalSchedule}
+                                    color={(this.props.data.valida === 1 && this.props.data.habilitada) ? colors.APP_GREEN : colors.APP_RED}>
+                                    {(this.props.data.valida === 1 && this.props.data.habilitada) ? 'Válida' : 'No válida'}
+                                </Button>
+                                : (this.props.rute === 'cart') ?
                                     <Button
                                         style={styles.buttonAvailable}
                                         labelStyle={{ fontSize: 10, textAlign: 'center' }}
                                         compact
                                         mode='contained'
                                         dark
-                                        onPress={this._showModalSchedule}
-                                        color={(this.props.data.valida === 1 && this.props.data.habilitada) ? colors.APP_GREEN : colors.APP_RED}>
-                                        {(this.props.data.valida === 1 && this.props.data.habilitada) ? 'Válida' : 'No válida'}
-                                    </Button>
-                                    : (this.props.rute === 'cart') ?
-                                        <Button
-                                            style={styles.buttonAvailable}
-                                            labelStyle={{ fontSize: 10, textAlign: 'center' }}
-                                            compact
-                                            mode='contained'
-                                            dark
-                                            onPress={this._showModalPromoDetails}
-                                            color={colors.APP_MAIN}>
-                                            Agregar
+                                        onPress={this._showModalPromoDetails}
+                                        color={colors.APP_MAIN}>
+                                        Agregar
                                         </Button>
-                                        :
-                                        <IconButton
-                                            style={{ right: sizes.wp('-35%'), top: sizes.hp('-7%') }}
-                                            icon='close'
-                                            color={colors.APP_MAIN}
-                                            size={30}
-                                            onPress={() => this.props.hideModalFromChild()} />}
+                                    :
+                                    <IconButton
+                                        style={{ right: sizes.wp('-35%'), top: sizes.hp('-7%') }}
+                                        icon='close'
+                                        color={colors.APP_MAIN}
+                                        size={30}
+                                        onPress={() => this.props.hideModalFromChild()} />}
                         </Card.Content>
                     </ImageBackground>
                     <Divider />
@@ -171,8 +171,10 @@ class SalesCard extends Component {
                                     mode="contained"
                                     color={colors.APP_MAIN}
                                     onPress={() => {
-                                        Actions.createpromo({ rute: 'modify', data: this.props.data, refreshParent: this.props.refreshParent, initial: this.props.initial,
-                                    showDialogResponse: this.props.showDialogResponse})
+                                        Actions.createpromo({
+                                            rute: 'modify', data: this.props.data, refreshParent: this.props.refreshParent, initial: this.props.initial,
+                                            showDialogResponse: this.props.showDialogResponse
+                                        })
                                     }}>
                                     Modificar
  				                </Button>
@@ -202,7 +204,7 @@ class SalesCard extends Component {
                     {(this.props.rute !== 'order') ?
                         <Modal contentContainerStyle={styles.modalView} visible={this.state.visibleModalSchedule} onDismiss={this._hideModalSchedule}>
                             <Schedule hideModalFromChild={this._hideModalSchedule} data={this.props.data.horarios[0]} id={this.props.data.id}
-                                rute={this.props.rute} refreshParent={this.props.refreshParent} habilitada={this.props.data.habilitada}/>
+                                rute={this.props.rute} refreshParent={this.props.refreshParent} habilitada={this.props.data.habilitada} />
                         </Modal>
                         : null}
 

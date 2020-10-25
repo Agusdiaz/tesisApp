@@ -49,7 +49,7 @@ class PieChartGraph extends React.PureComponent {
         return (
             <Card style={{ height: sizes.hp('8%'), elevation: 2, marginTop: 2, width: sizes.wp('87%'), marginBottom: 5 }}>
                 <Card.Title style={{ alignSelf: 'center', height: sizes.hp('7%') }}
-                    right={() => <View style={{ alignSelf: 'center', width: sizes.wp('65%')}}>
+                    right={() => <View style={{ alignSelf: 'center', width: sizes.wp('65%') }}>
                         <TextTicker style={styles.title}
                             duration={5000}
                             loop

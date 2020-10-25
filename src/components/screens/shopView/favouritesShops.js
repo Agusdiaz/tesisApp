@@ -49,9 +49,9 @@ class FavouritesShopsScreen extends Component {
 
     async getShopsOpenClose() {
         const data = await getAllShopsOpenClose(this.props.user.mail, this.props.user.token)
-        if(data.status === 500 && data.body.error){
+        if (data.status === 500 && data.body.error) {
             this.props.logout()
-            Actions.logsign({visible: true})
+            Actions.logsign({ visible: true })
         } else if (data.status === 200)
             this.props.setShopsData(data.body)
         this.getFavouritesShops()

@@ -124,7 +124,7 @@ export const deleteProduct = async (id, cuit, token, rute) => {
     let requestBody = {};
     requestBody.id = id
     requestBody.cuit = cuit
-    if(rute === 'initial') requestBody.inicial
+    if (rute === 'initial') requestBody.inicial
     const response = await fetch(`${APIURL}deleteProduct`, {
         method: 'POST',
         body: JSON.stringify(requestBody),
@@ -143,7 +143,7 @@ export const deleteIngredient = async (id, cuit, token, rute) => {
     let requestBody = {};
     requestBody.id = id
     requestBody.cuit = cuit
-    if(rute === 'initial') requestBody.inicial
+    if (rute === 'initial') requestBody.inicial
     const response = await fetch(`${APIURL}deleteIngredient`, {
         method: 'POST',
         body: JSON.stringify(requestBody),

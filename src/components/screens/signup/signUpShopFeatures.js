@@ -34,10 +34,10 @@ class SignUpShopFeaturesScreen extends Component {
         this.setState({ loading: true })
         const data = await updateShopFeatures(this.state.checkedPets, this.state.checkedKids, this.state.checkedGames, this.state.checkedOutside,
             this.state.checkedSmoking, this.state.checkedWifi, this.props.shop.cuit, this.props.shop.token)
-            if(data.status === 500 && data.body.error){
-                this.props.logout()
-                Actions.logsign({visible: true})
-            } else if (data.status === 500 || data.status === 404) {
+        if (data.status === 500 && data.body.error) {
+            this.props.logout()
+            Actions.logsign({ visible: true })
+        } else if (data.status === 500 || data.status === 404) {
             this.setState({ loading: false, actionMessage: data.body })
             this._showDialogResponse()
         } else {
@@ -70,7 +70,7 @@ class SignUpShopFeaturesScreen extends Component {
 
                 <Text style={styles.questionText}> ¿Tu local admite la presencia de animales? </Text>
                 <View style={styles.viewRadioButtons}>
-                <RadioButton
+                    <RadioButton
                         radioButtonColor={colors.APP_MAIN}
                         rippleColor={colors.APP_MAIN}
                         labelStyle={styles.options}
@@ -89,7 +89,7 @@ class SignUpShopFeaturesScreen extends Component {
 
                 <Text style={styles.questionText}> ¿Tu local dispone de entretenimiento para niños? </Text>
                 <View style={styles.viewRadioButtons}>
-                <RadioButton
+                    <RadioButton
                         radioButtonColor={colors.APP_MAIN}
                         rippleColor={colors.APP_MAIN}
                         labelStyle={styles.options}
@@ -108,7 +108,7 @@ class SignUpShopFeaturesScreen extends Component {
 
                 <Text style={styles.questionText}> ¿Tu local dispone de juegos/arcade para los clientes? </Text>
                 <View style={styles.viewRadioButtons}>
-                <RadioButton
+                    <RadioButton
                         radioButtonColor={colors.APP_MAIN}
                         rippleColor={colors.APP_MAIN}
                         labelStyle={styles.options}
@@ -127,7 +127,7 @@ class SignUpShopFeaturesScreen extends Component {
 
                 <Text style={styles.questionText}> ¿Tu local dispone de espacio al aire libre? </Text>
                 <View style={styles.viewRadioButtons}>
-                <RadioButton
+                    <RadioButton
                         radioButtonColor={colors.APP_MAIN}
                         rippleColor={colors.APP_MAIN}
                         labelStyle={styles.options}
@@ -146,7 +146,7 @@ class SignUpShopFeaturesScreen extends Component {
 
                 <Text style={styles.questionText}> ¿Tu local es libre de humo? </Text>
                 <View style={styles.viewRadioButtons}>
-                <RadioButton
+                    <RadioButton
                         radioButtonColor={colors.APP_MAIN}
                         rippleColor={colors.APP_MAIN}
                         labelStyle={styles.options}
@@ -165,7 +165,7 @@ class SignUpShopFeaturesScreen extends Component {
 
                 <Text style={styles.questionText}> ¿Tu local dispone de wifi para los clientes? </Text>
                 <View style={styles.viewRadioButtons}>
-                <RadioButton
+                    <RadioButton
                         radioButtonColor={colors.APP_MAIN}
                         rippleColor={colors.APP_MAIN}
                         labelStyle={styles.options}

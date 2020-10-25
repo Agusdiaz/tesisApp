@@ -2,7 +2,7 @@ const setShopsData = (shops) => {
     return {
         type: 'SET_SHOPS',
         payload: {
-            allShops: shops    
+            allShops: shops
         },
     }
 }

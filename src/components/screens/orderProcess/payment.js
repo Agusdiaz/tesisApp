@@ -152,15 +152,15 @@ export default function PayOrder() {
     } else {
         return (
             <View style={{ flex: 1, justifyContent: 'center', top: sizes.hp('-1.5%'), width: sizes.wp('95%') }}>
-                <View style={{flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center', height: sizes.hp('5%')}}>
-                <Text style={styles.timer}>Tiempo restante: {(minutes === null) ? '00' : minutes}:{seconds}</Text>
-                <IconButton
-                    icon='close'
-                    size={30}
-                    style={styles.arrowButton}
-                    color={colors.APP_MAIN}
-                    onPress={goBack}
-                />
+                <View style={{ flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center', height: sizes.hp('5%') }}>
+                    <Text style={styles.timer}>Tiempo restante: {(minutes === null) ? '00' : minutes}:{seconds}</Text>
+                    <IconButton
+                        icon='close'
+                        size={30}
+                        style={styles.arrowButton}
+                        color={colors.APP_MAIN}
+                        onPress={goBack}
+                    />
                 </View>
 
                 <View style={{ height: sizes.hp('74%'), }}>

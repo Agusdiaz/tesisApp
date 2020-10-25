@@ -37,7 +37,7 @@ class PromoDetailsInCart extends Component {
     }
 
     render() {
- 
+
         const Close = props => <IconButton
             icon='close'
             color={colors.APP_MAIN}
@@ -92,7 +92,7 @@ class PromoDetailsInCart extends Component {
                     </DataTable>
                 </Card.Content>
                 <Card.Actions style={{ alignSelf: 'center', marginTop: sizes.hp('0.5%') }}>
-                    <View style={{ flexDirection: 'row', alignItems: 'center'}}>
+                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
 
                         <FAB
                             style={styles.fabAmount}

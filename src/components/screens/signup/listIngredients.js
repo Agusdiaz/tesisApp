@@ -52,7 +52,7 @@ class ListIngredients extends Component {
         let newText = '';
         let numbers = '0123456789';
         for (var i = 0; i < number.length; i++) {
-            if(number === '0'){
+            if (number === '0') {
                 Alert.alert('Atención', 'El tope no puede ser 0');
                 this.setState({ tope: '' })
                 break

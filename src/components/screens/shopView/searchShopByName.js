@@ -38,13 +38,13 @@ class SearchShopByNameScreen extends Component {
     async getShopsOpenClose() {
         let newShops = []
         const data = await getAllShopsOpenClose(this.props.user.mail, this.props.user.token)
-        if(data.status === 500 && data.body.error){
+        if (data.status === 500 && data.body.error) {
             this.props.logout()
-            Actions.logsign({visible: true})
+            Actions.logsign({ visible: true })
         } else if (data.status === 200) {
             this.props.setShopsData(data.body)
             newShops = this.props.shops.allShops
-            this.setState({ shops: newShops})
+            this.setState({ shops: newShops })
             this.arrayholder = newShops
         }
         if (newShops.length === 0)
@@ -112,16 +112,16 @@ class SearchShopByNameScreen extends Component {
                     value={this.state.searchQuery}
                 />
 
-                    <FlatList
-                        style={styles.list}
-                        refreshing={this.state.refreshing}
-                        onRefresh={this.onRefresh}
-                        data={(this.state.areStores) ? this.state.shops : [1]}
-                        ItemSeparatorComponent={this.renderSeparator}
-                        initialNumToRender={0}
-                        renderItem={({ item }) => this._renderItem(item)}
-                        keyExtractor={(item, i) => i.toString()}
-                    />
+                <FlatList
+                    style={styles.list}
+                    refreshing={this.state.refreshing}
+                    onRefresh={this.onRefresh}
+                    data={(this.state.areStores) ? this.state.shops : [1]}
+                    ItemSeparatorComponent={this.renderSeparator}
+                    initialNumToRender={0}
+                    renderItem={({ item }) => this._renderItem(item)}
+                    keyExtractor={(item, i) => i.toString()}
+                />
             </View>
         );
 

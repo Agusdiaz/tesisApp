@@ -73,7 +73,7 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         borderWidth: 2,
         borderColor: '#FFF',
-        textShadowRadius: 12,    
+        textShadowRadius: 12,
         textShadowColor: '#000',
     },
 });

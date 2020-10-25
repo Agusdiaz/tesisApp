@@ -11,9 +11,9 @@ export const getTopProducts = async (cuit, token) => {
             'Authorization': token
         })
     }).then(r => (r.status === 204) ? r : r.json()
-        .then(data => 
+        .then(data =>
             ({ status: r.status, body: data })))
-        .then(obj => {return obj});
+        .then(obj => { return obj });
     return response
 }
 
@@ -29,7 +29,7 @@ export const getTopHours = async (cuit, token) => {
         })
     }).then(r => r.json()
         .then(data => ({ status: r.status, body: data })))
-        .then(obj => {return obj});
+        .then(obj => { return obj });
     return response
 }
 
@@ -45,6 +45,6 @@ export const getMonthOrders = async (cuit, token) => {
         })
     }).then(r => r.json()
         .then(data => ({ status: r.status, body: data })))
-        .then(obj => {return obj});
+        .then(obj => { return obj });
     return response
 }

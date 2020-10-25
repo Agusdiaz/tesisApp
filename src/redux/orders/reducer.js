@@ -23,7 +23,7 @@ export default (state = initialState, { type, payload }) => {
                 selectedProduct: { ...state.selectedProduct, cantidad: payload.amount }
             }
         case 'REMOVE_PRODUCT':
-              return {...state, productos: [...state.productos.slice(0, payload.index), ...state.productos.slice(payload.index + 1)]}
+            return { ...state, productos: [...state.productos.slice(0, payload.index), ...state.productos.slice(payload.index + 1)] }
         case 'SET_SELECTED_PRODUCT':
             return { ...state, ...payload }
         case 'SET_PROMO':
@@ -36,7 +36,7 @@ export default (state = initialState, { type, payload }) => {
             }
         case 'REMOVE_PROMO':
             var index = payload.index - state.productos.length
-            return {...state, promociones: [...state.promociones.slice(0, index), ...state.promociones.slice(index + 1)]}
+            return { ...state, promociones: [...state.promociones.slice(0, index), ...state.promociones.slice(index + 1)] }
         case 'SET_SELECTED_PROMO':
             return { ...state, ...payload }
         case 'UPDATE_TOTAL':
@@ -49,23 +49,29 @@ export default (state = initialState, { type, payload }) => {
             return { ...state, comentario: payload.coment }
         case 'SET_CUITMAIL':
             return { ...state, mail: payload.mail, cuit: payload.cuit }
-            case 'SET_NUMBER':
+        case 'SET_NUMBER':
             return { ...state, numero: payload.number }
         case 'DELETE_ORDER':
             return initialState
         case 'REMOVE_DISABLED_PRODUCT':
-           return { ...state, productos: [...state.productos.filter(obj => obj.idProducto !== payload.id)]}
+            return { ...state, productos: [...state.productos.filter(obj => obj.idProducto !== payload.id)] }
         case 'REMOVE_DISABLED_PRODUCT_INGREDIENT':
-            return {...state, productos: state.productos.map(obj => 
-                (obj.ingredientes.length > 0) ? { ...obj, ingredientes: obj.ingredientes.filter(x => x.idIngrediente !== payload.id) } : obj) }
+            return {
+                ...state, productos: state.productos.map(obj =>
+                    (obj.ingredientes.length > 0) ? { ...obj, ingredientes: obj.ingredientes.filter(x => x.idIngrediente !== payload.id) } : obj)
+            }
         case 'REMOVE_DISABLED_PROMO':
-            return { ...state, promociones: [...state.promociones.filter(obj => obj.idPromo !== payload.id)]}
+            return { ...state, promociones: [...state.promociones.filter(obj => obj.idPromo !== payload.id)] }
         case 'REMOVE_DISABLED_PROMO_INGREDIENT':
-            return {...state, promociones: state.promociones.map(promo =>
-                (promo.productos.length > 0) ? {...promo, 
-                    productos: promo.productos.map(prod => 
-                     (prod.ingredientes.length > 0) ? { ...prod, ingredientes: prod.ingredientes.filter(x => x.idIngrediente !== payload.id) } : prod  
-                     ) } : promo) }
+            return {
+                ...state, promociones: state.promociones.map(promo =>
+                    (promo.productos.length > 0) ? {
+                        ...promo,
+                        productos: promo.productos.map(prod =>
+                            (prod.ingredientes.length > 0) ? { ...prod, ingredientes: prod.ingredientes.filter(x => x.idIngrediente !== payload.id) } : prod
+                        )
+                    } : promo)
+            }
         default:
             return state
     }

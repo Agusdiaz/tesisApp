@@ -60,7 +60,7 @@ class HomeShopScreen extends Component {
         } else if (data.status === 500 || data.status === 204)
             this.setState({ areOrders: false })
         else {
-            this.setState({ areOrders: true, orders: data.body.sort((a, b) => a.aceptado - b.aceptado || new Date(b.fecha) - new Date(a.fecha) ) })
+            this.setState({ areOrders: true, orders: data.body.sort((a, b) => a.aceptado - b.aceptado || new Date(b.fecha) - new Date(a.fecha)) })
             this.arrayholder = this.state.orders
         }
     }
@@ -74,7 +74,7 @@ class HomeShopScreen extends Component {
             this.setState({ areOrders: false })
         else {
             this.setState({
-                areOrders: true, orders: data.body.sort((a, b) => a.aceptado - b.aceptado || b.cantProductos - a.cantProductos) 
+                areOrders: true, orders: data.body.sort((a, b) => a.aceptado - b.aceptado || b.cantProductos - a.cantProductos)
             })
             this.arrayholder = this.state.orders
         }

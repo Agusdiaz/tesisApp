@@ -24,18 +24,18 @@ class ShopCardClient extends Component {
 
     async setFavourite() {
         const data = await setShopAsFavourite(this.props.user.mail, this.props.shop.cuit, this.props.user.token)
-        if(data.status === 500 && data.body.error){
+        if (data.status === 500 && data.body.error) {
             this.props.logout()
-            Actions.logsign({visible: true})
+            Actions.logsign({ visible: true })
         } else if (data.status === 200)
             this.props.updateShopFavourite(this.props.shop.cuit, true)
     }
 
     async removeFavourite() {
         const data = await deleteShopAsFavourite(this.props.user.mail, this.props.shop.cuit, this.props.user.token)
-        if(data.status === 500 && data.body.error){
+        if (data.status === 500 && data.body.error) {
             this.props.logout()
-            Actions.logsign({visible: true})
+            Actions.logsign({ visible: true })
         } else if (data.status === 200)
             this.props.updateShopFavourite(this.props.shop.cuit, false)
     }
@@ -67,7 +67,7 @@ class ShopCardClient extends Component {
         </View>
 
         const ScheduleFab = props => <FAB
-            style={{backgroundColor: colors.APP_MAIN}}
+            style={{ backgroundColor: colors.APP_MAIN }}
             label={'Ver'}
             icon="clock"
             color='#fff'
@@ -97,15 +97,15 @@ class ShopCardClient extends Component {
 
         return (
             <Card style={styles.shopCard}>
-                <Card.Title style={{ marginBottom: -4 }} left={OpenClose} leftStyle={{ right: 8, width: sizes.wp('25%') }} right={TitleStar} 
-                rightStyle={{right: 15}}/>
+                <Card.Title style={{ marginBottom: -4 }} left={OpenClose} leftStyle={{ right: 8, width: sizes.wp('25%') }} right={TitleStar}
+                    rightStyle={{ right: 15 }} />
                 <Divider />
                 <ScrollView>
-                {(this.props.shop.abierto === 1) ?
-                    <Card.Content style={{ margin: 10, alignItems: 'center', justifyContent: 'center', alignSelf: 'center' }}>
-                    <PeopleButton />
-                </Card.Content>
-                    : null}
+                    {(this.props.shop.abierto === 1) ?
+                        <Card.Content style={{ margin: 10, alignItems: 'center', justifyContent: 'center', alignSelf: 'center' }}>
+                            <PeopleButton />
+                        </Card.Content>
+                        : null}
                     <Card.Cover source={{ uri: this.state.photo }} />
                     <Divider />
                     <Card.Actions style={{ alignContent: 'center' }}>

@@ -135,7 +135,7 @@ class SignUpClientScreen extends Component {
 				/>
 
 				<HelperText type="error" visible={this.state.passwordError} style={{ marginTop: -25 }}>
-					La contraseña debe tener mínimo 6 dígitos 
+					La contraseña debe tener mínimo 6 dígitos
       			</HelperText>
 
 				<Button

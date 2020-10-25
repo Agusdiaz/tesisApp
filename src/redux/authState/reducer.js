@@ -50,7 +50,7 @@ export default (state = initialState, { type, payload }) => {
                 }
             }
         case 'UPDATE_SHOP_OPEN':
-            return { ...state, shop: { ...state.shop, abierto: payload.open}}
+            return { ...state, shop: { ...state.shop, abierto: payload.open } }
         default:
             return state
     }

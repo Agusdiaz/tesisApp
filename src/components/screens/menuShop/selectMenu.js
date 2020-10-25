@@ -85,18 +85,18 @@ class SelectMenu extends Component {
                             }} />
                         : null}
 
-<Portal>
+                <Portal>
 
-<Dialog
-    visible={this.state.visibleDialogResponse}
-    onDismiss={this._hideDialogResponse}>
-    <Dialog.Title style={{ alignSelf: 'center', textAlign: 'center' }}>{this.state.actionMessage}</Dialog.Title>
-    <Dialog.Actions>
-        <Button style={{ marginRight: sizes.wp('3%') }} color={'#000000'} onPress={this._hideDialogResponse}>Ok</Button>
-    </Dialog.Actions>
-</Dialog>
+                    <Dialog
+                        visible={this.state.visibleDialogResponse}
+                        onDismiss={this._hideDialogResponse}>
+                        <Dialog.Title style={{ alignSelf: 'center', textAlign: 'center' }}>{this.state.actionMessage}</Dialog.Title>
+                        <Dialog.Actions>
+                            <Button style={{ marginRight: sizes.wp('3%') }} color={'#000000'} onPress={this._hideDialogResponse}>Ok</Button>
+                        </Dialog.Actions>
+                    </Dialog>
 
-</Portal>
+                </Portal>
             </View>
         )
     }

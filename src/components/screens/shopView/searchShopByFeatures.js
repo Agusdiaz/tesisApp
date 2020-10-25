@@ -106,10 +106,10 @@ class SearchShopByNameFeatures extends Component {
         this.setState(prevState => ({
             checked: prevState.checked.map((el, i) => {
                 if (i === index) {
-                    if (index === 4 ) {
+                    if (index === 4) {
                         this.state.checked[index + 1] = false
                     }
-                    else if (index === 5 ) {
+                    else if (index === 5) {
                         this.state.checked[index - 1] = false
                     }
                     return !el

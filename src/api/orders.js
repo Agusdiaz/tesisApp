@@ -46,9 +46,9 @@ export const shareOrder = async (mail, num, token) => {
             'Authorization': token
         })
     }).then(r => (r.status === 204) ? r : r.json()
-        .then(data => 
+        .then(data =>
             ({ status: r.status, body: data })))
-        .then(obj => {return obj});
+        .then(obj => { return obj });
     return response
 }
 
@@ -63,9 +63,9 @@ export const setOrderDeliveredByClient = async (num, token) => {
             'Authorization': token
         })
     }).then(r => (r.status === 204) ? r : r.json()
-        .then(data => 
+        .then(data =>
             ({ status: r.status, body: data })))
-        .then(obj => {return obj});
+        .then(obj => { return obj });
     return response
 }
 

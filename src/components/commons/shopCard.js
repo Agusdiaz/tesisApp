@@ -37,12 +37,12 @@ class ShopCard extends Component {
         const PhoneNumber = props => <Text style={styles.rightText}>{this.props.shop.telefono}</Text>
 
         const ScheduleFab = props => <FAB
-        style={{backgroundColor: colors.APP_MAIN}}
-        label={'Ver'}
-        icon="clock"
-        color='#fff'
-        onPress={() => this._showModalSchedule()}
-    />
+            style={{ backgroundColor: colors.APP_MAIN }}
+            label={'Ver'}
+            icon="clock"
+            color='#fff'
+            onPress={() => this._showModalSchedule()}
+        />
 
         const Mail = props => <Text style={styles.rightText}>{this.props.shop.mail}</Text>
 
@@ -126,8 +126,8 @@ class ShopCard extends Component {
 
                 <Portal>
                     <Modal contentContainerStyle={styles.modalView} visible={this.state.visibleModalSchedule} onDismiss={this._hideModalSchedule}>
-                        <Schedule hideModalFromChild={this._hideModalSchedule} data={this.props.shop.horarios[0]} 
-                        rute={'shop'}/>
+                        <Schedule hideModalFromChild={this._hideModalSchedule} data={this.props.shop.horarios[0]}
+                            rute={'shop'} />
                     </Modal>
                 </Portal>
             </Card>

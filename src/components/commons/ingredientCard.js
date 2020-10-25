@@ -83,7 +83,7 @@ class IngredientCard extends Component {
                     detalle: (this.state.details.trim() === "") ? null : this.state.details,
                 }
             }
-            if(this.props.rute === 'initial') response.inicial
+            if (this.props.rute === 'initial') response.inicial
             this.setState({ loading: true })
             const data = await modifyIngredient(response, this.props.shop.token)
             if (data.status === 500 && data.body.error) {
@@ -194,22 +194,22 @@ class IngredientCard extends Component {
                                                 this._showDialogDisabled('¿Esta seguro que desea habilitar este ingrediente?')
                                             }} />
                                         : (this.props.rute === 'initial') ?
-                                        <View style={{ flexDirection: 'row' }}>
-                                            <FAB
-                                                style={[styles.fabDisabled, { marginRight: sizes.wp('3%') }]}
-                                                color={colors.APP_MAIN}
-                                                icon="delete"
-                                                small
-                                                onPress={this._showDialogDelete} />
+                                            <View style={{ flexDirection: 'row' }}>
+                                                <FAB
+                                                    style={[styles.fabDisabled, { marginRight: sizes.wp('3%') }]}
+                                                    color={colors.APP_MAIN}
+                                                    icon="delete"
+                                                    small
+                                                    onPress={this._showDialogDelete} />
 
-                                            <FAB
-                                                style={styles.fabDisabled}
-                                                color={colors.APP_MAIN}
-                                                icon="pencil"
-                                                small
-                                                onPress={this._showModalModify} />
-                                        </View>                                        
-                                        : null
+                                                <FAB
+                                                    style={styles.fabDisabled}
+                                                    color={colors.APP_MAIN}
+                                                    icon="pencil"
+                                                    small
+                                                    onPress={this._showModalModify} />
+                                            </View>
+                                            : null
                                 }
                             </View>
                         </View>

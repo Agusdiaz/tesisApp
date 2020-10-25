@@ -11,7 +11,7 @@ class LogSignScreen extends Component {
     constructor(props) {
         super(props);
         this.state = {
-           visibleDialog: (props.visible) ? props.visible : false
+            visibleDialog: (props.visible) ? props.visible : false
         }
     }
 
@@ -61,8 +61,8 @@ class LogSignScreen extends Component {
 
 const styles = StyleSheet.create({
     imageLogo: {
-        width: sizes.wp('95%'), 
-        height: sizes.hp('95%'), 
+        width: sizes.wp('95%'),
+        height: sizes.hp('95%'),
         top: sizes.hp('-4%'),
         resizeMode: 'center',
         justifyContent: 'center',

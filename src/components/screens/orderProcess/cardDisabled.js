@@ -14,19 +14,19 @@ class DisabledCard extends Component {
         }
     }
 
-    cleanOrder(){
+    cleanOrder() {
         this.props.updateTotal(this.props.data.total)
-        if(this.props.data.promociones){
+        if (this.props.data.promociones) {
             this.props.data.promociones.map(prom => {
                 this.props.removeDisabledPromo(prom.id)
             })
         }
-        if(this.props.data.productos){
+        if (this.props.data.productos) {
             this.props.data.productos.map(prod => {
                 this.props.removeDisabledProduct(prod.id)
             })
         }
-        if(this.props.data.ingredientes){
+        if (this.props.data.ingredientes) {
             this.props.data.ingredientes.map(ing => {
                 this.props.removeDisabledProductIngredient(ing.id)
                 this.props.removeDisabledPromoIngredient(ing.id)
@@ -38,10 +38,10 @@ class DisabledCard extends Component {
         return (
             <View style={[appStyles.container, { top: sizes.hp('7%'), }]} >
                 <Card style={styles.orderCard}>
-                    <Card.Title style={styles.cardRow} titleStyle={{textAlign: 'center', fontSize: 16, fontWeight: 'bold'}} titleNumberOfLines={7}
-                    title='Mientras estabas haciendo tu pedido, hubo algunos ingredientes, productos y/o promociones que el local deshabilitó, y por lo tanto no podrás pedir' />
+                    <Card.Title style={styles.cardRow} titleStyle={{ textAlign: 'center', fontSize: 16, fontWeight: 'bold' }} titleNumberOfLines={7}
+                        title='Mientras estabas haciendo tu pedido, hubo algunos ingredientes, productos y/o promociones que el local deshabilitó, y por lo tanto no podrás pedir' />
                     <Divider style={styles.divider} />
-                    <Card.Content style={{ alignItems: 'center', width: sizes.wp('87%'),  alignSelf: 'center'}}>
+                    <Card.Content style={{ alignItems: 'center', width: sizes.wp('87%'), alignSelf: 'center' }}>
                         <DataTable style={{ width: sizes.wp('100%'), }}>
                             <DataTableHeader
                                 title={'¿Qué se deshabilitó?'}
@@ -70,7 +70,7 @@ class DisabledCard extends Component {
                                 {(this.props.data.productos.length > 0) ?
                                     <View>
                                         <DataTableRow style={{}}>
-                                        <DataTableCell text={'PRODUCTOS'} type={'header'} borderRight textStyle={{ textAlign: 'center', fontWeight: 'bold' }} style={{ maxWidth: '35%' }} />
+                                            <DataTableCell text={'PRODUCTOS'} type={'header'} borderRight textStyle={{ textAlign: 'center', fontWeight: 'bold' }} style={{ maxWidth: '35%' }} />
                                             <DataTableCell text={'Cantidad Pedida'} type={'header'} textStyle={{ textAlign: 'center', fontWeight: 'bold' }} style={{ maxWidth: '7%' }} minWidth={130} />
                                             <DataTableCell text={'Total descontado'} type={'header'} textStyle={{ textAlign: 'center', fontWeight: 'bold' }} style={{ maxWidth: '7%' }} minWidth={140} />
                                         </DataTableRow>
@@ -89,7 +89,7 @@ class DisabledCard extends Component {
                                 {(this.props.data.promociones.length > 0) ?
                                     <View>
                                         <DataTableRow style={{}}>
-                                        <DataTableCell text={'PROMOCIONES'} type={'header'} borderRight textStyle={{ textAlign: 'center', fontWeight: 'bold' }} style={{ maxWidth: '35%' }} />
+                                            <DataTableCell text={'PROMOCIONES'} type={'header'} borderRight textStyle={{ textAlign: 'center', fontWeight: 'bold' }} style={{ maxWidth: '35%' }} />
                                             <DataTableCell text={'Cantidad Pedida'} type={'header'} textStyle={{ textAlign: 'center', fontWeight: 'bold' }} style={{ maxWidth: '7%' }} minWidth={130} />
                                             <DataTableCell text={'Total descontado'} type={'header'} textStyle={{ textAlign: 'center', fontWeight: 'bold' }} style={{ maxWidth: '7%' }} minWidth={140} />
                                         </DataTableRow>
@@ -107,17 +107,19 @@ class DisabledCard extends Component {
                         </DataTable>
                     </Card.Content>
                     <Divider style={styles.divider} />
-                    <Card.Title title={`El nuevo total será: $${this.props.data.total}`}/>
+                    <Card.Title title={`El nuevo total será: $${this.props.data.total}`} />
                     <Divider style={styles.divider} />
                     <Card.Actions style={{ alignSelf: 'center', alignItems: 'center', margin: 7 }}>
                         <Button
-                            style={{marginRight: sizes.wp('13%')}}
+                            style={{ marginRight: sizes.wp('13%') }}
                             dark
                             color={colors.APP_MAIN}
                             mode={'contained'}
-                            onPress={() => { this.props.deleteOrder()
-                            this.props.hideModalFromChild()
-                            Actions.navbarclient() }} >
+                            onPress={() => {
+                                this.props.deleteOrder()
+                                this.props.hideModalFromChild()
+                                Actions.navbarclient()
+                            }} >
                             Cancelar pedido
                     </Button>
 
@@ -126,8 +128,10 @@ class DisabledCard extends Component {
                             dark
                             color={colors.APP_MAIN}
                             mode={'contained'}
-                            onPress={() => { this.cleanOrder(),
-                                this.props.hideModalFromChild() }} >
+                            onPress={() => {
+                                this.cleanOrder(),
+                                this.props.hideModalFromChild()
+                            }} >
                             De acuerdo
                     </Button>
                     </Card.Actions>

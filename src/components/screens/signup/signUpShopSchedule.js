@@ -50,11 +50,11 @@ class SignUpShopScheduleScreen extends Component {
 
                 <Text style={styles.titleText}> Ingresá los horarios de tu local </Text>
 
-                <View style={{width: sizes.wp('90%'), height: sizes.hp('50%'), top: sizes.hp('-2%')}}>
+                <View style={{ width: sizes.wp('90%'), height: sizes.hp('50%'), top: sizes.hp('-2%') }}>
                     <DataTable style={{ marginTop: sizes.wp('1%'), width: sizes.wp('90%') }}>
                         <DataTableRow >
                             <DataTableCell text={''} type={'header'} textStyle={{ textAlign: 'center', fontWeight: 'bold' }} style={{ maxWidth: '12%' }} minWidth={120} />
-                            <DataTableCell text={'DÍA'} type={'header'} borderRight textStyle={{ textAlign: 'center', fontWeight: 'bold' }} style={{ maxWidth: '15%' }} minWidth={105}/>
+                            <DataTableCell text={'DÍA'} type={'header'} borderRight textStyle={{ textAlign: 'center', fontWeight: 'bold' }} style={{ maxWidth: '15%' }} minWidth={105} />
                             <DataTableCell text={'HORAS'} type={'header'} textStyle={{ textAlign: 'center', fontWeight: 'bold' }} style={{ maxWidth: '40%' }} minWidth={150} />
                         </DataTableRow>
 
@@ -63,7 +63,7 @@ class SignUpShopScheduleScreen extends Component {
                                 < DataTableRow key={row.id} style={{}} >
                                     <DataTableCell text={'Modificar'} textStyle={{ textAlign: 'center', fontWeight: 'bold', color: colors.APP_GREEN, textDecorationLine: 'underline' }}
                                         style={{ maxWidth: '12%', alignSelf: 'center' }} minWidth={120} onPress={() => { this.setState({ daySelected: row.id }), this._showModalEditSchedule() }} />
-                                    <DataTableCell text={row.dia} borderRight textStyle={{ textAlign: 'center' }} style={{ maxWidth: '15%' }} minWidth={105}/>
+                                    <DataTableCell text={row.dia} borderRight textStyle={{ textAlign: 'center' }} style={{ maxWidth: '15%' }} minWidth={105} />
                                     <DataTableCell text={(row.horas.length > 0) ? row.horas : 'CERRADO'} textStyle={{ textAlign: 'center' }} style={{ maxWidth: '40%', alignSelf: 'center' }} minWidth={150} />
                                 </DataTableRow>
                             )
@@ -88,13 +88,13 @@ class SignUpShopScheduleScreen extends Component {
                         <Dialog.Title style={{ alignSelf: 'center', textAlign: 'center' }}>¿La información seleccionada es correcta?</Dialog.Title>
                         <Dialog.Actions>
                             <Button style={{ marginRight: sizes.wp('3%') }} color={colors.APP_RED} onPress={this._hideDialogFinish}>Modificar</Button>
-                            <Button color={colors.APP_GREEN} onPress={() => {this._hideDialogFinish(), Actions.signupshopmenu()}}>Es correcta</Button>
+                            <Button color={colors.APP_GREEN} onPress={() => { this._hideDialogFinish(), Actions.signupshopmenu() }}>Es correcta</Button>
                         </Dialog.Actions>
                     </Dialog>
 
                     <Modal contentContainerStyle={styles.modalView} visible={this.state.visibleModalEditSchedule} dismissable={false}>
                         <EditSchedule hideModalFromChild={this._hideModalEditSchedule} day={this.state.daySelected} rute={'editShop'}
-                        updateLoading={this.updateIsLoading} showDialogResponse={this._showDialogResponse}/>
+                            updateLoading={this.updateIsLoading} showDialogResponse={this._showDialogResponse} />
                     </Modal>
 
                     <Modal dismissable={false}

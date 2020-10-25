@@ -35,9 +35,9 @@ class DisabledMenu extends Component {
 
     async getMenuDisabled() {
         const data = await getMenuDisabled(this.props.shop.cuit, this.props.shop.token)
-        if(data.status === 500 && data.body.error){
+        if (data.status === 500 && data.body.error) {
             this.props.logout()
-            Actions.logsign({visible: true})
+            Actions.logsign({ visible: true })
         } else if (data.status === 500 || data.status === 204)
             this.setState({ areProducts: false, areIngredients: false })
         else {
@@ -65,7 +65,7 @@ class DisabledMenu extends Component {
             this.setState({ valueButtons: values })
     }
 
-    onRefresh(){
+    onRefresh() {
         this.setState({ products: [], ingredients: [], refreshing: true });
         this.arrayholderProducts = []
         this.arrayholderIngredients = []
@@ -102,7 +102,7 @@ class DisabledMenu extends Component {
     _renderItem(item) {
         if (this.state.valueButtons === 'products' && this.state.areProducts) {
             return (
-                <ProductCard rute={'disabled'} data={item} refreshParent={this.onRefresh} showDialogResponse={this._showDialogResponse}/>
+                <ProductCard rute={'disabled'} data={item} refreshParent={this.onRefresh} showDialogResponse={this._showDialogResponse} />
             );
         } else if (this.state.valueButtons === 'products' && !this.state.areProducts) {
             return (
@@ -114,7 +114,7 @@ class DisabledMenu extends Component {
         }
         else if (this.state.valueButtons === 'ingredients' && this.state.areIngredients) {
             return (
-                <IngredientCard rute={'disabled'} data={item} refreshParent={this.onRefresh} showDialogResponse={this._showDialogResponse}/>
+                <IngredientCard rute={'disabled'} data={item} refreshParent={this.onRefresh} showDialogResponse={this._showDialogResponse} />
             );
         } else if (this.state.valueButtons === 'ingredients' && !this.state.areIngredients) {
             return (

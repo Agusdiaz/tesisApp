@@ -11,9 +11,9 @@ export const getAllShopsOpenClose = async (mail, token) => {
             'Authorization': token
         })
     }).then(r => (r.status === 204) ? r : r.json()
-        .then(data => 
+        .then(data =>
             ({ status: r.status, body: data })))
-        .then(obj => {return obj});
+        .then(obj => { return obj });
     return response
 }
 
@@ -28,9 +28,9 @@ export const getAllShopsWithPromo = async (mail, token) => {
             'Authorization': token
         })
     }).then(r => (r.status === 204) ? r : r.json()
-        .then(data => 
+        .then(data =>
             ({ status: r.status, body: data })))
-        .then(obj => {return obj});
+        .then(obj => { return obj });
     return response
 }
 
@@ -46,9 +46,9 @@ export const setShopAsFavourite = async (mail, cuit, token) => {
             'Authorization': token
         })
     }).then(r => r.json()
-        .then(data => 
+        .then(data =>
             ({ status: r.status, body: data })))
-        .then(obj => {return obj});
+        .then(obj => { return obj });
     return response
 }
 
@@ -64,9 +64,9 @@ export const deleteShopAsFavourite = async (mail, cuit, token) => {
             'Authorization': token
         })
     }).then(r => r.json()
-        .then(data => 
+        .then(data =>
             ({ status: r.status, body: data })))
-        .then(obj => {return obj});
+        .then(obj => { return obj });
     return response
 }
 
@@ -87,9 +87,9 @@ export const updateShopFeatures = async (mascotas, bebes, juegos, aireLibre, lib
             'Authorization': token
         })
     }).then(r => r.json()
-        .then(data => 
+        .then(data =>
             ({ status: r.status, body: data })))
-        .then(obj => {return obj});
+        .then(obj => { return obj });
     return response
 }
 
@@ -102,9 +102,9 @@ export const updateShopSchedule = async (body, token) => {
             'Authorization': token
         })
     }).then(r => r.json()
-        .then(data => 
+        .then(data =>
             ({ status: r.status, body: data })))
-        .then(obj => {return obj});
+        .then(obj => { return obj });
     return response
 }
 
@@ -119,8 +119,8 @@ export const updateNewField = async (cuit, token) => {
             'Authorization': token
         })
     }).then(r => r.json()
-        .then(data => 
+        .then(data =>
             ({ status: r.status, body: data })))
-        .then(obj => {return obj});
+        .then(obj => { return obj });
     return response
 }

@@ -108,17 +108,17 @@ class ExistentIngredient extends Component {
 
     render() {
         const Close = props => <IconButton
-        icon='close'
-        color={colors.APP_MAIN}
-        size={30}
-        onPress={this.hideModal}
-    />
+            icon='close'
+            color={colors.APP_MAIN}
+            size={30}
+            onPress={this.hideModal}
+        />
         return (
             <Card style={styles.ingredientCard}>
                 <Card.Title style={{ margin: -10, marginTop: sizes.hp('-3') }} right={Close} rightStyle={styles.close} />
                 <Divider />
-                <Card.Title title='Seleccioná un ingrediente existente' style={{ alignSelf: 'center'}} 
-                titleStyle={styles.titleText} titleNumberOfLines={2}/>
+                <Card.Title title='Seleccioná un ingrediente existente' style={{ alignSelf: 'center' }}
+                    titleStyle={styles.titleText} titleNumberOfLines={2} />
                 <Divider />
                 <Card.Content style={{ alignItems: 'center', height: sizes.hp('70%') }}>
                     <Searchbar

@@ -52,9 +52,9 @@ class OrderCardClient extends Component {
             const data = await setOrderDeliveredByClient(this.props.data.numero, this.props.user.token)
             this._hideDialogTake()
             this.setState({ actionMessage: data.body, loading: false })
-            if(data.status === 500 && data.body.error){
+            if (data.status === 500 && data.body.error) {
                 this.props.logout()
-                Actions.logsign({visible: true})
+                Actions.logsign({ visible: true })
             } else if (data.status === 200)
                 this.props.refreshParent()
             this._showDialogResponse()
@@ -76,10 +76,10 @@ class OrderCardClient extends Component {
         const orderNumber = props => <Text style={styles.rightText}> {this.props.data.numero} </Text>
 
         const stageOrder = props => (this.props.data.aceptado === 0) ? <Button style={{ borderRadius: 20, marginRight: sizes.wp('3%') }} mode="contained" color={colors.APP_WAITING} labelStyle={{ fontSize: 11, color: '#FFF' }} contentStyle={{ width: sizes.wp('50%'), alignSelf: 'center' }}> Esperando aprobación</Button>
-        : (this.props.data.etapa === orderStage.READY) ? <Button style={{ borderRadius: 20, width: sizes.wp('35%'), marginRight: sizes.wp('3%') }} mode="contained" color={colors.APP_GREEN} labelStyle={{ fontSize: 11, color: '#FFF' }} contentStyle={{ width: sizes.wp('50%'), alignSelf: 'center' }} >
-            Listo </Button> : (this.props.data.etapa === orderStage.PENDING) ? <Button style={{ borderRadius: 20, width: sizes.wp('35%'), marginRight: sizes.wp('3%') }} mode="contained" color={colors.APP_PENDING} labelStyle={{ fontSize: 11, color: '#FFF' }} contentStyle={{ width: sizes.wp('50%'), alignSelf: 'center' }} >
-                En proceso </Button> : <Button style={{ borderRadius: 20, width: sizes.wp('35%'), marginRight: sizes.wp('3%') }} mode="contained" color={colors.APP_DELIVERED} labelStyle={{ fontSize: 11, color: '#FFF' }} contentStyle={{ width: sizes.wp('50%'), alignSelf: 'center' }} >
-                    Entregado </Button>
+            : (this.props.data.etapa === orderStage.READY) ? <Button style={{ borderRadius: 20, width: sizes.wp('35%'), marginRight: sizes.wp('3%') }} mode="contained" color={colors.APP_GREEN} labelStyle={{ fontSize: 11, color: '#FFF' }} contentStyle={{ width: sizes.wp('50%'), alignSelf: 'center' }} >
+                Listo </Button> : (this.props.data.etapa === orderStage.PENDING) ? <Button style={{ borderRadius: 20, width: sizes.wp('35%'), marginRight: sizes.wp('3%') }} mode="contained" color={colors.APP_PENDING} labelStyle={{ fontSize: 11, color: '#FFF' }} contentStyle={{ width: sizes.wp('50%'), alignSelf: 'center' }} >
+                    En proceso </Button> : <Button style={{ borderRadius: 20, width: sizes.wp('35%'), marginRight: sizes.wp('3%') }} mode="contained" color={colors.APP_DELIVERED} labelStyle={{ fontSize: 11, color: '#FFF' }} contentStyle={{ width: sizes.wp('50%'), alignSelf: 'center' }} >
+                        Entregado </Button>
 
         const total = props => <Text style={styles.rightText}> ${this.props.data.total}</Text>
 

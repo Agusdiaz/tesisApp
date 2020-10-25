@@ -45,9 +45,9 @@ class SearchShopBySaleScreen extends Component {
         let shopsPromo = []
         const dataPromos = await getAllShopsWithPromo(this.props.user.mail, this.props.user.token)
         const dataShops = await getAllShopsOpenClose(this.props.user.mail, this.props.user.token)
-        if((dataPromos.status === 500 && dataPromos.body.error) || (dataShops.status === 500 && dataShops.body.error)){
+        if ((dataPromos.status === 500 && dataPromos.body.error) || (dataShops.status === 500 && dataShops.body.error)) {
             this.props.logout()
-            Actions.logsign({visible: true})
+            Actions.logsign({ visible: true })
         } else if (dataPromos.status === 200 && dataShops.status === 200) {
             this.props.setShopsData(dataShops.body)
             shopsPromo = this.props.shops.allShops.filter(function (item) {
@@ -122,16 +122,16 @@ class SearchShopBySaleScreen extends Component {
                     value={this.state.searchQuery}
                 />
 
-                    <FlatList
-                        style={styles.list}
-                        refreshing={this.state.refreshing}
-                        onRefresh={this.onRefresh}
-                        data={(this.state.areStores) ? this.state.shops : [1]}
-                        ItemSeparatorComponent={this.renderSeparator}
-                        initialNumToRender={0}
-                        renderItem={({ item }) => this._renderItem(item)}
-                        keyExtractor={(item, i) => i.toString()}
-                    />
+                <FlatList
+                    style={styles.list}
+                    refreshing={this.state.refreshing}
+                    onRefresh={this.onRefresh}
+                    data={(this.state.areStores) ? this.state.shops : [1]}
+                    ItemSeparatorComponent={this.renderSeparator}
+                    initialNumToRender={0}
+                    renderItem={({ item }) => this._renderItem(item)}
+                    keyExtractor={(item, i) => i.toString()}
+                />
             </View>
         )
     }

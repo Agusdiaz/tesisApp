@@ -12,7 +12,7 @@ export const login = async (mail, pass) => {
         })
     }).then(r => r.json()
         .then(data => ({ status: r.status, body: data })))
-        .then(obj => {return obj});
+        .then(obj => { return obj });
     return response
 }
 
@@ -28,7 +28,7 @@ export const verifyToken = async (token) => {
         })
     }).then(r => r.json()
         .then(data => ({ status: r.status, body: data })))
-        .then(obj => {return obj});
+        .then(obj => { return obj });
     return response
 }
 
@@ -46,7 +46,7 @@ export const updateClient = async (mail, name, lastName, token) => {
         })
     }).then(r => r.json()
         .then(data => ({ status: r.status, body: data })))
-        .then(obj => {return obj});
+        .then(obj => { return obj });
     return response
 }
 
@@ -64,7 +64,7 @@ export const insertClient = async (mail, name, lastName, password) => {
         })
     }).then(r => r.json()
         .then(data => ({ status: r.status, body: data })))
-        .then(obj => {return obj});
+        .then(obj => { return obj });
     return response
 }
 
@@ -85,7 +85,7 @@ export const insertShop = async (cuit, name, address, phone, legalName, mail, pa
         })
     }).then(r => r.json()
         .then(data => ({ status: r.status, body: data })))
-        .then(obj => {return obj});
+        .then(obj => { return obj });
     return response
 }
 
@@ -102,7 +102,7 @@ export const changePassword = async (mail, password, token) => {
         })
     }).then(r => r.json()
         .then(data => ({ status: r.status, body: data })))
-        .then(obj => {return obj});
+        .then(obj => { return obj });
     return response
 }
 
@@ -118,7 +118,7 @@ export const setClientDevice = async (mail, id) => {
         })
     }).then(r => r.json()
         .then(data => ({ status: r.status, body: data })))
-        .then(obj => {return obj});
+        .then(obj => { return obj });
     return response
 }
 
@@ -134,6 +134,6 @@ export const setShopDevice = async (cuit, id) => {
         })
     }).then(r => r.json()
         .then(data => ({ status: r.status, body: data })))
-        .then(obj => {return obj});
+        .then(obj => { return obj });
     return response
 }

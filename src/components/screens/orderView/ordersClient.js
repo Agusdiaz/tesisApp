@@ -30,18 +30,20 @@ class OrdersClientScreen extends Component {
 
     async getOrders() {
         const data = await getAllOrdersByClient(this.props.user.mail, this.props.user.token)
-        if(data.status === 500 && data.body.error){
+        if (data.status === 500 && data.body.error) {
             this.props.logout()
-            Actions.logsign({visible: true})
+            Actions.logsign({ visible: true })
         } else if (data.status === 500 || data.status === 204)
             this.setState({ areOrders: false })
         else {
-            this.setState({ areOrders: true, orders: data.body.sort(function(a,b){
+            this.setState({
+                areOrders: true, orders: data.body.sort(function (a, b) {
+                    return new Date(b.fecha) - new Date(a.fecha);
+                })
+            })
+            this.arrayholder = data.body.sort(function (a, b) {
                 return new Date(b.fecha) - new Date(a.fecha);
-              }) })
-            this.arrayholder = data.body.sort(function(a,b){
-                return new Date(b.fecha) - new Date(a.fecha);
-              })
+            })
         }
     }
 

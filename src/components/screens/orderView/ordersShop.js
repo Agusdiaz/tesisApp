@@ -30,9 +30,9 @@ class OrdersShopScreen extends Component {
 
     async getOrders() {
         const data = await getDeliveredOrdersByShop(this.props.shop.cuit, this.props.shop.token)
-        if(data.status === 500 && data.body.error){
+        if (data.status === 500 && data.body.error) {
             this.props.logout()
-            Actions.logsign({visible: true})
+            Actions.logsign({ visible: true })
         } else if (data.status === 500 || data.status === 204)
             this.setState({ areOrders: false })
         else {

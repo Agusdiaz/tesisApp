@@ -60,9 +60,9 @@ class ExistentProduct extends Component {
 
     async getMenu() {
         const data = await getMenu(this.props.shop.cuit, this.props.shop.token)
-        if(data.status === 500 && data.body.error){
+        if (data.status === 500 && data.body.error) {
             this.props.logout()
-            Actions.logsign({visible: true})
+            Actions.logsign({ visible: true })
         }
         if (data.status === 500 || data.status === 204)
             this.setState({ areSalty: false, areSweet: false, areDrinks: false })
@@ -97,7 +97,7 @@ class ExistentProduct extends Component {
         let newText = '';
         let numbers = '0123456789';
         for (var i = 0; i < number.length; i++) {
-            if(number === '0'){
+            if (number === '0') {
                 Alert.alert('Atención', 'La cantidad no puede ser 0');
                 this.setState({ amount: '' })
                 break
@@ -189,7 +189,7 @@ class ExistentProduct extends Component {
                                 color={colors.APP_MAIN}
                                 icon="plus"
                                 small
-                                onPress={() => {this.setState({ productData: item }), this._showDialogAmount()}} />
+                                onPress={() => { this.setState({ productData: item }), this._showDialogAmount() }} />
 
                         </View>}
                         rightStyle={{ left: sizes.wp('-4%'), }}
@@ -208,17 +208,17 @@ class ExistentProduct extends Component {
 
     render() {
         const Close = props => <IconButton
-        icon='close'
-        color={colors.APP_MAIN}
-        size={30}
-        onPress={this.hideModal}
-    />
+            icon='close'
+            color={colors.APP_MAIN}
+            size={30}
+            onPress={this.hideModal}
+        />
         return (
             <Card style={styles.productCard}>
                 <Card.Title style={{ margin: -10, marginTop: sizes.hp('-3') }} right={Close} rightStyle={styles.close} />
                 <Divider />
                 <Card.Title title='Seleccioná un producto existente' style={{ alignSelf: 'center', }} titleNumberOfLines={2}
-                titleStyle={styles.titleText} />
+                    titleStyle={styles.titleText} />
                 <Divider />
                 <Card.Content style={{ alignItems: 'center', height: sizes.hp('70%') }}>
                     <View style={{ flexDirection: 'row', justifyContent: 'center', width: sizes.wp('85%'), height: sizes.hp('4.7%'), marginTop: 7 }}>
@@ -316,7 +316,8 @@ class ExistentProduct extends Component {
                         </Dialog.Content>
                         <Dialog.Actions style={{ marginTop: sizes.hp('-2%') }}>
                             <Button style={{ marginRight: sizes.wp('3%') }} color={colors.APP_RED} onPress={this._hideDialogAmount}>Cancelar</Button>
-                            <Button color={colors.APP_GREEN} disabled={this.state.amount === '' || this.state.amount === '0'} onPress={() => { this.addProduct(),
+                            <Button color={colors.APP_GREEN} disabled={this.state.amount === '' || this.state.amount === '0'} onPress={() => {
+                                this.addProduct(),
                                 this._hideDialogAmount()
                             }}>Agregar</Button>
                         </Dialog.Actions>

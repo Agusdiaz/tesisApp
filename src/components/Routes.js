@@ -62,7 +62,7 @@ export default class Routes extends Component {
                         <Scene key="login" component={LogIn} title="LogIn" />
 
                         <Scene key="signupclient" component={SignUpClient} title="SignUpClient" />
-                        <Scene key="navbarclient" component={NavBarClient} title="NavBarClient" initial={this.state.hasToken && this.state.profile === 'client'}/>
+                        <Scene key="navbarclient" component={NavBarClient} title="NavBarClient" initial={this.state.hasToken && this.state.profile === 'client'} />
                         <Scene key="makeorder" component={MakeOrder} title="MakeOrder" />
                         <Scene key="cartorder" component={CartOrder} title="CartOrder" />
                         <Scene key="ordersclient" component={OrdersClients} title="OrdersClients" />
@@ -75,13 +75,13 @@ export default class Routes extends Component {
                         <Scene key="pay" component={Pay} title="Pay" />
 
                         <Scene key="signupshop" component={SignUpShop} title="SignUpShop" />
-                        <Scene key="signupshopfeatures" component={SignUpShopFeatures} title="SignUpShopFeatures" initial={this.state.hasToken && this.state.profile === 'newShop'}/>
+                        <Scene key="signupshopfeatures" component={SignUpShopFeatures} title="SignUpShopFeatures" initial={this.state.hasToken && this.state.profile === 'newShop'} />
                         <Scene key="signupshopschedule" component={SignUpShopSchedule} title="SignUpShopSchedule" />
                         <Scene key="signupshopmenu" component={SignUpShopMenu} title="SignUpShopMenu" />
                         <Scene key="initialmenu" component={InitialMenu} title="InitialMenu" />
                         <Scene key="createproduct" component={CreateProduct} title="CreateProduct" />
                         <Scene key="createpromo" component={CreatePromo} title="CreatePromo" />
-                        <Scene key="navbarshop" component={NavBarShop} title="NavBarShop" initial={this.state.hasToken && this.state.profile === 'shop'}/>
+                        <Scene key="navbarshop" component={NavBarShop} title="NavBarShop" initial={this.state.hasToken && this.state.profile === 'shop'} />
                         <Scene key="ordersshop" component={OrdersShop} title="OrdersShop" />
                     </Scene>
                 </Router>

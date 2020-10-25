@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { StyleSheet, View, Text, TouchableOpacity, ImageBackground, FlatList, Image} from 'react-native';
+import { StyleSheet, View, Text, TouchableOpacity, ImageBackground, FlatList, Image } from 'react-native';
 import { Surface, ToggleButton, } from 'react-native-paper';
 import { appStyles, colors, sizes } from '../../../index.styles';
 import ShopCardSummary from '../../commons/shopCardSummary'
@@ -32,12 +32,12 @@ class AnimatedHeader extends React.Component {
     componentDidMount() {
         this.getShopsOpenClose()
     }
-    
+
     async getShopsOpenClose() {
         const data = await getAllShopsOpenClose(this.props.user.mail, this.props.user.token)
-        if(data.status === 500 && data.body.error){
+        if (data.status === 500 && data.body.error) {
             this.props.logout()
-            Actions.logsign({visible: true})
+            Actions.logsign({ visible: true })
         } else if (data.status === 500 || data.status === 204) {
             this.setState({ areStores: false })
         } else {
@@ -48,9 +48,9 @@ class AnimatedHeader extends React.Component {
 
     async getShopsAZ() {
         const data = await getAllShopsAZ(this.props.user.mail, this.props.user.token)
-        if(data.status === 500 && data.body.error){
+        if (data.status === 500 && data.body.error) {
             this.props.logout()
-            Actions.logsign({visible: true})
+            Actions.logsign({ visible: true })
         } else if (data.status === 500 || data.status === 204) {
             this.setState({ areStores: false })
         } else {
@@ -138,11 +138,11 @@ class AnimatedHeader extends React.Component {
                     </View>
 
                     <AnimatedFlatList
-                        style={[styles.list, {height: (this.props.shops.allShops.length === 2) ? sizes.hp('62.5%') : sizes.hp('70%')}]}
+                        style={[styles.list, { height: (this.props.shops.allShops.length === 2) ? sizes.hp('62.5%') : sizes.hp('70%') }]}
                         refreshing={this.state.refreshing}
                         onRefresh={this.onRefresh}
                         data={(this.state.areStores && this.state.valueButtons === 'letters') ? this.props.shops.allShops.sort((a, b) => a.nombre.localeCompare(b.nombre))
-                        : (this.state.areStores) ? this.props.shops.allShops : [1]}
+                            : (this.state.areStores) ? this.props.shops.allShops : [1]}
                         onScroll={Animated.event(
                             [
                                 {
@@ -183,7 +183,7 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         color: '#fff',
         marginTop: sizes.hp('13%'),
-        textShadowRadius: 12,    
+        textShadowRadius: 12,
         textShadowColor: '#000',
         width: sizes.wp('70%'),
         textAlign: 'center'

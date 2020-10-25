@@ -52,7 +52,7 @@ class CartOrder extends Component {
                 <Text style={styles.subtitle}>Precio: ${item.precio * item.cantidad}</Text>
             </View>
             return (
-                <Card style={{ height: sizes.hp('15%'), elevation: 5,}}>
+                <Card style={{ height: sizes.hp('15%'), elevation: 5, }}>
                     <Card.Actions style={styles.actionSide} >
                         {(item.modificado) ?
                             <Button style={{ position: 'absolute', }}
@@ -65,33 +65,33 @@ class CartOrder extends Component {
                             :
                             null}
 
-                            <View style={{flexDirection: 'row', justifyContent:'space-between', width: sizes.wp('30%')}}>
+                        <View style={{ flexDirection: 'row', justifyContent: 'space-between', width: sizes.wp('30%') }}>
                             <FAB
-                            style={styles.fabButtons}
-                            color={colors.APP_MAIN}
-                            icon="delete"
-                            small
-                            onPress={() => {
-                                if (item.idProducto !== undefined) this.removeProduct(item)
-                                else this.removePromo(item)
-                            }}
-                        />
-                        <FAB
-                            style={styles.fabButtons}
-                            color={colors.APP_MAIN}
-                            icon="eye"
-                            small
-                            onPress={() => {
-                                if (item.idProducto !== undefined) {
-                                    this.props.setSelectedProduct(item)
-                                    this._showModalProduct()
-                                }
-                                else {
-                                    this.props.setSelectedPromo(item)
-                                    this._showModalPromo()
-                                }
-                            }}
-                        />
+                                style={styles.fabButtons}
+                                color={colors.APP_MAIN}
+                                icon="delete"
+                                small
+                                onPress={() => {
+                                    if (item.idProducto !== undefined) this.removeProduct(item)
+                                    else this.removePromo(item)
+                                }}
+                            />
+                            <FAB
+                                style={styles.fabButtons}
+                                color={colors.APP_MAIN}
+                                icon="eye"
+                                small
+                                onPress={() => {
+                                    if (item.idProducto !== undefined) {
+                                        this.props.setSelectedProduct(item)
+                                        this._showModalProduct()
+                                    }
+                                    else {
+                                        this.props.setSelectedPromo(item)
+                                        this._showModalPromo()
+                                    }
+                                }}
+                            />
                         </View>
                     </Card.Actions>
                     <Card.Title left={Info} leftStyle={styles.leftSide} />
@@ -241,9 +241,9 @@ const styles = StyleSheet.create({
         fontSize: 16,
     },
     fabButtons: {
-        backgroundColor: '#FFFFFF', 
-        borderColor: colors.APP_MAIN, 
-        borderWidth: 2, 
+        backgroundColor: '#FFFFFF',
+        borderColor: colors.APP_MAIN,
+        borderWidth: 2,
         top: sizes.hp('6%'),
     },
 });

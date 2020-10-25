@@ -18,12 +18,12 @@ class ProductDetailsInCart extends Component {
     hideModal = () => { this.props.hideModalFromChild() }
 
     setAmount(action) {
-        if (action === 0 && this.props.product.cantidad > 1){
+        if (action === 0 && this.props.product.cantidad > 1) {
             var cant = this.props.product.cantidad - 1
             this.props.updateProductAmount(this.props.product, cant)
             this.props.updateTotal(this.props.order.total - this.props.product.precio)
         }
-        else if (action === 1){
+        else if (action === 1) {
             var cant = this.props.product.cantidad + 1
             this.props.updateProductAmount(this.props.product, cant)
             this.props.updateTotal(this.props.order.total + this.props.product.precio)
@@ -66,10 +66,11 @@ class ProductDetailsInCart extends Component {
                 <Divider />
                 <Card.Title right={NamePrice} rightStyle={styles.rightSide} />
                 <Card.Cover source={{ uri: this.state.photo }} resizeMode='cover' style={styles.image} />
-                <Card.Content style={{ alignItems: 'center'}}>
+                <Card.Content style={{ alignItems: 'center' }}>
                     <Text style={styles.details} numberOfLines={6}>{this.props.product.detalle}</Text>
                     <DataTable style={{
-                        marginTop: sizes.wp('1%'), width: sizes.wp('100%'), left: -10 }}>
+                        marginTop: sizes.wp('1%'), width: sizes.wp('100%'), left: -10
+                    }}>
                         <DataTableHeader
                             title={'¿De qué esta hecho este producto?'}
                             style={{ right: sizes.wp('-3%') }}
@@ -99,7 +100,7 @@ class ProductDetailsInCart extends Component {
                     </DataTable>
                 </Card.Content>
                 <Card.Actions style={{ alignSelf: 'center', marginTop: sizes.hp('0.5%') }}>
-                    <View style={{ flexDirection: 'row', alignItems: 'center'}}>
+                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
 
                         <FAB
                             style={styles.fabAmount}
@@ -120,7 +121,7 @@ class ProductDetailsInCart extends Component {
                             icon="plus"
                             onPress={() => this.setAmount(1)}
                         />
-                        </View>
+                    </View>
                 </Card.Actions>
             </Card >
         )

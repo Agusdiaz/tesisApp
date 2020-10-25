@@ -11,9 +11,9 @@ export const getAllShopPromos = async (cuit, token) => {
             'Authorization': token
         })
     }).then(r => (r.status === 204) ? r : r.json()
-        .then(data => 
+        .then(data =>
             ({ status: r.status, body: data })))
-        .then(obj => {return obj});
+        .then(obj => { return obj });
     return response
 }
 
@@ -41,9 +41,9 @@ export const updatePromoHours = async (body, token) => {
             'Authorization': token
         })
     }).then(r => (r.status === 204) ? r : r.json()
-        .then(data => 
+        .then(data =>
             ({ status: r.status, body: data })))
-        .then(obj => {return obj});
+        .then(obj => { return obj });
     return response
 }
 
@@ -51,7 +51,7 @@ export const deletePromo = async (id, cuit, token, initial) => {
     let requestBody = {};
     requestBody.id = id
     requestBody.cuit = cuit
-    if(initial === 'yes') requestBody.inicial
+    if (initial === 'yes') requestBody.inicial
     const response = await fetch(`${APIURL}deletePromo`, {
         method: 'POST',
         body: JSON.stringify(requestBody),
