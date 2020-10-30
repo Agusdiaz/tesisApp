@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "tesis",
-    "slug": "tesis",
+    "name": "Flamma",
+    "slug": "Flamma",
     "platforms": [
       "ios",
       "android",
@@ -9,7 +9,7 @@
     ],
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./src/icons/flammaWhite.png",
     "splash": {
       "image": "./src/icons/flammaPic.png",
       "resizeMode": "contain",
@@ -22,7 +22,19 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "bundleIdentifier": "com.company.flamma",
+      "buildNumber": "1.0.0"
+    },
+    "android": {
+      "package": "com.company.flamma",
+      "googleServicesFile": "/Users/agus-/tesis-front/google-services.json",
+      "useNextNotificationsApi": true,
+      "versionCode": 1
+    },
+    "notification": {
+      "icon": "./src/icons/flammaNotif.png",
+      "color": "#000000",
+      "iosDisplayInForeground": true
     }
   }
 }

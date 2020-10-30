@@ -1,7 +1,6 @@
 import React, { Component, useState, useEffect, useRef } from 'react';
 import { StyleSheet, Text, KeyboardAvoidingView, Platform, TouchableOpacity, Image } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage'
-import LoginActions from '../../../redux/authState/action'
 import { TextInput, Button, ActivityIndicator, Modal, Dialog, Paragraph } from 'react-native-paper';
 import { appStyles, colors, sizes } from '../../../index.styles';
 import ArrowButton from '../../commons/arrowButton'
@@ -10,9 +9,6 @@ import { login, setShopDevice, setClientDevice } from '../../../api/users'
 import * as Notifications from 'expo-notifications';
 import * as Permissions from 'expo-permissions';
 import Constants from 'expo-constants';
-
-
-
 import { useSelector, useDispatch } from 'react-redux';
 
 Notifications.setNotificationHandler({
@@ -81,12 +77,12 @@ export default function LoginScreen() {
             setLoading(false)
             saveItem('id_token', data.body.token)
             if (data.body.cuit === undefined) {
-                if (Constants.isDevice) await setClientDevice(email, deviceId)
+                if (Constants.isDevice && deviceId !== '') await setClientDevice(email, deviceId)
                 saveItem('profile', 'client')
                 dispatch({ type: 'LOGIN_CLIENT', payload: { mail: data.body.mail, name: data.body.nombre, lastName: data.body.apellido, token: data.body.token } })
                 Actions.navbarclient()
             } else if (data.body.nuevo === 0) {
-                if (Constants.isDevice) await setShopDevice(data.body.cuit, deviceId)
+                if (Constants.isDevice && deviceId !== '') await setShopDevice(data.body.cuit, deviceId)
                 saveItem('profile', 'shop')
                 dispatch({
                     type: 'LOGIN_SHOP', payload: {
@@ -97,7 +93,7 @@ export default function LoginScreen() {
                 })
                 Actions.navbarshop()
             } else {
-                if (Constants.isDevice) await setShopDevice(data.body.cuit, deviceId)
+                if (Constants.isDevice && deviceId !== '') await setShopDevice(data.body.cuit, deviceId)
                 saveItem('profile', 'newShop')
                 dispatch({
                     type: 'LOGIN_SHOP', payload: {
@@ -203,6 +199,8 @@ async function registerForPushNotificationsAsync() {
             importance: Notifications.AndroidImportance.MAX,
             vibrationPattern: [0, 250, 250, 250],
             lightColor: '#FF231F7C',
+            sound: true,
+            vibrate: true,
         });
     }
     return token;
